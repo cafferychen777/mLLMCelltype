@@ -1,0 +1,32 @@
+Package: LLMCelltype
+Type: Package
+Title: Cell Type Annotation Using Large Language Models
+Version: 0.1.0
+Author: Chen Yang [aut, cre]
+Maintainer: Chen Yang <cafferychen777@tamu.edu>
+Authors@R: 
+    person("Chen", "Yang", email = "cafferychen777@tamu.edu",
+           role = c("aut", "cre"))
+Description: An R package that leverages various large language models (LLMs) 
+    for automated cell type annotation in single-cell RNA sequencing data. 
+    Implements a consensus-based approach where multiple LLMs collaborate 
+    to provide more reliable annotations.
+License: MIT + file LICENSE
+Encoding: UTF-8
+Imports:
+    dplyr,
+    httr (>= 1.4.0),
+    jsonlite (>= 1.7.0),
+    R6 (>= 2.5.0),
+    digest (>= 0.6.25),
+    magrittr
+Suggests:
+    Seurat,
+    testthat (>= 3.0.0),
+    mockery,
+    dotenv,
+    devtools,
+    withr (>= 2.4.0)
+Config/testthat/edition: 3
+RoxygenNote: 7.3.2
+Roxygen: list(markdown = TRUE)

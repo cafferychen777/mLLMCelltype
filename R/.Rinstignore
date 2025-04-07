@@ -1,0 +1,10 @@
+^logs$
+^test_logs$
+^tests/testthat/logs$
+^tests/testthat/consensus_cache$
+^.*logs.*$
+^consensus_cache$
+^.*\.Rcheck/.*$
+^logs$
+^.*/logs$
+^.*\.Rcheck/logs$

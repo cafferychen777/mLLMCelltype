@@ -1,0 +1,24 @@
+# R package build files
+.Rproj.user
+.Rhistory
+.RData
+.Ruserdata
+
+# Build artifacts
+*.o
+*.so
+*.dll
+
+# Check directory
+*.Rcheck/
+
+# Log files and directories
+logs/
+test_logs/
+tests/testthat/logs/
+
+# Cache files
+.build_files/
+
+# Cache files
+tests/testthat/consensus_cache/
