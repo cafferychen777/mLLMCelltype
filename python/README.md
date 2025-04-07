@@ -270,13 +270,14 @@ mLLMCelltype supports structured JSON responses, providing detailed annotation i
 from mllmcelltype import annotate_clusters
 
 # Define comprehensive JSON response template
-json_template = """You are an expert single-cell genomics analyst. Below are marker genes for different cell clusters from {context} tissue.
+json_template = """
+ You are an expert single-cell genomics analyst. Below are marker genes for different cell clusters from {context} tissue.
 
 {clusters}
 
 For each numbered cluster, provide a detailed cell type annotation in JSON format.
 Use the following structure:
-```json
+
 {
   "annotations": [
     {
@@ -286,12 +287,10 @@ Use the following structure:
       "key_markers": ["marker1", "marker2", "marker3"],
       "evidence": "Brief explanation of key markers supporting this annotation",
       "alternative_annotation": "possible alternative if confidence is not high"
-    },
-    ...
+    }
   ]
 }
-```
-{{ ... }}
+"""
 
 # Generate structured annotations with detailed metadata
 json_annotations = annotate_clusters(
@@ -312,7 +311,8 @@ for cluster_id, annotation in json_annotations.items():
     print(f"  Key markers: {key_markers}")
     if 'evidence' in annotation:
         print(f"  Evidence: {annotation['evidence']}")
-# But the raw JSON response is also available in the cache for advanced processing
+
+# Raw JSON response is also available in the cache for advanced processing
 ```
 
 Using JSON responses provides several advantages:
