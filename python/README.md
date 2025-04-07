@@ -103,7 +103,7 @@ mLLMCelltype requires API keys for the LLM providers you intend to use. These ca
 ```bash
 export OPENAI_API_KEY="your-openai-api-key"
 export ANTHROPIC_API_KEY="your-anthropic-api-key"
-export GOOGLE_API_KEY="your-google-api-key"
+export GEMINI_API_KEY="your-gemini-api-key"
 export QWEN_API_KEY="your-qwen-api-key"
 # Additional providers as needed
 ```
