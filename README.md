@@ -46,7 +46,7 @@ pip install git+https://github.com/cafferychen777/mLLMCelltype.git
 ```python
 import scanpy as sc
 import pandas as pd
-from llmcelltype import annotate_clusters, setup_logging, interactive_consensus_annotation
+from mllmcelltype import annotate_clusters, setup_logging, interactive_consensus_annotation
 import os
 
 # Set up logging
@@ -101,7 +101,7 @@ sc.pl.umap(adata, color='consensus_cell_type', legend_loc='on data')
 
 ```r
 # Load required packages
-library(LLMCelltype)
+library(mLLMCelltype)
 library(Seurat)
 library(dplyr)
 
@@ -153,7 +153,7 @@ pbmc$entropy <- consensus_results$consensus_results[current_clusters]$entropy
 
 # Visualize results
 DimPlot(pbmc, reduction = "umap", group.by = "cell_type", label = TRUE) +
-  labs(title = "LLMCelltype Consensus Annotations")
+  labs(title = "mLLMCelltype Consensus Annotations")
 ```
 
 ## License

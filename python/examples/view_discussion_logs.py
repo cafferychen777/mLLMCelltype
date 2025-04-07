@@ -13,13 +13,13 @@ import json
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..')))
 
 # 导入LLMCelltype的函数
-from llmcelltype import interactive_consensus_annotation
+from mllmcelltype import interactive_consensus_annotation
 
 def view_latest_discussion_logs():
     """查看最新的讨论日志"""
     
     # 查找缓存目录中最新的结果文件
-    cache_dir = os.path.expanduser("~/.llmcelltype/cache")
+    cache_dir = os.path.expanduser("~/.mllmcelltype/cache")
     
     if not os.path.exists(cache_dir):
         print(f"Cache directory not found: {cache_dir}")

@@ -19,8 +19,8 @@ import glob
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..')))
 
 # Import LLMCelltype functions
-from llmcelltype import annotate_clusters
-from llmcelltype.utils import format_results, create_cache_key
+from mllmcelltype import annotate_clusters
+from mllmcelltype.utils import format_results, create_cache_key
 
 # Load environment variables
 load_dotenv()

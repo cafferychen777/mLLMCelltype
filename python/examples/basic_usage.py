@@ -8,7 +8,7 @@ This script demonstrates how to use LLMCelltype to annotate cell clusters.
 
 import os
 import pandas as pd
-from llmcelltype import annotate_clusters, setup_logging, load_api_key
+from mllmcelltype import annotate_clusters, setup_logging, load_api_key
 
 # Setup logging
 setup_logging(log_level="INFO")

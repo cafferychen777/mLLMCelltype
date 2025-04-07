@@ -7,18 +7,18 @@ try:
     with open(os.path.join(this_directory, 'README.md'), encoding='utf-8') as f:
         long_description = f.read()
 except FileNotFoundError:
-    long_description = 'LLMCelltype: A Python module for cell type annotation using various LLMs.'
+    long_description = 'mLLMCelltype: A Python module for cell type annotation using various LLMs.'
 
 setup(
-    name='llmcelltype',
+    name='mllmcelltype',
     version='0.1.0',
     packages=find_packages(),
     description='A Python module for cell type annotation using various LLMs.',
     long_description=long_description,
     long_description_content_type='text/markdown',
-    author='LLMCelltype Team',
+    author='mLLMCelltype Team',
     author_email='example@example.com',
-    url='https://github.com/cafferychen777/LLMCelltype',
+    url='https://github.com/cafferychen777/mLLMCelltype',
     install_requires=[
         'pandas>=1.0.0',
         'numpy>=1.19.0',

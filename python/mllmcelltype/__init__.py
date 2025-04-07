@@ -1,4 +1,4 @@
-"""LLMCelltype: A Python module for cell type annotation using various LLMs."""
+"""mLLMCelltype: A Python module for cell type annotation using various LLMs."""
 
 from .annotate import annotate_clusters, batch_annotate_clusters, get_model_response
 from .functions import (

@@ -19,8 +19,8 @@ import seaborn as sns
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..')))
 
 # 导入LLMCelltype的函数
-from llmcelltype.functions import identify_controversial_clusters, select_best_prediction
-from llmcelltype.utils import find_agreement
+from mllmcelltype.functions import identify_controversial_clusters, select_best_prediction
+from mllmcelltype.utils import find_agreement
 
 # 加载环境变量
 load_dotenv()

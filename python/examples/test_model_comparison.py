@@ -18,8 +18,8 @@ from tabulate import tabulate
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..')))
 
 # 导入LLMCelltype的函数
-from llmcelltype import annotate_clusters, batch_annotate_clusters
-from llmcelltype.utils import format_results
+from mllmcelltype import annotate_clusters, batch_annotate_clusters
+from mllmcelltype.utils import format_results
 
 # 加载环境变量
 load_dotenv()

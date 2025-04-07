@@ -1,4 +1,4 @@
-Package: LLMCelltype
+Package: mLLMCelltype
 Type: Package
 Title: Cell Type Annotation Using Large Language Models
 Version: 0.1.0

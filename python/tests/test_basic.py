@@ -12,12 +12,12 @@ import pandas as pd
 import pytest
 from unittest.mock import patch, MagicMock
 
-# Add parent directory to path to import llmcelltype
+# Add parent directory to path to import mllmcelltype
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
-from llmcelltype import annotate_clusters, batch_annotate_clusters
-from llmcelltype.utils import load_api_key, parse_marker_genes
-from llmcelltype.prompts import create_annotation_prompt
+from mllmcelltype import annotate_clusters, batch_annotate_clusters
+from mllmcelltype.utils import load_api_key, parse_marker_genes
+from mllmcelltype.prompts import create_annotation_prompt
 
 # Sample marker genes for testing
 @pytest.fixture
@@ -66,7 +66,7 @@ def test_load_api_key():
     # Test with environment variable
     with patch.dict(os.environ, {"TEST_API_KEY": "test-key-123"}):
         # Create a temporary mapping for the test provider
-        with patch('llmcelltype.utils.env_var_map', {'test': 'TEST_API_KEY'}):
+        with patch('mllmcelltype.utils.env_var_map', {'test': 'TEST_API_KEY'}):
             key = load_api_key("test")
             assert key == "test-key-123"
     
@@ -88,7 +88,7 @@ def mock_provider():
 # Test annotation function
 def test_annotate_clusters(sample_marker_genes, mock_provider):
     """Test annotate_clusters function."""
-    with patch("llmcelltype.annotate.get_provider_function", return_value=mock_provider):
+    with patch("mllmcelltype.annotate.get_provider_function", return_value=mock_provider):
         result = annotate_clusters(
             marker_genes=sample_marker_genes,
             species="human",
@@ -113,7 +113,7 @@ def test_annotate_clusters(sample_marker_genes, mock_provider):
 # Test batch annotation
 def test_batch_annotate_clusters(sample_marker_genes, mock_provider):
     """Test batch_annotate_clusters function."""
-    with patch("llmcelltype.annotate.get_provider_function", return_value=mock_provider):
+    with patch("mllmcelltype.annotate.get_provider_function", return_value=mock_provider):
         result = batch_annotate_clusters(
             marker_genes_list=[sample_marker_genes, sample_marker_genes],
             species=["human", "human"],

@@ -12,10 +12,10 @@ import json
 import pytest
 from unittest.mock import patch, MagicMock
 
-# Add parent directory to path to import llmcelltype
+# Add parent directory to path to import mllmcelltype
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
-from llmcelltype.providers import openai, anthropic, deepseek, gemini, qwen, zhipu, minimax, stepfun
+from mllmcelltype.providers import openai, anthropic, deepseek, gemini, qwen, zhipu, minimax, stepfun
 
 # Test OpenAI provider
 class TestOpenAIProvider:

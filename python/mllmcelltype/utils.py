@@ -218,7 +218,7 @@ def get_annotation_metadata(annotation_result: Dict[str, str]) -> Dict[str, Dict
         key = hashlib.md5(str(annotation_result).encode()).hexdigest()
         
         # Check if metadata exists in cache
-        cache_dir = os.path.expanduser("~/.llmcelltype/metadata")
+        cache_dir = os.path.expanduser("~/.mllmcelltype/metadata")
         cache_file = os.path.join(cache_dir, f"{key}.json")
         
         if os.path.exists(cache_file):
@@ -341,7 +341,7 @@ def format_results(results: List[str], clusters: List[str]) -> Dict[str, str]:
                 # Store metadata in cache for later retrieval if needed
                 if metadata:
                     try:
-                        cache_dir = os.path.expanduser("~/.llmcelltype/metadata")
+                        cache_dir = os.path.expanduser("~/.mllmcelltype/metadata")
                         os.makedirs(cache_dir, exist_ok=True)
                         
                         # Create a unique key for this annotation result

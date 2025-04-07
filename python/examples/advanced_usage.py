@@ -8,7 +8,7 @@ This script demonstrates batch annotation and multiple provider usage.
 
 import os
 import pandas as pd
-from llmcelltype import batch_annotate_clusters, setup_logging, load_api_key
+from mllmcelltype import batch_annotate_clusters, setup_logging, load_api_key
 
 # Setup logging with file output
 setup_logging(log_level="INFO", log_dir="./logs")

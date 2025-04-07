@@ -9,10 +9,10 @@ import os
 import sys
 import unittest
 
-# Add parent directory to path to import llmcelltype
+# Add parent directory to path to import mllmcelltype
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
-from llmcelltype.utils import format_results
+from mllmcelltype.utils import format_results
 
 
 class TestJsonParsing(unittest.TestCase):

@@ -10,11 +10,11 @@ import sys
 import unittest
 from unittest.mock import patch
 
-# Add parent directory to path to import llmcelltype
+# Add parent directory to path to import mllmcelltype
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
-from llmcelltype.prompts import create_prompt, create_batch_prompt
-from llmcelltype.prompts import DEFAULT_PROMPT_TEMPLATE, DEFAULT_BATCH_PROMPT_TEMPLATE
+from mllmcelltype.prompts import create_prompt, create_batch_prompt
+from mllmcelltype.prompts import DEFAULT_PROMPT_TEMPLATE, DEFAULT_BATCH_PROMPT_TEMPLATE
 
 
 class TestPrompts(unittest.TestCase):
