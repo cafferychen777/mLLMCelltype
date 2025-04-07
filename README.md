@@ -61,10 +61,8 @@ sc.tl.rank_genes_groups(adata, 'leiden', method='wilcoxon')
 # Extract marker genes for each cluster
 marker_genes = {}
 for i in range(len(adata.obs['leiden'].cat.categories)):
-    genes = pd.DataFrame(
-        adata.uns['rank_genes_groups']['names'][i],
-        columns=['genes']
-    ).head(10)['genes'].tolist()
+    # Extract top 10 genes for each cluster
+    genes = [adata.uns['rank_genes_groups']['names'][str(i)][j] for j in range(10)]
     marker_genes[str(i)] = genes
 
 # Set API keys for different providers
