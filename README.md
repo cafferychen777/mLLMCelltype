@@ -44,61 +44,116 @@ pip install git+https://github.com/cafferychen777/mLLMCelltype.git
 ### Python
 
 ```python
-from mllmcelltype import mLLMCelltype
 import scanpy as sc
+import pandas as pd
+from llmcelltype import annotate_clusters, setup_logging, interactive_consensus_annotation
+import os
 
-# Load your preprocessed data
-adata = sc.read("your_data.h5ad")
+# Set up logging
+setup_logging()
 
-# Initialize the framework with your API keys
-annotator = mLLMCelltype(
-    openai_api_key="your_openai_key",
-    anthropic_api_key="your_anthropic_key",
-    google_api_key="your_google_key"
+# Load your data
+adata = sc.read_h5ad('your_data.h5ad')
+
+# Run differential expression analysis to get marker genes
+sc.tl.rank_genes_groups(adata, 'leiden', method='wilcoxon')
+
+# Extract marker genes for each cluster
+marker_genes = {}
+for i in range(len(adata.obs['leiden'].cat.categories)):
+    genes = pd.DataFrame(
+        adata.uns['rank_genes_groups']['names'][i],
+        columns=['genes']
+    ).head(10)['genes'].tolist()
+    marker_genes[str(i)] = genes
+
+# Set API keys for different providers
+os.environ["OPENAI_API_KEY"] = "your-openai-api-key"
+os.environ["ANTHROPIC_API_KEY"] = "your-anthropic-api-key"
+os.environ["GOOGLE_API_KEY"] = "your-google-api-key"
+os.environ["QWEN_API_KEY"] = "your-qwen-api-key"
+
+# Run consensus annotation with multiple models
+consensus_results = interactive_consensus_annotation(
+    marker_genes=marker_genes,
+    species="human",
+    tissue="blood",
+    models=["gpt-4o", "claude-3-5-sonnet-latest", "gemini-1.5-pro", "qwen-max-2025-01-25"],
+    consensus_threshold=0.7,  # Adjust threshold for consensus agreement
+    max_discussion_rounds=3   # Maximum rounds of discussion between models
 )
 
-# Run annotation with tissue context
-results = annotator.annotate(
-    adata=adata,
-    tissue="lung",
-    max_rounds=3,
-    consensus_threshold=0.67
-)
+# Access the final consensus annotations from the dictionary
+final_annotations = consensus_results["consensus"]
 
-# Add annotations back to AnnData object
-adata.obs['mLLM_celltype'] = results['annotations']
-adata.obs['consensus_proportion'] = results['consensus_proportion']
-adata.obs['entropy'] = results['entropy']
+# Add consensus annotations to your AnnData object
+adata.obs['consensus_cell_type'] = adata.obs['leiden'].astype(str).map(final_annotations)
+
+# Add uncertainty metrics to your AnnData object
+adata.obs['consensus_proportion'] = adata.obs['leiden'].astype(str).map(consensus_results["consensus_proportion"])
+adata.obs['entropy'] = adata.obs['leiden'].astype(str).map(consensus_results["entropy"])
+
+# Visualize results
+sc.pl.umap(adata, color='consensus_cell_type', legend_loc='on data')
 ```
 
 ### R
 
 ```r
-library(mLLMCelltype)
+# Load required packages
+library(LLMCelltype)
 library(Seurat)
+library(dplyr)
 
 # Load your preprocessed Seurat object
-seurat_obj <- readRDS("your_data.rds")
+pbmc <- readRDS("your_seurat_object.rds")
 
-# Initialize the framework with your API keys
-annotator <- init_mLLMCelltype(
-    openai_api_key = "your_openai_key",
-    anthropic_api_key = "your_anthropic_key",
-    google_api_key = "your_google_key"
+# Find marker genes for each cluster
+pbmc_markers <- FindAllMarkers(pbmc, 
+                            only.pos = TRUE,
+                            min.pct = 0.25,
+                            logfc.threshold = 0.25)
+
+# Run LLMCelltype annotation with multiple LLM models
+consensus_results <- interactive_consensus_annotation(
+  input = pbmc_markers,
+  tissue_name = "human PBMC",  # provide tissue context
+  models = c(
+    "claude-3-5-sonnet-latest",  # Anthropic
+    "gpt-4o",                   # OpenAI
+    "gemini-1.5-pro",           # Google
+    "qwen-max-2025-01-25"       # Alibaba
+  ),
+  api_keys = list(
+    anthropic = "your-anthropic-key",
+    openai = "your-openai-key",
+    gemini = "your-google-key",
+    qwen = "your-qwen-key"
+  ),
+  top_gene_count = 10,
+  controversy_threshold = 0.7
 )
 
-# Run annotation with tissue context
-results <- annotate_seurat(
-    seurat_obj = seurat_obj,
-    tissue = "lung",
-    max_rounds = 3,
-    consensus_threshold = 0.67
+# Add annotations to Seurat object
+# Create a mapping dictionary to correctly map cluster IDs to cell types
+cluster_to_celltype_map <- setNames(
+  unlist(consensus_results$final_annotations),
+  names(consensus_results$final_annotations)
 )
 
-# Add annotations back to Seurat object
-seurat_obj$mLLM_celltype <- results$annotations
-seurat_obj$consensus_proportion <- results$consensus_proportion
-seurat_obj$entropy <- results$entropy
+# Get current cluster IDs for each cell
+current_clusters <- as.character(Idents(pbmc))
+
+# Add cell type annotations to Seurat object
+pbmc$cell_type <- cluster_to_celltype_map[current_clusters]
+
+# Add uncertainty metrics
+pbmc$consensus_proportion <- consensus_results$consensus_results[current_clusters]$consensus_proportion
+pbmc$entropy <- consensus_results$consensus_results[current_clusters]$entropy
+
+# Visualize results
+DimPlot(pbmc, reduction = "umap", group.by = "cell_type", label = TRUE) +
+  labs(title = "LLMCelltype Consensus Annotations")
 ```
 
 ## License
