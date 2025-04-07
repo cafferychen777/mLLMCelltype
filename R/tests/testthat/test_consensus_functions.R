@@ -1,6 +1,6 @@
 library(testthat)
 library(LLMCelltype)
-library(withr) # 使用withr包来管理临时目录
+library(withr) # Use withr package to manage temporary directories
 
 # Mock data creation function
 create_mock_data <- function() {
@@ -45,23 +45,23 @@ api_keys <- list(
 
 # Test cases
 test_that("interactive_consensus_annotation handles input data correctly", {
-  # 使用withr::with_tempdir创建临时目录并在测试结束后自动清理
+  # Use withr::with_tempdir to create a temporary directory and automatically clean up after the test
   withr::with_tempdir({
-    # 创建临时日志目录
+    # Create temporary log directory
     temp_log_dir <- file.path(getwd(), "test_logs")
     dir.create(temp_log_dir, recursive = TRUE, showWarnings = FALSE)
     
-    # 创建mock数据
+    # Create mock data
     mock_data <- create_mock_data()
     
-    # 测试模型
+    # Test models
     test_models <- c(
       "claude-3-5-sonnet-latest",  # Anthropic
       "gemini-1.5-pro",           # Google
       "qwen-max-2025-01-25"       # Qwen
     )
     
-    # 运行函数
+    # Run function
     result <- tryCatch({
       interactive_consensus_annotation(
         input = mock_data,
@@ -77,50 +77,50 @@ test_that("interactive_consensus_annotation handles input data correctly", {
       e
     })
     
-    # 基本结构测试
+    # Basic structure test
     expect_false(inherits(result, "error"))
     expect_type(result, "list")
     
-    # 检查日志文件是否创建
+    # Check if log files were created
     expect_true(dir.exists(temp_log_dir))
     expect_true(length(list.files(temp_log_dir)) > 0)
     
-    # 不需要手动清理，withr::with_tempdir会自动清理
+    # No need for manual cleanup, withr::with_tempdir will automatically clean up
   })
 })
 
 
 
 test_that("DiscussionLogger works correctly", {
-  # 使用withr::with_tempdir创建临时目录并在测试结束后自动清理
+  # Use withr::with_tempdir to create a temporary directory and automatically clean up after the test
   withr::with_tempdir({
-    # 创建临时日志目录
+    # Create temporary log directory
     temp_log_dir <- file.path(getwd(), "test_logs")
     dir.create(temp_log_dir, recursive = TRUE, showWarnings = FALSE)
     
-    # 初始化logger
+    # Initialize logger
     logger <- DiscussionLogger$new(temp_log_dir)
     
-    # 测试日志记录
+    # Test logging
     cluster_id <- 1
     tissue_name <- "PBMC"
     marker_genes <- c("CD19", "CD20", "CD79A")
     
-    # 开始集群讨论
+    # Start cluster discussion
     logger$start_cluster_discussion(cluster_id, tissue_name, marker_genes)
     
-    # 记录事件
+    # Record events
     logger$log_prediction("claude", 1, list(cell_type = "B cell", confidence = 0.9))
     logger$log_consensus_check(1, TRUE, 0.9)
     logger$log_final_consensus("B cell", "High confidence B cell annotation")
     
-    # 结束讨论
+    # End discussion
     logger$end_cluster_discussion()
     
-    # 检查日志文件是否存在
+    # Check if log files exist
     log_files <- list.files(temp_log_dir, recursive = TRUE)
     expect_true(length(log_files) > 0)
     
-    # 不需要手动清理，withr::with_tempdir会自动清理
+    # No need for manual cleanup, withr::with_tempdir will automatically clean up
   })
 })

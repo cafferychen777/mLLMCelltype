@@ -7,6 +7,7 @@ import re
 import json
 import hashlib
 import pandas as pd
+import math
 from typing import Dict, List, Optional, Union, Any, Tuple
 from datetime import datetime
 import logging
@@ -424,6 +425,10 @@ def clean_annotation(annotation: str) -> str:
     Returns:
         str: Cleaned annotation
     """
+    # If input is empty or None, return an empty string
+    if not annotation:
+        return ""
+        
     # Remove common prefixes and formatting
     annotation = annotation.strip()
     
@@ -443,9 +448,38 @@ def clean_annotation(annotation: str) -> str:
         if annotation.lower().startswith(prefix):
             annotation = annotation[len(prefix):].strip()
     
+    # Process descriptive text, extract cell type name
+    # For example: "- Dendritic cells are the most accurate cell type annotation for Cluster 4" -> "Dendritic cells"
+    patterns = [
+        r"([\w\s-]+)\s+(?:is|are)\s+the\s+most\s+accurate\s+cell\s+type",  # Match "X is/are the most accurate cell type"
+        r"([\w\s-]+)\s+(?:is|are)\s+the\s+best\s+annotation",  # Match "X is/are the best annotation"
+        r"final\s+cell\s+type\s*:?\s*([\w\s-]+)",  # Match "final cell type: X"
+        r"final\s+decision\s*:?\s*([\w\s-]+)",  # Match "final decision: X"
+        r"majority\s+prediction\s*:?\s*([\w\s-]+)"  # Match "majority prediction: X"
+    ]
+    
+    import re
+    for pattern in patterns:
+        match = re.search(pattern, annotation.lower())
+        if match:
+            annotation = match.group(1).strip()
+            break
+    
     # Remove quotes
     if annotation.startswith('"') and annotation.endswith('"'):
         annotation = annotation[1:-1]
+    
+    # Remove markdown emphasis marks (**, *, etc.)
+    annotation = annotation.replace("**:", "").replace("**", "").replace("*", "")
+    
+    # Remove common prefix markers
+    if annotation.startswith("-"):
+        annotation = annotation[1:].strip()
+        
+    # Remove prefixes like "Final Cell Type:"
+    if ":" in annotation and any(x in annotation.lower() for x in ["final", "type", "determination", "conclusion"]):
+        parts = annotation.split(":", 1)
+        annotation = parts[1].strip()
     
     # Remove trailing punctuation
     if annotation and annotation[-1] in ['.', ',', ';']:
@@ -453,7 +487,7 @@ def clean_annotation(annotation: str) -> str:
         
     return annotation
 
-def find_agreement(annotations: Dict[str, Dict[str, str]]) -> Tuple[Dict[str, str], Dict[str, float]]:
+def find_agreement(annotations: Dict[str, Dict[str, str]]) -> Tuple[Dict[str, str], Dict[str, float], Dict[str, float]]:
     """
     Find the level of agreement between different model annotations.
     
@@ -461,14 +495,18 @@ def find_agreement(annotations: Dict[str, Dict[str, str]]) -> Tuple[Dict[str, st
         annotations: Dictionary mapping model names to dictionaries of cluster annotations
         
     Returns:
-        Tuple[Dict[str, str], Dict[str, float]]: Consensus annotations and confidence scores
+        Tuple[Dict[str, str], Dict[str, float], Dict[str, float]]: 
+            - Consensus annotations
+            - Consensus proportion (confidence scores)
+            - Entropy scores (measure of uncertainty)
     """
     consensus = {}
     confidence = {}
+    entropy_scores = {}
     
     # Ensure we have annotations
     if not annotations or not all(annotations.values()):
-        return {}, {}
+        return {}, {}, {}
     
     # Get all clusters
     all_clusters = set()
@@ -497,16 +535,28 @@ def find_agreement(annotations: Dict[str, Dict[str, str]]) -> Tuple[Dict[str, st
             most_common_annotation = most_common[0]
             most_common_count = most_common[1]
             
-            # Calculate confidence
-            confidence_score = most_common_count / len(cluster_annotations) if cluster_annotations else 0
+            # Calculate consensus proportion (confidence)
+            consensus_proportion = most_common_count / len(cluster_annotations) if cluster_annotations else 0
+            
+            # Calculate entropy (measure of uncertainty)
+            entropy = 0.0
+            if len(cluster_annotations) > 1:
+                # Calculate entropy based on distribution of annotations
+                total = len(cluster_annotations)
+                entropy = 0.0
+                for count in annotation_counts.values():
+                    p = count / total
+                    entropy -= p * (math.log2(p) if p > 0 else 0)
             
             consensus[cluster] = most_common_annotation
-            confidence[cluster] = confidence_score
+            confidence[cluster] = consensus_proportion
+            entropy_scores[cluster] = entropy
         else:
             consensus[cluster] = "Unknown"
             confidence[cluster] = 0.0
+            entropy_scores[cluster] = 0.0
     
-    return consensus, confidence
+    return consensus, confidence, entropy_scores
 
 def clear_cache(cache_dir: Optional[str] = None, older_than: Optional[int] = None) -> int:
     """

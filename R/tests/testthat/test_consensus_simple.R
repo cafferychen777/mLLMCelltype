@@ -1,6 +1,6 @@
 library(testthat)
 library(LLMCelltype)
-library(withr) # 使用withr包来管理临时目录
+library(withr) # Use withr package to manage temporary directories
 
 # Mock data creation function
 create_mock_data <- function() {
@@ -46,16 +46,16 @@ test_that("create_consensus_check_prompt formats correctly", {
 test_that("interactive_consensus_annotation handles input data correctly", {
   skip("Skipping interactive consensus test in CI environment")
   
-  # 使用withr::with_tempdir创建临时目录并在测试结束后自动清理
+  # Use withr::with_tempdir to create a temporary directory and automatically clean up after the test
   withr::with_tempdir({
-    # 创建mock数据
+    # Create mock data
     mock_data <- create_mock_data()
     
-    # 创建临时日志目录
+    # Create temporary log directory
     temp_log_dir <- file.path(getwd(), "test_logs")
     dir.create(temp_log_dir, recursive = TRUE)
     
-    # 定义测试模型
+    # Define test models
     test_models <- c(
       "claude-3-5-sonnet-latest",  # Claude
       "gpt-4o",                   # OpenAI
@@ -63,7 +63,7 @@ test_that("interactive_consensus_annotation handles input data correctly", {
       "qwen-max-2025-01-25"       # Qwen
     )
     
-    # 运行函数
+    # Run function
     result <- tryCatch({
       interactive_consensus_annotation(
         input = mock_data,
@@ -75,13 +75,13 @@ test_that("interactive_consensus_annotation handles input data correctly", {
         log_dir = temp_log_dir
       )
     }, error = function(e) {
-      # 返回错误信息用于测试
+      # Return error message for testing
       return(e$message)
     })
     
-    # 检查函数是否运行无错误
+    # Check if function runs without errors
     expect_true(is.list(result) || is.character(result))
     
-    # 不需要手动清理，withr::with_tempdir会自动清理
+    # No need for manual cleanup, withr::with_tempdir will automatically clean up
   })
 })

@@ -3,7 +3,6 @@
 from .annotate import annotate_clusters, batch_annotate_clusters, get_model_response
 from .functions import (
     get_provider, 
-    clean_annotation, 
     identify_controversial_clusters,
     select_best_prediction
 )
@@ -16,7 +15,8 @@ from .utils import (
     clear_cache,
     get_cache_stats,
     format_results,
-    find_agreement
+    find_agreement,
+    clean_annotation
 )
 from .prompts import (
     create_prompt,

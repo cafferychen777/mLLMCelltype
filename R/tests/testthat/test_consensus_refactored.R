@@ -1,6 +1,6 @@
 library(testthat)
 library(LLMCelltype)
-library(withr) # 使用withr包来管理临时目录
+library(withr) # Use withr package to manage temporary directories
 
 # Mock data creation function
 create_mock_data <- function() {
@@ -55,25 +55,25 @@ api_keys <- list(
 
 # Test the refactored version
 test_that("interactive_consensus_annotation handles input data correctly", {
-  # 使用withr::with_tempdir创建临时目录并在测试结束后自动清理
+  # Use withr::with_tempdir to create a temporary directory and automatically clean up after the test
   withr::with_tempdir({
-    # 创建临时日志目录
+    # Create temporary log directory
     temp_log_dir <- file.path(getwd(), "test_logs")
     dir.create(temp_log_dir, recursive = TRUE)
     
-    # 创建mock数据
+    # Create mock data
     mock_data <- create_mock_data()
     
-    # 设置组织名称
+    # Set tissue name
     test_tissue_name <- "PBMC"
     
-    # 测试模型
+    # Test models
     test_models <- c(
       "claude-3-5-sonnet-latest",  # Anthropic
       "gemini-1.5-pro"            # Google
     )
     
-    # 运行函数
+    # Run function
     result <- tryCatch({
       interactive_consensus_annotation(
         input = mock_data,
@@ -89,42 +89,42 @@ test_that("interactive_consensus_annotation handles input data correctly", {
       e
     })
     
-    # 基本结构测试
+    # Basic structure test
     expect_false(inherits(result, "error"))
     expect_type(result, "list")
     
-    # 检查结果是否包含预期组件
+    # Check if result contains expected components
     expect_true("initial_results" %in% names(result))
     expect_true("final_annotations" %in% names(result))
     
-    # 检查日志文件是否创建
+    # Check if log files were created
     expect_true(dir.exists(temp_log_dir))
     expect_true(length(list.files(temp_log_dir)) > 0)
     
-    # 不需要手动清理，withr::with_tempdir会自动清理
+    # No need for manual cleanup, withr::with_tempdir will automatically clean up
   })
 })
 
 # Test helper functions individually
 test_that("get_initial_predictions works correctly", {
-  # 使用withr::with_tempdir创建临时目录并在测试结束后自动清理
+  # Use withr::with_tempdir to create a temporary directory and automatically clean up after the test
   withr::with_tempdir({
-    # 创建mock数据
+    # Create mock data
     mock_data <- create_mock_data()
     
-    # 设置组织名称
+    # Set tissue name
     test_tissue_name <- "PBMC"
     
-    # 测试模型
+    # Test models
     test_model <- "claude-3-5-sonnet-latest"
     
-    # 创建临时日志目录
+    # Create temporary log directory
     temp_log_dir <- file.path(getwd(), "test_logs")
     dir.create(temp_log_dir, recursive = TRUE)
     logger <- DiscussionLogger$new(temp_log_dir)
     
-    # 模拟函数以避免API调用
-    # 在真实测试中，您可以使用模拟库如mockery或testthat::with_mock
+    # Mock function to avoid API calls
+    # In a real test, you could use mocking libraries like mockery or testthat::with_mock
     predictions <- list(
       individual_predictions = list(
         "claude-3-5-sonnet-latest" = list(
@@ -136,19 +136,19 @@ test_that("get_initial_predictions works correctly", {
       successful_models = test_model
     )
     
-    # 检查结果
+    # Check results
     expect_type(predictions, "list")
     expect_true("individual_predictions" %in% names(predictions))
     expect_true("successful_models" %in% names(predictions))
     
-    # 不需要手动清理，withr::with_tempdir会自动清理
+    # No need for manual cleanup, withr::with_tempdir will automatically clean up
   })
 })
 
 test_that("identify_controversial_clusters works correctly", {
-  # 使用withr::with_tempdir创建临时目录并在测试结束后自动清理
+  # Use withr::with_tempdir to create a temporary directory and automatically clean up after the test
   withr::with_tempdir({
-    # 创建模拟预测
+    # Create mock predictions
     mock_predictions <- list(
       "claude-3-5-sonnet-latest" = list(
         "1" = "B cell",
@@ -158,17 +158,17 @@ test_that("identify_controversial_clusters works correctly", {
       "gemini-1.5-pro" = list(
         "1" = "B cell",
         "2" = "T cell",
-        "3" = "Macrophage"  # 对集群3有分歧
+        "3" = "Macrophage"  # Disagreement on cluster 3
       )
     )
     
-    # 创建临时日志目录
+    # Create temporary log directory
     temp_log_dir <- file.path(getwd(), "test_logs")
     dir.create(temp_log_dir, recursive = TRUE)
     logger <- DiscussionLogger$new(temp_log_dir)
     
-    # 模拟函数以避免API调用
-    # 在真实测试中，您可以使用模拟库如mockery或testthat::with_mock
+    # Mock function to avoid API calls
+    # In a real test, you could use mocking libraries like mockery or testthat::with_mock
     controversial <- list(
       consensus_results = list(
         "1" = list(reached = TRUE, consensus_proportion = 1.0, entropy = 0.0, majority_prediction = "B cell"),
@@ -182,12 +182,12 @@ test_that("identify_controversial_clusters works correctly", {
       )
     )
     
-    # 检查结果
+    # Check results
     expect_type(controversial, "list")
     expect_true("controversial_clusters" %in% names(controversial))
-    expect_true("3" %in% controversial$controversial_clusters)  # 集群3应该被识别为有争议的
-    expect_false("1" %in% controversial$controversial_clusters)  # 集群1不应该有争议
+    expect_true("3" %in% controversial$controversial_clusters)  # Cluster 3 should be identified as controversial
+    expect_false("1" %in% controversial$controversial_clusters)  # Cluster 1 should not be controversial
     
-    # 不需要手动清理，withr::with_tempdir会自动清理
+    # No need for manual cleanup, withr::with_tempdir will automatically clean up
   })
 })

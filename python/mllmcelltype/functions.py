@@ -10,6 +10,7 @@ import logging
 from dataclasses import dataclass
 
 from .logger import write_log
+from .utils import clean_annotation
 
 # Define supported models as literals for better type checking
 ModelType = Literal[
@@ -141,46 +142,6 @@ def select_best_prediction(predictions: List[Dict[str, str]]) -> Dict[str, str]:
         best_predictions[cluster] = best_pred
     
     return best_predictions
-
-
-def clean_annotation(annotation: str) -> str:
-    """
-    Clean up cell type annotation from LLM response.
-    
-    Args:
-        annotation: Raw annotation string
-        
-    Returns:
-        str: Cleaned annotation
-    """
-    # Remove common prefixes and formatting
-    annotation = annotation.strip()
-    
-    # Remove "Cluster X:" prefix if present
-    if annotation.lower().startswith("cluster ") and ":" in annotation:
-        annotation = annotation.split(":", 1)[1].strip()
-        
-    # Remove number prefix if present (e.g. "1. T cells" -> "T cells")
-    if ". " in annotation and annotation[0].isdigit():
-        parts = annotation.split(". ", 1)
-        if parts[0].isdigit():
-            annotation = parts[1]
-    
-    # Remove common prefixes
-    prefixes = ["cell type:", "cell type", "annotation:", "annotation"]
-    for prefix in prefixes:
-        if annotation.lower().startswith(prefix):
-            annotation = annotation[len(prefix):].strip()
-    
-    # Remove quotes
-    if annotation.startswith('"') and annotation.endswith('"'):
-        annotation = annotation[1:-1]
-    
-    # Remove trailing punctuation
-    if annotation and annotation[-1] in ['.', ',', ';']:
-        annotation = annotation[:-1]
-        
-    return annotation
 
 
 def identify_controversial_clusters(annotations: Dict[str, Dict[str, str]], 

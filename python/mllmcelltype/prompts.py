@@ -49,9 +49,46 @@ Cluster 2: [cell type]
 Set 2:
 ...
 
-Here are the marker genes for each cluster:
-{markers}
 """
+
+def create_consensus_check_prompt(annotations: List[str]) -> str:
+    """
+    Create a prompt for checking consensus among different annotations.
+    
+    Args:
+        annotations: List of cell type annotations from different models
+        
+    Returns:
+        str: Formatted prompt for LLM to check consensus
+    """
+    prompt = """You are an expert in single-cell RNA-seq analysis and cell type annotation.
+
+I need you to analyze the following cell type annotations from different models for the same cluster and determine if there is a consensus.
+
+The annotations are:
+{annotations}
+
+Please analyze these annotations and determine:
+1. If there is a consensus (1 for yes, 0 for no)
+2. The consensus proportion (between 0 and 1)
+3. An entropy value measuring the diversity of opinions (higher means more diverse)
+4. The best consensus annotation
+
+Respond with exactly 4 lines:
+Line 1: 0 or 1 (consensus reached?)
+Line 2: Consensus proportion (e.g., 0.75)
+Line 3: Entropy value (e.g., 0.85)
+Line 4: The consensus cell type (or most likely if no clear consensus)
+
+Only output these 4 lines, nothing else."""
+    
+    # Format the annotations
+    formatted_annotations = "\n".join([f"- {anno}" for anno in annotations])
+    
+    # Replace the placeholder
+    prompt = prompt.replace("{annotations}", formatted_annotations)
+    
+    return prompt
 
 # Original simpler batch template
 SIMPLE_BATCH_PROMPT_TEMPLATE = """You are a cell type annotation expert. Below are marker genes for different cell clusters in {context}.
@@ -129,14 +166,28 @@ Your task:
 2. Evaluate each model's prediction, considering tissue context and marker gene specificity
 3. Consider which cell types are characterized by these markers
 4. Determine which prediction is most accurate or propose a better cell type annotation
-5. Assess the confidence in your determination using Consensus Proportion (CP) and Shannon Entropy (H)
+5. Calculate and provide the following metrics to quantify the consensus:
+
+   a) Consensus Proportion (CP):
+      CP = Number of models supporting the majority prediction / Total number of models
+      Example: If 3 out of 4 models predict the same cell type, CP = 3/4 = 0.75
+
+   b) Shannon Entropy (H):
+      H = -∑(p_i * log2(p_i)) for all unique predictions i
+      where p_i is the proportion of models predicting cell type i
+      Example: If 3 models predict 'T cell' and 1 predicts 'NK cell', then:
+      p_T = 3/4 = 0.75, p_NK = 1/4 = 0.25
+      H = -(0.75*log2(0.75) + 0.25*log2(0.25)) = 0.81
+      H ranges from 0 (perfect consensus) to log2(C) where C is the number of unique predictions
 
 Provide a well-reasoned analysis with evidence from literature or known marker-cell type associations.
 End with a clear final decision on the correct cell type, including:
 - Final cell type determination
 - Key supporting marker genes
-- Consensus Proportion (CP): How strongly the evidence supports this annotation (0-1)
-- Shannon Entropy (H): The uncertainty in this determination (lower is better)
+- Consensus Proportion (CP): Calculate and provide the exact value (0-1)
+- Shannon Entropy (H): Calculate and provide the exact value (0 for perfect consensus)
+
+You MUST provide numerical values for both CP and H, not just qualitative descriptions.
 """
 
 # Template for checking consensus across models
@@ -168,15 +219,21 @@ Discussion summary:
 Proposed cell type: {proposed_cell_type}
 
 Your task:
-1. Evaluate whether the discussion has led to a clear and well-supported cell type determination
-2. Consider if the evidence presented is sufficient to confidently annotate this cluster
-3. Determine if further discussion would be beneficial or if consensus has been reached
+1. Analyze the discussion and determine if there is consensus on the cell type annotation
+2. Normalize minor differences in terminology (e.g., 'NK cells' = 'Natural Killer cells')
+3. Calculate the following metrics:
+   - Consensus Proportion = Number of supporting opinions / Total number of opinions
+   - Shannon Entropy = -sum(p_i * log2(p_i)) where p_i is the proportion of each unique opinion
 
-Respond with one of the following:
-- "Consensus reached: [reason]" if the evidence is clear and sufficient
-- "Further discussion needed: [specific points to address]" if important aspects remain unresolved
+Determine if consensus is reached (Consensus Proportion > 2/3 AND Entropy <= 1.0)
 
-Be specific about why you believe consensus has or has not been reached.
+RESPONSE FORMAT:
+Line 1: 1 if consensus is reached, 0 if not
+Line 2: Consensus Proportion (a decimal between 0 and 1)
+Line 3: Shannon Entropy (a decimal number)
+Line 4: The majority cell type prediction
+
+RESPOND WITH EXACTLY FOUR LINES AS SPECIFIED ABOVE.
 """
 
 def create_prompt(
@@ -528,7 +585,7 @@ def create_discussion_prompt(
     write_log(f"Generated discussion prompt with {len(prompt)} characters")
     return prompt
 
-def create_consensus_check_prompt(
+def create_model_consensus_check_prompt(
     predictions: Dict[str, Dict[str, str]],
     species: str,
     tissue: Optional[str] = None,
