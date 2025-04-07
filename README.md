@@ -159,3 +159,17 @@ DimPlot(pbmc, reduction = "umap", group.by = "cell_type", label = TRUE) +
 ## License
 
 MIT
+
+## Citation
+
+If you use mLLMCelltype in your research, please cite:
+
+```bibtex
+@software{mllmcelltype2025,
+  author = {Yang, Chen and Zhang, Xianyang and Chen, Jun},
+  title = {mLLMCelltype: An iterative multi-LLM consensus framework for cell type annotation},
+  url = {https://github.com/cafferychen777/mLLMCelltype},
+  version = {1.0.0},
+  year = {2025}
+}
+```
