@@ -8,11 +8,15 @@ from .logger import write_log
 # Default prompt template for single dataset annotation
 DEFAULT_PROMPT_TEMPLATE = """You are an expert single-cell RNA-seq analyst specializing in cell type annotation.
 I need you to identify cell types of {species} cells from {tissue}.
-Below is a list of marker genes for each cluster. 
+Below is a list of marker genes for each cluster.
 Please assign the most likely cell type to each cluster based on the marker genes.
 
-Only provide the cell type name for each cluster. Be concise but specific. 
-Do not show numbers before the name.
+IMPORTANT: Provide your answers in the EXACT format below, with one cluster per line:
+Cluster 0: [cell type]
+Cluster 1: [cell type]
+...and so on, IN NUMERICAL ORDER.
+
+Only provide the cell type name for each cluster. Be concise but specific.
 Some clusters can be a mixture of multiple cell types.
 
 Here are the marker genes for each cluster:
@@ -24,12 +28,12 @@ SIMPLE_PROMPT_TEMPLATE = """You are a cell type annotation expert. Below are mar
 
 {clusters}
 
-For each numbered cluster, provide only the cell type name in a new line, without any explanation.
+For each numbered cluster, provide ONLY the cell type name in a new line, without any explanation.
 
-Please provide your annotations in the following format:
+IMPORTANT: Provide your answers in the EXACT format below, with one cluster per line:
+Cluster 0: [Cell Type]
 Cluster 1: [Cell Type]
-Cluster 2: [Cell Type]
-...and so on.
+...and so on, IN NUMERICAL ORDER.
 
 Only provide the cell type name, without any additional text or explanations.
 """
@@ -37,27 +41,30 @@ Only provide the cell type name, without any additional text or explanations.
 # Default prompt template for batch annotation
 DEFAULT_BATCH_PROMPT_TEMPLATE = """You are an expert single-cell RNA-seq analyst specializing in cell type annotation.
 I need you to identify cell types of {species} cells from {tissue}.
-Below are lists of marker genes for clusters from multiple datasets. 
+Below are lists of marker genes for clusters from multiple datasets.
 Please assign the most likely cell type to each cluster based on the marker genes.
 
-Format your response as follows for each set:
+IMPORTANT: Format your response EXACTLY as follows for each set:
 Set 1:
+Cluster 0: [cell type]
 Cluster 1: [cell type]
-Cluster 2: [cell type]
-...
+...and so on, IN NUMERICAL ORDER.
 
 Set 2:
-...
+Cluster 0: [cell type]
+Cluster 1: [cell type]
+...and so on, IN NUMERICAL ORDER.
 
+Only provide the cell type name for each cluster. Be concise but specific.
 """
 
 def create_consensus_check_prompt(annotations: List[str]) -> str:
     """
     Create a prompt for checking consensus among different annotations.
-    
+
     Args:
         annotations: List of cell type annotations from different models
-        
+
     Returns:
         str: Formatted prompt for LLM to check consensus
     """
@@ -81,13 +88,13 @@ Line 3: Entropy value (e.g., 0.85)
 Line 4: The consensus cell type (or most likely if no clear consensus)
 
 Only output these 4 lines, nothing else."""
-    
+
     # Format the annotations
     formatted_annotations = "\n".join([f"- {anno}" for anno in annotations])
-    
+
     # Replace the placeholder
     prompt = prompt.replace("{annotations}", formatted_annotations)
-    
+
     return prompt
 
 # Original simpler batch template
@@ -95,18 +102,18 @@ SIMPLE_BATCH_PROMPT_TEMPLATE = """You are a cell type annotation expert. Below a
 
 {clusters}
 
-For each set and its numbered clusters, provide only the cell type name in a new line, without any explanation.
+For each set and its numbered clusters, provide ONLY the cell type name in a new line, without any explanation.
 
-Please provide your annotations in the following format:
+IMPORTANT: Provide your answers in the EXACT format below, with one cluster per line:
 Set 1:
+Cluster 0: [Cell Type]
 Cluster 1: [Cell Type]
-Cluster 2: [Cell Type]
-...
+...and so on, IN NUMERICAL ORDER.
 
 Set 2:
+Cluster 0: [Cell Type]
 Cluster 1: [Cell Type]
-Cluster 2: [Cell Type]
-...
+...and so on, IN NUMERICAL ORDER.
 
 Only provide the cell type name, without any additional text or explanations.
 """
@@ -114,21 +121,21 @@ Only provide the cell type name, without any additional text or explanations.
 # Default JSON format prompt template
 DEFAULT_JSON_PROMPT_TEMPLATE = """You are an expert single-cell RNA-seq analyst specializing in cell type annotation.
 I need you to identify cell types of {species} cells from {tissue}.
-Below is a list of marker genes for each cluster. 
+Below is a list of marker genes for each cluster.
 Please assign the most likely cell type to each cluster based on the marker genes.
 
-Format your response as a valid JSON object as follows:
+IMPORTANT: Format your response as a valid JSON object as follows, using the EXACT SAME cluster IDs as provided in the input, and maintaining NUMERICAL ORDER:
 ```json
 {{
   "annotations": [
     {{
-      "cluster": "1",
+      "cluster": "0",
       "cell_type": "T cells",
       "confidence": "high",
       "key_markers": ["CD3D", "CD3G", "CD3E"]
     }},
     {{
-      "cluster": "2",
+      "cluster": "1",
       "cell_type": "B cells",
       "confidence": "high",
       "key_markers": ["CD19", "CD79A", "MS4A1"]
@@ -139,7 +146,7 @@ Format your response as a valid JSON object as follows:
 ```
 
 For each cluster, provide:
-1. The cluster ID
+1. The cluster ID (use the SAME ID as in the input)
 2. The cell type name (be concise but specific)
 3. Your confidence level (high, medium, low)
 4. A list of 2-4 key markers that support your annotation
@@ -245,23 +252,23 @@ def create_prompt(
 ) -> str:
     """
     Create a prompt for cell type annotation.
-    
+
     Args:
         marker_genes: Dictionary mapping cluster names to lists of marker genes
         species: Species name (e.g., 'human', 'mouse')
         tissue: Tissue name (e.g., 'brain', 'liver')
         additional_context: Additional context to include in the prompt
         prompt_template: Custom prompt template
-        
+
     Returns:
         str: The generated prompt
     """
     write_log(f"Creating prompt for {len(marker_genes)} clusters")
-    
+
     # Use default template if not provided
     if not prompt_template:
         prompt_template = DEFAULT_PROMPT_TEMPLATE
-        
+
     # Check if using the new or old template format
     if "{context}" in prompt_template and "{clusters}" in prompt_template:
         # Using old template format
@@ -272,27 +279,27 @@ def create_prompt(
             additional_context=additional_context,
             prompt_template=prompt_template
         )
-    
+
     # Default tissue if none provided
     tissue_text = tissue if tissue else "unknown tissue"
-    
+
     # Format marker genes text
     marker_text_lines = []
     for cluster, genes in marker_genes.items():
         marker_text_lines.append(f"Cluster {cluster}: {', '.join(genes)}")
-    
+
     marker_text = "\n".join(marker_text_lines)
-    
+
     # Add additional context if provided
     context_text = f"\nAdditional context: {additional_context}\n" if additional_context else ""
-    
+
     # Fill in the template
     prompt = prompt_template.format(
         species=species,
         tissue=tissue_text,
         markers=marker_text
     )
-    
+
     # Add context
     if context_text:
         sections = prompt.split("Here are the marker genes for each cluster:")
@@ -300,7 +307,7 @@ def create_prompt(
             prompt = f"{sections[0]}{context_text}Here are the marker genes for each cluster:{sections[1]}"
         else:
             prompt = f"{prompt}{context_text}"
-    
+
     write_log(f"Generated prompt with {len(prompt)} characters")
     return prompt
 
@@ -313,48 +320,48 @@ def create_prompt_legacy(
 ) -> str:
     """
     Create a prompt for cell type annotation using the legacy template format.
-    
+
     Args:
         marker_genes: Dictionary mapping cluster names to lists of marker genes
         species: Species name (e.g., 'human', 'mouse')
         tissue: Tissue name (e.g., 'brain', 'liver')
         additional_context: Additional context to include in the prompt
         prompt_template: Custom prompt template
-        
+
     Returns:
         str: The generated prompt
     """
     # Use default template if not provided
     if not prompt_template:
         prompt_template = SIMPLE_PROMPT_TEMPLATE
-    
+
     # Format species and tissue
     species_str = species.strip()
     tissue_str = f" {tissue.strip()}" if tissue else ""
-    
+
     # Create context string
     context_parts = []
     if species_str:
         context_parts.append(species_str)
     if tissue_str:
         context_parts.append(tissue_str.strip())
-    
+
     context = " ".join(context_parts)
     if additional_context:
         context += f"\nAdditional Context: {additional_context}"
-    
+
     # Create clusters string
     clusters_str = ""
     for cluster, genes in marker_genes.items():
         genes_str = ", ".join(genes)
         clusters_str += f"Cluster {cluster}: {genes_str}\n"
-    
+
     # Format prompt
     prompt = prompt_template.format(
         context=context,
         clusters=clusters_str
     )
-    
+
     write_log(f"Generated legacy prompt with {len(prompt)} characters")
     return prompt
 
@@ -367,23 +374,23 @@ def create_batch_prompt(
 ) -> str:
     """
     Create a batch prompt for multiple sets of clusters.
-    
+
     Args:
         marker_genes_list: List of dictionaries mapping cluster names to lists of marker genes
         species: Species name (e.g., 'human', 'mouse')
         tissue: Tissue name (e.g., 'brain', 'liver')
         additional_context: Additional context to include in the prompt
         prompt_template: Custom prompt template
-        
+
     Returns:
         str: The generated batch prompt
     """
     write_log(f"Creating batch prompt for {len(marker_genes_list)} sets of clusters")
-    
+
     # Use default template if not provided
     if not prompt_template:
         prompt_template = DEFAULT_BATCH_PROMPT_TEMPLATE
-        
+
     # Check if using the new or old template format
     if "{context}" in prompt_template and "{clusters}" in prompt_template:
         # Using old template format
@@ -394,30 +401,30 @@ def create_batch_prompt(
             additional_context=additional_context,
             prompt_template=prompt_template
         )
-    
+
     # Default tissue if none provided
     tissue_text = tissue if tissue else "unknown tissue"
-    
+
     # Format marker genes text
     marker_text_lines = []
-    
+
     for i, marker_genes in enumerate(marker_genes_list):
         marker_text_lines.append(f"\nSet {i+1}:")
         for cluster, genes in marker_genes.items():
             marker_text_lines.append(f"Cluster {cluster}: {', '.join(genes)}")
-    
+
     marker_text = "\n".join(marker_text_lines)
-    
+
     # Add additional context if provided
     context_text = f"\nAdditional context: {additional_context}\n" if additional_context else ""
-    
+
     # Fill in the template
     prompt = prompt_template.format(
         species=species,
         tissue=tissue_text,
         markers=marker_text
     )
-    
+
     # Add context
     if context_text:
         sections = prompt.split("Here are the marker genes for each cluster:")
@@ -425,7 +432,7 @@ def create_batch_prompt(
             prompt = f"{sections[0]}{context_text}Here are the marker genes for each cluster:{sections[1]}"
         else:
             prompt = f"{prompt}{context_text}"
-    
+
     write_log(f"Generated batch prompt with {len(prompt)} characters")
     return prompt
 
@@ -438,36 +445,36 @@ def create_batch_prompt_legacy(
 ) -> str:
     """
     Create a batch prompt for multiple sets of clusters using the legacy template format.
-    
+
     Args:
         marker_genes_list: List of dictionaries mapping cluster names to lists of marker genes
         species: Species name (e.g., 'human', 'mouse')
         tissue: Tissue name (e.g., 'brain', 'liver')
         additional_context: Additional context to include in the prompt
         prompt_template: Custom prompt template
-        
+
     Returns:
         str: The generated batch prompt
     """
     # Use default legacy template if not provided
     if not prompt_template:
         prompt_template = SIMPLE_BATCH_PROMPT_TEMPLATE
-    
+
     # Format species and tissue
     species_str = species.strip()
     tissue_str = f" {tissue.strip()}" if tissue else ""
-    
+
     # Create context string
     context_parts = []
     if species_str:
         context_parts.append(species_str)
     if tissue_str:
         context_parts.append(tissue_str.strip())
-    
+
     context = " ".join(context_parts)
     if additional_context:
         context += f"\nAdditional Context: {additional_context}"
-    
+
     # Create clusters string
     clusters_str = ""
     for i, marker_genes in enumerate(marker_genes_list):
@@ -476,13 +483,13 @@ def create_batch_prompt_legacy(
             genes_str = ", ".join(genes)
             clusters_str += f"Cluster {cluster}: {genes_str}\n"
         clusters_str += "\n"
-    
+
     # Format prompt
     prompt = prompt_template.format(
         context=context,
         clusters=clusters_str
     )
-    
+
     write_log(f"Generated legacy batch prompt with {len(prompt)} characters")
     return prompt
 
@@ -494,13 +501,13 @@ def create_json_prompt(
 ) -> str:
     """
     Create a prompt for cell type annotation with JSON output format.
-    
+
     Args:
         marker_genes: Dictionary mapping cluster names to lists of marker genes
         species: Species name (e.g., 'human', 'mouse')
         tissue: Tissue name (e.g., 'brain', 'blood')
         additional_context: Additional context to include in the prompt
-        
+
     Returns:
         str: The generated prompt
     """
@@ -523,7 +530,7 @@ def create_discussion_prompt(
 ) -> str:
     """
     Create a prompt for facilitating discussion about a controversial cluster.
-    
+
     Args:
         cluster_id: ID of the cluster
         marker_genes: List of marker genes for the cluster
@@ -532,37 +539,37 @@ def create_discussion_prompt(
         tissue: Tissue name (e.g., 'brain', 'blood')
         previous_discussion: Optional previous discussion text for iterative rounds
         prompt_template: Custom prompt template
-        
+
     Returns:
         str: The generated prompt
     """
     write_log(f"Creating discussion prompt for cluster {cluster_id}")
-    
+
     # Use default template if none provided
     if not prompt_template:
         prompt_template = DEFAULT_DISCUSSION_TEMPLATE
-    
+
     # Default tissue if none provided
     tissue_text = tissue if tissue else "unknown tissue"
-    
+
     # Format marker genes text
     marker_genes_text = ", ".join(marker_genes)
-    
+
     # Format model votes text
     model_votes_lines = []
     for model, vote in model_votes.items():
         model_votes_lines.append(f"- {model}: {vote}")
-    
+
     model_votes_text = "\n".join(model_votes_lines)
-    
+
     # Modify template for iterative discussion if previous discussion exists
     if previous_discussion:
         # Create a modified template that includes previous discussion
         iterative_template = prompt_template.replace(
-            "Your task:", 
+            "Your task:",
             "Previous discussion round:\n{previous_discussion}\n\nYour task:"
         )
-        
+
         # Fill in the template with previous discussion
         prompt = iterative_template.format(
             cluster_id=cluster_id,
@@ -581,7 +588,7 @@ def create_discussion_prompt(
             marker_genes=marker_genes_text,
             model_votes=model_votes_text
         )
-    
+
     write_log(f"Generated discussion prompt with {len(prompt)} characters")
     return prompt
 
@@ -593,53 +600,53 @@ def create_model_consensus_check_prompt(
 ) -> str:
     """
     Create a prompt for checking consensus across model predictions.
-    
+
     Args:
         predictions: Dictionary mapping model names to dictionaries of cluster annotations
         species: Species name (e.g., 'human', 'mouse')
         tissue: Tissue name (e.g., 'brain', 'blood')
         prompt_template: Custom prompt template
-        
+
     Returns:
         str: The generated prompt
     """
     write_log(f"Creating consensus check prompt for {len(predictions)} models")
-    
+
     # Use default template if none provided
     if not prompt_template:
         prompt_template = DEFAULT_CONSENSUS_CHECK_TEMPLATE
-    
+
     # Default tissue if none provided
     tissue_text = tissue if tissue else "unknown tissue"
-    
+
     # Get all model names
     models = list(predictions.keys())
-    
+
     # Get all cluster IDs
     clusters = set()
     for model_results in predictions.values():
         clusters.update(model_results.keys())
     clusters = sorted(list(clusters))
-    
+
     # Format predictions text
     predictions_lines = []
-    
+
     for cluster in clusters:
         predictions_lines.append(f"Cluster {cluster}:")
         for model in models:
             if cluster in predictions[model]:
                 predictions_lines.append(f"- {model}: {predictions[model][cluster]}")
         predictions_lines.append("")
-    
+
     predictions_text = "\n".join(predictions_lines)
-    
+
     # Fill in the template
     prompt = prompt_template.format(
         species=species,
         tissue=tissue_text,
         predictions=predictions_text
     )
-    
+
     write_log(f"Generated consensus check prompt with {len(prompt)} characters")
     return prompt
 
@@ -651,29 +658,29 @@ def create_discussion_consensus_check_prompt(
 ) -> str:
     """
     Create a prompt for checking if consensus has been reached after a discussion round.
-    
+
     Args:
         cluster_id: ID of the cluster being discussed
         discussion: The discussion text from the current round
         proposed_cell_type: The proposed cell type from the current round
         prompt_template: Custom prompt template
-        
+
     Returns:
         str: The generated prompt
     """
     write_log(f"Creating consensus check prompt for cluster {cluster_id}")
-    
+
     # Use default template if none provided
     if not prompt_template:
         prompt_template = DEFAULT_DISCUSSION_CONSENSUS_CHECK_TEMPLATE
-    
+
     # Fill in the template
     prompt = prompt_template.format(
         cluster_id=cluster_id,
         discussion=discussion,
         proposed_cell_type=proposed_cell_type if proposed_cell_type else "Unclear"
     )
-    
+
     write_log(f"Generated discussion consensus check prompt with {len(prompt)} characters")
     return prompt
 
@@ -685,24 +692,24 @@ def create_initial_discussion_prompt(
 ) -> str:
     """
     Create a prompt for initial cell type discussion about a cluster.
-    
+
     Args:
         cluster_id: ID of the cluster
         marker_genes: List of marker genes for the cluster
         species: Species name (e.g., 'human', 'mouse')
         tissue: Tissue name (e.g., 'brain', 'blood')
-        
+
     Returns:
         str: The generated prompt
     """
     write_log(f"Creating initial discussion prompt for cluster {cluster_id}")
-    
+
     # Default tissue if none provided
     tissue_text = tissue if tissue else "unknown tissue"
-    
+
     # Format marker genes text
     marker_genes_text = ", ".join(marker_genes)
-    
+
     # Template for initial discussion
     template = """You are an expert in single-cell RNA-seq analysis, assigned to identify the cell type for a specific cluster.
 
@@ -721,7 +728,7 @@ Your task:
 Give a thorough analysis, explaining which genes are most informative and why.
 End with a clear cell type determination.
 """
-    
+
     # Fill in the template
     prompt = template.format(
         cluster_id=cluster_id,
@@ -729,6 +736,6 @@ End with a clear cell type determination.
         tissue=tissue_text,
         marker_genes=marker_genes_text
     )
-    
+
     write_log(f"Generated initial discussion prompt with {len(prompt)} characters")
     return prompt
