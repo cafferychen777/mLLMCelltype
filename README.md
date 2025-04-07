@@ -1,6 +1,6 @@
 # mLLMCelltype
 
-mLLMCelltype is an iterative multi-LLM consensus framework for cell type annotation in single-cell RNA sequencing data. By leveraging the complementary strengths of multiple large language models (GPT-4o, Claude-3.5, Gemini, Qwen, etc.), this framework significantly improves annotation accuracy while providing transparent uncertainty quantification.
+mLLMCelltype is an iterative multi-LLM consensus framework for cell type annotation in single-cell RNA sequencing data. By leveraging the complementary strengths of multiple large language models (GPT, Claude, Gemini, Qwen, etc.), this framework significantly improves annotation accuracy while providing transparent uncertainty quantification.
 
 ## Key Features
 
@@ -70,7 +70,7 @@ for i in range(len(adata.obs['leiden'].cat.categories)):
 # Set API keys for different providers
 os.environ["OPENAI_API_KEY"] = "your-openai-api-key"
 os.environ["ANTHROPIC_API_KEY"] = "your-anthropic-api-key"
-os.environ["GOOGLE_API_KEY"] = "your-google-api-key"
+os.environ["GEMINI_API_KEY"] = "your-gemini-api-key"
 os.environ["QWEN_API_KEY"] = "your-qwen-api-key"
 
 # Run consensus annotation with multiple models
