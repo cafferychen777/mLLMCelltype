@@ -1,65 +1,92 @@
-# LLMCelltype
+# mLLMCelltype
 
-A Python module for cell type annotation using various Large Language Models (LLMs).
+[![PyPI version](https://img.shields.io/badge/pypi-v1.0.0-blue.svg)](https://pypi.org/project/mllmcelltype/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 ## Overview
 
-LLMCelltype is a Python implementation of the R package with the same name, designed to annotate cell types in single-cell RNA sequencing data using various Large Language Models (LLMs). This package provides a unified interface to multiple LLM providers, making it easy to leverage different models for cell type annotation.
+mLLMCelltype is a comprehensive Python framework for automated cell type annotation in single-cell RNA sequencing data through an iterative multi-LLM consensus approach. By leveraging the collective intelligence of multiple large language models, this framework significantly improves annotation accuracy while providing robust uncertainty quantification.
 
-## Features
+### Scientific Background
 
-- Support for multiple LLM providers:
+Single-cell RNA sequencing has revolutionized our understanding of cellular heterogeneity, but accurate cell type annotation remains challenging. Traditional annotation methods often rely on reference datasets or manual expert curation, which can be time-consuming and subjective. mLLMCelltype addresses these limitations by implementing a novel multi-model deliberative framework that:
+
+1. Harnesses complementary strengths of diverse LLMs to overcome single-model limitations
+2. Implements a structured deliberation process for collaborative reasoning
+3. Provides quantitative uncertainty metrics to identify ambiguous annotations
+4. Maintains high accuracy even with imperfect marker gene inputs
+
+## Key Features
+
+### Multi-LLM Architecture
+- **Comprehensive Provider Support**:
   - OpenAI (GPT-4o, GPT-4, etc.)
-  - Anthropic (Claude 3 Opus, Claude 3 Sonnet, etc.)
+  - Anthropic (Claude 3.5 Sonnet, Claude 3 Opus, etc.)
+  - Google (Gemini 1.5 Pro, etc.)
+  - Alibaba (Qwen-Max, etc.)
   - DeepSeek
-  - Google Gemini
-  - Alibaba Qwen
   - StepFun
   - Zhipu AI (ChatGLM)
   - MiniMax
-- Simple and consistent API for all providers
-- Multi-model consensus annotation for improved accuracy
-- Automatic resolution of controversial cluster annotations
-- Model prediction comparison and analysis tools
-- Visualization of model agreement patterns
-- Caching of results to avoid redundant API calls
-- Comprehensive logging
-- Customizable prompts
-- Structured JSON responses with confidence scores
+
+### Advanced Annotation Capabilities
+- **Iterative Consensus Framework**: Enables multiple rounds of structured deliberation between LLMs
+- **Uncertainty Quantification**: Provides Consensus Proportion (CP) and Shannon Entropy (H) metrics
+- **Hallucination Reduction**: Cross-model verification minimizes unsupported predictions
+- **Hierarchical Annotation**: Optional support for multi-resolution analysis with parent-child consistency
+
+### Technical Features
+- **Unified API**: Consistent interface across all LLM providers
+- **Intelligent Caching**: Avoids redundant API calls to reduce costs and improve performance
+- **Comprehensive Logging**: Captures full deliberation process for transparency and debugging
+- **Structured JSON Responses**: Standardized output format with confidence scores
+- **Seamless Integration**: Works directly with Scanpy/AnnData workflows
 
 ## Installation
 
+### PyPI Installation (Recommended)
+
 ```bash
-pip install llmcelltype
+pip install mllmcelltype
 ```
 
-For development installation:
+### Development Installation
 
 ```bash
-git clone https://github.com/cafferychen777/LLMCelltype.git
-cd LLMCelltype/code/python
+git clone https://github.com/cafferychen777/mLLMCelltype.git
+cd mLLMCelltype/python
 pip install -e .
 ```
+
+### System Requirements
+
+- Python ≥ 3.8
+- Dependencies are automatically installed with the package
+- Internet connection for API access to LLM providers
 
 ## Quick Start
 
 ```python
 import pandas as pd
-from llmcelltype import annotate_clusters, setup_logging
+from mllmcelltype import annotate_clusters, setup_logging
 
-# Setup logging
+# Setup logging (optional but recommended)
 setup_logging()
 
-# Load marker genes
+# Load marker genes (from Scanpy, Seurat, or other sources)
 marker_genes_df = pd.read_csv('marker_genes.csv')
 
-# Annotate clusters
+# Configure API keys (alternatively use environment variables)
+import os
+os.environ["OPENAI_API_KEY"] = "your-openai-api-key"
+
+# Annotate clusters with a single model
 annotations = annotate_clusters(
-    marker_genes=marker_genes_df,
-    species='human',
-    provider='openai',
-    model='gpt-4o',
-    tissue='brain'
+    marker_genes=marker_genes_df,  # DataFrame or dictionary of marker genes
+    species='human',               # Organism species
+    provider='openai',            # LLM provider
+    model='gpt-4o',               # Specific model
+    tissue='brain'                # Tissue context (optional but recommended)
 )
 
 # Print annotations
@@ -67,26 +94,38 @@ for cluster, annotation in annotations.items():
     print(f"Cluster {cluster}: {annotation}")
 ```
 
-## API Keys
+## API Authentication
 
-LLMCelltype requires API keys for the LLM providers you want to use. You can set these as environment variables:
+mLLMCelltype requires API keys for the LLM providers you intend to use. These can be configured in several ways:
+
+### Environment Variables (Recommended)
 
 ```bash
 export OPENAI_API_KEY="your-openai-api-key"
 export ANTHROPIC_API_KEY="your-anthropic-api-key"
 export GOOGLE_API_KEY="your-google-api-key"
-# ... and so on for other providers
+export QWEN_API_KEY="your-qwen-api-key"
+# Additional providers as needed
 ```
 
-Alternatively, you can pass the API key directly to the `annotate_clusters` function:
+### Direct Parameter
 
 ```python
 annotations = annotate_clusters(
     marker_genes=marker_genes_df,
     species='human',
     provider='openai',
-    api_key='your-openai-api-key'
+    api_key='your-openai-api-key'  # Direct API key parameter
 )
+```
+
+### Configuration File
+
+```python
+from mllmcelltype import load_api_key
+
+# Load from .env file or custom config
+load_api_key(provider='openai', path='.env')
 ```
 
 ## Advanced Usage
@@ -94,142 +133,185 @@ annotations = annotate_clusters(
 ### Batch Annotation
 
 ```python
-from llmcelltype import batch_annotate_clusters
+from mllmcelltype import batch_annotate_clusters
 
-# Prepare multiple sets of marker genes
+# Prepare multiple sets of marker genes (e.g., from different samples)
 marker_genes_list = [marker_genes_df1, marker_genes_df2, marker_genes_df3]
 
-# Batch annotate
+# Batch annotate multiple datasets efficiently
 batch_annotations = batch_annotate_clusters(
     marker_genes_list=marker_genes_list,
-    species='mouse',
-    provider='anthropic',
-    model='claude-3-opus-20240229'
+    species='mouse',                      # Organism species
+    provider='anthropic',                 # LLM provider
+    model='claude-3-5-sonnet-latest',    # Specific model
+    tissue='brain'                       # Optional tissue context
 )
 
-# Process results
+# Process and utilize results
 for i, annotations in enumerate(batch_annotations):
-    print(f"Set {i+1}:")
+    print(f"Dataset {i+1} annotations:")
     for cluster, annotation in annotations.items():
         print(f"  Cluster {cluster}: {annotation}")
 ```
 
-### Consensus Annotation
+### Multi-LLM Consensus Annotation
 
 ```python
-from llmcelltype import interactive_consensus_annotation, print_consensus_summary
+from mllmcelltype import interactive_consensus_annotation, print_consensus_summary
 
-# Define marker genes
+# Define marker genes for each cluster
 marker_genes = {
-    "1": ["CD3D", "CD3E", "CD3G", "CD2", "IL7R", "TCF7"],
-    "2": ["CD19", "MS4A1", "CD79A", "CD79B", "HLA-DRA", "CD74"],
-    "3": ["CD14", "LYZ", "CSF1R", "ITGAM", "CD68", "FCGR3A"]
+    "1": ["CD3D", "CD3E", "CD3G", "CD2", "IL7R", "TCF7"],           # T cells
+    "2": ["CD19", "MS4A1", "CD79A", "CD79B", "HLA-DRA", "CD74"],   # B cells
+    "3": ["CD14", "LYZ", "CSF1R", "ITGAM", "CD68", "FCGR3A"]      # Monocytes
 }
 
-# Run consensus annotation with multiple models
+# Run iterative consensus annotation with multiple LLMs
 result = interactive_consensus_annotation(
     marker_genes=marker_genes,
-    species='human',
-    tissue='peripheral blood',
-    models=['gpt-4o', 'claude-3-opus', 'gemini-1.5-pro'],
-    consensus_threshold=0.6,
-    verbose=True
+    species='human',                                      # Organism species
+    tissue='peripheral blood',                            # Tissue context
+    models=[                                              # Multiple LLM models
+        'gpt-4o',                                         # OpenAI
+        'claude-3-5-sonnet-latest',                       # Anthropic
+        'gemini-1.5-pro',                                 # Google
+        'qwen-max'                                        # Alibaba
+    ],
+    consensus_threshold=0.7,                              # Agreement threshold
+    max_discussion_rounds=3,                              # Iterative refinement
+    verbose=True                                          # Detailed output
 )
 
-# Print consensus summary
+# Print comprehensive consensus summary with uncertainty metrics
 print_consensus_summary(result)
+
+# Access results programmatically
+final_annotations = result["consensus"]
+uncertainty_metrics = {
+    "consensus_proportion": result["consensus_proportion"],  # Agreement level
+    "entropy": result["entropy"]                            # Annotation uncertainty
+}
 ```
 
-### Model Comparison
+### Model Performance Analysis
 
 ```python
-from llmcelltype import compare_model_predictions, create_comparison_table
+from mllmcelltype import compare_model_predictions, create_comparison_table
+import matplotlib.pyplot as plt
+import seaborn as sns
 
-# Compare results from different models
+# Compare results from different LLM providers
 model_predictions = {
     "OpenAI (GPT-4o)": results_openai,
-    "Anthropic (Claude)": results_claude,
-    "Google (Gemini)": results_gemini
+    "Anthropic (Claude 3.5)": results_claude,
+    "Google (Gemini 1.5)": results_gemini,
+    "Alibaba (Qwen-Max)": results_qwen
 }
 
-# Compare model predictions
+# Perform comprehensive model comparison analysis
 agreement_df, metrics = compare_model_predictions(
     model_predictions=model_predictions,
-    display_plot=True  # Set to True to display a heatmap
+    display_plot=False                # We'll customize the visualization
 )
 
-# Print agreement metrics
-print(f"Average agreement: {metrics['agreement_avg']:.2f}")
+# Generate detailed performance metrics
+print(f"Average inter-model agreement: {metrics['agreement_avg']:.2f}")
+print(f"Agreement variance: {metrics['agreement_var']:.2f}")
+if 'accuracy' in metrics:
+    print(f"Average accuracy: {metrics['accuracy_avg']:.2f}")
+
+# Create custom visualization of model agreement patterns
+plt.figure(figsize=(10, 8))
+sns.heatmap(agreement_df, annot=True, cmap='viridis', vmin=0, vmax=1)
+plt.title('Inter-model Agreement Matrix', fontsize=14)
+plt.tight_layout()
+plt.savefig('model_agreement.png', dpi=300)
+plt.show()
 
 # Create and display a comparison table
 comparison_table = create_comparison_table(model_predictions)
 print(comparison_table)
 ```
 
-### Custom Prompts
+### Custom Prompt Templates
 
 ```python
-from llmcelltype import annotate_clusters
+from mllmcelltype import annotate_clusters
 
-# Define custom prompt template
-custom_template = """You are an expert in single-cell RNA sequencing analysis.
-Please annotate the following cell clusters based on their marker genes.
+# Define specialized prompt template for improved annotation precision
+custom_template = """You are an expert computational biologist specializing in single-cell RNA-seq analysis.
+Please annotate the following cell clusters based on their marker gene expression profiles.
 
-{context}
+Organism: {context}
 
-Marker genes:
+Differentially expressed genes by cluster:
 {clusters}
 
+For each cluster, provide a precise cell type annotation based on canonical markers.
+Consider developmental stage, activation state, and lineage information when applicable.
 Provide only the cell type name for each cluster, one per line.
 """
 
-# Annotate with custom prompt
+# Annotate with specialized custom prompt
 annotations = annotate_clusters(
     marker_genes=marker_genes_df,
-    species='human',
-    provider='openai',
-    prompt_template=custom_template
+    species='human',                # Organism species
+    provider='openai',              # LLM provider
+    model='gpt-4o',                # Specific model
+    prompt_template=custom_template # Custom instruction template
 )
 ```
 
-### JSON Response Format
+### Structured JSON Response Format
 
-LLMCelltype now supports structured JSON responses, which can provide more detailed information about each annotation:
+mLLMCelltype supports structured JSON responses, providing detailed annotation information with confidence scores and supporting evidence:
 
 ```python
-from llmcelltype import annotate_clusters
+from mllmcelltype import annotate_clusters
 
-# Define JSON prompt template
-json_template = """You are a cell type annotation expert. Below are marker genes for different cell clusters in {context}.
+# Define comprehensive JSON response template
+json_template = """You are an expert single-cell genomics analyst. Below are marker genes for different cell clusters from {context} tissue.
 
 {clusters}
 
-For each numbered cluster, provide the cell type annotation in JSON format. 
+For each numbered cluster, provide a detailed cell type annotation in JSON format.
 Use the following structure:
 ```json
 {
   "annotations": [
     {
       "cluster": "1",
-      "cell_type": "cell type name",
+      "cell_type": "precise cell type name",
       "confidence": "high/medium/low",
-      "key_markers": ["marker1", "marker2", "marker3"]
+      "key_markers": ["marker1", "marker2", "marker3"],
+      "evidence": "Brief explanation of key markers supporting this annotation",
+      "alternative_annotation": "possible alternative if confidence is not high"
     },
     ...
   ]
 }
 ```
-"""
+{{ ... }}
 
-# Annotate with JSON prompt
+# Generate structured annotations with detailed metadata
 json_annotations = annotate_clusters(
     marker_genes=marker_genes_df,
-    species='human',
-    provider='openai',
-    prompt_template=json_template
+    species='human',                # Organism species
+    tissue='lung',                  # Tissue context
+    provider='openai',              # LLM provider
+    model='gpt-4o',                # Specific model
+    prompt_template=json_template   # JSON response template
 )
 
-# The parser will automatically extract the cell type annotations from the JSON response
+# The parser automatically extracts structured data from the JSON response
+for cluster_id, annotation in json_annotations.items():
+    cell_type = annotation['cell_type']
+    confidence = annotation['confidence']
+    key_markers = ', '.join(annotation['key_markers'])
+    print(f"Cluster {cluster_id}: {cell_type} (Confidence: {confidence})")
+    print(f"  Key markers: {key_markers}")
+    if 'evidence' in annotation:
+        print(f"  Evidence: {annotation['evidence']}")
 # But the raw JSON response is also available in the cache for advanced processing
 ```
 
@@ -238,19 +320,28 @@ Using JSON responses provides several advantages:
 - Additional metadata like confidence levels and key markers
 - More consistent parsing across different LLM providers
 
+## Contributing
+
+We welcome contributions to mLLMCelltype! Please feel free to submit issues or pull requests on our [GitHub repository](https://github.com/cafferychen777/mLLMCelltype).
+
 ## License
 
 MIT License
 
 ## Citation
 
-If you use LLMCelltype in your research, please cite:
+If you use mLLMCelltype in your research, please cite:
 
-```
-@software{llmcelltype,
-  author = {LLMCelltype Team},
-  title = {LLMCelltype: A Python module for cell type annotation using various LLMs},
-  url = {https://github.com/cafferychen777/LLMCelltype},
+```bibtex
+@software{mllmcelltype2025,
+  author = {Yang, Chen and Jiang, Xinming and Zuo, Chixiang and Chen, Jun},
+  title = {mLLMCelltype: An iterative multi-LLM consensus framework for cell type annotation},
+  url = {https://github.com/cafferychen777/mLLMCelltype},
+  version = {1.0.0},
   year = {2025}
 }
 ```
+
+## Acknowledgements
+
+We thank the developers of the various LLM APIs that make this framework possible, and the single-cell community for valuable feedback during development.
