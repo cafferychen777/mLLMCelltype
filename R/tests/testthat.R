@@ -2,6 +2,6 @@
 # It is recommended that you do not modify it.
 
 library(testthat)
-library(LLMCelltype)
+library(mLLMCelltype)
 
-test_check("LLMCelltype")
+test_check("mLLMCelltype")
