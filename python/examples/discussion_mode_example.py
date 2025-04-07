@@ -27,10 +27,39 @@ sys.path.insert(0, os.path.join(os.path.dirname(__file__), 'python'))
 
 from mllmcelltype.consensus import interactive_consensus_annotation
 
-# Load environment variables (API keys)
+# Load API keys from .env file
+# Try to find .env file in various locations
+env_path = None
+
+# Try current directory
 if os.path.exists('.env'):
-    load_dotenv('.env')
-    print("Loaded environment variables from .env")
+    env_path = '.env'
+
+# Try parent directories
+if not env_path:
+    current_dir = os.path.abspath(os.getcwd())
+    for _ in range(3):  # Check up to 3 parent directories
+        parent_dir = os.path.dirname(current_dir)
+        potential_path = os.path.join(parent_dir, '.env')
+        if os.path.exists(potential_path):
+            env_path = potential_path
+            break
+        if parent_dir == current_dir:  # Reached root directory
+            break
+        current_dir = parent_dir
+
+# Try package directory
+if not env_path:
+    package_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    potential_path = os.path.join(package_dir, '.env')
+    if os.path.exists(potential_path):
+        env_path = potential_path
+
+if env_path:
+    load_dotenv(env_path)
+    print(f"Loaded environment variables from {env_path}")
+else:
+    print("No .env file found. Please set API keys as environment variables.")
 
 # Set up logging
 import logging

@@ -1,5 +1,8 @@
+# Define global variables
+utils::globalVariables(c("custom_models"))
+
 #' Determine provider from model name
-#' @keywords internal
+#' @export
 get_provider <- function(model) {
   # Normalize model name to lowercase for comparison
   model <- tolower(model)

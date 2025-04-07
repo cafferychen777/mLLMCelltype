@@ -8,7 +8,7 @@
 #' @param top_gene_count Number of top differential genes to use per cluster
 #' @return A list containing the prompt string and expected count of responses
 #' @importFrom magrittr "%>%"
-#' @keywords internal
+#' @export
 create_annotation_prompt <- function(input, tissue_name, top_gene_count = 10) {
   if (is.list(input) && !is.data.frame(input)) {
     # For list input, each element should contain a 'genes' field

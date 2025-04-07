@@ -1,5 +1,5 @@
 #' Write Log Utility Function
-#' @keywords internal
+#' @export
 write_log <- function(message, log_file = "llm_celltype.log") {
   timestamp <- format(Sys.time(), "%Y-%m-%d %H:%M:%S")
   log_entry <- sprintf("[%s] %s\n", timestamp, message)
