@@ -66,11 +66,11 @@ def load_api_key(provider: str) -> str:
                     break
                 current_dir = parent_dir
             
-            # Also check user's home directory for LLMCelltype directory
-            home_dir = os.path.expanduser('~')
-            research_path = os.path.join(home_dir, 'Research', 'LLMCelltype', '.env')
-            if os.path.isfile(research_path):
-                env_path = research_path
+            # Also check for a .env file in the package directory
+            package_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+            package_env_path = os.path.join(package_dir, '.env')
+            if os.path.isfile(package_env_path):
+                env_path = package_env_path
             
             if env_path:
                 write_log(f"Found .env file at {env_path}")
