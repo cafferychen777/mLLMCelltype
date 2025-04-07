@@ -1,5 +1,5 @@
 library(testthat)
-library(LLMCelltype)
+library(mLLMCelltype)
 
 test_that("create_initial_discussion_prompt formats correctly", {
   # Test data

@@ -1,5 +1,5 @@
 library(testthat)
-library(LLMCelltype)
+library(mLLMCelltype)
 library(withr) # Use withr package to manage temporary directories
 
 # Mock data creation function

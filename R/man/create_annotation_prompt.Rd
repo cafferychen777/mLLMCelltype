@@ -2,7 +2,7 @@
 % Please edit documentation in R/prompt_templates.R
 \name{create_annotation_prompt}
 \alias{create_annotation_prompt}
-\title{Prompt templates for LLMCelltype}
+\title{Prompt templates for mLLMCelltype}
 \usage{
 create_annotation_prompt(input, tissue_name, top_gene_count = 10)
 }
@@ -17,7 +17,7 @@ create_annotation_prompt(input, tissue_name, top_gene_count = 10)
 A list containing the prompt string and expected count of responses
 }
 \description{
-This file contains all prompt template functions used in LLMCelltype.
+This file contains all prompt template functions used in mLLMCelltype.
 These functions create various prompts for different stages of the cell type annotation process.
 Create prompt for cell type annotation
 }

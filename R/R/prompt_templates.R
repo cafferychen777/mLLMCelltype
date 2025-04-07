@@ -1,6 +1,6 @@
-#' Prompt templates for LLMCelltype
+#' Prompt templates for mLLMCelltype
 #' 
-#' This file contains all prompt template functions used in LLMCelltype.
+#' This file contains all prompt template functions used in mLLMCelltype.
 #' These functions create various prompts for different stages of the cell type annotation process.
 #' Create prompt for cell type annotation
 #' @param input Either the differential gene table returned by Seurat FindAllMarkers() function, or a list of genes

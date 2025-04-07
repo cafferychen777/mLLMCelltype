@@ -1,8 +1,8 @@
-#' Custom model manager for LLMCelltype
+#' Custom model manager for mLLMCelltype
 #' 
 #' This module provides functionality to register and manage custom LLM providers
 #' and models. It allows users to integrate their own LLM services with the
-#' LLMCelltype framework.
+#' mLLMCelltype framework.
 #' 
 #' @keywords internal
 

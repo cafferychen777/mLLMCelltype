@@ -80,8 +80,8 @@ utils::globalVariables(c("cluster", "avg_log2FC", "gene"))
 #'
 #' @seealso 
 #' * [Seurat::FindAllMarkers()]
-#' * [LLMCelltype::get_provider()]
-#' * [LLMCelltype::process_openai()]
+#' * [mLLMCelltype::get_provider()]
+#' * [mLLMCelltype::process_openai()]
 
 annotate_cell_types <- function(input, 
                                tissue_name = NULL, 

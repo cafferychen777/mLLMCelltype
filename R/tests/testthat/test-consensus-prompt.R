@@ -1,5 +1,5 @@
 library(testthat)
-library(LLMCelltype)
+library(mLLMCelltype)
 
 test_that("create_consensus_check_prompt formats responses correctly", {
   # Test with a set of model responses
