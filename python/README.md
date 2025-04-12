@@ -20,14 +20,14 @@ Single-cell RNA sequencing has revolutionized our understanding of cellular hete
 
 ### Multi-LLM Architecture
 - **Comprehensive Provider Support**:
-  - OpenAI (GPT-4o, GPT-4, etc.)
-  - Anthropic (Claude 3.5 Sonnet, Claude 3 Opus, etc.)
-  - Google (Gemini 1.5 Pro, etc.)
+  - OpenAI (GPT-4o, O1, etc.)
+  - Anthropic (Claude 3.7 Sonnet, Claude 3.5 Haiku, etc.)
+  - Google (Gemini 2.5 Pro, Gemini 2.0 Flash, etc.)
   - Alibaba (Qwen-Max, etc.)
-  - DeepSeek
-  - StepFun
-  - Zhipu AI (ChatGLM)
-  - MiniMax
+  - DeepSeek (DeepSeek-Chat, DeepSeek-Reasoner)
+  - StepFun (Step-2-Mini, Step-2-16k, etc.)
+  - Zhipu AI (GLM-4-Plus, GLM-3-Turbo)
+  - MiniMax (MiniMax-Text-01)
 
 ### Advanced Annotation Capabilities
 - **Iterative Consensus Framework**: Enables multiple rounds of structured deliberation between LLMs
