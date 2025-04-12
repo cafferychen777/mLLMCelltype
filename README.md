@@ -76,7 +76,7 @@ consensus_results = interactive_consensus_annotation(
     marker_genes=marker_genes,
     species="human",
     tissue="blood",
-    models=["gpt-4o", "claude-3-5-sonnet-latest", "gemini-1.5-pro", "qwen-max-2025-01-25"],
+    models=["gpt-4o", "claude-3-7-sonnet-20250219", "gemini-2.5-pro", "qwen-max-2025-01-25"],
     consensus_threshold=0.7,  # Adjust threshold for consensus agreement
     max_discussion_rounds=3   # Maximum rounds of discussion between models
 )
@@ -117,9 +117,9 @@ consensus_results <- interactive_consensus_annotation(
   input = pbmc_markers,
   tissue_name = "human PBMC",  # provide tissue context
   models = c(
-    "claude-3-5-sonnet-latest",  # Anthropic
+    "claude-3-7-sonnet-20250219",  # Anthropic
     "gpt-4o",                   # OpenAI
-    "gemini-1.5-pro",           # Google
+    "gemini-2.5-pro",           # Google
     "qwen-max-2025-01-25"       # Alibaba
   ),
   api_keys = list(
