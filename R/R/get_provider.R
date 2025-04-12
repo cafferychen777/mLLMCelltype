@@ -11,7 +11,7 @@ get_provider <- function(model) {
   openai_models <- c("gpt-4o", "o1")
   anthropic_models <- c("claude-3-7-sonnet-20250219", "claude-3-5-sonnet-latest", "claude-3-5-haiku-latest", "claude-3-opus")
   deepseek_models <- c("deepseek-chat", "deepseek-reasoner")
-  gemini_models <- c("gemini-2.0-flash", "gemini-2.0-flash-exp", "gemini-1.5-pro", "gemini-1.5-flash")
+  gemini_models <- c("gemini-2.5-pro", "gemini-2.0-flash", "gemini-2.0-flash-exp", "gemini-1.5-pro", "gemini-1.5-flash")
   qwen_models <- c("qwen-max-2025-01-25")
   stepfun_models <- c("step-2-mini", "step-2-16k", "step-1-8k")
   zhipu_models <- c("glm-4-plus", "glm-3-turbo")
