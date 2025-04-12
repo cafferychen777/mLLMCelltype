@@ -143,7 +143,7 @@ batch_annotations = batch_annotate_clusters(
     marker_genes_list=marker_genes_list,
     species='mouse',                      # Organism species
     provider='anthropic',                 # LLM provider
-    model='claude-3-5-sonnet-latest',    # Specific model
+    model='claude-3-7-sonnet-20250219',    # Specific model
     tissue='brain'                       # Optional tissue context
 )
 
@@ -173,9 +173,9 @@ result = interactive_consensus_annotation(
     tissue='peripheral blood',                            # Tissue context
     models=[                                              # Multiple LLM models
         'gpt-4o',                                         # OpenAI
-        'claude-3-5-sonnet-latest',                       # Anthropic
-        'gemini-1.5-pro',                                 # Google
-        'qwen-max'                                        # Alibaba
+        'claude-3-7-sonnet-20250219',                     # Anthropic
+        'gemini-2.5-pro',                                 # Google
+        'qwen-max-2025-01-25'                             # Alibaba
     ],
     consensus_threshold=0.7,                              # Agreement threshold
     max_discussion_rounds=3,                              # Iterative refinement
@@ -203,8 +203,8 @@ import seaborn as sns
 # Compare results from different LLM providers
 model_predictions = {
     "OpenAI (GPT-4o)": results_openai,
-    "Anthropic (Claude 3.5)": results_claude,
-    "Google (Gemini 1.5)": results_gemini,
+    "Anthropic (Claude 3.7)": results_claude,
+    "Google (Gemini 2.5)": results_gemini,
     "Alibaba (Qwen-Max)": results_qwen
 }
 
