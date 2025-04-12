@@ -33,7 +33,7 @@ def process_anthropic(prompt: str, model: str, api_key: str) -> List[str]:
     model_mapping = {
         "claude-3-opus-20240229": "claude-3-opus-20240229",
         "claude-3-opus": "claude-3-opus-20240229",
-        "claude-3-7-sonnet-20250219": "claude-3-5-sonnet-20240620",
+        "claude-3-7-sonnet-20250219": "claude-3-7-sonnet-20250219",
         "claude-3-5-sonnet-latest": "claude-3-5-sonnet-20240620",
         "claude-3-5-haiku-latest": "claude-3-haiku-20240307",
         "claude-3-haiku": "claude-3-haiku-20240307"
