@@ -196,8 +196,13 @@ print_consensus_summary <- function(results) {
               }
             }
             
-            if (!is.null(pred) && !is.na(pred) && pred != "") {
-              all_predictions[[model]] <- pred
+            # 先检查是否为NA或NULL，然后再检查是否为空字符串
+            if (!is.null(pred)) {
+              if (!is.na(pred)) {
+                if (pred != "") {
+                  all_predictions[[model]] <- pred
+                }
+              }
             }
           }
           
