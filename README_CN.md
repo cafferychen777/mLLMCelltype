@@ -39,6 +39,17 @@ pip install mllmcelltype
 pip install git+https://github.com/cafferychen777/mLLMCelltype.git
 ```
 
+### 支持的模型
+
+- **OpenAI**: GPT-4.5/GPT-4o ([API Key](https://platform.openai.com/settings/organization/billing/overview))
+- **Anthropic**: Claude-3.7-Sonnet/Claude-3.5-Haiku ([API Key](https://console.anthropic.com/))
+- **Google**: Gemini-1.5-Pro/Gemini-1.5-Flash ([API Key](https://ai.google.dev/?authuser=2))
+- **Alibaba**: Qwen2.5-Max ([API Key](https://www.alibabacloud.com/en/product/modelstudio))
+- **DeepSeek**: DeepSeek-R1 ([API Key](https://platform.deepseek.com/usage))
+- **Minimax**: MiniMax-Text-01 ([API Key](https://intl.minimaxi.com/user-center/basic-information/interface-key))
+- **Stepfun**: Step-2-16K ([API Key](https://platform.stepfun.com/account-info))
+- **Zhipu**: GLM-4 ([API Key](https://bigmodel.cn/))
+
 ## 使用示例
 
 ### Python
