@@ -218,14 +218,14 @@ current_clusters <- as.character(Idents(pbmc))
 pbmc$cell_type <- cluster_to_celltype_map[current_clusters]
 
 # Add uncertainty metrics
-# 获取每个聚类的不确定性指标
+# Get uncertainty metrics for each cluster
 uncertainty_metrics <- data.frame(
   cluster_id = names(consensus_results$consensus_metrics),
   consensus_proportion = sapply(consensus_results$consensus_metrics, function(x) x$consensus_proportion),
   entropy = sapply(consensus_results$consensus_metrics, function(x) x$entropy)
 )
 
-# 为每个细胞添加不确定性指标
+# Add uncertainty metrics for each cell
 pbmc$consensus_proportion <- uncertainty_metrics$consensus_proportion[match(current_clusters, uncertainty_metrics$cluster_id)]
 pbmc$entropy <- uncertainty_metrics$entropy[match(current_clusters, uncertainty_metrics$cluster_id)]
 
