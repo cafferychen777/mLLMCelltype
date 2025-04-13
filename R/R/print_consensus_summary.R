@@ -32,9 +32,29 @@ print_consensus_summary <- function(results) {
       cat(sprintf("\nCluster %s:\n", char_cluster_id))
       cat("Initial predictions:\n")
       
-      # Print initial predictions from each model
-      if (!is.null(results$initial_results) && 
-          !is.null(results$initial_results$individual_predictions)) {
+      # 优先使用discussion_logs中的初始预测，因为这些是实际用于讨论的预测
+      if (!is.null(results$discussion_logs) && 
+          !is.null(results$discussion_logs[[char_cluster_id]]) && 
+          !is.null(results$discussion_logs[[char_cluster_id]]$initial_predictions)) {
+        
+        # 使用讨论日志中的初始预测
+        initial_predictions <- results$discussion_logs[[char_cluster_id]]$initial_predictions
+        
+        # 遍历每个模型的预测
+        for (model in names(initial_predictions)) {
+          prediction <- initial_predictions[[model]]
+          
+          # 处理空或NA预测
+          if (is.null(prediction) || is.na(prediction) || prediction == "") {
+            prediction <- "未提供预测"
+          }
+          
+          cat(sprintf("  %s: %s\n", model, prediction))
+        }
+      } 
+      # 如果讨论日志中没有初始预测，则使用initial_results
+      else if (!is.null(results$initial_results) && 
+               !is.null(results$initial_results$individual_predictions)) {
         
         # Check if predictions have names
         first_model <- names(results$initial_results$individual_predictions)[1]
@@ -73,19 +93,26 @@ print_consensus_summary <- function(results) {
               }
             }
             
+            # 清理预测结果，去除可能的前缀（如"19: "）
+            if (!is.null(pred) && !is.na(pred) && pred != "") {
+              pred <- gsub("^[0-9]+:\s*", "", pred)  # 移除聚类ID前缀
+              pred <- gsub("\\s+$", "", pred)  # 移除尾部空格
+            }
+            
             # Handle empty or NA predictions
             if (is.null(pred) || is.na(pred) || pred == "") {
-              "Unknown"
+              "未提供预测"
             } else {
               pred
             }
           }, error = function(e) {
             # Handle errors when retrieving prediction
-            "Error retrieving prediction"
+            "检索预测时出错"
           })
           
           cat(sprintf("  %s: %s\n", model, prediction))
         }
+      }
       } else {
         cat("  Initial predictions not available\n")
       }
