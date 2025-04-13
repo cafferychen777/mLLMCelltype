@@ -45,7 +45,8 @@ CacheManager <- R6::R6Class(
         } else if (is.data.frame(input)) {
           # For data frame input, use cluster's genes
           if (all(c("cluster", "avg_log2FC", "gene") %in% names(input))) {
-            cluster_data <- input[input$cluster == (as.numeric(cluster_id) - 1) & input$avg_log2FC > 0, ]
+            # 使用原始聚类ID，不进行1-based到0-based的转换
+            cluster_data <- input[input$cluster == as.numeric(cluster_id) & input$avg_log2FC > 0, ]
             if (nrow(cluster_data) > 0) {
               input_hash <- digest::digest(sort(as.character(cluster_data$gene)))
             } else {
