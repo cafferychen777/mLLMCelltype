@@ -174,15 +174,30 @@ plt.tight_layout()
 library(mLLMCelltype)
 library(Seurat)
 library(dplyr)
+library(ggplot2)
+library(cowplot) # Added for plot_grid
 
 # Load your preprocessed Seurat object
 pbmc <- readRDS("your_seurat_object.rds")
+
+# If starting with raw data, perform preprocessing steps
+# pbmc <- NormalizeData(pbmc)
+# pbmc <- FindVariableFeatures(pbmc, selection.method = "vst", nfeatures = 2000)
+# pbmc <- ScaleData(pbmc)
+# pbmc <- RunPCA(pbmc)
+# pbmc <- FindNeighbors(pbmc, dims = 1:10)
+# pbmc <- FindClusters(pbmc, resolution = 0.5)
+# pbmc <- RunUMAP(pbmc, dims = 1:10)
 
 # Find marker genes for each cluster
 pbmc_markers <- FindAllMarkers(pbmc,
                             only.pos = TRUE,
                             min.pct = 0.25,
                             logfc.threshold = 0.25)
+
+# Set up cache directory to speed up processing
+cache_dir <- "./mllmcelltype_cache"
+dir.create(cache_dir, showWarnings = FALSE, recursive = TRUE)
 
 # Run LLMCelltype annotation with multiple LLM models
 consensus_results <- interactive_consensus_annotation(
@@ -201,15 +216,17 @@ consensus_results <- interactive_consensus_annotation(
     qwen = "your-qwen-key"
   ),
   top_gene_count = 10,
-  controversy_threshold = 0.7
+  controversy_threshold = 0.7,
+  cache_dir = cache_dir
 )
 
+# Print structure of results to understand the data
+print("Available fields in consensus_results:")
+print(names(consensus_results))
+
 # Add annotations to Seurat object
-# Create a mapping dictionary to correctly map cluster IDs to cell types
-cluster_to_celltype_map <- setNames(
-  unlist(consensus_results$final_annotations),
-  names(consensus_results$final_annotations)
-)
+# Get cell type annotations from consensus_results$final_annotations
+cluster_to_celltype_map <- consensus_results$final_annotations
 
 # Get current cluster IDs for each cell
 current_clusters <- as.character(Idents(pbmc))
@@ -218,16 +235,23 @@ current_clusters <- as.character(Idents(pbmc))
 pbmc$cell_type <- cluster_to_celltype_map[current_clusters]
 
 # Add uncertainty metrics
-# Get uncertainty metrics for each cluster
+# Extract detailed consensus results containing metrics
+consensus_details <- consensus_results$initial_results$consensus_results
+
+# Create a data frame with metrics for each cluster
 uncertainty_metrics <- data.frame(
-  cluster_id = names(consensus_results$consensus_metrics),
-  consensus_proportion = sapply(consensus_results$consensus_metrics, function(x) x$consensus_proportion),
-  entropy = sapply(consensus_results$consensus_metrics, function(x) x$entropy)
+  cluster_id = names(consensus_details),
+  consensus_proportion = sapply(consensus_details, function(res) res$consensus_proportion),
+  entropy = sapply(consensus_details, function(res) res$entropy)
 )
 
 # Add uncertainty metrics for each cell
 pbmc$consensus_proportion <- uncertainty_metrics$consensus_proportion[match(current_clusters, uncertainty_metrics$cluster_id)]
 pbmc$entropy <- uncertainty_metrics$entropy[match(current_clusters, uncertainty_metrics$cluster_id)]
+
+# Save results for future use
+saveRDS(consensus_results, "pbmc_mLLMCelltype_results.rds")
+saveRDS(pbmc, "pbmc_annotated.rds")
 
 # Visualize results with SCpubr for publication-ready plots
 if (!requireNamespace("SCpubr", quietly = TRUE)) {
@@ -252,6 +276,17 @@ SCpubr::do_DimPlot(sample = pbmc,
                   border.size = 1,
                   font.size = 14) +
   ggtitle("mLLMCelltype Consensus Annotations")
+
+# Visualize uncertainty metrics
+p1 <- DimPlot(pbmc, reduction = "umap", group.by = "cell_type", label = TRUE) + 
+  ggtitle("Cell Type Annotations")
+p2 <- FeaturePlot(pbmc, features = "consensus_proportion", min.cutoff = 0, max.cutoff = 1) + 
+  ggtitle("Consensus Proportion")
+p3 <- FeaturePlot(pbmc, features = "entropy", min.cutoff = 0) + 
+  ggtitle("Annotation Uncertainty (Shannon Entropy)")
+
+# Display plots side by side
+cowplot::plot_grid(p1, p2, p3, ncol = 3)
 ```
 
 ## License

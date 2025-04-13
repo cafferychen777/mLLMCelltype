@@ -172,6 +172,8 @@ plt.tight_layout()
 library(mLLMCelltype)
 library(Seurat)
 library(dplyr)
+library(ggplot2)
+library(cowplot) # 添加用于 plot_grid
 
 # 加载预处理的Seurat对象
 pbmc <- readRDS("your_seurat_object.rds")
@@ -203,11 +205,8 @@ consensus_results <- interactive_consensus_annotation(
 )
 
 # 将注释添加到Seurat对象
-# 创建映射字典，正确映射聚类ID到细胞类型
-cluster_to_celltype_map <- setNames(
-  unlist(consensus_results$final_annotations),
-  names(consensus_results$final_annotations)
-)
+# 从 consensus_results$final_annotations 获取细胞类型注释
+cluster_to_celltype_map <- consensus_results$final_annotations
 
 # 获取每个细胞的当前聚类ID
 current_clusters <- as.character(Idents(pbmc))
@@ -216,11 +215,14 @@ current_clusters <- as.character(Idents(pbmc))
 pbmc$cell_type <- cluster_to_celltype_map[current_clusters]
 
 # 添加不确定性指标
-# 获取每个聚类的不确定性指标
+# 提取包含指标的详细共识结果
+consensus_details <- consensus_results$initial_results$consensus_results
+
+# 为每个聚类创建包含指标的数据框
 uncertainty_metrics <- data.frame(
-  cluster_id = names(consensus_results$consensus_metrics),
-  consensus_proportion = sapply(consensus_results$consensus_metrics, function(x) x$consensus_proportion),
-  entropy = sapply(consensus_results$consensus_metrics, function(x) x$entropy)
+  cluster_id = names(consensus_details),
+  consensus_proportion = sapply(consensus_details, function(res) res$consensus_proportion),
+  entropy = sapply(consensus_details, function(res) res$entropy)
 )
 
 # 为每个细胞添加不确定性指标
