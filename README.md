@@ -93,8 +93,31 @@ adata.obs['consensus_cell_type'] = adata.obs['leiden'].astype(str).map(final_ann
 adata.obs['consensus_proportion'] = adata.obs['leiden'].astype(str).map(consensus_results["consensus_proportion"])
 adata.obs['entropy'] = adata.obs['leiden'].astype(str).map(consensus_results["entropy"])
 
-# Visualize results
-sc.pl.umap(adata, color='consensus_cell_type', legend_loc='on data')
+# Visualize results with enhanced aesthetics
+# Basic visualization
+sc.pl.umap(adata, color='consensus_cell_type', legend_loc='right', frameon=True, title='mLLMCelltype Consensus Annotations')
+
+# More customized visualization
+import matplotlib.pyplot as plt
+
+# Set figure size and style
+plt.rcParams['figure.figsize'] = (10, 8)
+plt.rcParams['font.size'] = 12
+
+# Create a more publication-ready UMAP
+fig, ax = plt.subplots(1, 1, figsize=(12, 10))
+sc.pl.umap(adata, color='consensus_cell_type', legend_loc='on data', 
+         frameon=True, title='mLLMCelltype Consensus Annotations',
+         palette='tab20', size=50, legend_fontsize=12, 
+         legend_fontoutline=2, ax=ax)
+
+# Visualize uncertainty metrics
+fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(16, 7))
+sc.pl.umap(adata, color='consensus_proportion', ax=ax1, title='Consensus Proportion',
+         cmap='viridis', vmin=0, vmax=1, size=30)
+sc.pl.umap(adata, color='entropy', ax=ax2, title='Annotation Uncertainty (Shannon Entropy)',
+         cmap='magma', vmin=0, size=30)
+plt.tight_layout()
 ```
 
 ### R
@@ -109,7 +132,7 @@ library(dplyr)
 pbmc <- readRDS("your_seurat_object.rds")
 
 # Find marker genes for each cluster
-pbmc_markers <- FindAllMarkers(pbmc, 
+pbmc_markers <- FindAllMarkers(pbmc,
                             only.pos = TRUE,
                             min.pct = 0.25,
                             logfc.threshold = 0.25)
@@ -151,9 +174,29 @@ pbmc$cell_type <- cluster_to_celltype_map[current_clusters]
 pbmc$consensus_proportion <- consensus_results$consensus_results[current_clusters]$consensus_proportion
 pbmc$entropy <- consensus_results$consensus_results[current_clusters]$entropy
 
-# Visualize results
-DimPlot(pbmc, reduction = "umap", group.by = "cell_type", label = TRUE) +
-  labs(title = "mLLMCelltype Consensus Annotations")
+# Visualize results with SCpubr for publication-ready plots
+if (!requireNamespace("SCpubr", quietly = TRUE)) {
+  remotes::install_github("enblacar/SCpubr")
+}
+library(SCpubr)
+
+# Basic UMAP visualization
+SCpubr::do_DimPlot(sample = pbmc,
+                  group.by = "cell_type",
+                  label = TRUE,
+                  legend.position = "right") +
+  ggtitle("mLLMCelltype Consensus Annotations")
+
+# For more customized visualization
+SCpubr::do_DimPlot(sample = pbmc,
+                  group.by = "cell_type",
+                  label = TRUE,
+                  label.box = FALSE,
+                  legend.position = "right",
+                  pt.size = 1.2,
+                  border.size = 1,
+                  font.size = 14) +
+  ggtitle("mLLMCelltype Consensus Annotations")
 ```
 
 ## License
@@ -169,7 +212,7 @@ If you use mLLMCelltype in your research, please cite:
   author = {Yang, Chen and Zhang, Xianyang and Chen, Jun},
   title = {mLLMCelltype: An iterative multi-LLM consensus framework for cell type annotation},
   url = {https://github.com/cafferychen777/mLLMCelltype},
-  version = {1.0.0},
+  version = {1.0.2},
   year = {2025}
 }
 ```
