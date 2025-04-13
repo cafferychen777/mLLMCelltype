@@ -46,9 +46,31 @@ print_consensus_summary <- function(results) {
           prediction <- tryCatch({
             # Access prediction differently based on whether it has names
             if (has_names) {
-              pred <- results$initial_results$individual_predictions[[model]][char_cluster_id]
+              # 使用[[]]访问列表中的元素
+              pred <- results$initial_results$individual_predictions[[model]][[char_cluster_id]]
             } else {
-              pred <- results$initial_results$individual_predictions[[model]][numeric_cluster_id]
+              # 如果没有名称，尝试不同的方式获取预测
+              model_predictions <- results$initial_results$individual_predictions[[model]]
+              
+              # 检查model_predictions的类型
+              if (is.list(model_predictions)) {
+                # 如果是列表，尝试使用数值索引
+                if (numeric_cluster_id <= length(model_predictions)) {
+                  pred <- model_predictions[[numeric_cluster_id]]
+                } else {
+                  pred <- NA
+                }
+              } else if (is.vector(model_predictions)) {
+                # 如果是向量，尝试使用数值索引
+                if (numeric_cluster_id <= length(model_predictions)) {
+                  pred <- model_predictions[numeric_cluster_id]
+                } else {
+                  pred <- NA
+                }
+              } else {
+                # 其他情况
+                pred <- NA
+              }
             }
             
             # Handle empty or NA predictions
@@ -106,6 +128,64 @@ print_consensus_summary <- function(results) {
         } else {
           # Otherwise convert directly to string
           final_annotation_str <- as.character(final_annotation)
+        }
+        
+        # 验证最终共识与初始预测的一致性
+        if (!is.null(results$initial_results) && 
+            !is.null(results$initial_results$individual_predictions)) {
+          
+          # 收集所有模型的预测
+          all_predictions <- list()
+          for (model in names(results$initial_results$individual_predictions)) {
+            if (has_names) {
+              # 使用[[]]访问列表中的元素
+              pred <- results$initial_results$individual_predictions[[model]][[char_cluster_id]]
+            } else {
+              # 如果没有名称，尝试不同的方式获取预测
+              model_predictions <- results$initial_results$individual_predictions[[model]]
+              
+              # 检查model_predictions的类型
+              if (is.list(model_predictions)) {
+                # 如果是列表，尝试使用数值索引
+                if (numeric_cluster_id <= length(model_predictions)) {
+                  pred <- model_predictions[[numeric_cluster_id]]
+                } else {
+                  pred <- NA
+                }
+              } else if (is.vector(model_predictions)) {
+                # 如果是向量，尝试使用数值索引
+                if (numeric_cluster_id <= length(model_predictions)) {
+                  pred <- model_predictions[numeric_cluster_id]
+                } else {
+                  pred <- NA
+                }
+              } else {
+                # 其他情况
+                pred <- NA
+              }
+            }
+            
+            if (!is.null(pred) && !is.na(pred) && pred != "") {
+              all_predictions[[model]] <- pred
+            }
+          }
+          
+          # 检查是否所有模型都预测相同的结果
+          if (length(all_predictions) > 0) {
+            unique_preds <- unique(unlist(all_predictions))
+            if (length(unique_preds) == 1) {
+              # 清理预测结果，去除可能的前缀（如"19: "）
+              clean_pred <- gsub("^[0-9]+:\\s*", "", unique_preds[1])
+              clean_pred <- gsub("\\s+$", "", clean_pred)  # 移除尾部空格
+              
+              # 如果所有模型预测相同但与最终共识不同，添加警告
+              if (!grepl(clean_pred, final_annotation_str, ignore.case = TRUE) && 
+                  !grepl(final_annotation_str, clean_pred, ignore.case = TRUE)) {
+                cat(sprintf("WARNING: All models predicted '%s' but final consensus is '%s'\n", 
+                            clean_pred, final_annotation_str))
+              }
+            }
+          }
         }
         
         cat(sprintf("Final consensus: %s\n", final_annotation_str))
