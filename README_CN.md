@@ -66,6 +66,24 @@ setup_logging()
 # 加载数据
 adata = sc.read_h5ad('your_data.h5ad')
 
+# 检查是否已计算leiden聚类，如果没有，则计算
+if 'leiden' not in adata.obs.columns:
+    print("计算leiden聚类...")
+    # 确保数据已预处理（标准化、对数转换等）
+    if 'log1p' not in adata.uns:
+        sc.pp.normalize_total(adata, target_sum=1e4)
+        sc.pp.log1p(adata)
+    
+    # 如果尚未计算PCA，则计算
+    if 'X_pca' not in adata.obsm:
+        sc.pp.highly_variable_genes(adata, min_mean=0.0125, max_mean=3, min_disp=0.5)
+        sc.pp.pca(adata, use_highly_variable=True)
+    
+    # 计算邻居图和leiden聚类
+    sc.pp.neighbors(adata, n_neighbors=10, n_pcs=30)
+    sc.tl.leiden(adata, resolution=0.8)
+    print(f"leiden聚类完成，共有{len(adata.obs['leiden'].cat.categories)}个聚类")
+
 # 运行差异表达分析获取标记基因
 sc.tl.rank_genes_groups(adata, 'leiden', method='wilcoxon')
 
@@ -75,6 +93,14 @@ for i in range(len(adata.obs['leiden'].cat.categories)):
     # 为每个聚类提取前10个基因
     genes = [adata.uns['rank_genes_groups']['names'][str(i)][j] for j in range(10)]
     marker_genes[str(i)] = genes
+
+# 重要提示：确保使用基因符号（如KCNJ8, PDGFRA）而不是Ensembl ID（如ENSG00000176771）
+# 如果您的AnnData对象存储的是Ensembl ID，请先将其转换为基因符号：
+# 示例：
+# if 'Gene' in adata.var.columns:  # 检查var数据框中是否有基因符号
+#     gene_name_dict = dict(zip(adata.var_names, adata.var['Gene']))
+#     marker_genes = {cluster: [gene_name_dict.get(gene_id, gene_id) for gene_id in genes] 
+#                    for cluster, genes in marker_genes.items()}
 
 # 设置不同提供商的API密钥
 os.environ["OPENAI_API_KEY"] = "your-openai-api-key"
@@ -101,6 +127,16 @@ adata.obs['consensus_cell_type'] = adata.obs['leiden'].astype(str).map(final_ann
 # 将不确定性指标添加到AnnData对象
 adata.obs['consensus_proportion'] = adata.obs['leiden'].astype(str).map(consensus_results["consensus_proportion"])
 adata.obs['entropy'] = adata.obs['leiden'].astype(str).map(consensus_results["entropy"])
+
+# 重要提示：确保在可视化前已计算UMAP坐标
+# 如果您的AnnData对象中没有UMAP坐标，请计算：
+if 'X_umap' not in adata.obsm:
+    print("计算UMAP坐标...")
+    # 确保已计算邻居图
+    if 'neighbors' not in adata.uns:
+        sc.pp.neighbors(adata, n_neighbors=10, n_pcs=30)
+    sc.tl.umap(adata)
+    print("UMAP坐标计算完成")
 
 # 使用增强美学效果可视化结果
 # 基础可视化
@@ -180,8 +216,16 @@ current_clusters <- as.character(Idents(pbmc))
 pbmc$cell_type <- cluster_to_celltype_map[current_clusters]
 
 # 添加不确定性指标
-pbmc$consensus_proportion <- consensus_results$consensus_results[current_clusters]$consensus_proportion
-pbmc$entropy <- consensus_results$consensus_results[current_clusters]$entropy
+# 获取每个聚类的不确定性指标
+uncertainty_metrics <- data.frame(
+  cluster_id = names(consensus_results$consensus_metrics),
+  consensus_proportion = sapply(consensus_results$consensus_metrics, function(x) x$consensus_proportion),
+  entropy = sapply(consensus_results$consensus_metrics, function(x) x$entropy)
+)
+
+# 为每个细胞添加不确定性指标
+pbmc$consensus_proportion <- uncertainty_metrics$consensus_proportion[match(current_clusters, uncertainty_metrics$cluster_id)]
+pbmc$entropy <- uncertainty_metrics$entropy[match(current_clusters, uncertainty_metrics$cluster_id)]
 
 # 使用SCpubr进行出版级可视化
 if (!requireNamespace("SCpubr", quietly = TRUE)) {

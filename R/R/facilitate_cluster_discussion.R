@@ -44,9 +44,49 @@ facilitate_cluster_discussion <- function(cluster_id,
   })
   
   # Initialize discussion log
+  # Restructure initial_predictions if needed to extract predictions for this cluster
+  structured_predictions <- list()
+  
+  for (model_name in names(initial_predictions)) {
+    model_preds <- initial_predictions[[model_name]]
+    
+    # Check if model_preds is already structured by cluster_id
+    if (is.list(model_preds) && !is.null(names(model_preds))) {
+      # Already structured, just extract the prediction for this cluster
+      structured_predictions[[model_name]] <- if (!is.null(model_preds[[as.character(cluster_id)]])) {
+        model_preds[[as.character(cluster_id)]]
+      } else {
+        NA
+      }
+    } else if (is.character(model_preds)) {
+      # Parse text lines to extract prediction for this cluster
+      prediction <- NA
+      
+      # Process each line which should be in format: "cluster_id: cell_type"
+      for (line in model_preds) {
+        # Skip empty lines
+        if (trimws(line) == "") next
+        
+        # Try to parse the line as "cluster_id: cell_type"
+        parts <- strsplit(line, ":", fixed = TRUE)[[1]]
+        if (length(parts) >= 2) {
+          line_cluster_id <- trimws(parts[1])
+          if (line_cluster_id == as.character(cluster_id)) {
+            cell_type <- trimws(paste(parts[-1], collapse = ":"))
+            prediction <- cell_type
+            break
+          }
+        }
+      }
+      
+      structured_predictions[[model_name]] <- prediction
+    }
+  }
+  
+  # Create the discussion log with extracted predictions
   discussion_log <- list(
     cluster_id = cluster_id,
-    initial_predictions = sapply(initial_predictions, `[`, cluster_id),
+    initial_predictions = structured_predictions,
     rounds = list()
   )
   

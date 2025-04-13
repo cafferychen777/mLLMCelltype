@@ -68,6 +68,24 @@ setup_logging()
 # Load your data
 adata = sc.read_h5ad('your_data.h5ad')
 
+# Check if leiden clustering is already computed, if not, compute it
+if 'leiden' not in adata.obs.columns:
+    print("Computing leiden clustering...")
+    # Ensure data is preprocessed (normalize, log-transform if needed)
+    if 'log1p' not in adata.uns:
+        sc.pp.normalize_total(adata, target_sum=1e4)
+        sc.pp.log1p(adata)
+    
+    # Calculate PCA if not already done
+    if 'X_pca' not in adata.obsm:
+        sc.pp.highly_variable_genes(adata, min_mean=0.0125, max_mean=3, min_disp=0.5)
+        sc.pp.pca(adata, use_highly_variable=True)
+    
+    # Compute neighbors and leiden clustering
+    sc.pp.neighbors(adata, n_neighbors=10, n_pcs=30)
+    sc.tl.leiden(adata, resolution=0.8)
+    print(f"Leiden clustering completed, found {len(adata.obs['leiden'].cat.categories)} clusters")
+
 # Run differential expression analysis to get marker genes
 sc.tl.rank_genes_groups(adata, 'leiden', method='wilcoxon')
 
@@ -77,6 +95,14 @@ for i in range(len(adata.obs['leiden'].cat.categories)):
     # Extract top 10 genes for each cluster
     genes = [adata.uns['rank_genes_groups']['names'][str(i)][j] for j in range(10)]
     marker_genes[str(i)] = genes
+
+# IMPORTANT: Ensure genes are represented as gene symbols (e.g., KCNJ8, PDGFRA) not as Ensembl IDs (e.g., ENSG00000176771)
+# If your AnnData object stores genes as Ensembl IDs, convert them to gene symbols first:
+# Example:
+# if 'Gene' in adata.var.columns:  # Check if gene symbols are available in the var dataframe
+#     gene_name_dict = dict(zip(adata.var_names, adata.var['Gene']))
+#     marker_genes = {cluster: [gene_name_dict.get(gene_id, gene_id) for gene_id in genes] 
+#                    for cluster, genes in marker_genes.items()}
 
 # Set API keys for different providers
 os.environ["OPENAI_API_KEY"] = "your-openai-api-key"
@@ -103,6 +129,16 @@ adata.obs['consensus_cell_type'] = adata.obs['leiden'].astype(str).map(final_ann
 # Add uncertainty metrics to your AnnData object
 adata.obs['consensus_proportion'] = adata.obs['leiden'].astype(str).map(consensus_results["consensus_proportion"])
 adata.obs['entropy'] = adata.obs['leiden'].astype(str).map(consensus_results["entropy"])
+
+# IMPORTANT: Ensure UMAP coordinates are calculated before visualization
+# If UMAP coordinates are not available in your AnnData object, compute them:
+if 'X_umap' not in adata.obsm:
+    print("Computing UMAP coordinates...")
+    # Make sure neighbors are computed first
+    if 'neighbors' not in adata.uns:
+        sc.pp.neighbors(adata, n_neighbors=10, n_pcs=30)
+    sc.tl.umap(adata)
+    print("UMAP coordinates computed")
 
 # Visualize results with enhanced aesthetics
 # Basic visualization
@@ -182,8 +218,16 @@ current_clusters <- as.character(Idents(pbmc))
 pbmc$cell_type <- cluster_to_celltype_map[current_clusters]
 
 # Add uncertainty metrics
-pbmc$consensus_proportion <- consensus_results$consensus_results[current_clusters]$consensus_proportion
-pbmc$entropy <- consensus_results$consensus_results[current_clusters]$entropy
+# 获取每个聚类的不确定性指标
+uncertainty_metrics <- data.frame(
+  cluster_id = names(consensus_results$consensus_metrics),
+  consensus_proportion = sapply(consensus_results$consensus_metrics, function(x) x$consensus_proportion),
+  entropy = sapply(consensus_results$consensus_metrics, function(x) x$entropy)
+)
+
+# 为每个细胞添加不确定性指标
+pbmc$consensus_proportion <- uncertainty_metrics$consensus_proportion[match(current_clusters, uncertainty_metrics$cluster_id)]
+pbmc$entropy <- uncertainty_metrics$entropy[match(current_clusters, uncertainty_metrics$cluster_id)]
 
 # Visualize results with SCpubr for publication-ready plots
 if (!requireNamespace("SCpubr", quietly = TRUE)) {

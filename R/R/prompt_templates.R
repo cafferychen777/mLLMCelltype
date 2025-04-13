@@ -278,9 +278,31 @@ create_initial_discussion_prompt <- function(cluster_id,
     cluster_id,
     cluster_genes,
     if (!is.null(tissue_name)) sprintf(" from %s", tissue_name) else "",
-    paste(sprintf("%s: %s", 
-                  names(initial_predictions), 
-                  sapply(initial_predictions, `[`, cluster_id)), 
-          collapse = "\n")
+    paste(sapply(names(initial_predictions), function(model_name) {
+      pred <- initial_predictions[[model_name]]
+      # Check if pred is a list with named elements
+      if (is.list(pred) && !is.null(names(pred))) {
+        # If it's a structured list, try to extract the prediction for this cluster
+        cell_type <- if (!is.null(pred[[as.character(cluster_id)]])) {
+          pred[[as.character(cluster_id)]]
+        } else {
+          "No prediction"
+        }
+      } else if (is.character(pred)) {
+        # If it's a character vector, try to find the line for this cluster
+        cell_type <- "No prediction"
+        for (line in pred) {
+          if (trimws(line) == "") next
+          parts <- strsplit(line, ":", fixed = TRUE)[[1]]
+          if (length(parts) >= 2 && trimws(parts[1]) == as.character(cluster_id)) {
+            cell_type <- trimws(paste(parts[-1], collapse = ":"))
+            break
+          }
+        }
+      } else {
+        cell_type <- "No prediction"
+      }
+      sprintf("%s: %s", model_name, cell_type)
+    }), collapse = "\n")
   )
 }
