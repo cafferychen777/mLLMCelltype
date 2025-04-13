@@ -160,6 +160,11 @@ print_consensus_summary <- function(results) {
         if (!is.null(results$initial_results) && 
             !is.null(results$initial_results$individual_predictions)) {
           
+          # 检查预测是否有名称
+          first_model <- names(results$initial_results$individual_predictions)[1]
+          predictions <- results$initial_results$individual_predictions[[first_model]]
+          has_names <- !is.null(names(predictions))
+          
           # 收集所有模型的预测
           all_predictions <- list()
           for (model in names(results$initial_results$individual_predictions)) {
