@@ -193,111 +193,55 @@ print_consensus_summary <- function(results) {
           
           # 收集所有模型的预测
           all_predictions <- list()
-          cat("DEBUG: Collecting all model predictions for cluster_id: ", char_cluster_id, "\n")
+          # Validation using discussion log predictions
+          cat("DEBUG: Collecting discussion log predictions for cluster_id: ", char_cluster_id, "\n")
           
-          # 首先检查是否有模型预测
-          if (length(names(results$initial_results$individual_predictions)) == 0) {
-            cat("DEBUG: No models found in initial_results$individual_predictions\n")
-            # 如果没有模型预测，尝试使用discussion_logs中的预测
-            if (!is.null(results$discussion_logs) && 
-                !is.null(results$discussion_logs[[char_cluster_id]]) && 
-                !is.null(results$discussion_logs[[char_cluster_id]]$initial_predictions)) {
+          discussion_log_predictions <- NULL
+          if (!is.null(results$discussion_logs) && 
+              !is.null(results$discussion_logs[[char_cluster_id]]) && 
+              !is.null(results$discussion_logs[[char_cluster_id]]$initial_predictions)) {
+            discussion_log_predictions <- results$discussion_logs[[char_cluster_id]]$initial_predictions
+          }
+
+          if (!is.null(discussion_log_predictions) && length(discussion_log_predictions) > 0) {
+            all_predictions <- list()
+            
+            for (model in names(discussion_log_predictions)) {
+              pred <- discussion_log_predictions[[model]]
               
-              cat("DEBUG: Using discussion_logs for predictions\n")
-              initial_predictions <- results$discussion_logs[[char_cluster_id]]$initial_predictions
-              
-              for (model in names(initial_predictions)) {
-                prediction <- initial_predictions[[model]]
-                if (!is.null(prediction) && !is.na(prediction) && prediction != "" && prediction != "未提供预测") {
-                  cat(sprintf("DEBUG: Adding prediction from discussion_logs for model %s: %s\n", model, prediction))
-                  all_predictions[[model]] <- prediction
+              # Check if prediction is valid and not the placeholder
+              if (!is.null(pred)) {
+                if (!is.na(pred)) {
+                  # Make sure to compare against the placeholder string too
+                  if (pred != "" && pred != "未提供预测") { 
+                     cat(sprintf("DEBUG: Adding prediction from discussion log for model %s: %s\n", model, pred))
+                     all_predictions[[model]] <- pred
+                  }
+                }
+              }
+            } # End model loop
+
+            # Check if all collected models predicted the same result and compare with final consensus
+            cat(sprintf("DEBUG: all_predictions (from discussion log) length: %d\n", length(all_predictions)))
+            if (length(all_predictions) > 0) {
+              unique_preds <- unique(unlist(all_predictions))
+              cat(sprintf("DEBUG: unique_preds (from discussion log): %s\n", paste(unique_preds, collapse = ", ")))
+              if (length(unique_preds) == 1) {
+                # We don't need to clean prefix here as discussion log preds should be clean
+                clean_pred <- trimws(unique_preds[1]) # Just trim whitespace
+                
+                # If all models predicted same but differs from final consensus, add warning
+                # Use grepl for substring matching robustness
+                if (!grepl(clean_pred, final_annotation_str, ignore.case = TRUE) && 
+                    !grepl(final_annotation_str, clean_pred, ignore.case = TRUE)) {
+                  cat(sprintf("WARNING: All models in discussion log predicted '%s' but final consensus is '%s'\n", 
+                              clean_pred, final_annotation_str))
                 }
               }
             }
           } else {
-            # 正常处理initial_results中的预测
-            for (model in names(results$initial_results$individual_predictions)) {
-              if (has_names) {
-                # 使用[[]]访问列表中的元素
-                cat(sprintf("DEBUG: Accessing prediction with names for cluster %s\n", char_cluster_id))
-                pred <- results$initial_results$individual_predictions[[model]][[char_cluster_id]]
-              } else {
-                # 如果没有名称，尝试不同的方式获取预测
-                cat(sprintf("DEBUG: Accessing prediction without names for cluster %s (numeric: %d)\n", char_cluster_id, numeric_cluster_id))
-                model_predictions <- results$initial_results$individual_predictions[[model]]
-                
-                # 检查model_predictions的类型
-                if (is.list(model_predictions)) {
-                  # 首先尝试使用字符串索引，这样可以避免索引混淆
-                  if (char_cluster_id %in% names(model_predictions)) {
-                    cat(sprintf("DEBUG: Accessing list with char_cluster_id: %s\n", char_cluster_id))
-                    pred <- model_predictions[[char_cluster_id]]
-                  } 
-                  # 如果字符串索引不存在，再尝试使用数值索引
-                  else if (numeric_cluster_id <= length(model_predictions)) {
-                    cat(sprintf("DEBUG: Accessing list with numeric_cluster_id: %d\n", numeric_cluster_id))
-                    pred <- model_predictions[[numeric_cluster_id]]
-                  } else {
-                    pred <- NA
-                  }
-                } else if (is.vector(model_predictions)) {
-                  # 如果是向量，尝试使用数值索引
-                  if (numeric_cluster_id <= length(model_predictions)) {
-                    pred <- model_predictions[numeric_cluster_id]
-                  } else {
-                    pred <- NA
-                  }
-                } else {
-                  # 其他情况
-                  pred <- NA
-                }
-              }
-              
-              # 先检查是否为NA或NULL，然后再检查是否为空字符串
-              if (!is.null(pred)) {
-                if (!is.na(pred)) {
-                  if (pred != "") {
-                    # 确保我们添加的是当前聚类的预测，而不是其他聚类的
-                    # 检查预测中是否包含聚类前缀
-                    pred_cluster_prefix <- gsub("^([0-9]+):.*$", "\\1", pred)
-                    
-                    # 如果预测包含聚类前缀，确保它与当前聚类匹配
-                    if (pred_cluster_prefix != pred) { # 如果有前缀
-                      if (pred_cluster_prefix == char_cluster_id) {
-                        cat(sprintf("DEBUG: Adding prediction for model %s: %s\n", model, pred))
-                        all_predictions[[model]] <- pred
-                      } else {
-                        cat(sprintf("DEBUG: Skipping prediction for model %s: %s (wrong cluster prefix, expected %s)\n", 
-                                    model, pred, char_cluster_id))
-                      }
-                    } else { # 如果没有前缀，直接添加
-                      cat(sprintf("DEBUG: Adding prediction for model %s: %s\n", model, pred))
-                      all_predictions[[model]] <- pred
-                    }
-                  }
-                }
-              }
-            }
-          }
-          
-          # 检查是否所有模型都预测相同的结果
-          cat(sprintf("DEBUG: all_predictions length: %d\n", length(all_predictions)))
-          if (length(all_predictions) > 0) {
-            unique_preds <- unique(unlist(all_predictions))
-            cat(sprintf("DEBUG: unique_preds: %s\n", paste(unique_preds, collapse = ", ")))
-            if (length(unique_preds) == 1) {
-              # 清理预测结果，去除可能的前缀（如"19: "）
-              clean_pred <- gsub("^[0-9]+:[[:space:]]*", "", unique_preds[1])
-              clean_pred <- gsub("[[:space:]]+$", "", clean_pred)  # 移除尾部空格
-              
-              # 如果所有模型预测相同但与最终共识不同，添加警告
-              if (!grepl(clean_pred, final_annotation_str, ignore.case = TRUE) && 
-                  !grepl(final_annotation_str, clean_pred, ignore.case = TRUE)) {
-                cat(sprintf("WARNING: All models predicted '%s' but final consensus is '%s'\n", 
-                            clean_pred, final_annotation_str))
-              }
-            }
-          }
+            cat("DEBUG: No discussion log predictions available for validation.\n")
+          } # End check for discussion_log_predictions
         }
         
         cat(sprintf("Final consensus: %s\n", final_annotation_str))
