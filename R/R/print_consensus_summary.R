@@ -112,7 +112,6 @@ print_consensus_summary <- function(results) {
           
           cat(sprintf("  %s: %s\n", model, prediction))
         }
-      }
       } else {
         cat("  Initial predictions not available\n")
       }
@@ -202,8 +201,8 @@ print_consensus_summary <- function(results) {
             unique_preds <- unique(unlist(all_predictions))
             if (length(unique_preds) == 1) {
               # 清理预测结果，去除可能的前缀（如"19: "）
-              clean_pred <- gsub("^[0-9]+:\\s*", "", unique_preds[1])
-              clean_pred <- gsub("\\s+$", "", clean_pred)  # 移除尾部空格
+              clean_pred <- gsub("^[0-9]+:[[:space:]]*", "", unique_preds[1])
+              clean_pred <- gsub("[[:space:]]+$", "", clean_pred)  # 移除尾部空格
               
               # 如果所有模型预测相同但与最终共识不同，添加警告
               if (!grepl(clean_pred, final_annotation_str, ignore.case = TRUE) && 
