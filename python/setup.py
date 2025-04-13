@@ -11,13 +11,13 @@ except FileNotFoundError:
 
 setup(
     name='mllmcelltype',
-    version='1.0.0',
+    version='1.0.2',
     packages=find_packages(),
     description='A Python module for cell type annotation using various LLMs.',
     long_description=long_description,
     long_description_content_type='text/markdown',
     author='mLLMCelltype Team',
-    author_email='example@example.com',
+    author_email='cafferychen777@tamu.edu',
     url='https://github.com/cafferychen777/mLLMCelltype',
     install_requires=[
         'pandas>=1.0.0',
