@@ -95,8 +95,8 @@ print_consensus_summary <- function(results) {
             
             # 清理预测结果，去除可能的前缀（如"19: "）
             if (!is.null(pred) && !is.na(pred) && pred != "") {
-              pred <- gsub("^[0-9]+:\s*", "", pred)  # 移除聚类ID前缀
-              pred <- gsub("\\s+$", "", pred)  # 移除尾部空格
+              pred <- gsub("^[0-9]+:[[:space:]]*", "", pred)  # 移除聚类ID前缀
+              pred <- gsub("[[:space:]]+$", "", pred)  # 移除尾部空格
             }
             
             # Handle empty or NA predictions
