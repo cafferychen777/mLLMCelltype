@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="assets/mLLMCelltype_logo.png" alt="mLLMCelltype Logo" width="200"/>
+</p>
+
 # mLLMCelltype
 
 [中文文档](README_CN.md)
@@ -298,11 +302,18 @@ MIT
 If you use mLLMCelltype in your research, please cite:
 
 ```bibtex
-@software{mllmcelltype2025,
+@article{Yang2025.04.10.647852,
   author = {Yang, Chen and Zhang, Xianyang and Chen, Jun},
-  title = {mLLMCelltype: An iterative multi-LLM consensus framework for cell type annotation},
-  url = {https://github.com/cafferychen777/mLLMCelltype},
-  version = {1.0.2},
-  year = {2025}
+  title = {Large Language Model Consensus Substantially Improves the Cell Type Annotation Accuracy for scRNA-seq Data},
+  elocation-id = {2025.04.10.647852},
+  year = {2025},
+  doi = {10.1101/2025.04.10.647852},
+  publisher = {Cold Spring Harbor Laboratory},
+  URL = {https://www.biorxiv.org/content/early/2025/04/17/2025.04.10.647852},
+  journal = {bioRxiv}
 }
 ```
+
+You can also cite this in plain text format:
+
+Yang, C., Zhang, X., & Chen, J. (2025). Large Language Model Consensus Substantially Improves the Cell Type Annotation Accuracy for scRNA-seq Data. *bioRxiv*. https://doi.org/10.1101/2025.04.10.647852

@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="assets/mLLMCelltype_logo.png" alt="mLLMCelltype Logo" width="200"/>
+</p>
+
 # mLLMCelltype
 
 mLLMCelltype是一个迭代式多大语言模型（Multi-LLM）共识框架，专为单细胞RNA测序数据的细胞类型注释而设计。通过利用多种大语言模型（如GPT、Claude、Gemini、Qwen等）的互补优势，该框架显著提高了注释准确性，同时提供透明的不确定性量化。
@@ -263,11 +267,18 @@ MIT
 如果您在研究中使用了mLLMCelltype，请引用：
 
 ```bibtex
-@software{mllmcelltype2025,
+@article{Yang2025.04.10.647852,
   author = {Yang, Chen and Zhang, Xianyang and Chen, Jun},
-  title = {mLLMCelltype: An iterative multi-LLM consensus framework for cell type annotation},
-  url = {https://github.com/cafferychen777/mLLMCelltype},
-  version = {1.0.2},
-  year = {2025}
+  title = {Large Language Model Consensus Substantially Improves the Cell Type Annotation Accuracy for scRNA-seq Data},
+  elocation-id = {2025.04.10.647852},
+  year = {2025},
+  doi = {10.1101/2025.04.10.647852},
+  publisher = {Cold Spring Harbor Laboratory},
+  URL = {https://www.biorxiv.org/content/early/2025/04/17/2025.04.10.647852},
+  journal = {bioRxiv}
 }
 ```
+
+您也可以使用纯文本格式引用：
+
+Yang, C., Zhang, X., & Chen, J. (2025). Large Language Model Consensus Substantially Improves the Cell Type Annotation Accuracy for scRNA-seq Data. *bioRxiv*. https://doi.org/10.1101/2025.04.10.647852
