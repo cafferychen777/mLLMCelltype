@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: mLLMCelltype Documentation
+    url: https://github.com/cafferychen777/mLLMCelltype#readme
+    about: 查看mLLMCelltype文档 / Check the mLLMCelltype documentation
+  - name: GitHub Discussions
+    url: https://github.com/cafferychen777/mLLMCelltype/discussions
+    about: 提问或讨论想法 / Ask questions or discuss ideas
