@@ -104,11 +104,17 @@ for i in range(len(adata.obs['leiden'].cat.categories)):
 #     marker_genes = {cluster: [gene_name_dict.get(gene_id, gene_id) for gene_id in genes] 
 #                    for cluster, genes in marker_genes.items()}
 
-# 设置不同提供商的API密钥
-os.environ["OPENAI_API_KEY"] = "your-openai-api-key"
-os.environ["ANTHROPIC_API_KEY"] = "your-anthropic-api-key"
-os.environ["GEMINI_API_KEY"] = "your-gemini-api-key"
-os.environ["QWEN_API_KEY"] = "your-qwen-api-key"
+# 设置您想要使用的提供商的API密钥
+# 您至少需要一个与计划使用的模型相对应的API密钥
+os.environ["OPENAI_API_KEY"] = "your-openai-api-key"      # GPT模型所需
+os.environ["ANTHROPIC_API_KEY"] = "your-anthropic-api-key"  # Claude模型所需
+os.environ["GEMINI_API_KEY"] = "your-gemini-api-key"      # Gemini模型所需
+os.environ["QWEN_API_KEY"] = "your-qwen-api-key"        # 通义千问模型所需
+# 其他可选模型
+# os.environ["DEEPSEEK_API_KEY"] = "your-deepseek-api-key"   # DeepSeek模型所需
+# os.environ["ZHIPU_API_KEY"] = "your-zhipu-api-key"       # 智谱GLM模型所需
+# os.environ["STEPFUN_API_KEY"] = "your-stepfun-api-key"    # Step模型所需
+# os.environ["MINIMAX_API_KEY"] = "your-minimax-api-key"    # MiniMax模型所需
 
 # 使用多个模型运行共识注释
 consensus_results = interactive_consensus_annotation(
