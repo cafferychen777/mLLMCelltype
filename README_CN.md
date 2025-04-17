@@ -2,8 +2,6 @@
   <img src="assets/mLLMCelltype_logo.png" alt="mLLMCelltype Logo" width="200"/>
 </p>
 
-# mLLMCelltype
-
 mLLMCelltype是一个迭代式多大语言模型（Multi-LLM）共识框架，专为单细胞RNA测序数据的细胞类型注释而设计。通过利用多种大语言模型（如GPT、Claude、Gemini、Qwen等）的互补优势，该框架显著提高了注释准确性，同时提供透明的不确定性量化。
 
 ## 主要特点

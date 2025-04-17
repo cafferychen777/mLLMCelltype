@@ -2,8 +2,6 @@
   <img src="assets/mLLMCelltype_logo.png" alt="mLLMCelltype Logo" width="200"/>
 </p>
 
-# mLLMCelltype
-
 [中文文档](README_CN.md)
 
 mLLMCelltype is an iterative multi-LLM consensus framework for cell type annotation in single-cell RNA sequencing data. By leveraging the complementary strengths of multiple large language models (GPT, Claude, Gemini, Qwen, etc.), this framework significantly improves annotation accuracy while providing transparent uncertainty quantification.
