@@ -216,11 +216,14 @@ consensus_results <- interactive_consensus_annotation(
 # 从 consensus_results$final_annotations 获取细胞类型注释
 cluster_to_celltype_map <- consensus_results$final_annotations
 
-# 获取每个细胞的当前聚类ID
-current_clusters <- as.character(Idents(pbmc))
+# 创建新的细胞类型标识符列
+cell_types <- as.character(Idents(pbmc))
+for (cluster_id in names(cluster_to_celltype_map)) {
+  cell_types[cell_types == cluster_id] <- cluster_to_celltype_map[[cluster_id]]
+}
 
 # 将细胞类型注释添加到Seurat对象
-pbmc$cell_type <- cluster_to_celltype_map[current_clusters]
+pbmc$cell_type <- cell_types
 
 # 添加不确定性指标
 # 提取包含指标的详细共识结果

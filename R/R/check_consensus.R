@@ -1,10 +1,12 @@
 #' Check if consensus is reached among models using Claude
 #' @param round_responses A vector of model responses to check for consensus
 #' @param api_keys A list of API keys for different providers
+#' @param controversy_threshold Threshold for consensus proportion (default: 2/3)
+#' @param entropy_threshold Threshold for entropy (default: 1.0)
 #' @note This function uses create_consensus_check_prompt from prompt_templates.R
 #' @importFrom utils write.table tail
 #' @keywords internal
-check_consensus <- function(round_responses, api_keys = NULL) {
+check_consensus <- function(round_responses, api_keys = NULL, controversy_threshold = 2/3, entropy_threshold = 1.0) {
   # Initialize logging
   write_log("\n=== Starting check_consensus function ===")
   write_log(sprintf("Input responses: %s", paste(round_responses, collapse = "; ")))
@@ -16,7 +18,8 @@ check_consensus <- function(round_responses, api_keys = NULL) {
   }
   
   # Get the formatted prompt from the dedicated function
-  formatted_responses <- create_consensus_check_prompt(round_responses)
+  # Parameters are used in prompt template to instruct LLM on threshold values # nolint
+  formatted_responses <- create_consensus_check_prompt(round_responses, controversy_threshold, entropy_threshold)
   
   # Get model analysis with retry mechanism
   max_retries <- 3
@@ -162,7 +165,7 @@ check_consensus <- function(round_responses, api_keys = NULL) {
       if (!exists("proportion_found") || !proportion_found) {
         proportion_found <- FALSE
         
-        for (i in 1:length(lines)) {
+        for (i in seq_along(lines)) {
           if (grepl("(C|c)onsensus (P|p)roportion", lines[i]) && grepl("=", lines[i])) {
             # Extract all content after the equals sign
             parts <- strsplit(lines[i], "=")[[1]]
@@ -195,7 +198,7 @@ check_consensus <- function(round_responses, api_keys = NULL) {
       if (!exists("entropy_found") || !entropy_found) {
         entropy_found <- FALSE
         
-        for (i in 1:length(lines)) {
+        for (i in seq_along(lines)) {
           if (grepl("(E|e)ntropy", lines[i]) && grepl("=", lines[i])) {
             # Extract all content after the equals sign
             parts <- strsplit(lines[i], "=")[[1]]
@@ -242,7 +245,7 @@ check_consensus <- function(round_responses, api_keys = NULL) {
     
     # If we still don't have a majority prediction, search all lines
     if (is.null(majority_prediction)) {
-      for (i in 1:length(lines)) {
+      for (i in seq_along(lines)) {
         if (!grepl(numeric_pattern, lines[i]) && 
             !grepl("(C|c)onsensus", lines[i]) && 
             !grepl("(E|e)ntropy", lines[i]) && 

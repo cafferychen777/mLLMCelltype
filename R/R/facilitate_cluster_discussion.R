@@ -10,6 +10,7 @@ facilitate_cluster_discussion <- function(cluster_id,
                                           top_gene_count,
                                           max_rounds = 3,
                                           controversy_threshold = 0.7,
+                                          entropy_threshold = 1.0,
                                           logger) {
   
   # Get marker genes for this cluster
@@ -124,13 +125,14 @@ facilitate_cluster_discussion <- function(cluster_id,
   )
 
   # Check consensus after first round
-  consensus_result <- check_consensus(round1_responses, api_keys)
+  # Parameters are passed to check_consensus and used in prompt template to instruct LLM # nolint
+  consensus_result <- check_consensus(round1_responses, api_keys, controversy_threshold, entropy_threshold)
   logger$log_consensus_check(1, consensus_result$reached, consensus_result$consensus_proportion, consensus_result$entropy)
   
   # Store consensus result in discussion log
   discussion_log$rounds[[1]]$consensus_result <- consensus_result
 
-  if (consensus_result$reached && consensus_result$consensus_proportion >= controversy_threshold && consensus_result$entropy <= 1.0) {
+  if (consensus_result$reached && consensus_result$consensus_proportion >= controversy_threshold && consensus_result$entropy <= entropy_threshold) {
     consensus_reached <- TRUE
     message(sprintf("Consensus reached in round 1 with consensus proportion %.2f and entropy %.2f. Stopping discussion.", 
                    consensus_result$consensus_proportion, consensus_result$entropy))
@@ -179,7 +181,8 @@ facilitate_cluster_discussion <- function(cluster_id,
     )
     
     # Check if consensus is reached
-    consensus_result <- check_consensus(round_responses, api_keys)
+    # Parameters are passed to check_consensus and used in prompt template to instruct LLM # nolint
+    consensus_result <- check_consensus(round_responses, api_keys, controversy_threshold, entropy_threshold)
     logger$log_consensus_check(round, consensus_result$reached, 
                               consensus_result$consensus_proportion, consensus_result$entropy)
     
@@ -190,7 +193,7 @@ facilitate_cluster_discussion <- function(cluster_id,
     discussion_log$rounds[[round]]$extracted_cell_types <- consensus_result$extracted_cell_types
     
     # If we have high confidence consensus, stop the discussion
-    if (consensus_result$reached && consensus_result$consensus_proportion >= controversy_threshold && consensus_result$entropy <= 1.0) {
+    if (consensus_result$reached && consensus_result$consensus_proportion >= controversy_threshold && consensus_result$entropy <= entropy_threshold) {
       consensus_reached <- TRUE
       message(sprintf("Consensus reached in round %d with consensus proportion %.2f and entropy %.2f. Stopping discussion.", 
                      round, consensus_result$consensus_proportion, consensus_result$entropy))

@@ -227,6 +227,7 @@ consensus_results <- interactive_consensus_annotation(
   ),
   top_gene_count = 10,
   controversy_threshold = 0.7,
+  entropy_threshold = 1.0,
   cache_dir = cache_dir
 )
 
@@ -238,11 +239,14 @@ print(names(consensus_results))
 # Get cell type annotations from consensus_results$final_annotations
 cluster_to_celltype_map <- consensus_results$final_annotations
 
-# Get current cluster IDs for each cell
-current_clusters <- as.character(Idents(pbmc))
+# Create new cell type identifier column
+cell_types <- as.character(Idents(pbmc))
+for (cluster_id in names(cluster_to_celltype_map)) {
+  cell_types[cell_types == cluster_id] <- cluster_to_celltype_map[[cluster_id]]
+}
 
 # Add cell type annotations to Seurat object
-pbmc$cell_type <- cluster_to_celltype_map[current_clusters]
+pbmc$cell_type <- cell_types
 
 # Add uncertainty metrics
 # Extract detailed consensus results containing metrics

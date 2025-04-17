@@ -165,7 +165,8 @@ identify_controversial_clusters <- function(input, individual_predictions, contr
     }
 
     # Calculate agreement score
-    initial_consensus <- check_consensus(valid_predictions, api_keys)
+    # Parameters are passed to check_consensus and used in prompt template to instruct LLM # nolint
+    initial_consensus <- check_consensus(valid_predictions, api_keys, controversy_threshold, entropy_threshold)
     consensus_results[[as.character(cluster_id)]] <- initial_consensus
 
     # If no consensus is reached or the consensus metrics indicate high uncertainty, mark it as controversial.
@@ -252,7 +253,7 @@ select_best_prediction <- function(consensus_result, valid_predictions) {
 #' @keywords internal
 process_controversial_clusters <- function(controversial_clusters, input, tissue_name,
                                           successful_models, api_keys, individual_predictions,
-                                          top_gene_count, controversy_threshold, max_discussion_rounds,
+                                          top_gene_count, controversy_threshold, entropy_threshold, max_discussion_rounds,
                                           logger, cache_manager, use_cache) {
 
   if (length(controversial_clusters) == 0) {
@@ -316,6 +317,7 @@ process_controversial_clusters <- function(controversial_clusters, input, tissue
       message(sprintf("Using cached result for cluster %d", cluster_id_num))
     } else {
       # Perform discussion
+      # Parameters are passed through to check_consensus and used in prompt template to instruct LLM # nolint
       discussion_result <- facilitate_cluster_discussion(
         cluster_id = cluster_id_num,
         input = input,
@@ -326,6 +328,7 @@ process_controversial_clusters <- function(controversial_clusters, input, tissue
         top_gene_count = top_gene_count,
         max_rounds = max_discussion_rounds,
         controversy_threshold = controversy_threshold,
+        entropy_threshold = entropy_threshold,
         logger = logger
       )
 
@@ -575,6 +578,7 @@ interactive_consensus_annotation <- function(input,
     individual_predictions = initial_results$individual_predictions,
     top_gene_count = top_gene_count,
     controversy_threshold = controversy_threshold,
+    entropy_threshold = entropy_threshold,
     max_discussion_rounds = max_discussion_rounds,
     logger = logger,
     cache_manager = cache_manager,

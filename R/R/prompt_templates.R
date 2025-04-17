@@ -142,9 +142,11 @@ create_annotation_prompt <- function(input, tissue_name, top_gene_count = 10) {
 
 #' Create prompt for checking consensus among model predictions
 #' @param round_responses A vector of cell type predictions from different models
+#' @param controversy_threshold Threshold for consensus proportion (default: 2/3)
+#' @param entropy_threshold Threshold for entropy (default: 1.0)
 #' @return A formatted prompt string for consensus checking
 #' @keywords internal
-create_consensus_check_prompt <- function(round_responses) {
+create_consensus_check_prompt <- function(round_responses, controversy_threshold = 2/3, entropy_threshold = 1.0) {
   # Format the predictions for Claude
   paste(
     "You are a cell type annotation expert. Below are different models' predictions for the same cell cluster.",
@@ -164,7 +166,8 @@ create_consensus_check_prompt <- function(round_responses) {
     "CALCULATE THE FOLLOWING METRICS:",
     "1. Consensus Proportion = Number of models supporting the majority prediction / Total number of models",
     "2. Shannon Entropy = -sum(p_i * log2(p_i)) where p_i is the proportion of models predicting each unique cell type",
-    "3. Determine if consensus is reached (Consensus Proportion > 2/3 AND Entropy <= 1.0)",
+    sprintf("3. Determine if consensus is reached (Consensus Proportion > %s AND Entropy <= %s)", 
+            format(controversy_threshold, nsmall=1), format(entropy_threshold, nsmall=1)),
     "",
     "RESPONSE FORMAT:",
     "Line 1: 1 if consensus is reached, 0 if not",
