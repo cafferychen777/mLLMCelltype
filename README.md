@@ -108,11 +108,17 @@ for i in range(len(adata.obs['leiden'].cat.categories)):
 #     marker_genes = {cluster: [gene_name_dict.get(gene_id, gene_id) for gene_id in genes] 
 #                    for cluster, genes in marker_genes.items()}
 
-# Set API keys for different providers
-os.environ["OPENAI_API_KEY"] = "your-openai-api-key"
-os.environ["ANTHROPIC_API_KEY"] = "your-anthropic-api-key"
-os.environ["GEMINI_API_KEY"] = "your-gemini-api-key"
-os.environ["QWEN_API_KEY"] = "your-qwen-api-key"
+# Set API keys for the providers you want to use
+# You need at least one API key for the models you plan to use
+os.environ["OPENAI_API_KEY"] = "your-openai-api-key"      # Required for GPT models
+os.environ["ANTHROPIC_API_KEY"] = "your-anthropic-api-key"  # Required for Claude models
+os.environ["GEMINI_API_KEY"] = "your-gemini-api-key"      # Required for Gemini models
+os.environ["QWEN_API_KEY"] = "your-qwen-api-key"        # Required for Qwen models
+# Additional optional models
+# os.environ["DEEPSEEK_API_KEY"] = "your-deepseek-api-key"   # For DeepSeek models
+# os.environ["ZHIPU_API_KEY"] = "your-zhipu-api-key"       # For GLM models
+# os.environ["STEPFUN_API_KEY"] = "your-stepfun-api-key"    # For Step models
+# os.environ["MINIMAX_API_KEY"] = "your-minimax-api-key"    # For MiniMax models
 
 # Run consensus annotation with multiple models
 consensus_results = interactive_consensus_annotation(
