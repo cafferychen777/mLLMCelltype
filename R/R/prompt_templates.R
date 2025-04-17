@@ -306,3 +306,31 @@ create_initial_discussion_prompt <- function(cluster_id,
     }), collapse = "\n")
   )
 }
+
+#' Create prompt for standardizing cell type names
+#' @param all_cell_types A vector of cell type names to standardize
+#' @return A formatted prompt string for cell type standardization
+#' @keywords internal
+create_standardization_prompt <- function(all_cell_types) {
+  paste0(
+    "I need to standardize the following cell type names to ensure consistent nomenclature while preserving biological subtypes and specificity. \n\n",
+    "IMPORTANT GUIDELINES:\n",
+    "1. Preserve cell subtype information: Do NOT collapse specific subtypes into general categories (e.g., DO NOT convert 'Memory B cell' to just 'B cell').\n",
+    "2. Standardize expression variations: Only standardize different ways of expressing the same biological entity (e.g., 'CD4+ T cell' and 'Helper T cell' can be standardized to 'CD4+ T cell').\n",
+    "3. Maintain granularity: If a cell type has specific markers or functional designations, preserve that information.\n",
+    "4. Use widely accepted nomenclature: When standardizing, use the most scientifically accepted term.\n",
+    "5. Be consistent with surface markers: Use consistent formatting for surface markers (e.g., CD4+, CD8+).\n\n",
+    "Examples of CORRECT standardization:\n",
+    "- 'Helper T cell' -> 'CD4+ T cell' (same biological entity, standard nomenclature)\n",
+    "- 'CD14+ monocyte' -> 'Classical monocyte' (if they are biologically equivalent)\n",
+    "- 'B-lymphocyte' -> 'B cell' (expression variation)\n\n",
+    "Examples of INCORRECT standardization:\n",
+    "- 'Memory B cell' -> 'B cell' (loses subtype information)\n",
+    "- 'Regulatory T cell' -> 'CD4+ T cell' (loses functional subtype)\n",
+    "- 'Classical monocyte' -> 'Monocyte' (loses subtype information)\n\n",
+    "Please provide a standardized name for each cell type in the exact format: 'ORIGINAL: STANDARDIZED'.\n",
+    "Do not add any additional text, explanations, or formatting.\n\n",
+    "Here are the cell types to standardize:\n\n",
+    paste(all_cell_types, collapse = "\n")
+  )
+}
