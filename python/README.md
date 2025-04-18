@@ -2,7 +2,6 @@
 
 [![PyPI version](https://img.shields.io/badge/pypi-v1.0.0-blue.svg)](https://pypi.org/project/mllmcelltype/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Tests](https://github.com/cafferychen777/mLLMCelltype/actions/workflows/tests.yml/badge.svg)](https://github.com/cafferychen777/mLLMCelltype/actions/workflows/tests.yml)
 
 ## Overview
 
