@@ -2,10 +2,11 @@
 
 [![PyPI version](https://img.shields.io/badge/pypi-v1.0.0-blue.svg)](https://pypi.org/project/mllmcelltype/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Tests](https://github.com/cafferychen777/mLLMCelltype/actions/workflows/tests.yml/badge.svg)](https://github.com/cafferychen777/mLLMCelltype/actions/workflows/tests.yml)
 
 ## Overview
 
-mLLMCelltype is a comprehensive Python framework for automated cell type annotation in single-cell RNA sequencing data through an iterative multi-LLM consensus approach. By leveraging the collective intelligence of multiple large language models, this framework significantly improves annotation accuracy while providing robust uncertainty quantification.
+mLLMCelltype is a comprehensive Python framework for automated cell type annotation in single-cell RNA sequencing data through an iterative multi-LLM consensus approach. By leveraging the collective intelligence of multiple large language models, this framework significantly improves annotation accuracy while providing robust uncertainty quantification. The package is fully compatible with the scverse ecosystem, allowing seamless integration with AnnData objects and Scanpy workflows.
 
 ### Scientific Background
 
@@ -28,6 +29,10 @@ Single-cell RNA sequencing has revolutionized our understanding of cellular hete
   - StepFun (Step-2-Mini, Step-2-16k, etc.)
   - Zhipu AI (GLM-4-Plus, GLM-3-Turbo)
   - MiniMax (MiniMax-Text-01)
+- **Seamless Integration**: 
+  - Works directly with Scanpy/AnnData workflows
+  - Compatible with scverse ecosystem
+  - Flexible input formats (dictionary, DataFrame, or AnnData)
 
 ### Advanced Annotation Capabilities
 - **Iterative Consensus Framework**: Enables multiple rounds of structured deliberation between LLMs
@@ -315,6 +320,87 @@ Using JSON responses provides several advantages:
 - Structured data that can be easily processed
 - Additional metadata like confidence levels and key markers
 - More consistent parsing across different LLM providers
+
+## Scanpy/AnnData Integration
+
+mLLMCelltype is designed to seamlessly integrate with the scverse ecosystem, particularly with AnnData objects and Scanpy workflows.
+
+### AnnData Integration
+
+mLLMCelltype can directly process data from AnnData objects and add annotation results back to AnnData objects:
+
+```python
+import scanpy as sc
+import mllmcelltype as mct
+
+# Load data
+adata = sc.datasets.pbmc3k()
+
+# Preprocessing
+sc.pp.filter_cells(adata, min_genes=200)
+sc.pp.filter_genes(adata, min_cells=3)
+sc.pp.normalize_total(adata, target_sum=1e4)
+sc.pp.log1p(adata)
+sc.pp.highly_variable_genes(adata, n_top_genes=2000)
+sc.pp.pca(adata)
+sc.pp.neighbors(adata)
+sc.tl.leiden(adata)
+sc.tl.umap(adata)
+
+# Extract marker genes for each cluster
+sc.tl.rank_genes_groups(adata, 'leiden', method='wilcoxon')
+marker_genes = {}
+for cluster in adata.obs['leiden'].unique():
+    genes = sc.get.rank_genes_groups_df(adata, group=cluster)['names'].tolist()[:20]
+    marker_genes[cluster] = genes
+
+# Use mLLMCelltype for cell type annotation
+annotations = mct.annotate_clusters(
+    marker_genes=marker_genes,
+    species='human',
+    provider='openai',
+    model='gpt-4o'
+)
+
+# Add annotations back to AnnData object
+adata.obs['cell_type'] = adata.obs['leiden'].astype(str).map(annotations)
+
+# Visualize results
+sc.pl.umap(adata, color='cell_type', legend_loc='on data')
+```
+
+### Multi-Model Consensus Annotation with AnnData
+
+mLLMCelltype's multi-model consensus framework also integrates seamlessly with AnnData:
+
+```python
+import mllmcelltype as mct
+
+# Use multiple models for consensus annotation
+consensus_results = mct.interactive_consensus_annotation(
+    marker_genes=marker_genes,
+    species='human',
+    providers=['openai', 'anthropic', 'gemini'],
+    models=['gpt-4o', 'claude-3-opus-20240229', 'gemini-1.5-pro'],
+    consensus_threshold=0.7
+)
+
+# Add consensus annotations and uncertainty metrics to AnnData object
+adata.obs['consensus_cell_type'] = adata.obs['leiden'].astype(str).map(consensus_results["consensus"])
+adata.obs['consensus_proportion'] = adata.obs['leiden'].astype(str).map(consensus_results["consensus_proportion"])
+adata.obs['entropy'] = adata.obs['leiden'].astype(str).map(consensus_results["entropy"])
+
+# Visualize results
+sc.pl.umap(adata, color=['consensus_cell_type', 'consensus_proportion', 'entropy'])
+```
+
+### Complete Scanpy Workflow Integration
+
+Check our [examples directory](https://github.com/cafferychen777/mLLMCelltype/tree/main/python/examples) for complete Scanpy integration examples, including:
+
+- scanpy_integration_example.py: Basic Scanpy workflow integration
+- bcl_integration_example.py: Integration with Bioconductor/Seurat workflows
+- discussion_mode_example.py: Advanced integration example using multi-model discussion mode
 
 ## Contributing
 
