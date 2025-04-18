@@ -34,6 +34,15 @@ jobs:
         pip install -e .[dev]
     
     - name: Test with pytest
+      env:
+        OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+        ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+        GOOGLE_API_KEY: ${{ secrets.GOOGLE_API_KEY }}
+        DEEPSEEK_API_KEY: ${{ secrets.DEEPSEEK_API_KEY }}
+        QWEN_API_KEY: ${{ secrets.QWEN_API_KEY }}
+        STEPFUN_API_KEY: ${{ secrets.STEPFUN_API_KEY }}
+        ZHIPU_API_KEY: ${{ secrets.ZHIPU_API_KEY }}
+        MINIMAX_API_KEY: ${{ secrets.MINIMAX_API_KEY }}
       run: |
         cd python
         pytest --cov=mllmcelltype tests/
