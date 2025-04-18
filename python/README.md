@@ -174,7 +174,7 @@ result = interactive_consensus_annotation(
     models=[                                              # Multiple LLM models
         'gpt-4o',                                         # OpenAI
         'claude-3-7-sonnet-20250219',                     # Anthropic
-        'gemini-2.5-pro',                                 # Google
+        'gemini-2.0-flash',                               # Google
         'qwen-max-2025-01-25'                             # Alibaba
     ],
     consensus_threshold=0.7,                              # Agreement threshold
@@ -264,14 +264,14 @@ annotations = annotate_clusters(
 
 ### Structured JSON Response Format
 
-mLLMCelltype supports structured JSON responses, providing detailed annotation information with confidence scores and supporting evidence:
+mLLMCelltype supports structured JSON responses, providing detailed annotation information with confidence scores and key markers:
 
 ```python
 from mllmcelltype import annotate_clusters
 
-# Define comprehensive JSON response template
+# Define JSON response template matching the default implementation
 json_template = """
- You are an expert single-cell genomics analyst. Below are marker genes for different cell clusters from {context} tissue.
+You are an expert single-cell genomics analyst. Below are marker genes for different cell clusters from {context} tissue.
 
 {clusters}
 
@@ -284,9 +284,7 @@ Use the following structure:
       "cluster": "1",
       "cell_type": "precise cell type name",
       "confidence": "high/medium/low",
-      "key_markers": ["marker1", "marker2", "marker3"],
-      "evidence": "Brief explanation of key markers supporting this annotation",
-      "alternative_annotation": "possible alternative if confidence is not high"
+      "key_markers": ["marker1", "marker2", "marker3"]
     }
   ]
 }
@@ -309,8 +307,6 @@ for cluster_id, annotation in json_annotations.items():
     key_markers = ', '.join(annotation['key_markers'])
     print(f"Cluster {cluster_id}: {cell_type} (Confidence: {confidence})")
     print(f"  Key markers: {key_markers}")
-    if 'evidence' in annotation:
-        print(f"  Evidence: {annotation['evidence']}")
 
 # Raw JSON response is also available in the cache for advanced processing
 ```

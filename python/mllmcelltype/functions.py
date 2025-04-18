@@ -15,13 +15,13 @@ from .utils import clean_annotation
 # Define supported models as literals for better type checking
 ModelType = Literal[
     # OpenAI models
-    'gpt-4o', 'gpt-4-turbo', 'o1', 'o1-mini',
+    'gpt-4o', 'gpt-4-turbo', 'gpt-4.1', 'o1', 'o1-mini', 'o1-pro', 'o4-mini',
     # Anthropic models
     'claude-3-7-sonnet-20250219', 'claude-3-5-sonnet-latest', 'claude-3-5-haiku-latest', 'claude-3-opus',
     # DeepSeek models
     'deepseek-chat', 'deepseek-reasoner',
     # Gemini models
-    'gemini-2.0-flash', 'gemini-2.0-flash-exp', 'gemini-1.5-pro', 'gemini-1.5-flash',
+    'gemini-2.0-flash', 'gemini-2.0-flash-001', 'gemini-1.5-pro', 'gemini-1.5-flash',
     # Qwen models
     'qwen-max-2025-01-25', 'qwen-plus',
     # StepFun models
@@ -56,11 +56,11 @@ def get_provider(model: str) -> str:
     """
     # Define supported models
     providers = {
-        'openai': ['gpt-4o', 'gpt-4-turbo', 'o1', 'o1-mini'],
+        'openai': ['gpt-4o', 'gpt-4-turbo', 'gpt-4.1', 'o1', 'o1-mini', 'o1-pro', 'o4-mini'],
         'anthropic': ['claude-3-7-sonnet-20250219', 'claude-3-5-sonnet-latest', 
                      'claude-3-5-haiku-latest', 'claude-3-opus'],
         'deepseek': ['deepseek-chat', 'deepseek-reasoner'],
-        'gemini': ['gemini-2.0-flash', 'gemini-2.0-flash-exp', 'gemini-1.5-pro', 'gemini-1.5-flash'],
+        'gemini': ['gemini-2.0-flash', 'gemini-2.0-flash-001', 'gemini-1.5-pro', 'gemini-1.5-flash'],
         'qwen': ['qwen-max-2025-01-25', 'qwen-plus'],
         'stepfun': ['step-2-16k', 'step-2-mini', 'step-1-8k'],
         'zhipu': ['glm-4-plus', 'glm-3-turbo'],
