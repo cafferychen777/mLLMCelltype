@@ -246,24 +246,99 @@ if (!requireNamespace("SCpubr", quietly = TRUE)) {
 }
 library(SCpubr)
 
-# 基础UMAP可视化
+# 基础UMAP可视化（默认设置）
+pdf("pbmc_basic_annotations.pdf", width=8, height=6)
 SCpubr::do_DimPlot(sample = pbmc,
                   group.by = "cell_type",
                   label = TRUE,
                   legend.position = "right") +
   ggtitle("mLLMCelltype共识注释")
+dev.off()
 
-# 更多自定义可视化
+# 更多自定义可视化（增强样式）
+pdf("pbmc_custom_annotations.pdf", width=8, height=6)
 SCpubr::do_DimPlot(sample = pbmc,
                   group.by = "cell_type",
                   label = TRUE,
-                  label.box = FALSE,
+                  label.box = TRUE,
                   legend.position = "right",
-                  pt.size = 1.2,
+                  pt.size = 1.0,
                   border.size = 1,
-                  font.size = 14) +
-  ggtitle("mLLMCelltype共识注释")
+                  font.size = 12) +
+  ggtitle("mLLMCelltype共识注释") +
+  theme(plot.title = element_text(hjust = 0.5))
+dev.off()
+
+# 使用增强型SCpubr图表可视化不确定性指标
+# 获取细胞类型并创建命名的颜色调色板
+cell_types <- unique(pbmc$cell_type)
+color_palette <- viridis::viridis(length(cell_types))
+names(color_palette) <- cell_types
+
+# 使用SCpubr的细胞类型注释
+p1 <- SCpubr::do_DimPlot(sample = pbmc,
+                  group.by = "cell_type",
+                  label = TRUE,
+                  legend.position = "bottom",  # 将图例放在底部
+                  pt.size = 1.0,
+                  label.size = 4,  # 较小的标签字体大小
+                  label.box = TRUE,  # 为标签添加背景框以提高可读性
+                  repel = TRUE,  # 使标签相互排斥以避免重叠
+                  colors.use = color_palette,
+                  plot.title = "Cell Type") +
+      theme(plot.title = element_text(hjust = 0.5, margin = margin(b = 15, t = 10)),
+            legend.text = element_text(size = 8),
+            legend.key.size = unit(0.3, "cm"),
+            plot.margin = unit(c(0.8, 0.8, 0.8, 0.8), "cm"))
+
+# 使用SCpubr的共识比例特征图
+p2 <- SCpubr::do_FeaturePlot(sample = pbmc,
+                       features = "consensus_proportion",
+                       order = TRUE,
+                       pt.size = 1.0,
+                       enforce_symmetry = FALSE,
+                       legend.title = "Consensus",
+                       plot.title = "Consensus Proportion",
+                       sequential.palette = "YlGnBu",  # 使用黄-绿-蓝渐变色，符合Nature Methods标准
+                       sequential.direction = 1,  # 从浅到深方向
+                       min.cutoff = min(pbmc$consensus_proportion),  # 设置最小值
+                       max.cutoff = max(pbmc$consensus_proportion),  # 设置最大值
+                       na.value = "lightgrey") +  # 缺失值的颜色
+      theme(plot.title = element_text(hjust = 0.5, margin = margin(b = 15, t = 10)),
+            plot.margin = unit(c(0.8, 0.8, 0.8, 0.8), "cm"))
+
+# 使用SCpubr的Shannon熵特征图
+p3 <- SCpubr::do_FeaturePlot(sample = pbmc,
+                       features = "entropy",
+                       order = TRUE,
+                       pt.size = 1.0,
+                       enforce_symmetry = FALSE,
+                       legend.title = "Entropy",
+                       plot.title = "Shannon Entropy",
+                       sequential.palette = "OrRd",  # 使用橙-红渐变色，符合Nature Methods标准
+                       sequential.direction = -1,  # 从深到浅方向（颠倒）
+                       min.cutoff = min(pbmc$entropy),  # 设置最小值
+                       max.cutoff = max(pbmc$entropy),  # 设置最大值
+                       na.value = "lightgrey") +  # 缺失值的颜色
+      theme(plot.title = element_text(hjust = 0.5, margin = margin(b = 15, t = 10)),
+            plot.margin = unit(c(0.8, 0.8, 0.8, 0.8), "cm"))
+
+# 使用相等宽度组合图表
+pdf("pbmc_uncertainty_metrics.pdf", width=18, height=7)
+combined_plot <- cowplot::plot_grid(p1, p2, p3, ncol = 3, rel_widths = c(1.2, 1.2, 1.2))
+print(combined_plot)
+dev.off()
 ```
+
+## 可视化示例
+
+以下是使用mLLMCelltype和SCpubr创建的出版级可视化示例，展示了细胞类型注释和不确定性指标（共识比例和Shannon熵）：
+
+<div align="center">
+  <img src="images/mLLMCelltype_visualization.png" alt="mLLMCelltype可视化" width="900"/>
+</div>
+
+*图示：左图显示UMAP投影上的细胞类型注释。中图使用黄-绿-蓝渐变色显示共识比例（深蓝色表示LLM之间的一致性更强）。右图使用橙-红渐变色显示Shannon熵（深红色表示不确定性较低，浅橙色表示不确定性较高）。*
 
 ## 许可证
 

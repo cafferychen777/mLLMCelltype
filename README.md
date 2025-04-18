@@ -272,36 +272,101 @@ if (!requireNamespace("SCpubr", quietly = TRUE)) {
   remotes::install_github("enblacar/SCpubr")
 }
 library(SCpubr)
+library(viridis)  # For color palettes
 
-# Basic UMAP visualization
+# Basic UMAP visualization with default settings
+pdf("pbmc_basic_annotations.pdf", width=8, height=6)
 SCpubr::do_DimPlot(sample = pbmc,
                   group.by = "cell_type",
                   label = TRUE,
                   legend.position = "right") +
   ggtitle("mLLMCelltype Consensus Annotations")
+dev.off()
 
-# For more customized visualization
+# More customized visualization with enhanced styling
+pdf("pbmc_custom_annotations.pdf", width=8, height=6)
 SCpubr::do_DimPlot(sample = pbmc,
                   group.by = "cell_type",
                   label = TRUE,
-                  label.box = FALSE,
+                  label.box = TRUE,
                   legend.position = "right",
-                  pt.size = 1.2,
+                  pt.size = 1.0,
                   border.size = 1,
-                  font.size = 14) +
-  ggtitle("mLLMCelltype Consensus Annotations")
+                  font.size = 12) +
+  ggtitle("mLLMCelltype Consensus Annotations") +
+  theme(plot.title = element_text(hjust = 0.5))
+dev.off()
 
-# Visualize uncertainty metrics
-p1 <- DimPlot(pbmc, reduction = "umap", group.by = "cell_type", label = TRUE) + 
-  ggtitle("Cell Type Annotations")
-p2 <- FeaturePlot(pbmc, features = "consensus_proportion", min.cutoff = 0, max.cutoff = 1) + 
-  ggtitle("Consensus Proportion")
-p3 <- FeaturePlot(pbmc, features = "entropy", min.cutoff = 0) + 
-  ggtitle("Annotation Uncertainty (Shannon Entropy)")
+# Visualize uncertainty metrics with enhanced SCpubr plots
+# Get cell types and create a named color palette
+cell_types <- unique(pbmc$cell_type)
+color_palette <- viridis::viridis(length(cell_types))
+names(color_palette) <- cell_types
 
-# Display plots side by side
-cowplot::plot_grid(p1, p2, p3, ncol = 3)
+# Cell type annotations with SCpubr
+p1 <- SCpubr::do_DimPlot(sample = pbmc,
+                  group.by = "cell_type",
+                  label = TRUE,
+                  legend.position = "bottom",  # Place legend at the bottom
+                  pt.size = 1.0,
+                  label.size = 4,  # Smaller label font size
+                  label.box = TRUE,  # Add background box to labels for better readability
+                  repel = TRUE,  # Make labels repel each other to avoid overlap
+                  colors.use = color_palette,
+                  plot.title = "Cell Type") +
+      theme(plot.title = element_text(hjust = 0.5, margin = margin(b = 15, t = 10)),
+            legend.text = element_text(size = 8),
+            legend.key.size = unit(0.3, "cm"),
+            plot.margin = unit(c(0.8, 0.8, 0.8, 0.8), "cm"))
+
+# Consensus proportion feature plot with SCpubr
+p2 <- SCpubr::do_FeaturePlot(sample = pbmc,
+                       features = "consensus_proportion",
+                       order = TRUE,
+                       pt.size = 1.0,
+                       enforce_symmetry = FALSE,
+                       legend.title = "Consensus",
+                       plot.title = "Consensus Proportion",
+                       sequential.palette = "YlGnBu",  # Yellow-Green-Blue gradient, following Nature Methods standards
+                       sequential.direction = 1,  # Light to dark direction
+                       min.cutoff = min(pbmc$consensus_proportion),  # Set minimum value
+                       max.cutoff = max(pbmc$consensus_proportion),  # Set maximum value
+                       na.value = "lightgrey") +  # Color for missing values
+      theme(plot.title = element_text(hjust = 0.5, margin = margin(b = 15, t = 10)),
+            plot.margin = unit(c(0.8, 0.8, 0.8, 0.8), "cm"))
+
+# Shannon entropy feature plot with SCpubr
+p3 <- SCpubr::do_FeaturePlot(sample = pbmc,
+                       features = "entropy",
+                       order = TRUE,
+                       pt.size = 1.0,
+                       enforce_symmetry = FALSE,
+                       legend.title = "Entropy",
+                       plot.title = "Shannon Entropy",
+                       sequential.palette = "OrRd",  # Orange-Red gradient, following Nature Methods standards
+                       sequential.direction = -1,  # Dark to light direction (reversed)
+                       min.cutoff = min(pbmc$entropy),  # Set minimum value
+                       max.cutoff = max(pbmc$entropy),  # Set maximum value
+                       na.value = "lightgrey") +  # Color for missing values
+      theme(plot.title = element_text(hjust = 0.5, margin = margin(b = 15, t = 10)),
+            plot.margin = unit(c(0.8, 0.8, 0.8, 0.8), "cm"))
+
+# Combine plots with equal widths
+pdf("pbmc_uncertainty_metrics.pdf", width=18, height=7)
+combined_plot <- cowplot::plot_grid(p1, p2, p3, ncol = 3, rel_widths = c(1.2, 1.2, 1.2))
+print(combined_plot)
+dev.off()
 ```
+
+## Visualization Example
+
+Below is an example of publication-ready visualization created with mLLMCelltype and SCpubr, showing cell type annotations alongside uncertainty metrics (Consensus Proportion and Shannon Entropy):
+
+<div align="center">
+  <img src="images/mLLMCelltype_visualization.png" alt="mLLMCelltype Visualization" width="900"/>
+</div>
+
+*Figure: Left panel shows cell type annotations on UMAP projection. Middle panel displays the consensus proportion using a yellow-green-blue gradient (deeper blue indicates stronger agreement among LLMs). Right panel shows Shannon entropy using an orange-red gradient (deeper red indicates lower uncertainty, lighter orange indicates higher uncertainty).*
 
 ## License
 
