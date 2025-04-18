@@ -1,4 +1,4 @@
-# R相关
+# R related
 .Rproj.user
 .Rhistory
 .RData
@@ -10,7 +10,7 @@ logs/
 test_logs/
 .DS_Store
 
-# Python相关
+# Python related
 __pycache__/
 *.py[cod]
 *$py.class
