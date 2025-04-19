@@ -16,7 +16,7 @@
 #' @param controversy_threshold Consensus proportion threshold (default: 0.7). Clusters with consensus proportion below this value will be marked as controversial
 #' @param entropy_threshold Entropy threshold for identifying controversial clusters (default: 1.0)
 #' @param max_discussion_rounds Maximum number of discussion rounds for controversial clusters (default: 3)
-#' @param summary_model Model to use for final summary
+#' @param consensus_check_model Model to use for consensus checking
 #' @param log_dir Directory for storing logs
 #' @param cache_dir Directory for storing cache
 #' @param use_cache Whether to use cached results
@@ -98,7 +98,7 @@ get_initial_predictions <- function(input, tissue_name, models, api_keys, top_ge
 #' @param logger Logger object for recording messages
 #' @return A list containing controversial clusters and consensus results
 #' @keywords internal
-identify_controversial_clusters <- function(input, individual_predictions, controversy_threshold, entropy_threshold, api_keys, logger) {
+identify_controversial_clusters <- function(input, individual_predictions, controversy_threshold, entropy_threshold, api_keys, logger, consensus_check_model = NULL) {
   logger$log_entry("INFO", "Phase 2: Identifying controversial clusters...")
   message("\nPhase 2: Identifying controversial clusters...")
 
@@ -166,7 +166,7 @@ identify_controversial_clusters <- function(input, individual_predictions, contr
 
     # Calculate agreement score
     # Parameters are passed to check_consensus and used in prompt template to instruct LLM # nolint
-    initial_consensus <- check_consensus(valid_predictions, api_keys, controversy_threshold, entropy_threshold)
+    initial_consensus <- check_consensus(valid_predictions, api_keys, controversy_threshold, entropy_threshold, consensus_check_model)
     consensus_results[[as.character(cluster_id)]] <- initial_consensus
 
     # If no consensus is reached or the consensus metrics indicate high uncertainty, mark it as controversial.
@@ -510,7 +510,7 @@ combine_results <- function(initial_results, controversy_results, discussion_res
 #' @param controversy_threshold Consensus proportion threshold (default: 0.7). Clusters with consensus proportion below this value will be marked as controversial
 #' @param entropy_threshold Entropy threshold for identifying controversial clusters (default: 1.0)
 #' @param max_discussion_rounds Maximum number of discussion rounds for controversial clusters (default: 3)
-#' @param summary_model Model to use for final summary
+#' @param consensus_check_model Model to use for consensus checking
 #' @param log_dir Directory for storing logs
 #' @param cache_dir Directory for storing cache
 #' @param use_cache Whether to use cached results
@@ -531,7 +531,7 @@ interactive_consensus_annotation <- function(input,
                                            controversy_threshold = 0.7,
                                            entropy_threshold = 1.0,
                                            max_discussion_rounds = 3,
-                                           summary_model = "claude-3-5-sonnet-latest",
+                                           consensus_check_model = NULL,
                                            log_dir = "logs",
                                            cache_dir = "consensus_cache",
                                            use_cache = TRUE) {
@@ -560,13 +560,20 @@ interactive_consensus_annotation <- function(input,
   )
 
   # Phase 2: Identify controversial clusters
+  # If consensus_check_model is NULL, use the first available model from the models list
+  if (is.null(consensus_check_model) && length(models) > 0) {
+    consensus_check_model <- models[1]
+    logger$log_entry("INFO", sprintf("No consensus_check_model specified, using %s", consensus_check_model))
+  }
+  
   controversy_results <- identify_controversial_clusters(
     input = input,
     individual_predictions = initial_results$individual_predictions,
     controversy_threshold = controversy_threshold,
     entropy_threshold = entropy_threshold,
     api_keys = api_keys,
-    logger = logger
+    logger = logger,
+    consensus_check_model = consensus_check_model
   )
 
   # Phase 3: Process controversial clusters through discussion
