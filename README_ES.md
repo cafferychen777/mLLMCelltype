@@ -49,7 +49,7 @@ pip install git+https://github.com/cafferychen777/mLLMCelltype.git
 
 - **OpenAI**: GPT-4.5/GPT-4o ([Clave API](https://platform.openai.com/settings/organization/billing/overview))
 - **Anthropic**: Claude-3.7-Sonnet/Claude-3.5-Haiku ([Clave API](https://console.anthropic.com/settings/keys))
-- **Google**: Gemini-1.5-Pro/Gemini-1.5-Flash ([Clave API](https://aistudio.google.com/app/apikey))
+- **Google**: Gemini-2.0-Pro/Gemini-2.0-Flash ([Clave API](https://aistudio.google.com/app/apikey))
 - **Alibaba**: Qwen2-72B-Instruct ([Clave API](https://dashscope.console.aliyun.com/apiKey))
 - **Meta**: Llama-3.1-405B-Instruct ([Clave API](https://replicate.com/account/api-tokens))
 - **Mistral**: Mistral-Large-2 ([Clave API](https://console.mistral.ai/api-keys/))
