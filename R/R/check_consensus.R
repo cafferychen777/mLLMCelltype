@@ -1,12 +1,13 @@
-#' Check if consensus is reached among models using Claude
+#' Check if consensus is reached among models
 #' @param round_responses A vector of model responses to check for consensus
 #' @param api_keys A list of API keys for different providers
 #' @param controversy_threshold Threshold for consensus proportion (default: 2/3)
 #' @param entropy_threshold Threshold for entropy (default: 1.0)
+#' @param consensus_check_model Model to use for consensus checking (default: NULL, will try available models in order)
 #' @note This function uses create_consensus_check_prompt from prompt_templates.R
 #' @importFrom utils write.table tail
 #' @keywords internal
-check_consensus <- function(round_responses, api_keys = NULL, controversy_threshold = 2/3, entropy_threshold = 1.0) {
+check_consensus <- function(round_responses, api_keys = NULL, controversy_threshold = 2/3, entropy_threshold = 1.0, consensus_check_model = NULL) {
   # Initialize logging
   write_log("\n=== Starting check_consensus function ===")
   write_log(sprintf("Input responses: %s", paste(round_responses, collapse = "; ")))
@@ -24,61 +25,99 @@ check_consensus <- function(round_responses, api_keys = NULL, controversy_thresh
   # Get model analysis with retry mechanism
   max_retries <- 3
   response <- "0\n0\n0\nUnknown"  # Default response in case all attempts fail
+  success <- FALSE
   
-  # First try with Qwen
-  for (attempt in 1:max_retries) {
-    write_log(sprintf("Attempt %d of %d to get Qwen's analysis", attempt, max_retries))
-    tryCatch({
-      # Get API key using the get_api_key function
-      qwen_api_key <- get_api_key("qwen-max-2025-01-25", api_keys)
-      if (is.null(qwen_api_key)) {
-        qwen_api_key <- Sys.getenv("QWEN_API_KEY")
-      }
+  # Define models to try, in order of preference
+  models_to_try <- c()
+  
+  # If consensus_check_model is specified, prioritize it
+  if (!is.null(consensus_check_model)) {
+    write_log(sprintf("Using specified consensus check model: %s", consensus_check_model))
+    models_to_try <- c(consensus_check_model)
+  }
+  
+  # Add fallback models
+  fallback_models <- c("qwen-max-2025-01-25", "claude-3-5-sonnet-latest", "gpt-4o", "gemini-2.0-flash")
+  # Remove the consensus_check_model from fallback_models if it's already there
+  if (!is.null(consensus_check_model)) {
+    fallback_models <- fallback_models[fallback_models != consensus_check_model]
+  }
+  models_to_try <- c(models_to_try, fallback_models)
+  
+  # Try each model in order
+  for (model_name in models_to_try) {
+    if (success) break
+    
+    write_log(sprintf("Trying model %s for consensus check", model_name))
+    
+    # Get API key for this model
+    api_key <- get_api_key(model_name, api_keys)
+    if (is.null(api_key) || nchar(api_key) == 0) {
+      # Try to get from environment variables based on provider
+      provider <- tryCatch({
+        get_provider(model_name)
+      }, error = function(e) {
+        write_log(sprintf("ERROR: Could not determine provider for model %s: %s", model_name, e$message))
+        return(NULL)
+      })
       
-      response <- process_qwen(
-        formatted_responses,
-        "qwen-max-2025-01-25",
-        qwen_api_key
-      )
-      # Ensure response is a single string
-      if (is.character(response) && length(response) > 1) {
-        response <- paste(response, collapse = "\n")
+      if (!is.null(provider)) {
+        env_var <- paste0(toupper(provider), "_API_KEY")
+        api_key <- Sys.getenv(env_var)
       }
-      write_log(sprintf("Successfully got response from Qwen on attempt %d", attempt))
-      break
-    }, error = function(e) {
-      write_log(sprintf("ERROR on Qwen attempt %d: %s", attempt, e$message))
-      if (attempt == max_retries) {
-        write_log("All Qwen retry attempts failed, falling back to Claude")
-        # Try Claude as fallback
-        tryCatch({
-          # Get API key using the get_api_key function
-          anthropic_api_key <- get_api_key("claude-3-5-sonnet-latest", api_keys)
-          if (is.null(anthropic_api_key)) {
-            anthropic_api_key <- Sys.getenv("ANTHROPIC_API_KEY")
-          }
-          
-          response <- process_anthropic(
-            formatted_responses,
-            "claude-3-5-sonnet-latest",
-            anthropic_api_key
-          )
-          # Ensure response is a single string
-          if (is.character(response) && length(response) > 1) {
-            response <- paste(response, collapse = "\n")
-          }
-          write_log("Successfully got response from Claude as fallback")
-        }, error = function(e) {
-          write_log(sprintf("ERROR on Claude fallback: %s", e$message))
-          warning(sprintf("Both Qwen and Claude failed: %s", e$message))
-        })
-      } else {
-        message(sprintf("Qwen attempt %d failed: %s. Retrying...", attempt, e$message))
-        wait_time <- 5 * 2^(attempt-1)  
-        message(sprintf("Waiting for %d seconds before next attempt...", wait_time))
-        Sys.sleep(wait_time)
-      }
-    })
+    }
+    
+    # Skip if no API key available
+    if (is.null(api_key) || nchar(api_key) == 0) {
+      write_log(sprintf("No API key available for %s, skipping", model_name))
+      next
+    }
+    
+    # Try with current model using retry mechanism
+    for (attempt in 1:max_retries) {
+      write_log(sprintf("Attempt %d of %d with model %s", attempt, max_retries, model_name))
+      
+      tryCatch({
+        # Use get_model_response which automatically selects the right processor
+        temp_response <- get_model_response(
+          formatted_responses,
+          model_name,
+          api_key
+        )
+        
+        # Ensure response is a single string
+        if (is.character(temp_response) && length(temp_response) > 1) {
+          temp_response <- paste(temp_response, collapse = "\n")
+        }
+        
+        write_log(sprintf("Successfully got response from %s", model_name))
+        response <- temp_response
+        success <- TRUE
+        break
+      }, error = function(e) {
+        write_log(sprintf("ERROR on %s attempt %d: %s", model_name, attempt, e$message))
+        
+        if (attempt < max_retries) {
+          wait_time <- 5 * 2^(attempt-1)
+          write_log(sprintf("Waiting for %d seconds before next attempt...", wait_time))
+          Sys.sleep(wait_time)
+        }
+      })
+      
+      if (success) break
+    }
+  }
+  
+  # If all models failed, return default values with warning
+  if (!success) {
+    # Note: We don't use a local statistical method here because simple statistical methods
+    # (like majority voting or frequency counting) are too simplistic for cell type annotation.
+    # They cannot capture semantic similarities between different annotations and would lead to
+    # poor quality results. Cell type annotation requires understanding of biological context and
+    # semantic relationships, which only LLMs can provide effectively.
+    write_log("WARNING: All model attempts failed, consensus check could not be performed")
+    warning("All available models failed for consensus check. Please ensure at least one model API key is valid.")
+    return(list(reached = FALSE, consensus_proportion = 0, entropy = 0, majority_prediction = "Unknown"))
   }
   
   # Directly parse the response using a simpler approach
