@@ -56,7 +56,7 @@ markers <- FindAllMarkers(seurat_obj, only.pos = TRUE, min.pct = 0.25, logfc.thr
 consensus_results <- interactive_consensus_annotation(
   input = markers,
   tissue_name = "human PBMC",
-  models = c("gpt-4o", "claude-3-7-sonnet-20250219", "gemini-1.5-pro"),
+  models = c("gpt-4o", "claude-3-7-sonnet-20250219", "gemini-2.0-pro"),
   api_keys = list(
     openai = "your_openai_api_key",
     anthropic = "your_anthropic_api_key",
