@@ -6,7 +6,7 @@
   <a href="README.md">English</a> | <a href="README_CN.md">中文</a> | <a href="README_JP.md">日本語</a> | <a href="README_DE.md">Deutsch</a> | <a href="README_FR.md">Français</a> | <a href="README_KR.md">한국어</a>
 </div>
 
-mLLMCelltype es un marco de consenso iterativo multi-LLM para la anotación de tipos celulares en datos de secuenciación de ARN unicelular. Al aprovechar las fortalezas complementarias de múltiples modelos de lenguaje grande (GPT, Claude, Gemini, Qwen, etc.), este marco mejora significativamente la precisión de anotación mientras proporciona una cuantificación transparente de la incertidumbre.
+mLLMCelltype es un marco de consenso iterativo multi-LLM para la anotación de tipos celulares en datos de secuenciación de ARN unicelular. Al aprovechar las fortalezas complementarias de múltiples modelos de lenguaje grande (GPT, Claude, Gemini, Grok, DeepSeek, Qwen, etc.), este marco mejora significativamente la precisión de anotación mientras proporciona una cuantificación transparente de la incertidumbre.
 
 ## Características Principales
 

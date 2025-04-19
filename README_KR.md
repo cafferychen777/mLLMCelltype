@@ -6,7 +6,7 @@
   <a href="README.md">English</a> | <a href="README_CN.md">中文</a> | <a href="README_ES.md">Español</a> | <a href="README_JP.md">日本語</a> | <a href="README_DE.md">Deutsch</a> | <a href="README_FR.md">Français</a>
 </div>
 
-mLLMCelltype는 단일 세포 RNA 시퀀싱 데이터에서 세포 유형 주석을 위한 반복적 다중 LLM 합의 프레임워크입니다. 여러 대형 언어 모델(GPT, Claude, Gemini, Qwen 등)의 상호 보완적인 강점을 활용함으로써, 이 프레임워크는 투명한 불확실성 정량화를 제공하면서 주석 정확도를 크게 향상시킵니다.
+mLLMCelltype는 단일 세포 RNA 시퀀싱 데이터에서 세포 유형 주석을 위한 반복적 다중 LLM 합의 프레임워크입니다. 여러 대형 언어 모델(GPT, Claude, Gemini, Grok, DeepSeek, Qwen 등)의 상호 보완적인 강점을 활용함으로써, 이 프레임워크는 투명한 불확실성 정량화를 제공하면서 주석 정확도를 크게 향상시킵니다.
 
 ## 주요 기능
 

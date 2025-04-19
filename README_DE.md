@@ -6,7 +6,7 @@
   <a href="README.md">English</a> | <a href="README_CN.md">中文</a> | <a href="README_ES.md">Español</a> | <a href="README_JP.md">日本語</a> | <a href="README_FR.md">Français</a> | <a href="README_KR.md">한국어</a>
 </div>
 
-mLLMCelltype ist ein iteratives Multi-LLM-Konsensus-Framework für die Zelltyp-Annotation in Einzelzell-RNA-Sequenzierungsdaten. Durch die Nutzung der komplementären Stärken mehrerer großer Sprachmodelle (GPT, Claude, Gemini, Qwen usw.) verbessert dieses Framework die Annotationsgenauigkeit erheblich und bietet gleichzeitig eine transparente Quantifizierung der Unsicherheit.
+mLLMCelltype ist ein iteratives Multi-LLM-Konsensus-Framework für die Zelltyp-Annotation in Einzelzell-RNA-Sequenzierungsdaten. Durch die Nutzung der komplementären Stärken mehrerer großer Sprachmodelle (GPT, Claude, Gemini, Grok, DeepSeek, Qwen usw.) verbessert dieses Framework die Annotationsgenauigkeit erheblich und bietet gleichzeitig eine transparente Quantifizierung der Unsicherheit.
 
 ## Hauptmerkmale
 
