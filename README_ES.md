@@ -266,10 +266,6 @@ A continuación se muestra un ejemplo de visualización lista para publicación 
 
 *Figura: El panel izquierdo muestra anotaciones de tipos celulares en proyección UMAP. El panel central muestra la proporción de consenso usando un gradiente amarillo-verde-azul (azul más profundo indica mayor acuerdo entre LLMs). El panel derecho muestra la entropía de Shannon usando un gradiente naranja-rojo (rojo más profundo indica menor incertidumbre, naranja más claro indica mayor incertidumbre).*
 
-## Licencia
-
-MIT
-
 ## Cita
 
 Si utiliza mLLMCelltype en su investigación, por favor cite:
