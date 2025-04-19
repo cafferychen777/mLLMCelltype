@@ -20,14 +20,14 @@ from mllmcelltype.providers import openai, anthropic, deepseek, gemini, qwen, zh
 # Test OpenAI provider
 class TestOpenAIProvider:
     """Tests for OpenAI provider module."""
-    
+
     @patch('openai.OpenAI')
     def test_request_openai(self, mock_openai):
         """Test OpenAI API request function."""
         # Setup mock response
         mock_client = MagicMock()
         mock_openai.return_value = mock_client
-        
+
         mock_response = MagicMock()
         mock_response.choices = [MagicMock()]
         mock_response.choices[0].message.content = json.dumps({
@@ -35,7 +35,7 @@ class TestOpenAIProvider:
             "2": "B cells"
         })
         mock_client.chat.completions.create.return_value = mock_response
-        
+
         # Test function
         result = openai.request_openai(
             prompt="Test prompt",
@@ -44,13 +44,13 @@ class TestOpenAIProvider:
             temperature=0.7,
             max_tokens=1000
         )
-        
+
         # Verify results
         assert isinstance(result, dict)
         assert "1" in result
         assert result["1"] == "T cells"
         assert result["2"] == "B cells"
-        
+
         # Verify API was called correctly
         mock_client.chat.completions.create.assert_called_once()
         args, kwargs = mock_client.chat.completions.create.call_args
@@ -63,21 +63,21 @@ class TestOpenAIProvider:
 # Test Anthropic provider
 class TestAnthropicProvider:
     """Tests for Anthropic provider module."""
-    
+
     @patch('anthropic.Anthropic')
     def test_request_anthropic(self, mock_anthropic):
         """Test Anthropic API request function."""
         # Setup mock response
         mock_client = MagicMock()
         mock_anthropic.return_value = mock_client
-        
+
         mock_response = MagicMock()
         mock_response.content = [{"text": json.dumps({
             "1": "T cells",
             "2": "B cells"
         })}]
         mock_client.messages.create.return_value = mock_response
-        
+
         # Test function
         result = anthropic.request_anthropic(
             prompt="Test prompt",
@@ -86,13 +86,13 @@ class TestAnthropicProvider:
             temperature=0.7,
             max_tokens=1000
         )
-        
+
         # Verify results
         assert isinstance(result, dict)
         assert "1" in result
         assert result["1"] == "T cells"
         assert result["2"] == "B cells"
-        
+
         # Verify API was called correctly
         mock_client.messages.create.assert_called_once()
         args, kwargs = mock_client.messages.create.call_args
@@ -104,50 +104,48 @@ class TestAnthropicProvider:
 # Test Gemini provider
 class TestGeminiProvider:
     """Tests for Google Gemini provider module."""
-    
-    @patch('google.generativeai.GenerativeModel')
-    def test_request_gemini(self, mock_genai):
-        """Test Gemini API request function."""
+
+    @patch('google.genai.Client')
+    def test_process_gemini(self, mock_client_class):
+        """Test Gemini API process function."""
         # Setup mock response
-        mock_model = MagicMock()
-        mock_genai.return_value = mock_model
-        
+        mock_client = MagicMock()
+        mock_client_class.return_value = mock_client
+
+        mock_models = MagicMock()
+        mock_client.models = mock_models
+
         mock_response = MagicMock()
-        mock_response.text = json.dumps({
-            "1": "T cells",
-            "2": "B cells"
-        })
-        mock_model.generate_content.return_value = mock_response
-        
-        # Test function with patch for the GenerativeModel constructor
-        with patch('google.generativeai.configure') as mock_configure:
-            result = gemini.request_gemini(
-                prompt="Test prompt",
-                model="gemini-1.5-pro",
-                api_key="test-key",
-                temperature=0.7,
-                max_tokens=1000
-            )
-            
-            # Verify configure was called
-            mock_configure.assert_called_once_with(api_key="test-key")
-        
+        mock_response.text = "Cluster 1: T cells\nCluster 2: B cells"
+        mock_models.generate_content.return_value = mock_response
+
+        # Test function
+        result = gemini.process_gemini(
+            prompt="Test prompt",
+            model="gemini-2.0-pro",
+            api_key="test-key"
+        )
+
+        # Verify client was created with correct API key
+        mock_client_class.assert_called_once_with(api_key="test-key")
+
         # Verify results
-        assert isinstance(result, dict)
-        assert "1" in result
-        assert result["1"] == "T cells"
-        assert result["2"] == "B cells"
-        
+        assert isinstance(result, list)
+        assert len(result) == 2
+        assert "Cluster 1: T cells" in result
+        assert "Cluster 2: B cells" in result
+
         # Verify model generation was called correctly
-        mock_model.generate_content.assert_called_once()
-        args, kwargs = mock_model.generate_content.call_args
-        assert args[0] == "Test prompt"
-        assert "generation_config" in kwargs
+        mock_models.generate_content.assert_called_once()
+        args, kwargs = mock_models.generate_content.call_args
+        assert kwargs["model"] == "gemini-2.0-pro"
+        assert kwargs["contents"] == "Test prompt"
+        assert "config" in kwargs
 
 # Helper function to create generic provider tests
 def create_provider_test(provider_module, request_function_name, mock_path):
     """Create a generic test for a provider module."""
-    
+
     @patch(mock_path)
     def test_function(mock_request):
         """Test provider API request function."""
@@ -156,7 +154,7 @@ def create_provider_test(provider_module, request_function_name, mock_path):
             "1": "T cells",
             "2": "B cells"
         })
-        
+
         if isinstance(mock_request, MagicMock):
             # Direct mock
             mock_request.return_value = mock_response
@@ -165,10 +163,10 @@ def create_provider_test(provider_module, request_function_name, mock_path):
             mock_obj = MagicMock()
             mock_obj.return_value = mock_response
             mock_request.return_value = mock_obj
-        
+
         # Get the request function
         request_function = getattr(provider_module, request_function_name)
-        
+
         # Test function
         result = request_function(
             prompt="Test prompt",
@@ -177,17 +175,17 @@ def create_provider_test(provider_module, request_function_name, mock_path):
             temperature=0.7,
             max_tokens=1000
         )
-        
+
         # Verify results
         assert isinstance(result, dict)
         assert "1" in result
         assert result["1"] == "T cells"
         assert result["2"] == "B cells"
-        
+
         # Verify API was called
         if isinstance(mock_request, MagicMock):
             mock_request.assert_called_once()
-        
+
     return test_function
 
 # Create tests for other providers
@@ -214,37 +212,37 @@ test_request_stepfun = create_provider_test(
 # Test error handling
 def test_error_handling():
     """Test error handling in provider modules."""
-    
+
     # Test with invalid API key
     with patch('requests.post') as mock_post:
         mock_response = MagicMock()
         mock_response.status_code = 401
         mock_response.json.return_value = {"error": "Invalid API key"}
         mock_post.return_value = mock_response
-        
+
         with pytest.raises(Exception) as excinfo:
             deepseek.request_deepseek(
                 prompt="Test prompt",
                 model="deepseek-chat",
                 api_key="invalid-key"
             )
-        
+
         assert "API request failed" in str(excinfo.value)
-    
+
     # Test with rate limit error
     with patch('requests.post') as mock_post:
         mock_response = MagicMock()
         mock_response.status_code = 429
         mock_response.json.return_value = {"error": "Rate limit exceeded"}
         mock_post.return_value = mock_response
-        
+
         with pytest.raises(Exception) as excinfo:
             qwen.request_qwen(
                 prompt="Test prompt",
                 model="qwen-turbo",
                 api_key="test-key"
             )
-        
+
         assert "API request failed" in str(excinfo.value)
 
 if __name__ == "__main__":
