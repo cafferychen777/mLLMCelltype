@@ -31,7 +31,7 @@ setup(
         'all': [
             'openai>=1.0.0',
             'anthropic>=0.5.0',
-            'google-generativeai>=0.1.0',
+            'google-genai>=1.0.0',
             'python-dotenv>=0.19.0',
             'matplotlib>=3.3.0',
             'seaborn>=0.11.0',
@@ -42,7 +42,7 @@ setup(
         ],
         'openai': ['openai>=1.0.0'],
         'anthropic': ['anthropic>=0.5.0'],
-        'gemini': ['google-generativeai>=0.1.0'],
+        'gemini': ['google-genai>=1.0.0'],
         'dev': [
             'pytest>=6.0.0',
             'pytest-cov>=2.12.0',
