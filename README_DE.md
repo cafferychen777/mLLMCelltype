@@ -188,10 +188,6 @@ Nachfolgend ein Beispiel für eine publikationsreife Visualisierung, die mit mLL
 
 *Abbildung: Das linke Panel zeigt Zelltyp-Annotationen auf der UMAP-Projektion. Das mittlere Panel zeigt den Konsensusanteil mit einem Gelb-Grün-Blau-Farbverlauf (tieferes Blau zeigt stärkere Übereinstimmung zwischen den LLMs an). Das rechte Panel zeigt die Shannon-Entropie mit einem Orange-Rot-Farbverlauf (tieferes Rot zeigt geringere Unsicherheit, helleres Orange zeigt höhere Unsicherheit an).*
 
-## Lizenz
-
-MIT
-
 ## Zitierung
 
 Wenn Sie mLLMCelltype in Ihrer Forschung verwenden, zitieren Sie bitte:

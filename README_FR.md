@@ -188,10 +188,6 @@ Voici un exemple de visualisation prête à la publication créée avec mLLMCell
 
 *Figure : Le panneau de gauche montre les annotations de types cellulaires sur la projection UMAP. Le panneau du milieu affiche la proportion de consensus en utilisant un dégradé jaune-vert-bleu (un bleu plus profond indique un accord plus fort entre les LLM). Le panneau de droite montre l'entropie de Shannon en utilisant un dégradé orange-rouge (un rouge plus profond indique une incertitude plus faible, un orange plus clair indique une incertitude plus élevée).*
 
-## Licence
-
-MIT
-
 ## Citation
 
 Si vous utilisez mLLMCelltype dans votre recherche, veuillez citer :
