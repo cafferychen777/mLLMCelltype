@@ -3,7 +3,7 @@
 </div>
 
 <div align="center">
-  <a href="README_CN.md">中文文档</a>
+  <a href="README_CN.md">中文</a> | <a href="README_ES.md">Español</a>
 </div>
 
 mLLMCelltype is an iterative multi-LLM consensus framework for cell type annotation in single-cell RNA sequencing data. By leveraging the complementary strengths of multiple large language models (GPT, Claude, Gemini, Qwen, etc.), this framework significantly improves annotation accuracy while providing transparent uncertainty quantification.
@@ -55,6 +55,7 @@ pip install git+https://github.com/cafferychen777/mLLMCelltype.git
 - **Minimax**: MiniMax-Text-01 ([API Key](https://intl.minimaxi.com/user-center/basic-information/interface-key))
 - **Stepfun**: Step-2-16K ([API Key](https://platform.stepfun.com/account-info))
 - **Zhipu**: GLM-4 ([API Key](https://bigmodel.cn/))
+- **X.AI**: Grok-3/Grok-3-mini ([API Key](https://accounts.x.ai/))
 
 ## Usage Examples
 
@@ -126,7 +127,7 @@ consensus_results = interactive_consensus_annotation(
     species="human",
     tissue="blood",
     models=["gpt-4o", "claude-3-7-sonnet-20250219", "gemini-1.5-pro", "qwen-max-2025-01-25"],
-    consensus_threshold=0.7,  # Adjust threshold for consensus agreement
+    consensus_threshold=1,  # Adjust threshold for consensus agreement
     max_discussion_rounds=3   # Maximum rounds of discussion between models
 )
 
@@ -226,7 +227,7 @@ consensus_results <- interactive_consensus_annotation(
     qwen = "your-qwen-key"
   ),
   top_gene_count = 10,
-  controversy_threshold = 0.7,
+  controversy_threshold = 1.0,
   entropy_threshold = 1.0,
   cache_dir = cache_dir
 )
