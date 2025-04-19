@@ -11,6 +11,7 @@ from .qwen import process_qwen
 from .stepfun import process_stepfun
 from .zhipu import process_zhipu
 from .minimax import process_minimax
+from .grok import process_grok
 
 __all__ = [
     'process_openai',
@@ -20,5 +21,6 @@ __all__ = [
     'process_qwen',
     'process_stepfun',
     'process_zhipu',
-    'process_minimax'
+    'process_minimax',
+    'process_grok'
 ]
