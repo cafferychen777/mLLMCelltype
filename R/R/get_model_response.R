@@ -19,6 +19,7 @@ get_model_response <- function(prompt, model, api_key) {
     "stepfun" = process_stepfun(prompt, model, api_key),
     "zhipu" = process_zhipu(prompt, model, api_key),
     "minimax" = process_minimax(prompt, model, api_key),
+    "grok" = process_grok(prompt, model, api_key),
     stop("Unsupported model provider: ", provider)
   )
   

@@ -16,6 +16,7 @@ get_provider <- function(model) {
   stepfun_models <- c("step-2-mini", "step-2-16k", "step-1-8k")
   zhipu_models <- c("glm-4-plus", "glm-3-turbo")
   minimax_models <- c("minimax-text-01")
+  grok_models <- c("grok-3", "grok-3-latest", "grok-3-fast", "grok-3-fast-latest", "grok-3-mini", "grok-3-mini-latest", "grok-3-mini-fast", "grok-3-mini-fast-latest")
   
   # Check for custom models first
   if (exists(model, envir = custom_models)) {
@@ -40,12 +41,14 @@ get_provider <- function(model) {
     return("zhipu")
   } else if (model %in% minimax_models) {
     return("minimax")
+  } else if (model %in% grok_models) {
+    return("grok")
   }
   
   # Get list of all supported models
   all_models <- c(
     openai_models, anthropic_models, deepseek_models,
-    gemini_models, qwen_models, stepfun_models, zhipu_models, minimax_models
+    gemini_models, qwen_models, stepfun_models, zhipu_models, minimax_models, grok_models
   )
   
   # Add custom models to the list

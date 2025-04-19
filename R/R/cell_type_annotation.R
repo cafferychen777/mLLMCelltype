@@ -8,7 +8,7 @@ utils::globalVariables(c("cluster", "avg_log2FC", "gene"))
 #' 
 #' @usage get_provider write_log create_annotation_prompt
 #' @usage process_openai process_anthropic process_deepseek process_gemini
-#' @usage process_qwen process_stepfun process_zhipu process_minimax
+#' @usage process_qwen process_stepfun process_zhipu process_minimax process_grok
 
 #' @title Cell Type Annotation with Multi-LLM Framework
 #' @name annotate_cell_types
@@ -33,6 +33,7 @@ utils::globalVariables(c("cluster", "avg_log2FC", "gene"))
 #'   - Stepfun: 'step-2-16k', 'step-2-mini', 'step-1-8k'
 #'   - Zhipu: 'glm-4-plus', 'glm-3-turbo'
 #'   - MiniMax: 'minimax-text-01'
+#'   - X.AI: 'grok-3-latest', 'grok-3', 'grok-3-fast', 'grok-3-fast-latest', 'grok-3-mini', 'grok-3-mini-latest', 'grok-3-mini-fast', 'grok-3-mini-fast-latest'
 #' @param api_key Character string containing the API key for the selected model. 
 #'   If NA, returns the generated prompt without making an API call.
 #' @param top_gene_count Integer specifying the number of top marker genes to use per cluster.
@@ -145,7 +146,8 @@ annotate_cell_types <- function(input,
     "qwen" = process_qwen(prompt, model, api_key),
     "stepfun" = process_stepfun(prompt, model, api_key),
     "zhipu" = process_zhipu(prompt, model, api_key),
-    "minimax" = process_minimax(prompt, model, api_key)
+    "minimax" = process_minimax(prompt, model, api_key),
+    "grok" = process_grok(prompt, model, api_key)
   )
   
   write_log("\nModel response:")
