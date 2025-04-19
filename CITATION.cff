@@ -1,0 +1,39 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite it as below."
+authors:
+  - family-names: "Yang"
+    given-names: "Chen"
+  - family-names: "Zhang"
+    given-names: "Xianyang"
+  - family-names: "Chen"
+    given-names: "Jun"
+title: "mLLMCelltype: An iterative multi-LLM consensus framework for cell type annotation"
+version: 1.0.0
+date-released: 2025-04-10
+url: "https://github.com/cafferychen777/mLLMCelltype"
+repository-code: "https://github.com/cafferychen777/mLLMCelltype"
+license: MIT
+type: software
+keywords:
+  - "cell type annotation"
+  - "single-cell RNA sequencing"
+  - "large language models"
+  - "consensus annotation"
+  - "bioinformatics"
+abstract: "mLLMCelltype is an iterative multi-LLM consensus framework for cell type annotation in single-cell RNA sequencing data. By leveraging the complementary strengths of multiple large language models, this framework significantly improves annotation accuracy while providing transparent uncertainty quantification."
+preferred-citation:
+  type: article
+  authors:
+    - family-names: "Yang"
+      given-names: "Chen"
+    - family-names: "Zhang"
+      given-names: "Xianyang"
+    - family-names: "Chen"
+      given-names: "Jun"
+  title: "Large Language Model Consensus Substantially Improves the Cell Type Annotation Accuracy for scRNA-seq Data"
+  journal: "bioRxiv"
+  year: 2025
+  date-released: 2025-04-10
+  doi: "10.1101/2025.04.10.647852"
+  url: "https://www.biorxiv.org/content/early/2025/04/17/2025.04.10.647852"
+  publisher: "Cold Spring Harbor Laboratory"
