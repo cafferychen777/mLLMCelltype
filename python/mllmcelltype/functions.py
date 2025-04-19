@@ -520,25 +520,30 @@ def process_gemini_legacy(prompt: str, model: str, api_key: str) -> List[str]:
     write_log(f"Using Gemini API with model: {model}")
 
     try:
-        # Try to import the Google Generative AI library
+        # Try to import the Google Gen AI library
         try:
-            import google.generativeai as genai
+            from google import genai
+            from google.genai import types
         except ImportError:
-            raise ImportError("Google Generative AI package not installed. Please install with 'pip install google-generativeai'.")
+            raise ImportError("Google Gen AI package not installed. Please install with 'pip install google-genai'.")
 
-        # Configure the API
-        genai.configure(api_key=api_key)
+        # Initialize the client
+        client = genai.Client(api_key=api_key)
 
         # Set the model
         if not model or model == "default":
             model = "gemini-2.0-pro"
 
-        # Create the model
-        model_obj = genai.GenerativeModel(model_name=model)
-
         # Generate content
         write_log("Sending request to Gemini API")
-        response = model_obj.generate_content(prompt)
+        response = client.models.generate_content(
+            model=model,
+            contents=prompt,
+            config=types.GenerateContentConfig(
+                temperature=0.7,
+                max_output_tokens=4096
+            )
+        )
 
         # Extract the result
         content = response.text
