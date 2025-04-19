@@ -2,13 +2,14 @@
 % Please edit documentation in R/check_consensus.R
 \name{check_consensus}
 \alias{check_consensus}
-\title{Check if consensus is reached among models using Claude}
+\title{Check if consensus is reached among models}
 \usage{
 check_consensus(
   round_responses,
   api_keys = NULL,
   controversy_threshold = 2/3,
-  entropy_threshold = 1
+  entropy_threshold = 1,
+  consensus_check_model = NULL
 )
 }
 \arguments{
@@ -19,9 +20,11 @@ check_consensus(
 \item{controversy_threshold}{Threshold for consensus proportion (default: 2/3)}
 
 \item{entropy_threshold}{Threshold for entropy (default: 1.0)}
+
+\item{consensus_check_model}{Model to use for consensus checking (default: NULL, will try available models in order)}
 }
 \description{
-Check if consensus is reached among models using Claude
+Check if consensus is reached among models
 }
 \note{
 This function uses create_consensus_check_prompt from prompt_templates.R

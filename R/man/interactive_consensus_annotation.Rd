@@ -15,7 +15,7 @@ interactive_consensus_annotation(
   controversy_threshold = 0.7,
   entropy_threshold = 1,
   max_discussion_rounds = 3,
-  summary_model = "claude-3-5-sonnet-latest",
+  consensus_check_model = NULL,
   log_dir = "logs",
   cache_dir = "consensus_cache",
   use_cache = TRUE
@@ -38,7 +38,7 @@ interactive_consensus_annotation(
 
 \item{max_discussion_rounds}{Maximum number of discussion rounds for controversial clusters (default: 3)}
 
-\item{summary_model}{Model to use for final summary}
+\item{consensus_check_model}{Model to use for consensus checking}
 
 \item{log_dir}{Directory for storing logs}
 
