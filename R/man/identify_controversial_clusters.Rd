@@ -10,7 +10,8 @@ identify_controversial_clusters(
   controversy_threshold,
   entropy_threshold,
   api_keys,
-  logger
+  logger,
+  consensus_check_model = NULL
 )
 }
 \arguments{
