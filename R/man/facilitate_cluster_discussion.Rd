@@ -14,6 +14,7 @@ facilitate_cluster_discussion(
   top_gene_count,
   max_rounds = 3,
   controversy_threshold = 0.7,
+  entropy_threshold = 1,
   logger
 )
 }

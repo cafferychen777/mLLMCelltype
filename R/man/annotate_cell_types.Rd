@@ -33,6 +33,7 @@ annotate_cell_types(
 \item Stepfun: 'step-2-16k', 'step-2-mini', 'step-1-8k'
 \item Zhipu: 'glm-4-plus', 'glm-3-turbo'
 \item MiniMax: 'minimax-text-01'
+\item X.AI: 'grok-3-latest', 'grok-3', 'grok-3-fast', 'grok-3-fast-latest', 'grok-3-mini', 'grok-3-mini-latest', 'grok-3-mini-fast', 'grok-3-mini-fast-latest'
 }}
 
 \item{api_key}{Character string containing the API key for the selected model.

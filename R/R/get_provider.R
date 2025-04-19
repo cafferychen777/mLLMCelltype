@@ -2,6 +2,11 @@
 utils::globalVariables(c("custom_models"))
 
 #' Determine provider from model name
+#'
+#' This function determines the appropriate provider (e.g., OpenAI, Anthropic, Google) based on the model name.
+#'
+#' @param model Character string specifying the model name to check
+#' @return Character string with the provider name
 #' @export
 get_provider <- function(model) {
   # Normalize model name to lowercase for comparison

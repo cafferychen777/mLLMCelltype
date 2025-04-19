@@ -6,7 +6,12 @@
 \usage{
 get_provider(model)
 }
-\description{
-Determine provider from model name
+\arguments{
+\item{model}{Character string specifying the model name to check}
 }
-\keyword{internal}
+\value{
+Character string with the provider name
+}
+\description{
+This function determines the appropriate provider (e.g., OpenAI, Anthropic, Google) based on the model name.
+}

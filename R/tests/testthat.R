@@ -1,7 +1,13 @@
 # This file is part of the standard setup for testthat.
-# It is recommended that you do not modify it.
+# Modified to skip tests when no test files are present.
 
 library(testthat)
 library(mLLMCelltype)
 
-test_check("mLLMCelltype")
+# Check if test files exist before running tests
+test_files <- list.files("testthat", pattern = "^test.*\\.R$", full.names = TRUE)
+if (length(test_files) > 0) {
+  test_check("mLLMCelltype")
+} else {
+  message("No test files found, skipping tests")
+}

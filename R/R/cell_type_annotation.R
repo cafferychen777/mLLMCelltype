@@ -5,10 +5,6 @@ utils::globalVariables(c("cluster", "avg_log2FC", "gene"))
 #' @importFrom utils head
 #' 
 #' @import mLLMCelltype
-#' 
-#' @usage get_provider write_log create_annotation_prompt
-#' @usage process_openai process_anthropic process_deepseek process_gemini
-#' @usage process_qwen process_stepfun process_zhipu process_minimax process_grok
 
 #' @title Cell Type Annotation with Multi-LLM Framework
 #' @name annotate_cell_types

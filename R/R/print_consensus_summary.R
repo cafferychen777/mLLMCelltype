@@ -42,7 +42,7 @@ print_consensus_summary <- function(results) {
       cat(sprintf("\nCluster %s:\n", char_cluster_id))
       cat("Initial predictions:\n")
       
-      # 优先使用discussion_logs中的初始预测，因为这些是实际用于讨论的预测
+      # Prioritize initial predictions from discussion_logs, as these are the actual predictions used for discussion
       cat("DEBUG: Checking discussion_logs...\n")
       cat(sprintf("DEBUG: discussion_logs exists: %s\n", !is.null(results$discussion_logs)))
       if (!is.null(results$discussion_logs)) {
@@ -56,43 +56,43 @@ print_consensus_summary <- function(results) {
           !is.null(results$discussion_logs[[char_cluster_id]]) && 
           !is.null(results$discussion_logs[[char_cluster_id]]$initial_predictions)) {
         
-        # 使用讨论日志中的初始预测
+        # Use initial predictions from discussion logs
         initial_predictions <- results$discussion_logs[[char_cluster_id]]$initial_predictions
         
-        # 遍历每个模型的预测
+        # Iterate through each model's prediction
         for (model in names(initial_predictions)) {
           prediction <- initial_predictions[[model]]
           
-          # 处理空或NA预测
+          # Handle empty or NA predictions
           if (is.null(prediction) || is.na(prediction) || prediction == "") {
-            prediction <- "未提供预测"
+            prediction <- "No prediction provided"
           }
           
           cat(sprintf("  %s: %s\n", model, prediction))
         }
       } 
-      # 如果讨论日志中没有初始预测，则使用initial_results
+      # If no initial predictions in discussion logs, use initial_results
       else if (!is.null(results$initial_results) && 
                !is.null(results$initial_results$individual_predictions)) {
         cat("DEBUG: Using initial_results$individual_predictions\n")
         cat(sprintf("DEBUG: Models in individual_predictions: %s\n", paste(names(results$initial_results$individual_predictions), collapse = ", ")))
         
-        # 遍历每个模型的预测
+        # Iterate through each model's prediction
         for (model in names(results$initial_results$individual_predictions)) {
-          # 检查预测是否有名称
+          # Check if prediction has names
           first_model <- names(results$initial_results$individual_predictions)[1]
           predictions <- results$initial_results$individual_predictions[[first_model]]
           has_names <- !is.null(names(predictions))
           
           if (has_names) {
-            # 如果有名称，使用字符串索引
+            # If it has names, use string indexing
             if (char_cluster_id %in% names(results$initial_results$individual_predictions[[model]])) {
               prediction <- results$initial_results$individual_predictions[[model]][[char_cluster_id]]
             } else {
               prediction <- NA
             }
           } else {
-            # 如果没有名称，尝试使用数值索引
+            # If no names, try using numeric indexing
             if (numeric_cluster_id <= length(results$initial_results$individual_predictions[[model]])) {
               prediction <- results$initial_results$individual_predictions[[model]][numeric_cluster_id]
             } else {
@@ -100,9 +100,9 @@ print_consensus_summary <- function(results) {
             }
           }
           
-          # 处理空或NA预测
+          # Handle empty or NA predictions
           if (is.null(prediction) || is.na(prediction) || prediction == "") {
-            prediction <- "未提供预测"
+            prediction <- "No prediction provided"
           }
           
           cat(sprintf("  %s: %s\n", model, prediction))
@@ -111,7 +111,7 @@ print_consensus_summary <- function(results) {
         cat("  No initial predictions available\n")
       }
       
-      # 打印不确定性指标
+      # Print uncertainty metrics
       cat("\nUncertainty metrics:\n")
       if (!is.null(results$initial_results) && 
           !is.null(results$initial_results$consensus_results) && 
@@ -119,12 +119,12 @@ print_consensus_summary <- function(results) {
         
         consensus_result <- results$initial_results$consensus_results[[char_cluster_id]]
         
-        # 打印共识比例
+        # Print consensus proportion
         if (!is.null(consensus_result$consensus_proportion)) {
           cat(sprintf("  Consensus proportion: %.2f\n", consensus_result$consensus_proportion))
         }
         
-        # 打印香农熵
+        # Print Shannon entropy
         if (!is.null(consensus_result$entropy)) {
           cat(sprintf("  Shannon entropy: %.2f\n", consensus_result$entropy))
         }
@@ -132,7 +132,7 @@ print_consensus_summary <- function(results) {
         cat("  Uncertainty metrics not available\n")
       }
       
-      # 打印最终共识
+      # Print final consensus
       cat("DEBUG: Checking final_annotations...\n")
       cat(sprintf("DEBUG: final_annotations exists: %s\n", !is.null(results$final_annotations)))
       if (!is.null(results$final_annotations)) {
@@ -176,22 +176,22 @@ print_consensus_summary <- function(results) {
           cat(sprintf("DEBUG: final_annotation_str: %s\n", final_annotation_str))
         }
         
-        # 验证最终共识与初始预测的一致性
+        # Validate consistency between final consensus and initial predictions
         if (!is.null(results$initial_results) && 
             !is.null(results$initial_results$individual_predictions) &&
-            length(names(results$initial_results$individual_predictions)) > 0) { # 确保有模型
+            length(names(results$initial_results$individual_predictions)) > 0) { # Ensure there are models
           
-          # 尝试获取第一个模型名称
+          # Try to get the first model name
           tryCatch({
             first_model <- names(results$initial_results$individual_predictions)[1]
             predictions <- results$initial_results$individual_predictions[[first_model]]
-            has_names <- !is.null(names(predictions))
+            has_names <- all(names(results$initial_results$individual_predictions) %in% names(results$discussion_logs[[char_cluster_id]]$initial_predictions))
           }, error = function(e) {
             cat(sprintf("DEBUG: Error getting first model predictions: %s\n", e$message))
             has_names <- FALSE
           })
           
-          # 收集所有模型的预测
+          # Collect predictions from all models
           all_predictions <- list()
           # Validation using discussion log predictions
           cat("DEBUG: Collecting discussion log predictions for cluster_id: ", char_cluster_id, "\n")
@@ -213,7 +213,7 @@ print_consensus_summary <- function(results) {
               if (!is.null(pred)) {
                 if (!is.na(pred)) {
                   # Make sure to compare against the placeholder string too
-                  if (pred != "" && pred != "未提供预测") { 
+                  if (pred != "" && pred != "No prediction provided") { 
                      cat(sprintf("DEBUG: Adding prediction from discussion log for model %s: %s\n", model, pred))
                      all_predictions[[model]] <- pred
                   }
@@ -251,7 +251,7 @@ print_consensus_summary <- function(results) {
     }
   }
   
-  # 如果没有争议性聚类，打印信息
+  # If no controversial clusters, print message
   if (length(results$controversial_clusters) == 0) {
     cat("\nNo controversial clusters found. All clusters reached consensus.\n")
   }

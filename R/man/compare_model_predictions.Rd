@@ -9,7 +9,7 @@ compare_model_predictions(
   tissue_name,
   models = c("claude-3-7-sonnet-20250219", "claude-3-5-sonnet-latest",
     "claude-3-5-haiku-latest", "deepseek-reasoner", "deepseek-chat", "gemini-2.0-flash",
-    "gemini-1.5-pro", "qwen-max-2025-01-25", "gpt-4o", "o1"),
+    "gemini-1.5-pro", "qwen-max-2025-01-25", "gpt-4o", "o1", "grok-3-latest"),
   api_keys,
   top_gene_count = 10,
   consensus_threshold = 0.5
@@ -34,6 +34,9 @@ A list containing individual predictions, consensus results, and agreement stati
 \description{
 This function runs the same input through multiple models and compares their predictions.
 It provides both individual predictions and a consensus analysis.
+}
+\note{
+This function uses create_standardization_prompt from prompt_templates.R
 }
 \examples{
 \dontrun{

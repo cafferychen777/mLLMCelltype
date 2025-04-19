@@ -21,4 +21,3 @@ This file contains all prompt template functions used in mLLMCelltype.
 These functions create various prompts for different stages of the cell type annotation process.
 Create prompt for cell type annotation
 }
-\keyword{internal}

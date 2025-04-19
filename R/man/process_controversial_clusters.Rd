@@ -13,6 +13,7 @@ process_controversial_clusters(
   individual_predictions,
   top_gene_count,
   controversy_threshold,
+  entropy_threshold,
   max_discussion_rounds,
   logger,
   cache_manager,

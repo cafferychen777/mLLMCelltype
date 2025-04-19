@@ -9,7 +9,7 @@ interactive_consensus_annotation(
   tissue_name = NULL,
   models = c("claude-3-7-sonnet-20250219", "claude-3-5-sonnet-latest",
     "claude-3-5-haiku-latest", "gemini-2.0-flash", "gemini-1.5-pro",
-    "qwen-max-2025-01-25", "gpt-4o"),
+    "qwen-max-2025-01-25", "gpt-4o", "grok-3-latest"),
   api_keys,
   top_gene_count = 10,
   controversy_threshold = 0.7,

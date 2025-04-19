@@ -1,4 +1,10 @@
 #' Write Log Utility Function
+#'
+#' This function writes log messages to a file with timestamps and also prints them to the console.
+#'
+#' @param message Character string containing the log message to write
+#' @param log_file Character string specifying the log file name (default: "llm_celltype.log")
+#' @return None, used for side effects
 #' @export
 write_log <- function(message, log_file = "llm_celltype.log") {
   timestamp <- format(Sys.time(), "%Y-%m-%d %H:%M:%S")

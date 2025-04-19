@@ -4,12 +4,21 @@
 \alias{check_consensus}
 \title{Check if consensus is reached among models using Claude}
 \usage{
-check_consensus(round_responses, api_keys = NULL)
+check_consensus(
+  round_responses,
+  api_keys = NULL,
+  controversy_threshold = 2/3,
+  entropy_threshold = 1
+)
 }
 \arguments{
 \item{round_responses}{A vector of model responses to check for consensus}
 
 \item{api_keys}{A list of API keys for different providers}
+
+\item{controversy_threshold}{Threshold for consensus proportion (default: 2/3)}
+
+\item{entropy_threshold}{Threshold for entropy (default: 1.0)}
 }
 \description{
 Check if consensus is reached among models using Claude

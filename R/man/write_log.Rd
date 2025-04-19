@@ -6,7 +6,14 @@
 \usage{
 write_log(message, log_file = "llm_celltype.log")
 }
-\description{
-Write Log Utility Function
+\arguments{
+\item{message}{Character string containing the log message to write}
+
+\item{log_file}{Character string specifying the log file name (default: "llm_celltype.log")}
 }
-\keyword{internal}
+\value{
+None, used for side effects
+}
+\description{
+This function writes log messages to a file with timestamps and also prints them to the console.
+}
