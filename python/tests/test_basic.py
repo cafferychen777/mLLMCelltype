@@ -17,7 +17,7 @@ sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')
 
 from mllmcelltype import annotate_clusters, batch_annotate_clusters
 from mllmcelltype.utils import load_api_key, parse_marker_genes
-from mllmcelltype.prompts import create_annotation_prompt
+from mllmcelltype.prompts import create_prompt
 
 # Sample marker genes for testing
 @pytest.fixture
@@ -37,7 +37,7 @@ def sample_marker_genes():
 def test_parse_marker_genes(sample_marker_genes):
     """Test parsing marker genes."""
     parsed = parse_marker_genes(sample_marker_genes)
-    
+
     assert isinstance(parsed, dict)
     assert "1" in parsed
     assert "2" in parsed
@@ -46,14 +46,14 @@ def test_parse_marker_genes(sample_marker_genes):
     assert "CD3D" in parsed["1"]
     assert "CD19" in parsed["2"]
 
-def test_create_annotation_prompt(sample_marker_genes):
+def test_create_prompt(sample_marker_genes):
     """Test creating annotation prompt."""
-    prompt = create_annotation_prompt(
+    prompt = create_prompt(
         marker_genes=sample_marker_genes,
         species="human",
         tissue="blood"
     )
-    
+
     assert isinstance(prompt, str)
     assert "human" in prompt
     assert "blood" in prompt
@@ -69,7 +69,7 @@ def test_load_api_key():
         with patch('mllmcelltype.utils.env_var_map', {'test': 'TEST_API_KEY'}):
             key = load_api_key("test")
             assert key == "test-key-123"
-    
+
     # Test with missing key
     key = load_api_key("nonexistent")
     assert key is None or key == ""
@@ -96,13 +96,13 @@ def test_annotate_clusters(sample_marker_genes, mock_provider):
             model="mock_model",
             tissue="blood"
         )
-        
+
         assert isinstance(result, dict)
         assert "1" in result
         assert "2" in result
         assert result["1"] == "T cells"
         assert result["2"] == "B cells"
-        
+
         # Check that provider was called with correct arguments
         mock_provider.assert_called_once()
         args, kwargs = mock_provider.call_args
@@ -121,17 +121,17 @@ def test_batch_annotate_clusters(sample_marker_genes, mock_provider):
             model="mock_model",
             tissue=["blood", "blood"]
         )
-        
+
         assert isinstance(result, list)
         assert len(result) == 2
-        
+
         for annotations in result:
             assert isinstance(annotations, dict)
             assert "1" in annotations
             assert "2" in annotations
             assert annotations["1"] == "T cells"
             assert annotations["2"] == "B cells"
-        
+
         # Check that provider was called twice
         assert mock_provider.call_count == 2
 
