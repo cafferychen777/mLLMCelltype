@@ -369,10 +369,6 @@ Below is an example of publication-ready visualization created with mLLMCelltype
 
 *Figure: Left panel shows cell type annotations on UMAP projection. Middle panel displays the consensus proportion using a yellow-green-blue gradient (deeper blue indicates stronger agreement among LLMs). Right panel shows Shannon entropy using an orange-red gradient (deeper red indicates lower uncertainty, lighter orange indicates higher uncertainty).*
 
-## License
-
-MIT
-
 ## Citation
 
 If you use mLLMCelltype in your research, please cite:
