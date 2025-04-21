@@ -21,6 +21,18 @@ mLLMCelltypeは、単一細胞RNAシーケンシングデータにおける細�
 - **シームレスな統合**: 標準的なScanpy/Seuratワークフローとマーカー遺伝子出力と直接連携
 - **モジュラー設計**: 新しいLLMが利用可能になった時に簡単に組み込み可能
 
+### サポートされているモデル
+
+- **OpenAI**: GPT-4.1/GPT-4.5/GPT-4o ([APIキー](https://platform.openai.com/settings/organization/billing/overview))
+- **Anthropic**: Claude-3.7-Sonnet/Claude-3.5-Haiku ([APIキー](https://console.anthropic.com/))
+- **Google**: Gemini-2.0-Pro/Gemini-2.0-Flash ([APIキー](https://ai.google.dev/?authuser=2))
+- **Alibaba**: Qwen2.5-Max ([APIキー](https://www.alibabacloud.com/en/product/modelstudio))
+- **DeepSeek**: DeepSeek-V3/DeepSeek-R1 ([APIキー](https://platform.deepseek.com/usage))
+- **Minimax**: MiniMax-Text-01 ([APIキー](https://intl.minimaxi.com/user-center/basic-information/interface-key))
+- **Stepfun**: Step-2-16K ([APIキー](https://platform.stepfun.com/account-info))
+- **Zhipu**: GLM-4 ([APIキー](https://bigmodel.cn/))
+- **X.AI**: Grok-3/Grok-3-mini ([APIキー](https://accounts.x.ai/))
+
 ## ディレクトリ構造
 
 - `R/`: R言語インターフェースと実装
@@ -176,6 +188,98 @@ pdf("pbmc_uncertainty_metrics.pdf", width=18, height=7)
 combined_plot <- cowplot::plot_grid(p1, p2, p3, ncol = 3, rel_widths = c(1.2, 1.2, 1.2))
 print(combined_plot)
 dev.off()
+```
+
+### 単一LLMモデルの使用
+
+APIキーが1つしかない場合や特定のLLMモデルを使用したい場合は、`annotate_cell_types()`関数を使用できます：
+
+```r
+# 前処理済みのSeuratオブジェクトを読み込む
+pbmc <- readRDS("your_seurat_object.rds")
+
+# 各クラスターのマーカー遣伏子を見つける
+pbmc_markers <- FindAllMarkers(pbmc,
+                            only.pos = TRUE,
+                            min.pct = 0.25,
+                            logfc.threshold = 0.25)
+
+# サポートされている任意のプロバイダーからモデルを選択
+# サポートされているモデルの例：
+# - Anthropic: "claude-3-7-sonnet-20250219", "claude-3-5-sonnet-latest"
+# - OpenAI: "gpt-4o"
+# - Google: "gemini-1.5-pro", "gemini-2.0-flash"
+# - DeepSeek: "deepseek-chat", "deepseek-reasoner"
+# - Alibaba: "qwen-max-2025-01-25"
+# - X.AI: "grok-3", "grok-3-mini"
+# - Zhipu: "glm-4-plus", "glm-3-turbo"
+# - MiniMax: "minimax-text-01"
+# - Stepfun: "step-2-16k", "step-2-mini"
+
+# 単一LLMモデルで細胞タイプアノテーションを実行
+single_model_results <- annotate_cell_types(
+  input = pbmc_markers,
+  tissue_name = "human PBMC",  # 組織のコンテキストを提供
+  model = "claude-3-7-sonnet-20250219",  # 単一モデルを指定
+  api_key = "your-anthropic-key",  # APIキーを直接提供
+  top_gene_count = 10
+)
+
+# 結果を表示
+print(single_model_results)
+
+# Seuratオブジェクトにアノテーションを追加
+# single_model_resultsは各クラスターに対して1つのアノテーションを持つ文字ベクトル
+pbmc$cell_type <- plyr::mapvalues(
+  x = as.character(Idents(pbmc)),
+  from = as.character(0:(length(single_model_results)-1)),
+  to = single_model_results
+)
+
+# 結果を可視化
+DimPlot(pbmc, group.by = "cell_type", label = TRUE) +
+  ggtitle("単一LLMモデルによる細胞タイプアノテーション")
+```
+
+#### 異なるモデルの比較
+
+異なるモデルで`annotate_cell_types()`を複数回実行することで、異なるモデルのアノテーションを比較することもできます：
+
+```r
+# 異なるモデルを使用してアノテーションを行う
+models <- c("claude-3-7-sonnet-20250219", "gpt-4o", "gemini-2.0-pro", "qwen-max-2025-01-25", "grok-3")
+api_keys <- c("your-anthropic-key", "your-openai-key", "your-google-key", "your-qwen-key", "your-xai-key")
+
+# 各モデルの結果を格納する列を作成
+for (i in 1:length(models)) {
+  results <- annotate_cell_types(
+    input = pbmc_markers,
+    tissue_name = "human PBMC",
+    model = models[i],
+    api_key = api_keys[i],
+    top_gene_count = 10
+  )
+  
+  # モデルに基づいた列名を作成
+  column_name <- paste0("cell_type_", gsub("[^a-zA-Z0-9]", "_", models[i]))
+  
+  # Seuratオブジェクトにアノテーションを追加
+  pbmc[[column_name]] <- plyr::mapvalues(
+    x = as.character(Idents(pbmc)),
+    from = as.character(0:(length(results)-1)),
+    to = results
+  )
+}
+
+# 異なるモデルの結果を可視化
+p1 <- DimPlot(pbmc, group.by = "cell_type_claude_3_7_sonnet_20250219", label = TRUE) + ggtitle("Claude 3.7")
+p2 <- DimPlot(pbmc, group.by = "cell_type_gpt_4o", label = TRUE) + ggtitle("GPT-4o")
+p3 <- DimPlot(pbmc, group.by = "cell_type_gemini_2_0_pro", label = TRUE) + ggtitle("Gemini 2.0 Pro")
+p4 <- DimPlot(pbmc, group.by = "cell_type_qwen_max_2025_01_25", label = TRUE) + ggtitle("Qwen Max")
+p5 <- DimPlot(pbmc, group.by = "cell_type_grok_3", label = TRUE) + ggtitle("Grok-3")
+
+# プロットを結合
+cowplot::plot_grid(p1, p2, p3, p4, p5, ncol = 3)
 ```
 
 ## 可視化の例

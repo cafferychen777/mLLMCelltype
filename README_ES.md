@@ -47,13 +47,15 @@ pip install git+https://github.com/cafferychen777/mLLMCelltype.git
 
 ### Modelos Soportados
 
-- **OpenAI**: GPT-4.5/GPT-4o ([Clave API](https://platform.openai.com/settings/organization/billing/overview))
+- **OpenAI**: GPT-4.1/GPT-4.5/GPT-4o ([Clave API](https://platform.openai.com/settings/organization/billing/overview))
 - **Anthropic**: Claude-3.7-Sonnet/Claude-3.5-Haiku ([Clave API](https://console.anthropic.com/settings/keys))
 - **Google**: Gemini-2.0-Pro/Gemini-2.0-Flash ([Clave API](https://aistudio.google.com/app/apikey))
-- **Alibaba**: Qwen2-72B-Instruct ([Clave API](https://dashscope.console.aliyun.com/apiKey))
-- **Meta**: Llama-3.1-405B-Instruct ([Clave API](https://replicate.com/account/api-tokens))
-- **Mistral**: Mistral-Large-2 ([Clave API](https://console.mistral.ai/api-keys/))
-- **Cohere**: Command-R+ ([Clave API](https://dashboard.cohere.com/api-keys))
+- **Alibaba**: Qwen2.5-Max ([Clave API](https://www.alibabacloud.com/en/product/modelstudio))
+- **DeepSeek**: DeepSeek-V3/DeepSeek-R1 ([Clave API](https://platform.deepseek.com/usage))
+- **Minimax**: MiniMax-Text-01 ([Clave API](https://intl.minimaxi.com/user-center/basic-information/interface-key))
+- **Stepfun**: Step-2-16K ([Clave API](https://platform.stepfun.com/account-info))
+- **Zhipu**: GLM-4 ([Clave API](https://bigmodel.cn/))
+- **X.AI**: Grok-3/Grok-3-mini ([Clave API](https://accounts.x.ai/))
 
 ## Uso Rápido
 
@@ -256,15 +258,105 @@ print(combined_plot)
 dev.off()
 ```
 
-## Ejemplo de Visualización
+### Uso de un Solo Modelo LLM
 
-A continuación se muestra un ejemplo de visualización lista para publicación creada con mLLMCelltype y SCpubr, que muestra anotaciones de tipos celulares junto con métricas de incertidumbre (Proporción de Consenso y Entropía de Shannon):
+Si solo tiene una clave API o prefiere usar un modelo LLM específico, puede utilizar la función `annotate_cell_types()`:
+
+```r
+# Cargar objeto Seurat preprocesado
+pbmc <- readRDS("your_seurat_object.rds")
+
+# Encontrar genes marcadores para cada cluster
+pbmc_markers <- FindAllMarkers(pbmc,
+                            only.pos = TRUE,
+                            min.pct = 0.25,
+                            logfc.threshold = 0.25)
+
+# Elegir un modelo de cualquier proveedor compatible
+# Ejemplos de modelos compatibles:
+# - Anthropic: "claude-3-7-sonnet-20250219", "claude-3-5-sonnet-latest"
+# - OpenAI: "gpt-4o"
+# - Google: "gemini-1.5-pro", "gemini-2.0-flash"
+# - DeepSeek: "deepseek-chat", "deepseek-reasoner"
+# - Alibaba: "qwen-max-2025-01-25"
+# - X.AI: "grok-3", "grok-3-mini"
+# - Zhipu: "glm-4-plus", "glm-3-turbo"
+# - MiniMax: "minimax-text-01"
+# - Stepfun: "step-2-16k", "step-2-mini"
+
+# Ejecutar anotación de tipos celulares con un solo modelo LLM
+single_model_results <- annotate_cell_types(
+  input = pbmc_markers,
+  tissue_name = "human PBMC",  # proporcionar contexto del tejido
+  model = "claude-3-7-sonnet-20250219",  # especificar un solo modelo
+  api_key = "your-anthropic-key",  # proporcionar la clave API directamente
+  top_gene_count = 10
+)
+
+# Imprimir resultados
+print(single_model_results)
+
+# Añadir anotaciones al objeto Seurat
+# single_model_results es un vector de caracteres con una anotación por cluster
+pbmc$cell_type <- plyr::mapvalues(
+  x = as.character(Idents(pbmc)),
+  from = as.character(0:(length(single_model_results)-1)),
+  to = single_model_results
+)
+
+# Visualizar resultados
+DimPlot(pbmc, group.by = "cell_type", label = TRUE) +
+  ggtitle("Tipos Celulares Anotados por un Solo Modelo LLM")
+```
+
+#### Comparación de Diferentes Modelos
+
+También puede comparar anotaciones de diferentes modelos ejecutando `annotate_cell_types()` múltiples veces con diferentes modelos:
+
+```r
+# Usar diferentes modelos para anotación
+models <- c("claude-3-7-sonnet-20250219", "gpt-4o", "gemini-2.0-pro", "qwen-max-2025-01-25", "grok-3")
+api_keys <- c("your-anthropic-key", "your-openai-key", "your-google-key", "your-qwen-key", "your-xai-key")
+
+# Crear una columna para cada modelo
+for (i in 1:length(models)) {
+  results <- annotate_cell_types(
+    input = pbmc_markers,
+    tissue_name = "human PBMC",
+    model = models[i],
+    api_key = api_keys[i],
+    top_gene_count = 10
+  )
+  
+  # Crear nombre de columna basado en el modelo
+  column_name <- paste0("cell_type_", gsub("[^a-zA-Z0-9]", "_", models[i]))
+  
+  # Añadir anotaciones al objeto Seurat
+  pbmc[[column_name]] <- plyr::mapvalues(
+    x = as.character(Idents(pbmc)),
+    from = as.character(0:(length(results)-1)),
+    to = results
+  )
+}
+
+# Visualizar resultados de diferentes modelos
+p1 <- DimPlot(pbmc, group.by = "cell_type_claude_3_7_sonnet_20250219", label = TRUE) + ggtitle("Claude 3.7")
+p2 <- DimPlot(pbmc, group.by = "cell_type_gpt_4o", label = TRUE) + ggtitle("GPT-4o")
+p3 <- DimPlot(pbmc, group.by = "cell_type_gemini_2_0_pro", label = TRUE) + ggtitle("Gemini 2.0 Pro")
+p4 <- DimPlot(pbmc, group.by = "cell_type_qwen_max_2025_01_25", label = TRUE) + ggtitle("Qwen Max")
+p5 <- DimPlot(pbmc, group.by = "cell_type_grok_3", label = TRUE) + ggtitle("Grok-3")
+
+# Combinar gráficos
+cowplot::plot_grid(p1, p2, p3, p4, p5, ncol = 3)
+```
+
+## Visualización de Ejemplo
+
+A continuación se muestra un ejemplo de visualización de calidad de publicación creada con mLLMCelltype y SCpubr, que muestra anotaciones de tipos celulares junto con métricas de incertidumbre (proporción de consenso y entropía de Shannon):
 
 <div align="center">
   <img src="images/mLLMCelltype_visualization.png" alt="Visualización de mLLMCelltype" width="900"/>
 </div>
-
-*Figura: El panel izquierdo muestra anotaciones de tipos celulares en proyección UMAP. El panel central muestra la proporción de consenso usando un gradiente amarillo-verde-azul (azul más profundo indica mayor acuerdo entre LLMs). El panel derecho muestra la entropía de Shannon usando un gradiente naranja-rojo (rojo más profundo indica menor incertidumbre, naranja más claro indica mayor incertidumbre).*
 
 ## Cita
 

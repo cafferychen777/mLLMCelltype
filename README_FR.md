@@ -21,6 +21,18 @@ mLLMCelltype est un cadre de consensus multi-LLM itératif pour l'annotation des
 - **Intégration transparente** : Fonctionne directement avec les flux de travail standard Scanpy/Seurat et les sorties de gènes marqueurs
 - **Conception modulaire** : Incorpore facilement de nouveaux LLM dès qu'ils deviennent disponibles
 
+### Modèles pris en charge
+
+- **OpenAI**: GPT-4.1/GPT-4.5/GPT-4o ([Clé API](https://platform.openai.com/settings/organization/billing/overview))
+- **Anthropic**: Claude-3.7-Sonnet/Claude-3.5-Haiku ([Clé API](https://console.anthropic.com/))
+- **Google**: Gemini-2.0-Pro/Gemini-2.0-Flash ([Clé API](https://ai.google.dev/?authuser=2))
+- **Alibaba**: Qwen2.5-Max ([Clé API](https://www.alibabacloud.com/en/product/modelstudio))
+- **DeepSeek**: DeepSeek-V3/DeepSeek-R1 ([Clé API](https://platform.deepseek.com/usage))
+- **Minimax**: MiniMax-Text-01 ([Clé API](https://intl.minimaxi.com/user-center/basic-information/interface-key))
+- **Stepfun**: Step-2-16K ([Clé API](https://platform.stepfun.com/account-info))
+- **Zhipu**: GLM-4 ([Clé API](https://bigmodel.cn/))
+- **X.AI**: Grok-3/Grok-3-mini ([Clé API](https://accounts.x.ai/))
+
 ## Structure des répertoires
 
 - `R/` : Interface et implémentation en langage R
@@ -176,6 +188,98 @@ pdf("pbmc_uncertainty_metrics.pdf", width=18, height=7)
 combined_plot <- cowplot::plot_grid(p1, p2, p3, ncol = 3, rel_widths = c(1.2, 1.2, 1.2))
 print(combined_plot)
 dev.off()
+```
+
+### Utilisation d'un seul modèle LLM
+
+Si vous ne disposez que d'une seule clé API ou si vous préférez utiliser un modèle LLM spécifique, vous pouvez utiliser la fonction `annotate_cell_types()` :
+
+```r
+# Charger l'objet Seurat prétraité
+pbmc <- readRDS("your_seurat_object.rds")
+
+# Trouver les gènes marqueurs pour chaque cluster
+pbmc_markers <- FindAllMarkers(pbmc,
+                            only.pos = TRUE,
+                            min.pct = 0.25,
+                            logfc.threshold = 0.25)
+
+# Choisir un modèle parmi les fournisseurs pris en charge
+# Exemples de modèles pris en charge :
+# - Anthropic : "claude-3-7-sonnet-20250219", "claude-3-5-sonnet-latest"
+# - OpenAI : "gpt-4o"
+# - Google : "gemini-1.5-pro", "gemini-2.0-flash"
+# - DeepSeek : "deepseek-chat", "deepseek-reasoner"
+# - Alibaba : "qwen-max-2025-01-25"
+# - X.AI : "grok-3", "grok-3-mini"
+# - Zhipu : "glm-4-plus", "glm-3-turbo"
+# - MiniMax : "minimax-text-01"
+# - Stepfun : "step-2-16k", "step-2-mini"
+
+# Exécuter l'annotation des types cellulaires avec un seul modèle LLM
+single_model_results <- annotate_cell_types(
+  input = pbmc_markers,
+  tissue_name = "human PBMC",  # fournir le contexte tissulaire
+  model = "claude-3-7-sonnet-20250219",  # spécifier un seul modèle
+  api_key = "your-anthropic-key",  # fournir directement la clé API
+  top_gene_count = 10
+)
+
+# Afficher les résultats
+print(single_model_results)
+
+# Ajouter les annotations à l'objet Seurat
+# single_model_results est un vecteur de caractères avec une annotation par cluster
+pbmc$cell_type <- plyr::mapvalues(
+  x = as.character(Idents(pbmc)),
+  from = as.character(0:(length(single_model_results)-1)),
+  to = single_model_results
+)
+
+# Visualiser les résultats
+DimPlot(pbmc, group.by = "cell_type", label = TRUE) +
+  ggtitle("Types cellulaires annotés par un seul modèle LLM")
+```
+
+#### Comparaison de différents modèles
+
+Vous pouvez également comparer les annotations de différents modèles en exécutant `annotate_cell_types()` plusieurs fois avec différents modèles :
+
+```r
+# Utiliser différents modèles pour l'annotation
+models <- c("claude-3-7-sonnet-20250219", "gpt-4o", "gemini-2.0-pro", "qwen-max-2025-01-25", "grok-3")
+api_keys <- c("your-anthropic-key", "your-openai-key", "your-google-key", "your-qwen-key", "your-xai-key")
+
+# Créer une colonne pour chaque modèle
+for (i in 1:length(models)) {
+  results <- annotate_cell_types(
+    input = pbmc_markers,
+    tissue_name = "human PBMC",
+    model = models[i],
+    api_key = api_keys[i],
+    top_gene_count = 10
+  )
+  
+  # Créer un nom de colonne basé sur le modèle
+  column_name <- paste0("cell_type_", gsub("[^a-zA-Z0-9]", "_", models[i]))
+  
+  # Ajouter les annotations à l'objet Seurat
+  pbmc[[column_name]] <- plyr::mapvalues(
+    x = as.character(Idents(pbmc)),
+    from = as.character(0:(length(results)-1)),
+    to = results
+  )
+}
+
+# Visualiser les résultats des différents modèles
+p1 <- DimPlot(pbmc, group.by = "cell_type_claude_3_7_sonnet_20250219", label = TRUE) + ggtitle("Claude 3.7")
+p2 <- DimPlot(pbmc, group.by = "cell_type_gpt_4o", label = TRUE) + ggtitle("GPT-4o")
+p3 <- DimPlot(pbmc, group.by = "cell_type_gemini_2_0_pro", label = TRUE) + ggtitle("Gemini 2.0 Pro")
+p4 <- DimPlot(pbmc, group.by = "cell_type_qwen_max_2025_01_25", label = TRUE) + ggtitle("Qwen Max")
+p5 <- DimPlot(pbmc, group.by = "cell_type_grok_3", label = TRUE) + ggtitle("Grok-3")
+
+# Combiner les graphiques
+cowplot::plot_grid(p1, p2, p3, p4, p5, ncol = 3)
 ```
 
 ## Exemple de visualisation

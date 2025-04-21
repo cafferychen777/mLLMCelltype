@@ -47,14 +47,15 @@ pip install git+https://github.com/cafferychen777/mLLMCelltype.git
 
 ### 支持的模型
 
-- **OpenAI**: GPT-4.5/GPT-4o ([API Key](https://platform.openai.com/settings/organization/billing/overview))
+- **OpenAI**: GPT-4.1/GPT-4.5/GPT-4o ([API Key](https://platform.openai.com/settings/organization/billing/overview))
 - **Anthropic**: Claude-3.7-Sonnet/Claude-3.5-Haiku ([API Key](https://console.anthropic.com/))
 - **Google**: Gemini-2.0-Pro/Gemini-2.0-Flash ([API Key](https://ai.google.dev/?authuser=2))
 - **Alibaba**: Qwen2.5-Max ([API Key](https://www.alibabacloud.com/en/product/modelstudio))
-- **DeepSeek**: DeepSeek-R1 ([API Key](https://platform.deepseek.com/usage))
+- **DeepSeek**: DeepSeek-V3/DeepSeek-R1 ([API Key](https://platform.deepseek.com/usage))
 - **Minimax**: MiniMax-Text-01 ([API Key](https://intl.minimaxi.com/user-center/basic-information/interface-key))
 - **Stepfun**: Step-2-16K ([API Key](https://platform.stepfun.com/account-info))
 - **Zhipu**: GLM-4 ([API Key](https://bigmodel.cn/))
+- **X.AI**: Grok-3/Grok-3-mini ([API Key](https://accounts.x.ai/))
 
 ## 使用示例
 
@@ -332,6 +333,98 @@ pdf("pbmc_uncertainty_metrics.pdf", width=18, height=7)
 combined_plot <- cowplot::plot_grid(p1, p2, p3, ncol = 3, rel_widths = c(1.2, 1.2, 1.2))
 print(combined_plot)
 dev.off()
+```
+
+### 使用单个 LLM 模型
+
+如果您只有一个 API 密钥或偏好使用特定的 LLM 模型，可以使用 `annotate_cell_types()` 函数：
+
+```r
+# 加载预处理好的 Seurat 对象
+pbmc <- readRDS("your_seurat_object.rds")
+
+# 为每个聚类找到标记基因
+pbmc_markers <- FindAllMarkers(pbmc,
+                            only.pos = TRUE,
+                            min.pct = 0.25,
+                            logfc.threshold = 0.25)
+
+# 从任何支持的提供商中选择一个模型
+# 支持的模型示例：
+# - Anthropic: "claude-3-7-sonnet-20250219", "claude-3-5-sonnet-latest"
+# - OpenAI: "gpt-4o"
+# - Google: "gemini-1.5-pro", "gemini-2.0-flash"
+# - DeepSeek: "deepseek-chat", "deepseek-reasoner"
+# - Alibaba: "qwen-max-2025-01-25"
+# - X.AI: "grok-3", "grok-3-mini"
+# - Zhipu: "glm-4-plus", "glm-3-turbo"
+# - MiniMax: "minimax-text-01"
+# - Stepfun: "step-2-16k", "step-2-mini"
+
+# 使用单个 LLM 模型进行细胞类型注释
+single_model_results <- annotate_cell_types(
+  input = pbmc_markers,
+  tissue_name = "human PBMC",  # 提供组织上下文
+  model = "claude-3-7-sonnet-20250219",  # 指定单个模型
+  api_key = "your-anthropic-key",  # 直接提供 API 密钥
+  top_gene_count = 10
+)
+
+# 打印结果
+print(single_model_results)
+
+# 将注释添加到 Seurat 对象
+# single_model_results 是一个字符向量，每个聚类对应一个注释
+pbmc$cell_type <- plyr::mapvalues(
+  x = as.character(Idents(pbmc)),
+  from = as.character(0:(length(single_model_results)-1)),
+  to = single_model_results
+)
+
+# 可视化结果
+DimPlot(pbmc, group.by = "cell_type", label = TRUE) +
+  ggtitle("使用单个 LLM 模型注释的细胞类型")
+```
+
+#### 比较不同的模型
+
+您也可以通过多次使用不同模型运行 `annotate_cell_types()` 来比较不同模型的注释结果：
+
+```r
+# 使用不同的模型进行注释
+models <- c("claude-3-7-sonnet-20250219", "gpt-4o", "gemini-2.0-pro", "qwen-max-2025-01-25", "grok-3")
+api_keys <- c("your-anthropic-key", "your-openai-key", "your-google-key", "your-qwen-key", "your-xai-key")
+
+# 为每个模型创建一个列
+for (i in 1:length(models)) {
+  results <- annotate_cell_types(
+    input = pbmc_markers,
+    tissue_name = "human PBMC",
+    model = models[i],
+    api_key = api_keys[i],
+    top_gene_count = 10
+  )
+  
+  # 创建基于模型的列名
+  column_name <- paste0("cell_type_", gsub("[^a-zA-Z0-9]", "_", models[i]))
+  
+  # 将注释添加到 Seurat 对象
+  pbmc[[column_name]] <- plyr::mapvalues(
+    x = as.character(Idents(pbmc)),
+    from = as.character(0:(length(results)-1)),
+    to = results
+  )
+}
+
+# 可视化不同模型的结果
+p1 <- DimPlot(pbmc, group.by = "cell_type_claude_3_7_sonnet_20250219", label = TRUE) + ggtitle("Claude 3.7")
+p2 <- DimPlot(pbmc, group.by = "cell_type_gpt_4o", label = TRUE) + ggtitle("GPT-4o")
+p3 <- DimPlot(pbmc, group.by = "cell_type_gemini_2_0_pro", label = TRUE) + ggtitle("Gemini 2.0 Pro")
+p4 <- DimPlot(pbmc, group.by = "cell_type_qwen_max_2025_01_25", label = TRUE) + ggtitle("Qwen Max")
+p5 <- DimPlot(pbmc, group.by = "cell_type_grok_3", label = TRUE) + ggtitle("Grok-3")
+
+# 组合图表
+cowplot::plot_grid(p1, p2, p3, p4, p5, ncol = 3)
 ```
 
 ## 可视化示例

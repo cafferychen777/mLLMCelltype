@@ -21,6 +21,18 @@ mLLMCelltype는 단일 세포 RNA 시퀀싱 데이터에서 세포 유형 주석
 - **원활한 통합**: 표준 Scanpy/Seurat 워크플로우 및 마커 유전자 출력과 직접 작동
 - **모듈식 설계**: 새로운 LLM이 사용 가능해지면 쉽게 통합 가능
 
+### 지원되는 모델
+
+- **OpenAI**: GPT-4.1/GPT-4.5/GPT-4o ([API 키](https://platform.openai.com/settings/organization/billing/overview))
+- **Anthropic**: Claude-3.7-Sonnet/Claude-3.5-Haiku ([API 키](https://console.anthropic.com/))
+- **Google**: Gemini-2.0-Pro/Gemini-2.0-Flash ([API 키](https://ai.google.dev/?authuser=2))
+- **Alibaba**: Qwen2.5-Max ([API 키](https://www.alibabacloud.com/en/product/modelstudio))
+- **DeepSeek**: DeepSeek-V3/DeepSeek-R1 ([API 키](https://platform.deepseek.com/usage))
+- **Minimax**: MiniMax-Text-01 ([API 키](https://intl.minimaxi.com/user-center/basic-information/interface-key))
+- **Stepfun**: Step-2-16K ([API 키](https://platform.stepfun.com/account-info))
+- **Zhipu**: GLM-4 ([API 키](https://bigmodel.cn/))
+- **X.AI**: Grok-3/Grok-3-mini ([API 키](https://accounts.x.ai/))
+
 ## 디렉토리 구조
 
 - `R/`: R 언어 인터페이스 및 구현
@@ -176,6 +188,98 @@ pdf("pbmc_uncertainty_metrics.pdf", width=18, height=7)
 combined_plot <- cowplot::plot_grid(p1, p2, p3, ncol = 3, rel_widths = c(1.2, 1.2, 1.2))
 print(combined_plot)
 dev.off()
+```
+
+### 단일 LLM 모델 사용
+
+API 키가 하나만 있거나 특정 LLM 모델을 사용하고 싶은 경우, `annotate_cell_types()` 함수를 사용할 수 있습니다:
+
+```r
+# 전처리된 Seurat 객체 로드
+pbmc <- readRDS("your_seurat_object.rds")
+
+# 각 클러스터의 마커 유전자 찾기
+pbmc_markers <- FindAllMarkers(pbmc,
+                            only.pos = TRUE,
+                            min.pct = 0.25,
+                            logfc.threshold = 0.25)
+
+# 지원되는 어떤 공급업체에서나 모델 선택
+# 지원되는 모델 예시:
+# - Anthropic: "claude-3-7-sonnet-20250219", "claude-3-5-sonnet-latest"
+# - OpenAI: "gpt-4o"
+# - Google: "gemini-1.5-pro", "gemini-2.0-flash"
+# - DeepSeek: "deepseek-chat", "deepseek-reasoner"
+# - Alibaba: "qwen-max-2025-01-25"
+# - X.AI: "grok-3", "grok-3-mini"
+# - Zhipu: "glm-4-plus", "glm-3-turbo"
+# - MiniMax: "minimax-text-01"
+# - Stepfun: "step-2-16k", "step-2-mini"
+
+# 단일 LLM 모델로 세포 유형 주석 실행
+single_model_results <- annotate_cell_types(
+  input = pbmc_markers,
+  tissue_name = "human PBMC",  # 조직 문맥 제공
+  model = "claude-3-7-sonnet-20250219",  # 단일 모델 지정
+  api_key = "your-anthropic-key",  # API 키 직접 제공
+  top_gene_count = 10
+)
+
+# 결과 출력
+print(single_model_results)
+
+# Seurat 객체에 주석 추가
+# single_model_results는 각 클러스터당 하나의 주석을 가진 문자 벡터
+pbmc$cell_type <- plyr::mapvalues(
+  x = as.character(Idents(pbmc)),
+  from = as.character(0:(length(single_model_results)-1)),
+  to = single_model_results
+)
+
+# 결과 시각화
+DimPlot(pbmc, group.by = "cell_type", label = TRUE) +
+  ggtitle("단일 LLM 모델로 주석된 세포 유형")
+```
+
+#### 다양한 모델 비교
+
+다른 모델로 `annotate_cell_types()`를 여러 번 실행하여 다양한 모델의 주석을 비교할 수도 있습니다:
+
+```r
+# 다양한 모델을 사용하여 주석
+models <- c("claude-3-7-sonnet-20250219", "gpt-4o", "gemini-2.0-pro", "qwen-max-2025-01-25", "grok-3")
+api_keys <- c("your-anthropic-key", "your-openai-key", "your-google-key", "your-qwen-key", "your-xai-key")
+
+# 각 모델에 대한 열 생성
+for (i in 1:length(models)) {
+  results <- annotate_cell_types(
+    input = pbmc_markers,
+    tissue_name = "human PBMC",
+    model = models[i],
+    api_key = api_keys[i],
+    top_gene_count = 10
+  )
+  
+  # 모델에 기반한 열 이름 생성
+  column_name <- paste0("cell_type_", gsub("[^a-zA-Z0-9]", "_", models[i]))
+  
+  # Seurat 객체에 주석 추가
+  pbmc[[column_name]] <- plyr::mapvalues(
+    x = as.character(Idents(pbmc)),
+    from = as.character(0:(length(results)-1)),
+    to = results
+  )
+}
+
+# 다양한 모델의 결과 시각화
+p1 <- DimPlot(pbmc, group.by = "cell_type_claude_3_7_sonnet_20250219", label = TRUE) + ggtitle("Claude 3.7")
+p2 <- DimPlot(pbmc, group.by = "cell_type_gpt_4o", label = TRUE) + ggtitle("GPT-4o")
+p3 <- DimPlot(pbmc, group.by = "cell_type_gemini_2_0_pro", label = TRUE) + ggtitle("Gemini 2.0 Pro")
+p4 <- DimPlot(pbmc, group.by = "cell_type_qwen_max_2025_01_25", label = TRUE) + ggtitle("Qwen Max")
+p5 <- DimPlot(pbmc, group.by = "cell_type_grok_3", label = TRUE) + ggtitle("Grok-3")
+
+# 플롯 결합
+cowplot::plot_grid(p1, p2, p3, p4, p5, ncol = 3)
 ```
 
 ## 시각화 예시

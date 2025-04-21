@@ -47,11 +47,11 @@ pip install git+https://github.com/cafferychen777/mLLMCelltype.git
 
 ### Supported Models
 
-- **OpenAI**: GPT-4.5/GPT-4o ([API Key](https://platform.openai.com/settings/organization/billing/overview))
+- **OpenAI**: GPT-4.1/GPT-4.5/GPT-4o ([API Key](https://platform.openai.com/settings/organization/billing/overview))
 - **Anthropic**: Claude-3.7-Sonnet/Claude-3.5-Haiku ([API Key](https://console.anthropic.com/))
 - **Google**: Gemini-2.0-Pro/Gemini-2.0-Flash ([API Key](https://ai.google.dev/?authuser=2))
 - **Alibaba**: Qwen2.5-Max ([API Key](https://www.alibabacloud.com/en/product/modelstudio))
-- **DeepSeek**: DeepSeek-R1 ([API Key](https://platform.deepseek.com/usage))
+- **DeepSeek**: DeepSeek-V3/DeepSeek-R1 ([API Key](https://platform.deepseek.com/usage))
 - **Minimax**: MiniMax-Text-01 ([API Key](https://intl.minimaxi.com/user-center/basic-information/interface-key))
 - **Stepfun**: Step-2-16K ([API Key](https://platform.stepfun.com/account-info))
 - **Zhipu**: GLM-4 ([API Key](https://bigmodel.cn/))
@@ -357,6 +357,107 @@ pdf("pbmc_uncertainty_metrics.pdf", width=18, height=7)
 combined_plot <- cowplot::plot_grid(p1, p2, p3, ncol = 3, rel_widths = c(1.2, 1.2, 1.2))
 print(combined_plot)
 dev.off()
+```
+
+### Using a Single LLM Model
+
+If you only want to use a single LLM model instead of the consensus approach, use the `annotate_cell_types()` function. This is useful when you have access to only one API key or prefer a specific model:
+
+```r
+# Load required packages
+library(mLLMCelltype)
+library(Seurat)
+
+# Load your preprocessed Seurat object
+pbmc <- readRDS("your_seurat_object.rds")
+
+# Find marker genes for each cluster
+pbmc_markers <- FindAllMarkers(pbmc,
+                            only.pos = TRUE,
+                            min.pct = 0.25,
+                            logfc.threshold = 0.25)
+
+# Choose a model from any supported provider
+# Examples of supported models:
+# - Anthropic: "claude-3-7-sonnet-20250219", "claude-3-5-sonnet-latest"
+# - OpenAI: "gpt-4o"
+# - Google: "gemini-1.5-pro", "gemini-2.0-flash"
+# - DeepSeek: "deepseek-chat", "deepseek-reasoner"
+# - Alibaba: "qwen-max-2025-01-25"
+# - X.AI: "grok-3", "grok-3-mini"
+# - Zhipu: "glm-4-plus", "glm-3-turbo"
+# - MiniMax: "minimax-text-01"
+# - Stepfun: "step-2-16k", "step-2-mini"
+
+# Run cell type annotation with a single LLM model
+single_model_results <- annotate_cell_types(
+  input = pbmc_markers,
+  tissue_name = "human PBMC",  # provide tissue context
+  model = "claude-3-7-sonnet-20250219",  # specify a single model
+  api_key = "your-anthropic-key",  # provide the API key directly
+  top_gene_count = 10
+)
+
+# Print the results
+print(single_model_results)
+
+# Add annotations to Seurat object
+# single_model_results is a character vector with one annotation per cluster
+pbmc$cell_type <- plyr::mapvalues(
+  x = as.character(Idents(pbmc)),
+  from = as.character(0:(length(single_model_results)-1)),
+  to = single_model_results
+)
+
+# Visualize results
+DimPlot(pbmc, group.by = "cell_type", label = TRUE) +
+  ggtitle("Cell Types Annotated by Single LLM Model")
+```
+
+#### Comparing Different Models
+
+You can also compare annotations from different models by running `annotate_cell_types()` multiple times with different models:
+
+```r
+# Define models to test
+models_to_test <- c(
+  "claude-3-7-sonnet-20250219",  # Anthropic
+  "gpt-4o",                      # OpenAI
+  "gemini-1.5-pro",              # Google
+  "qwen-max-2025-01-25"          # Alibaba
+)
+
+# API keys for different providers
+api_keys <- list(
+  anthropic = "your-anthropic-key",
+  openai = "your-openai-key",
+  gemini = "your-gemini-key",
+  qwen = "your-qwen-key"
+)
+
+# Test each model and store results
+results <- list()
+for (model in models_to_test) {
+  provider <- get_provider(model)
+  api_key <- api_keys[[provider]]
+  
+  # Run annotation
+  results[[model]] <- annotate_cell_types(
+    input = pbmc_markers,
+    tissue_name = "human PBMC",
+    model = model,
+    api_key = api_key,
+    top_gene_count = 10
+  )
+  
+  # Add to Seurat object
+  column_name <- paste0("cell_type_", gsub("[^a-zA-Z0-9]", "_", model))
+  pbmc[[column_name]] <- plyr::mapvalues(
+    x = as.character(Idents(pbmc)),
+    from = as.character(0:(length(results[[model]])-1)),
+    to = results[[model]]
+  )
+}
 ```
 
 ## Visualization Example
