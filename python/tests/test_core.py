@@ -6,23 +6,24 @@ Core functionality tests for mLLMCelltype.
 Tests for utility functions and core features that don't depend on external APIs.
 """
 
+import json
 import os
 import sys
-import pytest
 import tempfile
-import json
+from unittest.mock import MagicMock, patch
+
 import pandas as pd
-from unittest.mock import patch, MagicMock
+import pytest
 
 # Import utility functions
 from mllmcelltype.utils import (
-    parse_marker_genes,
-    load_api_key,
-    create_cache_key,
-    save_to_cache,
-    load_from_cache,
-    format_results,
     clean_annotation,
+    create_cache_key,
+    format_results,
+    load_api_key,
+    load_from_cache,
+    parse_marker_genes,
+    save_to_cache,
 )
 
 

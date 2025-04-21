@@ -5,23 +5,23 @@
 Tests for mLLMCelltype utility functions.
 """
 
+import json
 import os
 import sys
+import tempfile
+from unittest.mock import MagicMock, patch
+
 import pandas as pd
 import pytest
-import tempfile
-import json
-from unittest.mock import patch, MagicMock
-
-from mllmcelltype.utils import (
-    parse_marker_genes,
-    create_cache_key,
-    save_to_cache,
-    load_from_cache,
-    format_results,
-    clean_annotation,
-)
 from mllmcelltype.logger import write_log
+from mllmcelltype.utils import (
+    clean_annotation,
+    create_cache_key,
+    format_results,
+    load_from_cache,
+    parse_marker_genes,
+    save_to_cache,
+)
 
 
 # Sample marker genes for testing

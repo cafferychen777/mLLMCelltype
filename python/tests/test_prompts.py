@@ -7,15 +7,15 @@ Tests for prompt generation functionality in mLLMCelltype.
 
 import os
 import sys
-import pytest
-from unittest.mock import patch, MagicMock
+from unittest.mock import MagicMock, patch
 
+import pytest
 from mllmcelltype.prompts import (
-    create_prompt,
     create_batch_prompt,
-    create_json_prompt,
-    create_discussion_prompt,
     create_consensus_check_prompt,
+    create_discussion_prompt,
+    create_json_prompt,
+    create_prompt,
 )
 
 

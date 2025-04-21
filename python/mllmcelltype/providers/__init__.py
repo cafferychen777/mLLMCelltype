@@ -3,15 +3,15 @@ Provider modules for different LLM services.
 This package contains modules for interacting with various LLM providers.
 """
 
-from .openai import process_openai
 from .anthropic import process_anthropic
 from .deepseek import process_deepseek
 from .gemini import process_gemini
+from .grok import process_grok
+from .minimax import process_minimax
+from .openai import process_openai
 from .qwen import process_qwen
 from .stepfun import process_stepfun
 from .zhipu import process_zhipu
-from .minimax import process_minimax
-from .grok import process_grok
 
 __all__ = [
     "process_openai",

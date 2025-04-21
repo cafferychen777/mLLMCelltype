@@ -2,17 +2,18 @@
 Utility functions for LLMCellType.
 """
 
+import hashlib
+import json
+import logging
+import math
 import os
 import re
-import json
-import hashlib
-import pandas as pd
-import math
-from typing import Dict, List, Optional, Union, Any, Tuple
-from datetime import datetime
-import logging
 import time
+from datetime import datetime
+from typing import Any, Dict, List, Optional, Tuple, Union
+
 import jsonschema
+import pandas as pd
 from jsonschema.exceptions import ValidationError
 
 from .logger import write_log
@@ -290,8 +291,8 @@ def format_results(results: List[str], clusters: List[str]) -> Dict[str, str]:
     Returns:
         Dict[str, str]: Dictionary mapping cluster names to annotations
     """
-    import re
     import json
+    import re
 
     # Clean up results (remove empty lines and whitespace)
     clean_results = [line.strip() for line in results if line.strip()]

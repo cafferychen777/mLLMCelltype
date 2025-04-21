@@ -2,19 +2,20 @@
 Module for comparing annotations from different LLM providers.
 """
 
-import os
 import json
-import pandas as pd
-import numpy as np
-from typing import Dict, List, Optional, Union, Any, Tuple
-import matplotlib.pyplot as plt
-import seaborn as sns
+import os
 from collections import Counter
 from itertools import combinations
+from typing import Any, Dict, List, Optional, Tuple, Union
 
+import matplotlib.pyplot as plt
+import numpy as np
+import pandas as pd
+import seaborn as sns
+
+from .functions import identify_controversial_clusters
 from .logger import write_log
 from .utils import clean_annotation
-from .functions import identify_controversial_clusters
 
 
 def compare_model_predictions(

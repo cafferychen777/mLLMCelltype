@@ -7,9 +7,10 @@ Fixtures and configuration for pytest.
 
 import os
 import sys
-import pytest
+from unittest.mock import MagicMock, patch
+
 import pandas as pd
-from unittest.mock import patch, MagicMock
+import pytest
 
 
 # Sample marker genes for testing

@@ -3,31 +3,32 @@ Main annotation module for LLMCellType.
 """
 
 import os
-import pandas as pd
-from typing import Dict, List, Optional, Union, Tuple
 import time
+from typing import Dict, List, Optional, Tuple, Union
 
+import pandas as pd
+
+from .logger import setup_logging, write_log
+from .prompts import create_batch_prompt, create_prompt
 from .providers import (
-    process_openai,
     process_anthropic,
     process_deepseek,
     process_gemini,
+    process_grok,
+    process_minimax,
+    process_openai,
     process_qwen,
     process_stepfun,
     process_zhipu,
-    process_minimax,
-    process_grok,
 )
-from .prompts import create_prompt, create_batch_prompt
 from .utils import (
-    load_api_key,
     create_cache_key,
-    save_to_cache,
+    format_results,
+    load_api_key,
     load_from_cache,
     parse_marker_genes,
-    format_results,
+    save_to_cache,
 )
-from .logger import write_log, setup_logging
 
 # Provider function mapping
 PROVIDER_FUNCTIONS = {
@@ -327,8 +328,8 @@ def batch_annotate_clusters(
                 full_text = "\n".join(filtered_results)
 
                 # Try to find JSON in the text
-                import re
                 import json
+                import re
 
                 # Extract JSON content if it's wrapped in ```json and ``` markers
                 json_match = re.search(r"```(?:json)?\s*([\s\S]*?)\s*```", full_text)

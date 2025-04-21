@@ -2,7 +2,8 @@
 Prompt generation module for LLMCellType.
 """
 
-from typing import Dict, List, Optional, Union, Any
+from typing import Any, Dict, List, Optional, Union
+
 from .logger import write_log
 
 # Default prompt template for single dataset annotation

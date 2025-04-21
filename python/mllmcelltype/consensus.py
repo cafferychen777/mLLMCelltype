@@ -2,20 +2,21 @@
 Module for consensus annotation of cell types from multiple LLM predictions.
 """
 
-import os
-import time
 import json
 import math
-import pandas as pd
-import numpy as np
-from typing import Dict, List, Optional, Union, Tuple, Any
+import os
 import re
+import time
 from collections import Counter
+from typing import Any, Dict, List, Optional, Tuple, Union
 
-from .logger import write_log
-from .utils import clean_annotation, find_agreement
+import numpy as np
+import pandas as pd
+
 from .functions import identify_controversial_clusters
-from .prompts import create_discussion_prompt, create_discussion_consensus_check_prompt
+from .logger import write_log
+from .prompts import create_discussion_consensus_check_prompt, create_discussion_prompt
+from .utils import clean_annotation, find_agreement
 
 
 def check_consensus_with_llm(
@@ -35,11 +36,12 @@ def check_consensus_with_llm(
             - Dictionary mapping cluster IDs to consensus proportion scores
             - Dictionary mapping cluster IDs to entropy scores
     """
-    from .annotate import get_model_response
-    from .prompts import create_consensus_check_prompt
-    from .functions import get_provider
     import math
     from collections import Counter
+
+    from .annotate import get_model_response
+    from .functions import get_provider
+    from .prompts import create_consensus_check_prompt
 
     consensus = {}
     consensus_proportion = {}
@@ -294,10 +296,11 @@ def process_controversial_clusters(
             - Dictionary mapping cluster IDs to updated consensus proportion scores
             - Dictionary mapping cluster IDs to updated entropy scores
     """
-    from .annotate import get_model_response
-    from .prompts import create_consensus_check_prompt
     import math
     from collections import Counter
+
+    from .annotate import get_model_response
+    from .prompts import create_consensus_check_prompt
 
     results = {}
     discussion_history = {}
@@ -776,8 +779,8 @@ def interactive_consensus_annotation(
     Returns:
         Dict[str, Any]: Dictionary containing consensus results and metadata
     """
-    from .functions import get_provider
     from .annotate import annotate_clusters
+    from .functions import get_provider
     from .utils import combine_results
 
     # Set up logging
@@ -1078,8 +1081,8 @@ def facilitate_cluster_discussion(
     Returns:
         str: Discussion result
     """
-    from .prompts import create_discussion_prompt
     from .annotate import get_model_response
+    from .prompts import create_discussion_prompt
 
     # Generate discussion prompt
     prompt = create_discussion_prompt(

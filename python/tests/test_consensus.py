@@ -7,13 +7,13 @@ Tests for consensus and comparison functionality in mLLMCelltype.
 
 import os
 import sys
-import pytest
-from unittest.mock import patch, MagicMock
+from unittest.mock import MagicMock, patch
 
+import pytest
 from mllmcelltype.consensus import (
     check_consensus,
-    interactive_consensus_annotation,
     check_consensus_with_llm,
+    interactive_consensus_annotation,
 )
 from mllmcelltype.utils import find_agreement
 
