@@ -7,6 +7,7 @@ utils::globalVariables(c("custom_models"))
 #'
 #' @param model Character string specifying the model name to check
 #' @return Character string with the provider name
+#' @importFrom utils adist
 #' @export
 get_provider <- function(model) {
   # Normalize model name to lowercase for comparison
