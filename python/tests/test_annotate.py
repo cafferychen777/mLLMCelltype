@@ -7,13 +7,14 @@ Tests for annotation functionality in mLLMCelltype.
 
 import os
 import sys
-from unittest.mock import MagicMock
-from unittest.mock import patch
+from unittest.mock import MagicMock, patch
 
 import pytest
-from mllmcelltype.annotate import annotate_clusters
-from mllmcelltype.annotate import batch_annotate_clusters
-from mllmcelltype.annotate import get_model_response
+from mllmcelltype.annotate import (
+    annotate_clusters,
+    batch_annotate_clusters,
+    get_model_response,
+)
 
 
 # Test annotation functions
