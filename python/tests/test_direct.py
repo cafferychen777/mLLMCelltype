@@ -9,19 +9,18 @@ import json
 import os
 import sys
 import tempfile
-from unittest.mock import MagicMock, patch
+from unittest.mock import MagicMock
+from unittest.mock import patch
 
 import pandas as pd
 import pytest
 from mllmcelltype.logger import write_log
-from mllmcelltype.utils import (
-    clean_annotation,
-    create_cache_key,
-    format_results,
-    load_from_cache,
-    parse_marker_genes,
-    save_to_cache,
-)
+from mllmcelltype.utils import clean_annotation
+from mllmcelltype.utils import create_cache_key
+from mllmcelltype.utils import format_results
+from mllmcelltype.utils import load_from_cache
+from mllmcelltype.utils import parse_marker_genes
+from mllmcelltype.utils import save_to_cache
 
 
 # Sample marker genes for testing
