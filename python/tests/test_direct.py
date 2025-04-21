@@ -93,16 +93,16 @@ def test_save_and_load_from_cache():
         test_data = ["result1", "result2"]
         cache_key = create_cache_key("test_prompt", "test_model", "test_provider")
         
-        # 注意参数顺序：cache_key, results, cache_dir
+        # Note parameter order: cache_key, results, cache_dir
         save_to_cache(cache_key, test_data, cache_dir=temp_dir)
         
-        # 直接从文件中读取，而不是使用 load_from_cache 函数
+        # Read directly from file instead of using load_from_cache function
         cache_file = os.path.join(temp_dir, f"{cache_key}.json")
         assert os.path.exists(cache_file)
         
         with open(cache_file, 'r') as f:
             cache_data = json.load(f)
-            loaded_data = cache_data["data"]  # 数据存储在 "data" 字段中
+            loaded_data = cache_data["data"]  # Data is stored in the "data" field
         
         # Verify data
         assert loaded_data == test_data
@@ -122,7 +122,7 @@ def test_format_results_simple():
         "Cluster 2: B cells"
     ]
     
-    # 需要提供 clusters 参数
+    # Need to provide clusters parameter
     clusters = ["1", "2"]
     formatted = format_results(raw_results, clusters)
     

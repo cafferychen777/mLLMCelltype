@@ -87,8 +87,8 @@ Marker genes: {markers}"""
         assert "Set 1:" in prompt or "Dataset 1:" in prompt
         assert "Set 2:" in prompt or "Dataset 2:" in prompt
         
-        # 检查提示中是否包含必要的指导信息，而不是具体的基因
-        # 当前实现不包含具体的标记基因
+        # Check if the prompt contains necessary guidance information, rather than specific genes
+        # Current implementation does not include specific marker genes
         assert "cell type" in prompt.lower()
         assert "cluster" in prompt.lower()
     

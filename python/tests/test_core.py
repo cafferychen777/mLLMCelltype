@@ -180,12 +180,12 @@ def test_clean_annotation():
     """Test cleaning cell type annotations."""
     test_cases = [
         ("T cells", "T cells"),
-        # 当前实现不替换连字符
+        # Current implementation does not replace hyphens
         ("T-cells", "T-cells"),
         ("T-cell", "T-cell"),
         ("CD4+ T cells", "CD4+ T cells"),
         ("B-cells (naive)", "B-cells (naive)"),
-        # 以下是当前实现支持的清理操作
+        # The following are cleaning operations supported by the current implementation
         ("Cluster 1: T cells", "T cells"),
         ("1. T cells", "T cells"),
         ("T cells.", "T cells"),

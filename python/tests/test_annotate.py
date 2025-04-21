@@ -34,7 +34,7 @@ class TestAnnotation:
         """Test annotate_clusters function."""
         # Setup mocks
         from mllmcelltype.annotate import PROVIDER_FUNCTIONS
-        # 返回一个列表，因为 format_results 函数期望接收一个列表
+        # Return a list because format_results function expects a list
         PROVIDER_FUNCTIONS["mock_provider"] = lambda *args, **kwargs: [
             "Cluster 1: T cells",
             "Cluster 2: B cells"
@@ -42,14 +42,14 @@ class TestAnnotation:
         mock_load_api_key.return_value = "test-key"
         mock_get_default_model.return_value = "mock_model"
         
-        # Test with DataFrame input - 禁用缓存
+        # Test with DataFrame input - disable cache
         result = annotate_clusters(
             marker_genes=self.marker_genes_df,
             species="human",
             provider="mock_provider",
             model="mock_model",
             tissue="blood",
-            use_cache=False  # 禁用缓存
+            use_cache=False  # disable cache
         )
         
         # Verify results
@@ -59,14 +59,14 @@ class TestAnnotation:
         assert result["1"] == "T cells"
         assert result["2"] == "B cells"
         
-        # Test with dictionary input - 禁用缓存
+        # Test with dictionary input - disable cache
         result = annotate_clusters(
             marker_genes=self.marker_genes_dict,
             species="human",
             provider="mock_provider",
             model="mock_model",
             tissue="blood",
-            use_cache=False  # 禁用缓存
+            use_cache=False  # disable cache
         )
         
         # Verify results
@@ -83,7 +83,7 @@ class TestAnnotation:
         """Test batch_annotate_clusters function."""
         # Setup mocks
         from mllmcelltype.annotate import PROVIDER_FUNCTIONS
-        # 返回一个列表，因为 format_results 函数期望接收一个列表
+        # Return a list because format_results function expects a list
         PROVIDER_FUNCTIONS["mock_provider"] = lambda *args, **kwargs: [
             "Set 1:",
             "Cluster 1: T cells",
@@ -98,14 +98,14 @@ class TestAnnotation:
         # Create a list of marker genes DataFrames
         marker_genes_list = [self.marker_genes_df, self.marker_genes_df]
         
-        # Test function - 禁用缓存
+        # Test function - disable cache
         result = batch_annotate_clusters(
             marker_genes_list=marker_genes_list,
             species="human",
             provider="mock_provider",
             model="mock_model",
             tissue="blood",
-            use_cache=False  # 禁用缓存
+            use_cache=False  # disable cache
         )
         
         # Verify results
@@ -118,7 +118,7 @@ class TestAnnotation:
         assert result[0]["1"] == "T cells"
         assert result[0]["2"] == "B cells"
     
-    # 修复参数名称问题
+    # Fix parameter name issues
     @patch("mllmcelltype.annotate.PROVIDER_FUNCTIONS")
     @patch("mllmcelltype.utils.load_api_key")
     @patch("mllmcelltype.annotate.load_api_key")
@@ -131,7 +131,7 @@ class TestAnnotation:
             "Cluster 1: T cells",
             "Cluster 2: B cells"
         ]
-        # 设置 PROVIDER_FUNCTIONS 字典
+        # Set up PROVIDER_FUNCTIONS dictionary
         mock_provider_functions.__getitem__.side_effect = lambda key: mock_provider_func if key == "openai" else None
         mock_provider_functions.__contains__.return_value = True
         
@@ -144,7 +144,7 @@ class TestAnnotation:
             prompt="Test prompt",
             provider="openai",
             model="gpt-4o",
-            api_key="test-key",  # 显式提供 API 密钥以避免加载真实密钥
+            api_key="test-key",  # Explicitly provide API key to avoid loading real keys
             use_cache=False
         )
         
@@ -158,13 +158,13 @@ class TestAnnotation:
             assert "Cluster 1: T cells" in result
             assert "Cluster 2: B cells" in result
     
-    # 修复 API 密钥问题 - 使用 patch.dict 来确保环境变量被正确模拟
-    @patch.dict(os.environ, {}, clear=True)  # 清除所有环境变量
+    # Fix API key issues - use patch.dict to ensure environment variables are properly mocked
+    @patch.dict(os.environ, {}, clear=True)  # Clear all environment variables
     @patch("mllmcelltype.utils.load_api_key")
     @patch("mllmcelltype.annotate.load_api_key")
     def test_get_model_response_missing_api_key(self, mock_load_api_key, mock_utils_load_api_key):
         """Test get_model_response with missing API key."""
-        # 确保两个 load_api_key 函数都返回 None
+        # Ensure both load_api_key functions return None
         mock_load_api_key.return_value = None
         mock_utils_load_api_key.return_value = None
         
@@ -174,7 +174,7 @@ class TestAnnotation:
                 prompt="Test prompt",
                 provider="openai",
                 model="gpt-4o",
-                api_key=None,  # 确保不使用默认值
+                api_key=None,  
                 use_cache=False
             )
 
