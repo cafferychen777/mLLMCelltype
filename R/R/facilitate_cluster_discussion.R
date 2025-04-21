@@ -91,7 +91,7 @@ facilitate_cluster_discussion <- function(cluster_id,
     rounds = list()
   )
   
-  # 初始化聚类讨论日志文件
+  # Initialize clustering discussion log file
   logger$start_cluster_discussion(cluster_id, tissue_name, cluster_genes)
   
   # First round: Initial reasoning
@@ -206,12 +206,13 @@ facilitate_cluster_discussion <- function(cluster_id,
                      if (round < max_rounds) "Continuing discussion..." else "Reached maximum rounds."))
     }
     
-    if (consensus_result$reached) {
+    # Only break the discussion loop if all consensus conditions are met
+    if (consensus_result$reached && consensus_result$consensus_proportion >= controversy_threshold && consensus_result$entropy <= entropy_threshold) {
       break
     }
   }
   
-  # 结束聚类讨论日志记录
+  # End cluster discussion log recording
   logger$end_cluster_discussion()
   
   discussion_log
