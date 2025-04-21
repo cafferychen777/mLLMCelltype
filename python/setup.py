@@ -14,7 +14,7 @@ except FileNotFoundError:
 
 setup(
     name="mllmcelltype",
-    version="1.0.2",
+    version="1.1.0",
     packages=find_packages(),
     description="A Python module for cell type annotation using various LLMs.",
     long_description=long_description,
