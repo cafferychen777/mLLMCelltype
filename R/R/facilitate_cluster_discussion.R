@@ -91,6 +91,9 @@ facilitate_cluster_discussion <- function(cluster_id,
     rounds = list()
   )
   
+  # 初始化聚类讨论日志文件
+  logger$start_cluster_discussion(cluster_id, tissue_name, cluster_genes)
+  
   # First round: Initial reasoning
   first_round_prompt <- create_initial_discussion_prompt(
     cluster_id = cluster_id,
@@ -207,6 +210,9 @@ facilitate_cluster_discussion <- function(cluster_id,
       break
     }
   }
+  
+  # 结束聚类讨论日志记录
+  logger$end_cluster_discussion()
   
   discussion_log
 }
