@@ -10,6 +10,7 @@ import sys
 from unittest.mock import MagicMock, patch
 
 import pytest
+
 from mllmcelltype.consensus import (
     check_consensus,
     check_consensus_with_llm,

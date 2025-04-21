@@ -10,6 +10,7 @@ import sys
 from unittest.mock import MagicMock, patch
 
 import pytest
+
 from mllmcelltype.annotate import (
     annotate_clusters,
     batch_annotate_clusters,

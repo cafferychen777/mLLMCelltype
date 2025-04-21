@@ -10,6 +10,7 @@ import sys
 from unittest.mock import MagicMock, patch
 
 import pytest
+
 from mllmcelltype.prompts import (
     create_batch_prompt,
     create_consensus_check_prompt,
