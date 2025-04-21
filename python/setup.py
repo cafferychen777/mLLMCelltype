@@ -22,6 +22,7 @@ setup(
     author="mLLMCelltype Team",
     author_email="cafferychen777@tamu.edu",
     url="https://github.com/cafferychen777/mLLMCelltype",
+    python_requires=">=3.9",
     install_requires=[
         "pandas>=1.0.0",
         "numpy>=1.19.0",
