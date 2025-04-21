@@ -15,28 +15,48 @@ from .utils import clean_annotation
 # Define supported models as literals for better type checking
 ModelType = Literal[
     # OpenAI models
-    'gpt-4o', 'gpt-4-turbo', 'gpt-4.1', 'o1', 'o1-mini', 'o1-pro', 'o4-mini',
+    "gpt-4o",
+    "gpt-4-turbo",
+    "gpt-4.1",
+    "o1",
+    "o1-mini",
+    "o1-pro",
+    "o4-mini",
     # Anthropic models
-    'claude-3-7-sonnet-20250219', 'claude-3-5-sonnet-latest', 'claude-3-5-haiku-latest', 'claude-3-opus',
+    "claude-3-7-sonnet-20250219",
+    "claude-3-5-sonnet-latest",
+    "claude-3-5-haiku-latest",
+    "claude-3-opus",
     # DeepSeek models
-    'deepseek-chat', 'deepseek-reasoner',
+    "deepseek-chat",
+    "deepseek-reasoner",
     # Gemini models
-    'gemini-2.0-flash', 'gemini-2.0-flash-001', 'gemini-1.5-pro', 'gemini-1.5-flash',
+    "gemini-2.0-flash",
+    "gemini-2.0-flash-001",
+    "gemini-1.5-pro",
+    "gemini-1.5-flash",
     # Qwen models
-    'qwen-max-2025-01-25', 'qwen-plus',
+    "qwen-max-2025-01-25",
+    "qwen-plus",
     # StepFun models
-    'step-2-16k', 'step-2-mini', 'step-1-8k',
+    "step-2-16k",
+    "step-2-mini",
+    "step-1-8k",
     # Zhipu models
-    'glm-4-plus', 'glm-3-turbo',
+    "glm-4-plus",
+    "glm-3-turbo",
     # MiniMax models
-    'minimax-text-01',
+    "minimax-text-01",
     # Grok models
-    'grok-3-latest', 'grok-3'
+    "grok-3-latest",
+    "grok-3",
 ]
+
 
 @dataclass
 class LLMResponse:
     """Class for storing LLM response data"""
+
     cell_types: List[str]
     prompt: str
     raw_response: Optional[str] = None
@@ -58,22 +78,41 @@ def get_provider(model: str) -> str:
     """
     # Define supported models
     providers = {
-        'openai': ['gpt-4o', 'gpt-4-turbo', 'gpt-4.1', 'o1', 'o1-mini', 'o1-pro', 'o4-mini'],
-        'anthropic': ['claude-3-7-sonnet-20250219', 'claude-3-5-sonnet-latest',
-                     'claude-3-5-haiku-latest', 'claude-3-opus'],
-        'deepseek': ['deepseek-chat', 'deepseek-reasoner'],
-        'gemini': ['gemini-2.0-flash', 'gemini-2.0-flash-001', 'gemini-1.5-pro', 'gemini-1.5-flash'],
-        'qwen': ['qwen-max-2025-01-25', 'qwen-plus'],
-        'stepfun': ['step-2-16k', 'step-2-mini', 'step-1-8k'],
-        'zhipu': ['glm-4-plus', 'glm-3-turbo'],
-        'minimax': ['minimax-text-01'],
-        'grok': ['grok-3-latest', 'grok-3']
+        "openai": [
+            "gpt-4o",
+            "gpt-4-turbo",
+            "gpt-4.1",
+            "o1",
+            "o1-mini",
+            "o1-pro",
+            "o4-mini",
+        ],
+        "anthropic": [
+            "claude-3-7-sonnet-20250219",
+            "claude-3-5-sonnet-latest",
+            "claude-3-5-haiku-latest",
+            "claude-3-opus",
+        ],
+        "deepseek": ["deepseek-chat", "deepseek-reasoner"],
+        "gemini": [
+            "gemini-2.0-flash",
+            "gemini-2.0-flash-001",
+            "gemini-1.5-pro",
+            "gemini-1.5-flash",
+        ],
+        "qwen": ["qwen-max-2025-01-25", "qwen-plus"],
+        "stepfun": ["step-2-16k", "step-2-mini", "step-1-8k"],
+        "zhipu": ["glm-4-plus", "glm-3-turbo"],
+        "minimax": ["minimax-text-01"],
+        "grok": ["grok-3-latest", "grok-3"],
     }
 
     # Check for model name in each provider's list
     for provider, models in providers.items():
         for supported_model in models:
-            if model.lower() == supported_model.lower() or model.lower().startswith(supported_model.lower()):
+            if model.lower() == supported_model.lower() or model.lower().startswith(
+                supported_model.lower()
+            ):
                 return provider
 
     # Check for provider name in the model string (fallback)
@@ -86,29 +125,49 @@ def get_provider(model: str) -> str:
     for provider, models in providers.items():
         all_supported.extend(models)
 
-    write_log(f"WARNING: Unsupported model: {model}. Using provider name from model string.", 'warning')
+    write_log(
+        f"WARNING: Unsupported model: {model}. Using provider name from model string.",
+        "warning",
+    )
 
     # Try to extract provider name from the model string
-    for known_provider in ['openai', 'anthropic', 'claude', 'gpt', 'deepseek', 'gemini',
-                          'google', 'qwen', 'alibaba', 'step', 'glm', 'zhipu', 'minimax', 'grok', 'xai']:
+    for known_provider in [
+        "openai",
+        "anthropic",
+        "claude",
+        "gpt",
+        "deepseek",
+        "gemini",
+        "google",
+        "qwen",
+        "alibaba",
+        "step",
+        "glm",
+        "zhipu",
+        "minimax",
+        "grok",
+        "xai",
+    ]:
         if known_provider in model.lower():
-            if known_provider == 'gpt':
-                return 'openai'
-            elif known_provider == 'claude':
-                return 'anthropic'
-            elif known_provider == 'google':
-                return 'gemini'
-            elif known_provider == 'alibaba':
-                return 'qwen'
-            elif known_provider == 'glm':
-                return 'zhipu'
-            elif known_provider == 'xai':
-                return 'grok'
+            if known_provider == "gpt":
+                return "openai"
+            elif known_provider == "claude":
+                return "anthropic"
+            elif known_provider == "google":
+                return "gemini"
+            elif known_provider == "alibaba":
+                return "qwen"
+            elif known_provider == "glm":
+                return "zhipu"
+            elif known_provider == "xai":
+                return "grok"
             else:
                 return known_provider
 
     # If we still can't determine the provider, raise an error
-    raise ValueError(f"Unsupported model: {model}. Supported models are: {', '.join(all_supported)}")
+    raise ValueError(
+        f"Unsupported model: {model}. Supported models are: {', '.join(all_supported)}"
+    )
 
 
 def select_best_prediction(predictions: List[Dict[str, str]]) -> Dict[str, str]:
@@ -132,7 +191,9 @@ def select_best_prediction(predictions: List[Dict[str, str]]) -> Dict[str, str]:
     # For each cluster, select the most specific prediction
     best_predictions = {}
     for cluster in all_clusters:
-        cluster_predictions = [pred.get(cluster, "") for pred in predictions if cluster in pred]
+        cluster_predictions = [
+            pred.get(cluster, "") for pred in predictions if cluster in pred
+        ]
 
         # Filter out empty predictions
         cluster_predictions = [pred for pred in cluster_predictions if pred]
@@ -149,8 +210,9 @@ def select_best_prediction(predictions: List[Dict[str, str]]) -> Dict[str, str]:
     return best_predictions
 
 
-def identify_controversial_clusters(annotations: Dict[str, Dict[str, str]],
-                                  threshold: float = 0.6) -> List[str]:
+def identify_controversial_clusters(
+    annotations: Dict[str, Dict[str, str]], threshold: float = 0.6
+) -> List[str]:
     """
     Identify clusters with inconsistent annotations across models.
 
@@ -190,7 +252,11 @@ def identify_controversial_clusters(annotations: Dict[str, Dict[str, str]],
         if counts:
             most_common = max(counts.items(), key=lambda x: x[1])
             most_common_count = most_common[1]
-            agreement = most_common_count / len(cluster_annotations) if cluster_annotations else 0
+            agreement = (
+                most_common_count / len(cluster_annotations)
+                if cluster_annotations
+                else 0
+            )
 
             # Mark as controversial if agreement is below threshold
             if agreement < threshold:
@@ -202,11 +268,11 @@ def identify_controversial_clusters(annotations: Dict[str, Dict[str, str]],
 def annotate_cell_types(
     input_data: Union[pd.DataFrame, List[str], Dict[str, List[str]]],
     tissue_name: str = None,
-    model: str = 'gpt-4o',
+    model: str = "gpt-4o",
     api_key: str = None,
     top_gene_number: int = 10,
     use_cache: bool = True,
-    format_json: bool = False
+    format_json: bool = False,
 ) -> LLMResponse:
     """
     Annotate cell types using various Large Language Models (LLMs).
@@ -226,19 +292,19 @@ def annotate_cell_types(
     """
     # Process input data
     if isinstance(input_data, dict):
-        processed_input = {k: ','.join(v) for k, v in input_data.items()}
+        processed_input = {k: ",".join(v) for k, v in input_data.items()}
     elif isinstance(input_data, list):
-        processed_input = {'group1': ','.join(input_data)}
+        processed_input = {"group1": ",".join(input_data)}
     elif isinstance(input_data, pd.DataFrame):
         # Filter for positive fold changes if the column exists
-        if 'avg_log2FC' in input_data.columns:
-            input_data = input_data[input_data['avg_log2FC'] > 0]
+        if "avg_log2FC" in input_data.columns:
+            input_data = input_data[input_data["avg_log2FC"] > 0]
 
         # Group by cluster and get top genes
         def get_top_genes(group):
-            return ','.join(group['gene'].head(top_gene_number))
+            return ",".join(group["gene"].head(top_gene_number))
 
-        processed_input = input_data.groupby('cluster').apply(get_top_genes).to_dict()
+        processed_input = input_data.groupby("cluster").apply(get_top_genes).to_dict()
     else:
         raise ValueError("Input must be a DataFrame, list, or dictionary")
 
@@ -246,14 +312,17 @@ def annotate_cell_types(
     prompt_lines = [
         f"Identify cell types of {tissue_name} cells using the following markers separately for each",
         "row. Only provide the cell type name. Do not show numbers before the name.",
-        "Some can be a mixture of multiple cell types."
+        "Some can be a mixture of multiple cell types.",
     ]
 
     # Add JSON format instruction if requested
     if format_json:
         prompt_lines.append("")
-        prompt_lines.append("Format your response as a JSON object with the following structure:")
-        prompt_lines.append("""{
+        prompt_lines.append(
+            "Format your response as a JSON object with the following structure:"
+        )
+        prompt_lines.append(
+            """{
   "annotations": [
     {
       "cluster": "1",
@@ -263,13 +332,14 @@ def annotate_cell_types(
     },
     ...
   ]
-}""")
+}"""
+        )
 
     # Add cluster marker genes
     for key, genes in processed_input.items():
         prompt_lines.append(f"{key}:{genes}")
 
-    prompt = '\n'.join(prompt_lines)
+    prompt = "\n".join(prompt_lines)
 
     # If no API key, return prompt only
     if api_key is None:
@@ -284,6 +354,7 @@ def annotate_cell_types(
     cache_key = None
     if use_cache:
         from .utils import create_cache_key, load_from_cache
+
         cache_key = create_cache_key(prompt, model, provider)
         cached_result = load_from_cache(cache_key)
         if cached_result:
@@ -292,27 +363,31 @@ def annotate_cell_types(
 
             # Format the cached result
             from .utils import format_results
+
             formatted_result = format_results(cached_result, cluster_ids)
-            result_list = [formatted_result.get(str(cluster_id), "Unknown") for cluster_id in cluster_ids]
+            result_list = [
+                formatted_result.get(str(cluster_id), "Unknown")
+                for cluster_id in cluster_ids
+            ]
 
             return LLMResponse(
                 cell_types=result_list,
                 prompt=prompt,
-                raw_response='\n'.join(cached_result),
-                metadata={"provider": provider, "model": model, "cached": True}
+                raw_response="\n".join(cached_result),
+                metadata={"provider": provider, "model": model, "cached": True},
             )
 
     # Process based on provider
     provider_map = {
-        'openai': process_openai_legacy,
-        'anthropic': process_anthropic_legacy,
-        'deepseek': process_deepseek_legacy,
-        'gemini': process_gemini_legacy,
-        'qwen': process_qwen_legacy,
-        'stepfun': process_stepfun_legacy,
-        'zhipu': process_zhipu_legacy,
-        'minimax': process_minimax_legacy,
-        'grok': process_grok_legacy
+        "openai": process_openai_legacy,
+        "anthropic": process_anthropic_legacy,
+        "deepseek": process_deepseek_legacy,
+        "gemini": process_gemini_legacy,
+        "qwen": process_qwen_legacy,
+        "stepfun": process_stepfun_legacy,
+        "zhipu": process_zhipu_legacy,
+        "minimax": process_minimax_legacy,
+        "grok": process_grok_legacy,
     }
 
     # Check if provider is supported
@@ -329,19 +404,22 @@ def annotate_cell_types(
         # Save to cache if using cache
         if use_cache and cache_key:
             from .utils import save_to_cache
+
             save_to_cache(cache_key, result)
 
-        write_log('Note: It is always recommended to check the results returned by LLMs in case of '
-                 'AI hallucination, before proceeding with downstream analysis.')
+        write_log(
+            "Note: It is always recommended to check the results returned by LLMs in case of "
+            "AI hallucination, before proceeding with downstream analysis."
+        )
 
         return LLMResponse(
             cell_types=result,
             prompt=prompt,
-            raw_response='\n'.join(result) if isinstance(result, list) else str(result),
-            metadata={"provider": provider, "model": model, "cached": False}
+            raw_response="\n".join(result) if isinstance(result, list) else str(result),
+            metadata={"provider": provider, "model": model, "cached": False},
         )
     except Exception as e:
-        write_log(f"Error during LLM annotation: {str(e)}", level='error')
+        write_log(f"Error during LLM annotation: {str(e)}", level="error")
         raise
 
 
@@ -353,13 +431,15 @@ def process_openai_legacy(prompt: str, model: str, api_key: str) -> List[str]:
     openai.api_key = api_key
 
     # Split into chunks of 30 like the R version
-    input_lines = prompt.split('\n')
+    input_lines = prompt.split("\n")
     chunk_size = 30
-    chunks = [input_lines[i:i + chunk_size] for i in range(0, len(input_lines), chunk_size)]
+    chunks = [
+        input_lines[i : i + chunk_size] for i in range(0, len(input_lines), chunk_size)
+    ]
 
     all_results = []
     for i, chunk in enumerate(chunks):
-        chunk_text = '\n'.join(chunk)
+        chunk_text = "\n".join(chunk)
         write_log(f"Processing chunk {i+1} of {len(chunks)}")
 
         max_retries = 3
@@ -368,10 +448,9 @@ def process_openai_legacy(prompt: str, model: str, api_key: str) -> List[str]:
         for attempt in range(max_retries):
             try:
                 response = openai.ChatCompletion.create(
-                    model=model,
-                    messages=[{"role": "user", "content": chunk_text}]
+                    model=model, messages=[{"role": "user", "content": chunk_text}]
                 )
-                result = response.choices[0].message.content.strip().split('\n')
+                result = response.choices[0].message.content.strip().split("\n")
 
                 # Verify we got the expected number of responses
                 expected_lines = len(chunk) - 3  # -3 for the header lines
@@ -382,7 +461,10 @@ def process_openai_legacy(prompt: str, model: str, api_key: str) -> List[str]:
                     break
                 else:
                     # If we didn't get enough lines, retry
-                    write_log(f"WARNING: Expected {expected_lines} lines, got {len(result)}", level='warning')
+                    write_log(
+                        f"WARNING: Expected {expected_lines} lines, got {len(result)}",
+                        level="warning",
+                    )
                     if attempt < max_retries - 1:
                         write_log(f"Retrying (attempt {attempt+2}/{max_retries})...")
                         time.sleep(retry_delay)
@@ -392,15 +474,18 @@ def process_openai_legacy(prompt: str, model: str, api_key: str) -> List[str]:
                         # Pad with "Unknown" to match expected length
                         all_results.extend(["Unknown"] * (expected_lines - len(result)))
             except Exception as e:
-                write_log(f"Error during OpenAI API call (attempt {attempt+1}/{max_retries}): {str(e)}", level='error')
+                write_log(
+                    f"Error during OpenAI API call (attempt {attempt+1}/{max_retries}): {str(e)}",
+                    level="error",
+                )
                 if attempt < max_retries - 1:
-                    wait_time = retry_delay * (2 ** attempt)
+                    wait_time = retry_delay * (2**attempt)
                     write_log(f"Waiting {wait_time} seconds before retrying...")
                     time.sleep(wait_time)
                 else:
                     raise
 
-    return [r.rstrip(',') for r in all_results]
+    return [r.rstrip(",") for r in all_results]
 
 
 def process_anthropic_legacy(prompt: str, model: str, api_key: str) -> List[str]:
@@ -412,9 +497,7 @@ def process_anthropic_legacy(prompt: str, model: str, api_key: str) -> List[str]
         import anthropic
 
         # Create a client
-        client = anthropic.Anthropic(
-            api_key=api_key
-        )
+        client = anthropic.Anthropic(api_key=api_key)
 
         # Get the model to use
         if not model or model == "default":
@@ -424,35 +507,39 @@ def process_anthropic_legacy(prompt: str, model: str, api_key: str) -> List[str]
 
         # Call the API
         response = client.messages.create(
-            model=model,
-            max_tokens=4000,
-            messages=[
-                {"role": "user", "content": prompt}
-            ]
+            model=model, max_tokens=4000, messages=[{"role": "user", "content": prompt}]
         )
 
         # Extract the result
-        result = response.content[0].text.strip().split('\n')
+        result = response.content[0].text.strip().split("\n")
         write_log(f"Received response from Anthropic API with {len(result)} lines")
 
         # Count number of clusters in prompt
-        cluster_count = len(prompt.split('\n')) - 3  # -3 for header lines
+        cluster_count = len(prompt.split("\n")) - 3  # -3 for header lines
 
         # If we got fewer lines than clusters, pad with "Unknown"
         if len(result) < cluster_count:
-            write_log(f"WARNING: Expected {cluster_count} lines, got {len(result)}", level='warning')
+            write_log(
+                f"WARNING: Expected {cluster_count} lines, got {len(result)}",
+                level="warning",
+            )
             result.extend(["Unknown"] * (cluster_count - len(result)))
 
         # If we got more lines than clusters, truncate
         if len(result) > cluster_count:
-            write_log(f"WARNING: Expected {cluster_count} lines, got {len(result)}, truncating", level='warning')
+            write_log(
+                f"WARNING: Expected {cluster_count} lines, got {len(result)}, truncating",
+                level="warning",
+            )
             result = result[:cluster_count]
 
         return result
     except ImportError:
-        raise ImportError("Anthropic package not installed. Please install with 'pip install anthropic'.")
+        raise ImportError(
+            "Anthropic package not installed. Please install with 'pip install anthropic'."
+        )
     except Exception as e:
-        write_log(f"Error during Anthropic API call: {str(e)}", level='error')
+        write_log(f"Error during Anthropic API call: {str(e)}", level="error")
         raise
 
 
@@ -467,16 +554,14 @@ def process_deepseek_legacy(prompt: str, model: str, api_key: str) -> List[str]:
         # Prepare headers
         headers = {
             "Authorization": f"Bearer {api_key}",
-            "Content-Type": "application/json"
+            "Content-Type": "application/json",
         }
 
         # Prepare payload
         payload = {
             "model": model if model else "deepseek-chat",
-            "messages": [
-                {"role": "user", "content": prompt}
-            ],
-            "max_tokens": 4000
+            "messages": [{"role": "user", "content": prompt}],
+            "max_tokens": 4000,
         }
 
         # Make the API call
@@ -485,33 +570,46 @@ def process_deepseek_legacy(prompt: str, model: str, api_key: str) -> List[str]:
 
         # Check for errors
         if response.status_code != 200:
-            write_log(f"DeepSeek API error: {response.status_code} - {response.text}", level='error')
-            raise Exception(f"DeepSeek API error: {response.status_code} - {response.text}")
+            write_log(
+                f"DeepSeek API error: {response.status_code} - {response.text}",
+                level="error",
+            )
+            raise Exception(
+                f"DeepSeek API error: {response.status_code} - {response.text}"
+            )
 
         # Parse response
         response_data = response.json()
-        content = response_data.get("choices", [{}])[0].get("message", {}).get("content", "")
+        content = (
+            response_data.get("choices", [{}])[0].get("message", {}).get("content", "")
+        )
 
         # Split into lines
-        result = content.strip().split('\n')
+        result = content.strip().split("\n")
         write_log(f"Received response from DeepSeek API with {len(result)} lines")
 
         # Count number of clusters in prompt
-        cluster_count = len(prompt.split('\n')) - 3  # -3 for header lines
+        cluster_count = len(prompt.split("\n")) - 3  # -3 for header lines
 
         # If we got fewer lines than clusters, pad with "Unknown"
         if len(result) < cluster_count:
-            write_log(f"WARNING: Expected {cluster_count} lines, got {len(result)}", level='warning')
+            write_log(
+                f"WARNING: Expected {cluster_count} lines, got {len(result)}",
+                level="warning",
+            )
             result.extend(["Unknown"] * (cluster_count - len(result)))
 
         # If we got more lines than clusters, truncate
         if len(result) > cluster_count:
-            write_log(f"WARNING: Expected {cluster_count} lines, got {len(result)}, truncating", level='warning')
+            write_log(
+                f"WARNING: Expected {cluster_count} lines, got {len(result)}, truncating",
+                level="warning",
+            )
             result = result[:cluster_count]
 
         return result
     except Exception as e:
-        write_log(f"Error during DeepSeek API call: {str(e)}", level='error')
+        write_log(f"Error during DeepSeek API call: {str(e)}", level="error")
         raise
 
 
@@ -525,7 +623,9 @@ def process_gemini_legacy(prompt: str, model: str, api_key: str) -> List[str]:
             from google import genai
             from google.genai import types
         except ImportError:
-            raise ImportError("Google Gen AI package not installed. Please install with 'pip install google-genai'.")
+            raise ImportError(
+                "Google Gen AI package not installed. Please install with 'pip install google-genai'."
+            )
 
         # Initialize the client
         client = genai.Client(api_key=api_key)
@@ -539,33 +639,36 @@ def process_gemini_legacy(prompt: str, model: str, api_key: str) -> List[str]:
         response = client.models.generate_content(
             model=model,
             contents=prompt,
-            config=types.GenerateContentConfig(
-                temperature=0.7,
-                max_output_tokens=4096
-            )
+            config=types.GenerateContentConfig(temperature=0.7, max_output_tokens=4096),
         )
 
         # Extract the result
         content = response.text
-        result = content.strip().split('\n')
+        result = content.strip().split("\n")
         write_log(f"Received response from Gemini API with {len(result)} lines")
 
         # Count number of clusters in prompt
-        cluster_count = len(prompt.split('\n')) - 3  # -3 for header lines
+        cluster_count = len(prompt.split("\n")) - 3  # -3 for header lines
 
         # If we got fewer lines than clusters, pad with "Unknown"
         if len(result) < cluster_count:
-            write_log(f"WARNING: Expected {cluster_count} lines, got {len(result)}", level='warning')
+            write_log(
+                f"WARNING: Expected {cluster_count} lines, got {len(result)}",
+                level="warning",
+            )
             result.extend(["Unknown"] * (cluster_count - len(result)))
 
         # If we got more lines than clusters, truncate
         if len(result) > cluster_count:
-            write_log(f"WARNING: Expected {cluster_count} lines, got {len(result)}, truncating", level='warning')
+            write_log(
+                f"WARNING: Expected {cluster_count} lines, got {len(result)}, truncating",
+                level="warning",
+            )
             result = result[:cluster_count]
 
         return result
     except Exception as e:
-        write_log(f"Error during Gemini API call: {str(e)}", level='error')
+        write_log(f"Error during Gemini API call: {str(e)}", level="error")
         raise
 
 
@@ -580,20 +683,14 @@ def process_qwen_legacy(prompt: str, model: str, api_key: str) -> List[str]:
         # Prepare headers
         headers = {
             "Authorization": f"Bearer {api_key}",
-            "Content-Type": "application/json"
+            "Content-Type": "application/json",
         }
 
         # Prepare payload
         payload = {
             "model": model if model else "qwen-max-2025-01-25",
-            "input": {
-                "messages": [
-                    {"role": "user", "content": prompt}
-                ]
-            },
-            "parameters": {
-                "max_tokens": 4000
-            }
+            "input": {"messages": [{"role": "user", "content": prompt}]},
+            "parameters": {"max_tokens": 4000},
         }
 
         # Make the API call
@@ -602,7 +699,10 @@ def process_qwen_legacy(prompt: str, model: str, api_key: str) -> List[str]:
 
         # Check for errors
         if response.status_code != 200:
-            write_log(f"Qwen API error: {response.status_code} - {response.text}", level='error')
+            write_log(
+                f"Qwen API error: {response.status_code} - {response.text}",
+                level="error",
+            )
             raise Exception(f"Qwen API error: {response.status_code} - {response.text}")
 
         # Parse response
@@ -610,25 +710,31 @@ def process_qwen_legacy(prompt: str, model: str, api_key: str) -> List[str]:
         content = response_data.get("output", {}).get("text", "")
 
         # Split into lines
-        result = content.strip().split('\n')
+        result = content.strip().split("\n")
         write_log(f"Received response from Qwen API with {len(result)} lines")
 
         # Count number of clusters in prompt
-        cluster_count = len(prompt.split('\n')) - 3  # -3 for header lines
+        cluster_count = len(prompt.split("\n")) - 3  # -3 for header lines
 
         # If we got fewer lines than clusters, pad with "Unknown"
         if len(result) < cluster_count:
-            write_log(f"WARNING: Expected {cluster_count} lines, got {len(result)}", level='warning')
+            write_log(
+                f"WARNING: Expected {cluster_count} lines, got {len(result)}",
+                level="warning",
+            )
             result.extend(["Unknown"] * (cluster_count - len(result)))
 
         # If we got more lines than clusters, truncate
         if len(result) > cluster_count:
-            write_log(f"WARNING: Expected {cluster_count} lines, got {len(result)}, truncating", level='warning')
+            write_log(
+                f"WARNING: Expected {cluster_count} lines, got {len(result)}, truncating",
+                level="warning",
+            )
             result = result[:cluster_count]
 
         return result
     except Exception as e:
-        write_log(f"Error during Qwen API call: {str(e)}", level='error')
+        write_log(f"Error during Qwen API call: {str(e)}", level="error")
         raise
 
 
@@ -643,16 +749,14 @@ def process_stepfun_legacy(prompt: str, model: str, api_key: str) -> List[str]:
         # Prepare headers
         headers = {
             "Authorization": f"Bearer {api_key}",
-            "Content-Type": "application/json"
+            "Content-Type": "application/json",
         }
 
         # Prepare payload
         payload = {
             "model": model if model else "step-2-16k",
-            "messages": [
-                {"role": "user", "content": prompt}
-            ],
-            "max_tokens": 4000
+            "messages": [{"role": "user", "content": prompt}],
+            "max_tokens": 4000,
         }
 
         # Make the API call
@@ -661,33 +765,46 @@ def process_stepfun_legacy(prompt: str, model: str, api_key: str) -> List[str]:
 
         # Check for errors
         if response.status_code != 200:
-            write_log(f"Stepfun API error: {response.status_code} - {response.text}", level='error')
-            raise Exception(f"Stepfun API error: {response.status_code} - {response.text}")
+            write_log(
+                f"Stepfun API error: {response.status_code} - {response.text}",
+                level="error",
+            )
+            raise Exception(
+                f"Stepfun API error: {response.status_code} - {response.text}"
+            )
 
         # Parse response
         response_data = response.json()
-        content = response_data.get("choices", [{}])[0].get("message", {}).get("content", "")
+        content = (
+            response_data.get("choices", [{}])[0].get("message", {}).get("content", "")
+        )
 
         # Split into lines
-        result = content.strip().split('\n')
+        result = content.strip().split("\n")
         write_log(f"Received response from Stepfun API with {len(result)} lines")
 
         # Count number of clusters in prompt
-        cluster_count = len(prompt.split('\n')) - 3  # -3 for header lines
+        cluster_count = len(prompt.split("\n")) - 3  # -3 for header lines
 
         # If we got fewer lines than clusters, pad with "Unknown"
         if len(result) < cluster_count:
-            write_log(f"WARNING: Expected {cluster_count} lines, got {len(result)}", level='warning')
+            write_log(
+                f"WARNING: Expected {cluster_count} lines, got {len(result)}",
+                level="warning",
+            )
             result.extend(["Unknown"] * (cluster_count - len(result)))
 
         # If we got more lines than clusters, truncate
         if len(result) > cluster_count:
-            write_log(f"WARNING: Expected {cluster_count} lines, got {len(result)}, truncating", level='warning')
+            write_log(
+                f"WARNING: Expected {cluster_count} lines, got {len(result)}, truncating",
+                level="warning",
+            )
             result = result[:cluster_count]
 
         return result
     except Exception as e:
-        write_log(f"Error during Stepfun API call: {str(e)}", level='error')
+        write_log(f"Error during Stepfun API call: {str(e)}", level="error")
         raise
 
 
@@ -702,16 +819,14 @@ def process_zhipu_legacy(prompt: str, model: str, api_key: str) -> List[str]:
         # Prepare headers
         headers = {
             "Authorization": f"Bearer {api_key}",
-            "Content-Type": "application/json"
+            "Content-Type": "application/json",
         }
 
         # Prepare payload
         payload = {
             "model": model if model else "glm-4",
-            "messages": [
-                {"role": "user", "content": prompt}
-            ],
-            "max_tokens": 4000
+            "messages": [{"role": "user", "content": prompt}],
+            "max_tokens": 4000,
         }
 
         # Make the API call
@@ -720,33 +835,46 @@ def process_zhipu_legacy(prompt: str, model: str, api_key: str) -> List[str]:
 
         # Check for errors
         if response.status_code != 200:
-            write_log(f"Zhipu API error: {response.status_code} - {response.text}", level='error')
-            raise Exception(f"Zhipu API error: {response.status_code} - {response.text}")
+            write_log(
+                f"Zhipu API error: {response.status_code} - {response.text}",
+                level="error",
+            )
+            raise Exception(
+                f"Zhipu API error: {response.status_code} - {response.text}"
+            )
 
         # Parse response
         response_data = response.json()
-        content = response_data.get("choices", [{}])[0].get("message", {}).get("content", "")
+        content = (
+            response_data.get("choices", [{}])[0].get("message", {}).get("content", "")
+        )
 
         # Split into lines
-        result = content.strip().split('\n')
+        result = content.strip().split("\n")
         write_log(f"Received response from Zhipu API with {len(result)} lines")
 
         # Count number of clusters in prompt
-        cluster_count = len(prompt.split('\n')) - 3  # -3 for header lines
+        cluster_count = len(prompt.split("\n")) - 3  # -3 for header lines
 
         # If we got fewer lines than clusters, pad with "Unknown"
         if len(result) < cluster_count:
-            write_log(f"WARNING: Expected {cluster_count} lines, got {len(result)}", level='warning')
+            write_log(
+                f"WARNING: Expected {cluster_count} lines, got {len(result)}",
+                level="warning",
+            )
             result.extend(["Unknown"] * (cluster_count - len(result)))
 
         # If we got more lines than clusters, truncate
         if len(result) > cluster_count:
-            write_log(f"WARNING: Expected {cluster_count} lines, got {len(result)}, truncating", level='warning')
+            write_log(
+                f"WARNING: Expected {cluster_count} lines, got {len(result)}, truncating",
+                level="warning",
+            )
             result = result[:cluster_count]
 
         return result
     except Exception as e:
-        write_log(f"Error during Zhipu API call: {str(e)}", level='error')
+        write_log(f"Error during Zhipu API call: {str(e)}", level="error")
         raise
 
 
@@ -761,16 +889,14 @@ def process_minimax_legacy(prompt: str, model: str, api_key: str) -> List[str]:
         # Prepare headers
         headers = {
             "Authorization": f"Bearer {api_key}",
-            "Content-Type": "application/json"
+            "Content-Type": "application/json",
         }
 
         # Prepare payload
         payload = {
             "model": model if model else "minimax-text-01",
-            "messages": [
-                {"role": "user", "content": prompt}
-            ],
-            "max_tokens": 4000
+            "messages": [{"role": "user", "content": prompt}],
+            "max_tokens": 4000,
         }
 
         # Make the API call
@@ -779,33 +905,46 @@ def process_minimax_legacy(prompt: str, model: str, api_key: str) -> List[str]:
 
         # Check for errors
         if response.status_code != 200:
-            write_log(f"MiniMax API error: {response.status_code} - {response.text}", level='error')
-            raise Exception(f"MiniMax API error: {response.status_code} - {response.text}")
+            write_log(
+                f"MiniMax API error: {response.status_code} - {response.text}",
+                level="error",
+            )
+            raise Exception(
+                f"MiniMax API error: {response.status_code} - {response.text}"
+            )
 
         # Parse response
         response_data = response.json()
-        content = response_data.get("choices", [{}])[0].get("message", {}).get("content", "")
+        content = (
+            response_data.get("choices", [{}])[0].get("message", {}).get("content", "")
+        )
 
         # Split into lines
-        result = content.strip().split('\n')
+        result = content.strip().split("\n")
         write_log(f"Received response from MiniMax API with {len(result)} lines")
 
         # Count number of clusters in prompt
-        cluster_count = len(prompt.split('\n')) - 3  # -3 for header lines
+        cluster_count = len(prompt.split("\n")) - 3  # -3 for header lines
 
         # If we got fewer lines than clusters, pad with "Unknown"
         if len(result) < cluster_count:
-            write_log(f"WARNING: Expected {cluster_count} lines, got {len(result)}", level='warning')
+            write_log(
+                f"WARNING: Expected {cluster_count} lines, got {len(result)}",
+                level="warning",
+            )
             result.extend(["Unknown"] * (cluster_count - len(result)))
 
         # If we got more lines than clusters, truncate
         if len(result) > cluster_count:
-            write_log(f"WARNING: Expected {cluster_count} lines, got {len(result)}, truncating", level='warning')
+            write_log(
+                f"WARNING: Expected {cluster_count} lines, got {len(result)}, truncating",
+                level="warning",
+            )
             result = result[:cluster_count]
 
         return result
     except Exception as e:
-        write_log(f"Error during MiniMax API call: {str(e)}", level='error')
+        write_log(f"Error during MiniMax API call: {str(e)}", level="error")
         raise
 
 
@@ -818,13 +957,12 @@ def process_grok_legacy(prompt: str, model: str, api_key: str) -> List[str]:
         try:
             import openai
         except ImportError:
-            raise ImportError("OpenAI package not installed. Please install with 'pip install openai'.")
+            raise ImportError(
+                "OpenAI package not installed. Please install with 'pip install openai'."
+            )
 
         # Create a client
-        client = openai.OpenAI(
-            api_key=api_key,
-            base_url="https://api.x.ai/v1"
-        )
+        client = openai.OpenAI(api_key=api_key, base_url="https://api.x.ai/v1")
 
         # Get the model to use
         if not model or model == "default":
@@ -834,31 +972,34 @@ def process_grok_legacy(prompt: str, model: str, api_key: str) -> List[str]:
 
         # Call the API
         response = client.chat.completions.create(
-            model=model,
-            messages=[
-                {"role": "user", "content": prompt}
-            ]
+            model=model, messages=[{"role": "user", "content": prompt}]
         )
 
         # Extract the result
         content = response.choices[0].message.content
-        result = content.strip().split('\n')
+        result = content.strip().split("\n")
         write_log(f"Received response from Grok API with {len(result)} lines")
 
         # Count number of clusters in prompt
-        cluster_count = len(prompt.split('\n')) - 3  # -3 for header lines
+        cluster_count = len(prompt.split("\n")) - 3  # -3 for header lines
 
         # If we got fewer lines than clusters, pad with "Unknown"
         if len(result) < cluster_count:
-            write_log(f"WARNING: Expected {cluster_count} lines, got {len(result)}", level='warning')
+            write_log(
+                f"WARNING: Expected {cluster_count} lines, got {len(result)}",
+                level="warning",
+            )
             result.extend(["Unknown"] * (cluster_count - len(result)))
 
         # If we got more lines than clusters, truncate
         if len(result) > cluster_count:
-            write_log(f"WARNING: Expected {cluster_count} lines, got {len(result)}, truncating", level='warning')
+            write_log(
+                f"WARNING: Expected {cluster_count} lines, got {len(result)}, truncating",
+                level="warning",
+            )
             result = result[:cluster_count]
 
         return result
     except Exception as e:
-        write_log(f"Error during Grok API call: {str(e)}", level='error')
+        write_log(f"Error during Grok API call: {str(e)}", level="error")
         raise

@@ -14,13 +14,13 @@ from .minimax import process_minimax
 from .grok import process_grok
 
 __all__ = [
-    'process_openai',
-    'process_anthropic',
-    'process_deepseek',
-    'process_gemini',
-    'process_qwen',
-    'process_stepfun',
-    'process_zhipu',
-    'process_minimax',
-    'process_grok'
+    "process_openai",
+    "process_anthropic",
+    "process_deepseek",
+    "process_gemini",
+    "process_qwen",
+    "process_stepfun",
+    "process_zhipu",
+    "process_minimax",
+    "process_grok",
 ]

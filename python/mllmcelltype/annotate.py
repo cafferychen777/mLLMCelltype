@@ -16,7 +16,7 @@ from .providers import (
     process_stepfun,
     process_zhipu,
     process_minimax,
-    process_grok
+    process_grok,
 )
 from .prompts import create_prompt, create_batch_prompt
 from .utils import (
@@ -25,27 +25,28 @@ from .utils import (
     save_to_cache,
     load_from_cache,
     parse_marker_genes,
-    format_results
+    format_results,
 )
 from .logger import write_log, setup_logging
 
 # Provider function mapping
 PROVIDER_FUNCTIONS = {
-    'openai': process_openai,
-    'anthropic': process_anthropic,
-    'deepseek': process_deepseek,
-    'gemini': process_gemini,
-    'qwen': process_qwen,
-    'stepfun': process_stepfun,
-    'zhipu': process_zhipu,
-    'minimax': process_minimax,
-    'grok': process_grok
+    "openai": process_openai,
+    "anthropic": process_anthropic,
+    "deepseek": process_deepseek,
+    "gemini": process_gemini,
+    "qwen": process_qwen,
+    "stepfun": process_stepfun,
+    "zhipu": process_zhipu,
+    "minimax": process_minimax,
+    "grok": process_grok,
 }
+
 
 def annotate_clusters(
     marker_genes: Union[Dict[str, List[str]], pd.DataFrame],
     species: str,
-    provider: str = 'openai',
+    provider: str = "openai",
     model: Optional[str] = None,
     api_key: Optional[str] = None,
     tissue: Optional[str] = None,
@@ -54,7 +55,7 @@ def annotate_clusters(
     use_cache: bool = True,
     cache_dir: Optional[str] = None,
     log_dir: Optional[str] = None,
-    log_level: str = 'INFO'
+    log_level: str = "INFO",
 ) -> Dict[str, str]:
     """
     Annotate cell clusters using LLM.
@@ -99,7 +100,7 @@ def annotate_clusters(
         api_key = load_api_key(provider)
         if not api_key:
             error_msg = f"API key not found for provider: {provider}"
-            write_log(f"ERROR: {error_msg}", level='error')
+            write_log(f"ERROR: {error_msg}", level="error")
             raise ValueError(error_msg)
 
     # Create prompt
@@ -108,7 +109,7 @@ def annotate_clusters(
         species=species,
         tissue=tissue,
         additional_context=additional_context,
-        prompt_template=prompt_template
+        prompt_template=prompt_template,
     )
 
     # Check cache
@@ -123,7 +124,7 @@ def annotate_clusters(
     provider_func = PROVIDER_FUNCTIONS.get(provider.lower())
     if not provider_func:
         error_msg = f"Unknown provider: {provider}"
-        write_log(f"ERROR: {error_msg}", level='error')
+        write_log(f"ERROR: {error_msg}", level="error")
         raise ValueError(error_msg)
 
     # Process request
@@ -146,13 +147,14 @@ def annotate_clusters(
 
     except Exception as e:
         error_msg = f"Error during annotation: {str(e)}"
-        write_log(f"ERROR: {error_msg}", level='error')
+        write_log(f"ERROR: {error_msg}", level="error")
         raise
+
 
 def batch_annotate_clusters(
     marker_genes_list: List[Union[Dict[str, List[str]], pd.DataFrame]],
     species: str,
-    provider: str = 'openai',
+    provider: str = "openai",
     model: Optional[str] = None,
     api_key: Optional[str] = None,
     tissue: Optional[Union[str, List[str]]] = None,
@@ -161,7 +163,7 @@ def batch_annotate_clusters(
     use_cache: bool = True,
     cache_dir: Optional[str] = None,
     log_dir: Optional[str] = None,
-    log_level: str = 'INFO'
+    log_level: str = "INFO",
 ) -> List[Dict[str, str]]:
     """
     Batch annotate multiple sets of cell clusters using LLM.
@@ -197,7 +199,9 @@ def batch_annotate_clusters(
             parsed_marker_genes_list.append(marker_genes)
 
     # Get clusters for each set
-    clusters_list = [list(marker_genes.keys()) for marker_genes in parsed_marker_genes_list]
+    clusters_list = [
+        list(marker_genes.keys()) for marker_genes in parsed_marker_genes_list
+    ]
     write_log(f"Found {len(clusters_list)} sets of clusters")
 
     # Set default model based on provider
@@ -210,7 +214,7 @@ def batch_annotate_clusters(
         api_key = load_api_key(provider)
         if not api_key:
             error_msg = f"API key not found for provider: {provider}"
-            write_log(f"ERROR: {error_msg}", level='error')
+            write_log(f"ERROR: {error_msg}", level="error")
             raise ValueError(error_msg)
 
     # Create batch prompt
@@ -223,7 +227,7 @@ def batch_annotate_clusters(
         species=species,
         tissue=batch_tissue,
         additional_context=additional_context,
-        prompt_template=prompt_template
+        prompt_template=prompt_template,
     )
 
     # Check cache
@@ -246,7 +250,7 @@ def batch_annotate_clusters(
     provider_func = PROVIDER_FUNCTIONS.get(provider.lower())
     if not provider_func:
         error_msg = f"Unknown provider: {provider}"
-        write_log(f"ERROR: {error_msg}", level='error')
+        write_log(f"ERROR: {error_msg}", level="error")
         raise ValueError(error_msg)
 
     # Process request
@@ -286,7 +290,7 @@ def batch_annotate_clusters(
             line = line.strip()
 
             # Check if this is a set header
-            if line.startswith('Set '):
+            if line.startswith("Set "):
                 # If we have a current set, add it to results
                 if current_set is not None and current_set_results:
                     result_sets.append(current_set_results)
@@ -294,15 +298,15 @@ def batch_annotate_clusters(
 
                 # Extract set number
                 try:
-                    current_set = int(line.split()[1].rstrip(':')) - 1
+                    current_set = int(line.split()[1].rstrip(":")) - 1
                 except (IndexError, ValueError):
                     current_set = len(result_sets)
 
             # Check if this is a cluster annotation
-            elif line.startswith('Cluster '):
+            elif line.startswith("Cluster "):
                 try:
                     # Parse "Cluster X: Annotation"
-                    parts = line.split(':', 1)
+                    parts = line.split(":", 1)
                     cluster_num = parts[0].split()[1]
                     annotation = parts[1].strip() if len(parts) > 1 else ""
 
@@ -310,7 +314,7 @@ def batch_annotate_clusters(
                     if current_set is not None:
                         current_set_results[cluster_num] = annotation
                 except (IndexError, ValueError):
-                    write_log(f"Warning: Could not parse line: {line}", level='warning')
+                    write_log(f"Warning: Could not parse line: {line}", level="warning")
 
         # Add the last set if it exists
         if current_set is not None and current_set_results:
@@ -327,12 +331,12 @@ def batch_annotate_clusters(
                 import json
 
                 # Extract JSON content if it's wrapped in ```json and ``` markers
-                json_match = re.search(r'```(?:json)?\s*([\s\S]*?)\s*```', full_text)
+                json_match = re.search(r"```(?:json)?\s*([\s\S]*?)\s*```", full_text)
                 if json_match:
                     json_str = json_match.group(1)
                 else:
                     # If no code blocks, try to find JSON object directly
-                    json_match = re.search(r'(\{[\s\S]*\})', full_text)
+                    json_match = re.search(r"(\{[\s\S]*\})", full_text)
                     if json_match:
                         json_str = json_match.group(1)
                     else:
@@ -347,43 +351,69 @@ def batch_annotate_clusters(
                             # Parse each set
                             for set_data in data["sets"]:
                                 set_results = {}
-                                if "clusters" in set_data and isinstance(set_data["clusters"], list):
+                                if "clusters" in set_data and isinstance(
+                                    set_data["clusters"], list
+                                ):
                                     for cluster in set_data["clusters"]:
                                         if "id" in cluster and "cell_type" in cluster:
-                                            set_results[str(cluster["id"])] = cluster["cell_type"]
+                                            set_results[str(cluster["id"])] = cluster[
+                                                "cell_type"
+                                            ]
                                     result_sets.append(set_results)
                         # Check if it's a batch response with annotations array
-                        elif "annotations" in data and isinstance(data["annotations"], list):
+                        elif "annotations" in data and isinstance(
+                            data["annotations"], list
+                        ):
                             # Group by set if specified
                             set_groups = {}
                             for annotation in data["annotations"]:
-                                if "set" in annotation and "cluster" in annotation and "cell_type" in annotation:
+                                if (
+                                    "set" in annotation
+                                    and "cluster" in annotation
+                                    and "cell_type" in annotation
+                                ):
                                     set_id = annotation["set"]
                                     if set_id not in set_groups:
                                         set_groups[set_id] = {}
-                                    set_groups[set_id][str(annotation["cluster"])] = annotation["cell_type"]
+                                    set_groups[set_id][str(annotation["cluster"])] = (
+                                        annotation["cell_type"]
+                                    )
 
                             # Add all sets in order
                             for set_id in sorted(set_groups.keys()):
                                 result_sets.append(set_groups[set_id])
                     except json.JSONDecodeError:
-                        write_log(f"Warning: Failed to parse JSON response", level='warning')
+                        write_log(
+                            f"Warning: Failed to parse JSON response", level="warning"
+                        )
             except Exception as e:
-                write_log(f"Warning: Error while trying to parse JSON: {str(e)}", level='warning')
+                write_log(
+                    f"Warning: Error while trying to parse JSON: {str(e)}",
+                    level="warning",
+                )
 
         # If we still didn't get any properly formatted results, fall back to the old method
         if not result_sets:
-            write_log("Warning: Could not parse batch results, falling back to default parsing", level='warning')
+            write_log(
+                "Warning: Could not parse batch results, falling back to default parsing",
+                level="warning",
+            )
             result_sets = []
             for i, clusters in enumerate(clusters_list):
-                result_sets.append({str(cluster): f"Set {i+1} results not properly parsed" for cluster in clusters})
+                result_sets.append(
+                    {
+                        str(cluster): f"Set {i+1} results not properly parsed"
+                        for cluster in clusters
+                    }
+                )
 
         return result_sets
 
     except Exception as e:
         error_msg = f"Error during batch annotation: {str(e)}"
-        write_log(f"ERROR: {error_msg}", level='error')
+        write_log(f"ERROR: {error_msg}", level="error")
         raise
+
 
 def get_default_model(provider: str) -> str:
     """
@@ -396,18 +426,19 @@ def get_default_model(provider: str) -> str:
         str: Default model name
     """
     default_models = {
-        'openai': 'gpt-4o',
-        'anthropic': 'claude-3-opus-20240229',
-        'deepseek': 'deepseek-chat',
-        'gemini': 'gemini-2.0-pro',
-        'qwen': 'qwen-max-2025-01-25',
-        'stepfun': 'llama3-70b-8192',
-        'zhipu': 'glm-4',
-        'minimax': 'abab6-chat',
-        'grok': 'grok-3-latest'
+        "openai": "gpt-4o",
+        "anthropic": "claude-3-opus-20240229",
+        "deepseek": "deepseek-chat",
+        "gemini": "gemini-2.0-pro",
+        "qwen": "qwen-max-2025-01-25",
+        "stepfun": "llama3-70b-8192",
+        "zhipu": "glm-4",
+        "minimax": "abab6-chat",
+        "grok": "grok-3-latest",
     }
 
-    return default_models.get(provider.lower(), 'unknown')
+    return default_models.get(provider.lower(), "unknown")
+
 
 def get_model_response(
     prompt: str,
@@ -415,7 +446,7 @@ def get_model_response(
     model: Optional[str] = None,
     api_key: Optional[str] = None,
     use_cache: bool = True,
-    cache_dir: Optional[str] = None
+    cache_dir: Optional[str] = None,
 ) -> str:
     """
     Get response from a model for a given prompt.
@@ -445,15 +476,17 @@ def get_model_response(
     # Get API key if not provided
     if not api_key:
         from .utils import load_api_key
+
         api_key = load_api_key(provider)
         if not api_key:
             error_msg = f"API key not found for provider: {provider}"
-            write_log(f"ERROR: {error_msg}", level='error')
+            write_log(f"ERROR: {error_msg}", level="error")
             raise ValueError(error_msg)
 
     # Check cache
     if use_cache:
         from .utils import create_cache_key, load_from_cache
+
         cache_key = create_cache_key(prompt, model, provider)
         cached_result = load_from_cache(cache_key, cache_dir)
         if cached_result:
@@ -464,21 +497,21 @@ def get_model_response(
 
     # Get provider function
     provider_funcs = {
-        'openai': PROVIDER_FUNCTIONS['openai'],
-        'anthropic': PROVIDER_FUNCTIONS['anthropic'],
-        'deepseek': PROVIDER_FUNCTIONS['deepseek'],
-        'gemini': PROVIDER_FUNCTIONS['gemini'],
-        'qwen': PROVIDER_FUNCTIONS['qwen'],
-        'stepfun': PROVIDER_FUNCTIONS['stepfun'],
-        'zhipu': PROVIDER_FUNCTIONS['zhipu'],
-        'minimax': PROVIDER_FUNCTIONS['minimax'],
-        'grok': PROVIDER_FUNCTIONS['grok']
+        "openai": PROVIDER_FUNCTIONS["openai"],
+        "anthropic": PROVIDER_FUNCTIONS["anthropic"],
+        "deepseek": PROVIDER_FUNCTIONS["deepseek"],
+        "gemini": PROVIDER_FUNCTIONS["gemini"],
+        "qwen": PROVIDER_FUNCTIONS["qwen"],
+        "stepfun": PROVIDER_FUNCTIONS["stepfun"],
+        "zhipu": PROVIDER_FUNCTIONS["zhipu"],
+        "minimax": PROVIDER_FUNCTIONS["minimax"],
+        "grok": PROVIDER_FUNCTIONS["grok"],
     }
 
     provider_func = provider_funcs.get(provider.lower())
     if not provider_func:
         error_msg = f"Unknown provider: {provider}"
-        write_log(f"ERROR: {error_msg}", level='error')
+        write_log(f"ERROR: {error_msg}", level="error")
         raise ValueError(error_msg)
 
     # Call provider function
@@ -489,6 +522,7 @@ def get_model_response(
         # Save to cache
         if use_cache:
             from .utils import save_to_cache
+
             save_to_cache(cache_key, result, cache_dir)
 
         # Convert list to string if needed
@@ -498,5 +532,5 @@ def get_model_response(
         return result
     except Exception as e:
         error_msg = f"Error getting model response: {str(e)}"
-        write_log(f"ERROR: {error_msg}", level='error')
+        write_log(f"ERROR: {error_msg}", level="error")
         raise

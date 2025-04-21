@@ -10,7 +10,7 @@ import sys
 import unittest
 
 # Add parent directory to path to import mllmcelltype
-sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
 from mllmcelltype.utils import format_results
 
@@ -21,7 +21,7 @@ class TestJsonParsing(unittest.TestCase):
     def setUp(self):
         """Set up test data."""
         self.clusters = ["1", "2", "3"]
-        
+
         # Example JSON response from OpenAI
         self.json_response = [
             "```json",
@@ -47,9 +47,9 @@ class TestJsonParsing(unittest.TestCase):
             "    }",
             "  ]",
             "}",
-            "```"
+            "```",
         ]
-        
+
         # JSON response without code block markers
         self.json_response_no_markers = [
             "{",
@@ -73,9 +73,9 @@ class TestJsonParsing(unittest.TestCase):
             '      "key_markers": ["FCGR3A", "CD14", "LYZ"]',
             "    }",
             "  ]",
-            "}"
+            "}",
         ]
-        
+
         # JSON response with incorrect format (missing commas)
         self.json_response_incorrect = [
             "```json",
@@ -101,28 +101,24 @@ class TestJsonParsing(unittest.TestCase):
             "    }",
             "  ]",
             "}",
-            "```"
+            "```",
         ]
-        
+
         # Expected result after parsing
-        self.expected_result = {
-            "1": "T cells",
-            "2": "B cells",
-            "3": "Monocytes"
-        }
+        self.expected_result = {"1": "T cells", "2": "B cells", "3": "Monocytes"}
 
     def test_json_parsing_with_markers(self):
         """Test parsing JSON response with code block markers."""
         result = format_results(self.json_response, self.clusters)
         print("JSON parsing result with markers:", result)
         self.assertEqual(result, self.expected_result)
-        
+
     def test_json_parsing_without_markers(self):
         """Test parsing JSON response without code block markers."""
         result = format_results(self.json_response_no_markers, self.clusters)
         print("JSON parsing result without markers:", result)
         self.assertEqual(result, self.expected_result)
-        
+
     def test_json_parsing_incorrect_format(self):
         """Test parsing JSON response with incorrect format (missing commas)."""
         result = format_results(self.json_response_incorrect, self.clusters)

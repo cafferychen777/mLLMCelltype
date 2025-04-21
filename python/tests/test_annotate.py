@@ -13,20 +13,23 @@ from unittest.mock import patch, MagicMock
 from mllmcelltype.annotate import (
     annotate_clusters,
     batch_annotate_clusters,
-    get_model_response
+    get_model_response,
 )
+
 
 # Test annotation functions
 class TestAnnotation:
     """Test class for annotation functions."""
-    
+
     @pytest.fixture(autouse=True)
-    def setup(self, sample_marker_genes_df, sample_marker_genes_dict, mock_api_response):
+    def setup(
+        self, sample_marker_genes_df, sample_marker_genes_dict, mock_api_response
+    ):
         """Set up test fixtures."""
         self.marker_genes_df = sample_marker_genes_df
         self.marker_genes_dict = sample_marker_genes_dict
         self.mock_api_response = mock_api_response
-    
+
     @patch("mllmcelltype.annotate.load_api_key")
     @patch("mllmcelltype.annotate.get_default_model")
     @patch("mllmcelltype.annotate.PROVIDER_FUNCTIONS", {"mock_provider": MagicMock()})
@@ -34,14 +37,15 @@ class TestAnnotation:
         """Test annotate_clusters function."""
         # Setup mocks
         from mllmcelltype.annotate import PROVIDER_FUNCTIONS
+
         # Return a list because format_results function expects a list
         PROVIDER_FUNCTIONS["mock_provider"] = lambda *args, **kwargs: [
             "Cluster 1: T cells",
-            "Cluster 2: B cells"
+            "Cluster 2: B cells",
         ]
         mock_load_api_key.return_value = "test-key"
         mock_get_default_model.return_value = "mock_model"
-        
+
         # Test with DataFrame input - disable cache
         result = annotate_clusters(
             marker_genes=self.marker_genes_df,
@@ -49,16 +53,16 @@ class TestAnnotation:
             provider="mock_provider",
             model="mock_model",
             tissue="blood",
-            use_cache=False  # disable cache
+            use_cache=False,  # disable cache
         )
-        
+
         # Verify results
         assert isinstance(result, dict)
         assert "1" in result
         assert "2" in result
         assert result["1"] == "T cells"
         assert result["2"] == "B cells"
-        
+
         # Test with dictionary input - disable cache
         result = annotate_clusters(
             marker_genes=self.marker_genes_dict,
@@ -66,16 +70,16 @@ class TestAnnotation:
             provider="mock_provider",
             model="mock_model",
             tissue="blood",
-            use_cache=False  # disable cache
+            use_cache=False,  # disable cache
         )
-        
+
         # Verify results
         assert isinstance(result, dict)
         assert "1" in result
         assert "2" in result
         assert result["1"] == "T cells"
         assert result["2"] == "B cells"
-    
+
     @patch("mllmcelltype.annotate.load_api_key")
     @patch("mllmcelltype.annotate.get_default_model")
     @patch("mllmcelltype.annotate.PROVIDER_FUNCTIONS", {"mock_provider": MagicMock()})
@@ -83,6 +87,7 @@ class TestAnnotation:
         """Test batch_annotate_clusters function."""
         # Setup mocks
         from mllmcelltype.annotate import PROVIDER_FUNCTIONS
+
         # Return a list because format_results function expects a list
         PROVIDER_FUNCTIONS["mock_provider"] = lambda *args, **kwargs: [
             "Set 1:",
@@ -90,14 +95,14 @@ class TestAnnotation:
             "Cluster 2: B cells",
             "Set 2:",
             "Cluster 3: NK cells",
-            "Cluster 4: Monocytes"
+            "Cluster 4: Monocytes",
         ]
         mock_load_api_key.return_value = "test-key"
         mock_get_default_model.return_value = "mock_model"
-        
+
         # Create a list of marker genes DataFrames
         marker_genes_list = [self.marker_genes_df, self.marker_genes_df]
-        
+
         # Test function - disable cache
         result = batch_annotate_clusters(
             marker_genes_list=marker_genes_list,
@@ -105,9 +110,9 @@ class TestAnnotation:
             provider="mock_provider",
             model="mock_model",
             tissue="blood",
-            use_cache=False  # disable cache
+            use_cache=False,  # disable cache
         )
-        
+
         # Verify results
         assert isinstance(result, list)
         assert len(result) == 2
@@ -117,37 +122,44 @@ class TestAnnotation:
         assert "2" in result[0]
         assert result[0]["1"] == "T cells"
         assert result[0]["2"] == "B cells"
-    
+
     # Fix parameter name issues
     @patch("mllmcelltype.annotate.PROVIDER_FUNCTIONS")
     @patch("mllmcelltype.utils.load_api_key")
     @patch("mllmcelltype.annotate.load_api_key")
     @patch("mllmcelltype.annotate.get_default_model")
-    def test_get_model_response(self, mock_get_default_model, mock_load_api_key, 
-                               mock_utils_load_api_key, mock_provider_functions):
+    def test_get_model_response(
+        self,
+        mock_get_default_model,
+        mock_load_api_key,
+        mock_utils_load_api_key,
+        mock_provider_functions,
+    ):
         """Test get_model_response function."""
         # Setup mocks
         mock_provider_func = lambda *args, **kwargs: [
             "Cluster 1: T cells",
-            "Cluster 2: B cells"
+            "Cluster 2: B cells",
         ]
         # Set up PROVIDER_FUNCTIONS dictionary
-        mock_provider_functions.__getitem__.side_effect = lambda key: mock_provider_func if key == "openai" else None
+        mock_provider_functions.__getitem__.side_effect = lambda key: (
+            mock_provider_func if key == "openai" else None
+        )
         mock_provider_functions.__contains__.return_value = True
-        
+
         mock_load_api_key.return_value = "test-key"
         mock_utils_load_api_key.return_value = "test-key"
         mock_get_default_model.return_value = "gpt-4o"
-        
+
         # Test function
         result = get_model_response(
             prompt="Test prompt",
             provider="openai",
             model="gpt-4o",
             api_key="test-key",  # Explicitly provide API key to avoid loading real keys
-            use_cache=False
+            use_cache=False,
         )
-        
+
         # Verify results
         assert isinstance(result, list) or isinstance(result, str)
         if isinstance(result, list):
@@ -157,26 +169,29 @@ class TestAnnotation:
         else:
             assert "Cluster 1: T cells" in result
             assert "Cluster 2: B cells" in result
-    
+
     # Fix API key issues - use patch.dict to ensure environment variables are properly mocked
     @patch.dict(os.environ, {}, clear=True)  # Clear all environment variables
     @patch("mllmcelltype.utils.load_api_key")
     @patch("mllmcelltype.annotate.load_api_key")
-    def test_get_model_response_missing_api_key(self, mock_load_api_key, mock_utils_load_api_key):
+    def test_get_model_response_missing_api_key(
+        self, mock_load_api_key, mock_utils_load_api_key
+    ):
         """Test get_model_response with missing API key."""
         # Ensure both load_api_key functions return None
         mock_load_api_key.return_value = None
         mock_utils_load_api_key.return_value = None
-        
+
         # Test function with missing API key
         with pytest.raises(ValueError, match="API key not found"):
             get_model_response(
                 prompt="Test prompt",
                 provider="openai",
                 model="gpt-4o",
-                api_key=None,  
-                use_cache=False
+                api_key=None,
+                use_cache=False,
             )
+
 
 if __name__ == "__main__":
     pytest.main(["-xvs", __file__])

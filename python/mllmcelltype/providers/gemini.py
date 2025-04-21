@@ -8,6 +8,7 @@ from google import genai
 from google.genai import types
 from ..logger import write_log
 
+
 def process_gemini(prompt: str, model: str, api_key: str) -> List[str]:
     """
     Process request using Google Gemini models.
@@ -46,23 +47,24 @@ def process_gemini(prompt: str, model: str, api_key: str) -> List[str]:
                 model=model,
                 contents=prompt,
                 config=types.GenerateContentConfig(
-                    temperature=0.7,
-                    max_output_tokens=4096
-                )
+                    temperature=0.7, max_output_tokens=4096
+                ),
             )
 
             # Parse the response
-            result = response.text.strip().split('\n')
+            result = response.text.strip().split("\n")
             write_log(f"Got response with {len(result)} lines")
             write_log(f"Raw response from Gemini:\n{result}")
 
             # Clean up results (remove commas at the end of lines)
-            return [line.rstrip(',') for line in result]
+            return [line.rstrip(",") for line in result]
 
         except Exception as e:
-            write_log(f"Error during API call (attempt {attempt+1}/{max_retries}): {str(e)}")
+            write_log(
+                f"Error during API call (attempt {attempt+1}/{max_retries}): {str(e)}"
+            )
             if attempt < max_retries - 1:
-                wait_time = retry_delay * (2 ** attempt)
+                wait_time = retry_delay * (2**attempt)
                 write_log(f"Waiting {wait_time} seconds before retrying...")
                 time.sleep(wait_time)
             else:

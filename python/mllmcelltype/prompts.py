@@ -58,6 +58,7 @@ Cluster 1: [cell type]
 Only provide the cell type name for each cluster. Be concise but specific.
 """
 
+
 def create_consensus_check_prompt(annotations: List[str]) -> str:
     """
     Create a prompt for checking consensus among different annotations.
@@ -96,6 +97,7 @@ Only output these 4 lines, nothing else."""
     prompt = prompt.replace("{annotations}", formatted_annotations)
 
     return prompt
+
 
 # Original simpler batch template
 SIMPLE_BATCH_PROMPT_TEMPLATE = """You are a cell type annotation expert. Below are marker genes for different cell clusters in {context}.
@@ -243,12 +245,13 @@ Line 4: The majority cell type prediction
 RESPOND WITH EXACTLY FOUR LINES AS SPECIFIED ABOVE.
 """
 
+
 def create_prompt(
     marker_genes: Dict[str, List[str]],
     species: str,
     tissue: Optional[str] = None,
     additional_context: Optional[str] = None,
-    prompt_template: Optional[str] = None
+    prompt_template: Optional[str] = None,
 ) -> str:
     """
     Create a prompt for cell type annotation.
@@ -277,7 +280,7 @@ def create_prompt(
             species=species,
             tissue=tissue,
             additional_context=additional_context,
-            prompt_template=prompt_template
+            prompt_template=prompt_template,
         )
 
     # Default tissue if none provided
@@ -291,13 +294,13 @@ def create_prompt(
     marker_text = "\n".join(marker_text_lines)
 
     # Add additional context if provided
-    context_text = f"\nAdditional context: {additional_context}\n" if additional_context else ""
+    context_text = (
+        f"\nAdditional context: {additional_context}\n" if additional_context else ""
+    )
 
     # Fill in the template
     prompt = prompt_template.format(
-        species=species,
-        tissue=tissue_text,
-        markers=marker_text
+        species=species, tissue=tissue_text, markers=marker_text
     )
 
     # Add context
@@ -311,12 +314,13 @@ def create_prompt(
     write_log(f"Generated prompt with {len(prompt)} characters")
     return prompt
 
+
 def create_prompt_legacy(
     marker_genes: Dict[str, List[str]],
     species: str,
     tissue: Optional[str] = None,
     additional_context: Optional[str] = None,
-    prompt_template: Optional[str] = None
+    prompt_template: Optional[str] = None,
 ) -> str:
     """
     Create a prompt for cell type annotation using the legacy template format.
@@ -357,20 +361,18 @@ def create_prompt_legacy(
         clusters_str += f"Cluster {cluster}: {genes_str}\n"
 
     # Format prompt
-    prompt = prompt_template.format(
-        context=context,
-        clusters=clusters_str
-    )
+    prompt = prompt_template.format(context=context, clusters=clusters_str)
 
     write_log(f"Generated legacy prompt with {len(prompt)} characters")
     return prompt
+
 
 def create_batch_prompt(
     marker_genes_list: List[Dict[str, List[str]]],
     species: str,
     tissue: Optional[str] = None,
     additional_context: Optional[str] = None,
-    prompt_template: Optional[str] = None
+    prompt_template: Optional[str] = None,
 ) -> str:
     """
     Create a batch prompt for multiple sets of clusters.
@@ -399,7 +401,7 @@ def create_batch_prompt(
             species=species,
             tissue=tissue,
             additional_context=additional_context,
-            prompt_template=prompt_template
+            prompt_template=prompt_template,
         )
 
     # Default tissue if none provided
@@ -416,13 +418,13 @@ def create_batch_prompt(
     marker_text = "\n".join(marker_text_lines)
 
     # Add additional context if provided
-    context_text = f"\nAdditional context: {additional_context}\n" if additional_context else ""
+    context_text = (
+        f"\nAdditional context: {additional_context}\n" if additional_context else ""
+    )
 
     # Fill in the template
     prompt = prompt_template.format(
-        species=species,
-        tissue=tissue_text,
-        markers=marker_text
+        species=species, tissue=tissue_text, markers=marker_text
     )
 
     # Add context
@@ -436,12 +438,13 @@ def create_batch_prompt(
     write_log(f"Generated batch prompt with {len(prompt)} characters")
     return prompt
 
+
 def create_batch_prompt_legacy(
     marker_genes_list: List[Dict[str, List[str]]],
     species: str,
     tissue: Optional[str] = None,
     additional_context: Optional[str] = None,
-    prompt_template: Optional[str] = None
+    prompt_template: Optional[str] = None,
 ) -> str:
     """
     Create a batch prompt for multiple sets of clusters using the legacy template format.
@@ -485,19 +488,17 @@ def create_batch_prompt_legacy(
         clusters_str += "\n"
 
     # Format prompt
-    prompt = prompt_template.format(
-        context=context,
-        clusters=clusters_str
-    )
+    prompt = prompt_template.format(context=context, clusters=clusters_str)
 
     write_log(f"Generated legacy batch prompt with {len(prompt)} characters")
     return prompt
+
 
 def create_json_prompt(
     marker_genes: Dict[str, List[str]],
     species: str,
     tissue: Optional[str] = None,
-    additional_context: Optional[str] = None
+    additional_context: Optional[str] = None,
 ) -> str:
     """
     Create a prompt for cell type annotation with JSON output format.
@@ -516,8 +517,9 @@ def create_json_prompt(
         species=species,
         tissue=tissue,
         additional_context=additional_context,
-        prompt_template=DEFAULT_JSON_PROMPT_TEMPLATE
+        prompt_template=DEFAULT_JSON_PROMPT_TEMPLATE,
     )
+
 
 def create_discussion_prompt(
     cluster_id: str,
@@ -526,7 +528,7 @@ def create_discussion_prompt(
     species: str,
     tissue: Optional[str] = None,
     previous_discussion: Optional[str] = None,
-    prompt_template: Optional[str] = None
+    prompt_template: Optional[str] = None,
 ) -> str:
     """
     Create a prompt for facilitating discussion about a controversial cluster.
@@ -567,7 +569,7 @@ def create_discussion_prompt(
         # Create a modified template that includes previous discussion
         iterative_template = prompt_template.replace(
             "Your task:",
-            "Previous discussion round:\n{previous_discussion}\n\nYour task:"
+            "Previous discussion round:\n{previous_discussion}\n\nYour task:",
         )
 
         # Fill in the template with previous discussion
@@ -577,7 +579,7 @@ def create_discussion_prompt(
             tissue=tissue_text,
             marker_genes=marker_genes_text,
             model_votes=model_votes_text,
-            previous_discussion=previous_discussion
+            previous_discussion=previous_discussion,
         )
     else:
         # Fill in the template without previous discussion
@@ -586,17 +588,18 @@ def create_discussion_prompt(
             species=species,
             tissue=tissue_text,
             marker_genes=marker_genes_text,
-            model_votes=model_votes_text
+            model_votes=model_votes_text,
         )
 
     write_log(f"Generated discussion prompt with {len(prompt)} characters")
     return prompt
 
+
 def create_model_consensus_check_prompt(
     predictions: Dict[str, Dict[str, str]],
     species: str,
     tissue: Optional[str] = None,
-    prompt_template: Optional[str] = None
+    prompt_template: Optional[str] = None,
 ) -> str:
     """
     Create a prompt for checking consensus across model predictions.
@@ -642,19 +645,18 @@ def create_model_consensus_check_prompt(
 
     # Fill in the template
     prompt = prompt_template.format(
-        species=species,
-        tissue=tissue_text,
-        predictions=predictions_text
+        species=species, tissue=tissue_text, predictions=predictions_text
     )
 
     write_log(f"Generated consensus check prompt with {len(prompt)} characters")
     return prompt
 
+
 def create_discussion_consensus_check_prompt(
     cluster_id: str,
     discussion: str,
     proposed_cell_type: str,
-    prompt_template: Optional[str] = None
+    prompt_template: Optional[str] = None,
 ) -> str:
     """
     Create a prompt for checking if consensus has been reached after a discussion round.
@@ -678,17 +680,17 @@ def create_discussion_consensus_check_prompt(
     prompt = prompt_template.format(
         cluster_id=cluster_id,
         discussion=discussion,
-        proposed_cell_type=proposed_cell_type if proposed_cell_type else "Unclear"
+        proposed_cell_type=proposed_cell_type if proposed_cell_type else "Unclear",
     )
 
-    write_log(f"Generated discussion consensus check prompt with {len(prompt)} characters")
+    write_log(
+        f"Generated discussion consensus check prompt with {len(prompt)} characters"
+    )
     return prompt
 
+
 def create_initial_discussion_prompt(
-    cluster_id: str,
-    marker_genes: List[str],
-    species: str,
-    tissue: Optional[str] = None
+    cluster_id: str, marker_genes: List[str], species: str, tissue: Optional[str] = None
 ) -> str:
     """
     Create a prompt for initial cell type discussion about a cluster.
@@ -734,7 +736,7 @@ End with a clear cell type determination.
         cluster_id=cluster_id,
         species=species,
         tissue=tissue_text,
-        marker_genes=marker_genes_text
+        marker_genes=marker_genes_text,
     )
 
     write_log(f"Generated initial discussion prompt with {len(prompt)} characters")

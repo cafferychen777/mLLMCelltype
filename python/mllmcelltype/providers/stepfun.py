@@ -9,6 +9,7 @@ import requests
 import json
 from ..logger import write_log
 
+
 def process_stepfun(prompt: str, model: str, api_key: str) -> List[str]:
     """
     Process request using StepFun models.
@@ -44,7 +45,10 @@ def process_stepfun(prompt: str, model: str, api_key: str) -> List[str]:
         chunk_size = len(input_lines) // cutnum
         if len(input_lines) % cutnum > 0:
             chunk_size += 1
-        chunks = [input_lines[i:i+chunk_size] for i in range(0, len(input_lines), chunk_size)]
+        chunks = [
+            input_lines[i : i + chunk_size]
+            for i in range(0, len(input_lines), chunk_size)
+        ]
     else:
         chunks = [input_lines]
 
@@ -56,21 +60,16 @@ def process_stepfun(prompt: str, model: str, api_key: str) -> List[str]:
         # Prepare the request body
         body = {
             "model": model,
-            "messages": [
-                {
-                    "role": "user",
-                    "content": "\n".join(chunk)
-                }
-            ],
+            "messages": [{"role": "user", "content": "\n".join(chunk)}],
             "temperature": 0.7,
-            "max_tokens": 4096
+            "max_tokens": 4096,
         }
 
         write_log("Sending API request...")
         # Make the API request
         headers = {
             "Content-Type": "application/json",
-            "Authorization": f"Bearer {api_key}"
+            "Authorization": f"Bearer {api_key}",
         }
 
         max_retries = 3
@@ -79,21 +78,23 @@ def process_stepfun(prompt: str, model: str, api_key: str) -> List[str]:
         for attempt in range(max_retries):
             try:
                 response = requests.post(
-                    url=url,
-                    headers=headers,
-                    data=json.dumps(body)
+                    url=url, headers=headers, data=json.dumps(body)
                 )
 
                 # Check for errors
                 if response.status_code != 200:
                     error_message = response.json()
-                    write_log(f"ERROR: StepFun API request failed: {error_message.get('error', {}).get('message', 'Unknown error')}")
+                    write_log(
+                        f"ERROR: StepFun API request failed: {error_message.get('error', {}).get('message', 'Unknown error')}"
+                    )
 
                     # If rate limited, wait and retry
                     if response.status_code == 429:
                         if attempt < max_retries - 1:
-                            wait_time = retry_delay * (2 ** attempt)
-                            write_log(f"Rate limited. Waiting {wait_time} seconds before retrying...")
+                            wait_time = retry_delay * (2**attempt)
+                            write_log(
+                                f"Rate limited. Waiting {wait_time} seconds before retrying..."
+                            )
                             time.sleep(wait_time)
                             continue
 
@@ -101,7 +102,7 @@ def process_stepfun(prompt: str, model: str, api_key: str) -> List[str]:
 
                 # Parse the response
                 content = response.json()
-                res = content['choices'][0]['message']['content'].strip().split('\n')
+                res = content["choices"][0]["message"]["content"].strip().split("\n")
                 write_log(f"Got response with {len(res)} lines")
                 write_log(f"Raw response from StepFun:\n{res}")
 
@@ -109,9 +110,11 @@ def process_stepfun(prompt: str, model: str, api_key: str) -> List[str]:
                 break  # Success, exit retry loop
 
             except Exception as e:
-                write_log(f"Error during API call (attempt {attempt+1}/{max_retries}): {str(e)}")
+                write_log(
+                    f"Error during API call (attempt {attempt+1}/{max_retries}): {str(e)}"
+                )
                 if attempt < max_retries - 1:
-                    wait_time = retry_delay * (2 ** attempt)
+                    wait_time = retry_delay * (2**attempt)
                     write_log(f"Waiting {wait_time} seconds before retrying...")
                     time.sleep(wait_time)
                 else:
@@ -119,4 +122,4 @@ def process_stepfun(prompt: str, model: str, api_key: str) -> List[str]:
 
     write_log("All chunks processed successfully")
     # Clean up results (remove commas at the end of lines)
-    return [line.rstrip(',') for line in all_results]
+    return [line.rstrip(",") for line in all_results]

@@ -9,7 +9,10 @@ import requests
 import json
 from ..logger import write_log
 
-def process_minimax(prompt: str, model: str, api_key: str, group_id: str = None) -> List[str]:
+
+def process_minimax(
+    prompt: str, model: str, api_key: str, group_id: str = None
+) -> List[str]:
     """
     Process request using MiniMax models.
 
@@ -54,7 +57,10 @@ def process_minimax(prompt: str, model: str, api_key: str, group_id: str = None)
         chunk_size = len(input_lines) // cutnum
         if len(input_lines) % cutnum > 0:
             chunk_size += 1
-        chunks = [input_lines[i:i+chunk_size] for i in range(0, len(input_lines), chunk_size)]
+        chunks = [
+            input_lines[i : i + chunk_size]
+            for i in range(0, len(input_lines), chunk_size)
+        ]
     else:
         chunks = [input_lines]
 
@@ -66,13 +72,7 @@ def process_minimax(prompt: str, model: str, api_key: str, group_id: str = None)
         # Prepare the request body - use the same format as in R version
         body = {
             "model": model,
-            "messages": [
-                {
-                    "role": "user",
-                    "name": "user",
-                    "content": "\n".join(chunk)
-                }
-            ]
+            "messages": [{"role": "user", "name": "user", "content": "\n".join(chunk)}],
         }
 
         write_log("Sending API request...")
@@ -80,7 +80,7 @@ def process_minimax(prompt: str, model: str, api_key: str, group_id: str = None)
         headers = {
             "Content-Type": "application/json",
             "Authorization": f"Bearer {api_key}",
-            "X-Minimax-Group-Id": group_id
+            "X-Minimax-Group-Id": group_id,
         }
 
         max_retries = 3
@@ -94,9 +94,7 @@ def process_minimax(prompt: str, model: str, api_key: str, group_id: str = None)
                 write_log(f"Request body: {json.dumps(body)}")
 
                 response = requests.post(
-                    url=url,
-                    headers=headers,
-                    data=json.dumps(body)
+                    url=url, headers=headers, data=json.dumps(body)
                 )
 
                 # Log response details
@@ -108,16 +106,22 @@ def process_minimax(prompt: str, model: str, api_key: str, group_id: str = None)
                     try:
                         error_message = response.json()
                         write_log(f"ERROR: MiniMax API request failed: {error_message}")
-                        write_log(f"Error details: {error_message.get('error', {}).get('message', 'Unknown error')}")
+                        write_log(
+                            f"Error details: {error_message.get('error', {}).get('message', 'Unknown error')}"
+                        )
                     except Exception as e:
-                        write_log(f"ERROR: MiniMax API request failed with status {response.status_code}")
+                        write_log(
+                            f"ERROR: MiniMax API request failed with status {response.status_code}"
+                        )
                         write_log(f"Response text: {response.text}")
 
                     # If rate limited, wait and retry
                     if response.status_code == 429:
                         if attempt < max_retries - 1:
-                            wait_time = retry_delay * (2 ** attempt)
-                            write_log(f"Rate limited. Waiting {wait_time} seconds before retrying...")
+                            wait_time = retry_delay * (2**attempt)
+                            write_log(
+                                f"Rate limited. Waiting {wait_time} seconds before retrying..."
+                            )
                             time.sleep(wait_time)
                             continue
 
@@ -127,9 +131,14 @@ def process_minimax(prompt: str, model: str, api_key: str, group_id: str = None)
                 content = response.json()
 
                 # Parse response using the same format as in R version
-                if 'choices' in content and len(content['choices']) > 0 and 'message' in content['choices'][0] and 'content' in content['choices'][0]['message']:
-                    response_content = content['choices'][0]['message']['content']
-                    res = response_content.strip().split('\n')
+                if (
+                    "choices" in content
+                    and len(content["choices"]) > 0
+                    and "message" in content["choices"][0]
+                    and "content" in content["choices"][0]["message"]
+                ):
+                    response_content = content["choices"][0]["message"]["content"]
+                    res = response_content.strip().split("\n")
                 else:
                     write_log(f"Unexpected response format: {content}")
                     raise ValueError(f"Unexpected response format: {content}")
@@ -141,9 +150,11 @@ def process_minimax(prompt: str, model: str, api_key: str, group_id: str = None)
                 break  # Success, exit retry loop
 
             except Exception as e:
-                write_log(f"Error during API call (attempt {attempt+1}/{max_retries}): {str(e)}")
+                write_log(
+                    f"Error during API call (attempt {attempt+1}/{max_retries}): {str(e)}"
+                )
                 if attempt < max_retries - 1:
-                    wait_time = retry_delay * (2 ** attempt)
+                    wait_time = retry_delay * (2**attempt)
                     write_log(f"Waiting {wait_time} seconds before retrying...")
                     time.sleep(wait_time)
                 else:
@@ -151,4 +162,4 @@ def process_minimax(prompt: str, model: str, api_key: str, group_id: str = None)
 
     write_log("All chunks processed successfully")
     # Clean up results (remove commas at the end of lines)
-    return [line.rstrip(',') for line in all_results]
+    return [line.rstrip(",") for line in all_results]
