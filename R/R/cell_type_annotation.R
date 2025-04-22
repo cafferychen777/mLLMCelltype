@@ -17,7 +17,15 @@ utils::globalVariables(c("cluster", "avg_log2FC", "gene"))
 #' 
 #' @param input One of the following:
 #'   - A data frame from Seurat's FindAllMarkers() function containing differential gene expression results
-#'   - A list where each element has a 'genes' field containing marker genes for a cluster
+#'     (must have columns: 'cluster', 'gene', and 'avg_log2FC'). The function will select the top genes
+#'     based on avg_log2FC for each cluster.
+#'   - A list where each element has a 'genes' field containing marker genes for a cluster.
+#'     This can be in one of these formats:
+#'     * Named with cluster IDs: list("0" = list(genes = c(...)), "1" = list(genes = c(...)))
+#'     * Named with cell type names: list(t_cells = list(genes = c(...)), b_cells = list(genes = c(...)))
+#'     * Unnamed list: list(list(genes = c(...)), list(genes = c(...)))
+#'   - For both input types, if cluster IDs are numeric and start from 1, they will be automatically
+#'     converted to 0-based indexing (e.g., cluster 1 becomes cluster 0) for consistency.
 #' @param tissue_name Character string specifying the tissue type or cell source (e.g., 'human PBMC', 
 #'   'mouse brain'). This helps provide context for more accurate annotations.
 #' @param model Character string specifying the LLM model to use. Supported models:

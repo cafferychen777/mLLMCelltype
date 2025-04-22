@@ -17,7 +17,17 @@ annotate_cell_types(
 \item{input}{One of the following:
 \itemize{
 \item A data frame from Seurat's FindAllMarkers() function containing differential gene expression results
-\item A list where each element has a 'genes' field containing marker genes for a cluster
+(must have columns: 'cluster', 'gene', and 'avg_log2FC'). The function will select the top genes
+based on avg_log2FC for each cluster.
+\item A list where each element has a 'genes' field containing marker genes for a cluster.
+This can be in one of these formats:
+\itemize{
+\item Named with cluster IDs: list("0" = list(genes = c(...)), "1" = list(genes = c(...)))
+\item Named with cell type names: list(t_cells = list(genes = c(...)), b_cells = list(genes = c(...)))
+\item Unnamed list: list(list(genes = c(...)), list(genes = c(...)))
+}
+\item For both input types, if cluster IDs are numeric and start from 1, they will be automatically
+converted to 0-based indexing (e.g., cluster 1 becomes cluster 0) for consistency.
 }}
 
 \item{tissue_name}{Character string specifying the tissue type or cell source (e.g., 'human PBMC',
