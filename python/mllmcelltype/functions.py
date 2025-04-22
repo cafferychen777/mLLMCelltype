@@ -1,11 +1,9 @@
-import json
-import logging
-import os
+from __future__ import annotations
+
 import time
 from dataclasses import dataclass
-from typing import Any, Dict, List, Literal, Optional, Tuple, Union
+from typing import Any, Literal, Optional, Union
 
-import numpy as np
 import openai
 import pandas as pd
 import requests
@@ -58,31 +56,21 @@ ModelType = Literal[
 class LLMResponse:
     """Class for storing LLM response data"""
 
-    cell_types: List[str]
+    cell_types: list[str]
     prompt: str
     raw_response: Optional[str] = None
-    metadata: Optional[Dict[str, Any]] = None
+    metadata: Optional[dict[str, Any]] = None
 
 
 def get_provider(model: str) -> str:
-    """
-    Determine the provider based on the model name.
-
-    Args:
-        model: Name of the model
-
-    Returns:
-        str: Name of the provider ('openai', 'anthropic', 'deepseek', 'gemini', 'qwen', etc.)
-
-    Raises:
-        ValueError: If the model is not supported
-    """
-    # Check for OpenRouter format (provider/model-name)
-    if "/" in model:
-        write_log(f"Detected OpenRouter model format: {model}", "info")
-        return "openrouter"
-
-    # Define supported models
+    """Determine the provider based on the model name."""
+    # Special case for OpenRouter models which may contain '/' in the model name
+    if isinstance(model, str) and '/' in model:
+        # OpenRouter models are in the format 'provider/model'
+        # e.g., 'anthropic/claude-3-opus'
+        return 'openrouter'
+        
+    # Common model prefixes for each provider
     providers = {
         "openai": [
             "gpt-4o",
@@ -111,6 +99,7 @@ def get_provider(model: str) -> str:
         "zhipu": ["glm-4-plus", "glm-3-turbo"],
         "minimax": ["minimax-text-01"],
         "grok": ["grok-3-latest", "grok-3"],
+        "openrouter": ["openrouter"],
     }
 
     # Check for model name in each provider's list
@@ -122,13 +111,13 @@ def get_provider(model: str) -> str:
                 return provider
 
     # Check for provider name in the model string (fallback)
-    for provider in providers.keys():
+    for provider in providers:
         if provider.lower() in model.lower():
             return provider
 
     # List all supported models for the error message
     all_supported = []
-    for provider, models in providers.items():
+    for _provider, models in providers.items():
         all_supported.extend(models)
 
     write_log(
@@ -157,18 +146,17 @@ def get_provider(model: str) -> str:
         if known_provider in model.lower():
             if known_provider == "gpt":
                 return "openai"
-            elif known_provider == "claude":
+            if known_provider == "claude":
                 return "anthropic"
-            elif known_provider == "google":
+            if known_provider == "google":
                 return "gemini"
-            elif known_provider == "alibaba":
+            if known_provider == "alibaba":
                 return "qwen"
-            elif known_provider == "glm":
+            if known_provider == "glm":
                 return "zhipu"
-            elif known_provider == "xai":
+            if known_provider == "xai":
                 return "grok"
-            else:
-                return known_provider
+            return known_provider
 
     # If we still can't determine the provider, raise an error
     raise ValueError(
@@ -176,15 +164,15 @@ def get_provider(model: str) -> str:
     )
 
 
-def select_best_prediction(predictions: List[Dict[str, str]]) -> Dict[str, str]:
-    """
-    Select the best prediction from multiple models.
+def select_best_prediction(predictions: list[dict[str, str]]) -> dict[str, str]:
+    """Select the best prediction from multiple models.
 
     Args:
         predictions: List of dictionaries mapping cluster IDs to cell type annotations
 
     Returns:
-        Dict[str, str]: Dictionary mapping cluster IDs to best predictions
+        dict[str, str]: Dictionary mapping cluster IDs to best predictions
+
     """
     if not predictions:
         return {}
@@ -217,17 +205,17 @@ def select_best_prediction(predictions: List[Dict[str, str]]) -> Dict[str, str]:
 
 
 def identify_controversial_clusters(
-    annotations: Dict[str, Dict[str, str]], threshold: float = 0.6
-) -> List[str]:
-    """
-    Identify clusters with inconsistent annotations across models.
+    annotations: dict[str, dict[str, str]], threshold: float = 0.6
+) -> list[str]:
+    """Identify clusters with inconsistent annotations across models.
 
     Args:
         annotations: Dictionary mapping model names to dictionaries of cluster annotations
         threshold: Agreement threshold below which a cluster is considered controversial
 
     Returns:
-        List[str]: List of controversial cluster IDs
+        list[str]: List of controversial cluster IDs
+
     """
     if not annotations or len(annotations) < 2:
         return []
@@ -243,7 +231,7 @@ def identify_controversial_clusters(
     for cluster in all_clusters:
         # Get all annotations for this cluster
         cluster_annotations = []
-        for model, results in annotations.items():
+        for _model, results in annotations.items():
             if cluster in results:
                 annotation = clean_annotation(results[cluster])
                 if annotation:
@@ -272,7 +260,7 @@ def identify_controversial_clusters(
 
 
 def annotate_cell_types(
-    input_data: Union[pd.DataFrame, List[str], Dict[str, List[str]]],
+    input_data: Union[pd.DataFrame, list[str], dict[str, list[str]]],
     tissue_name: str = None,
     model: str = "gpt-4o",
     api_key: str = None,
@@ -280,8 +268,7 @@ def annotate_cell_types(
     use_cache: bool = True,
     format_json: bool = False,
 ) -> LLMResponse:
-    """
-    Annotate cell types using various Large Language Models (LLMs).
+    """Annotate cell types using various Large Language Models (LLMs).
 
     Args:
         input_data: Either a pandas DataFrame (from scanpy/Seurat FindAllMarkers),
@@ -295,6 +282,7 @@ def annotate_cell_types(
 
     Returns:
         LLMResponse object containing cell type predictions and the prompt used
+
     """
     # Process input data
     if isinstance(input_data, dict):
@@ -394,6 +382,7 @@ def annotate_cell_types(
         "zhipu": process_zhipu_legacy,
         "minimax": process_minimax_legacy,
         "grok": process_grok_legacy,
+        "openrouter": process_openrouter,
     }
 
     # Check if provider is supported
@@ -429,7 +418,7 @@ def annotate_cell_types(
         raise
 
 
-def process_openai_legacy(prompt: str, model: str, api_key: str) -> List[str]:
+def process_openai_legacy(prompt: str, model: str, api_key: str) -> list[str]:
     """Process request using OpenAI models (legacy function)"""
     write_log(f"Using OpenAI API with model: {model}")
 
@@ -446,7 +435,7 @@ def process_openai_legacy(prompt: str, model: str, api_key: str) -> List[str]:
     all_results = []
     for i, chunk in enumerate(chunks):
         chunk_text = "\n".join(chunk)
-        write_log(f"Processing chunk {i+1} of {len(chunks)}")
+        write_log(f"Processing chunk {i + 1} of {len(chunks)}")
 
         max_retries = 3
         retry_delay = 2
@@ -465,23 +454,22 @@ def process_openai_legacy(prompt: str, model: str, api_key: str) -> List[str]:
                     result = result[:expected_lines]
                     all_results.extend(result)
                     break
+                # If we didn't get enough lines, retry
+                write_log(
+                    f"WARNING: Expected {expected_lines} lines, got {len(result)}",
+                    level="warning",
+                )
+                if attempt < max_retries - 1:
+                    write_log(f"Retrying (attempt {attempt + 2}/{max_retries})...")
+                    time.sleep(retry_delay)
                 else:
-                    # If we didn't get enough lines, retry
-                    write_log(
-                        f"WARNING: Expected {expected_lines} lines, got {len(result)}",
-                        level="warning",
-                    )
-                    if attempt < max_retries - 1:
-                        write_log(f"Retrying (attempt {attempt+2}/{max_retries})...")
-                        time.sleep(retry_delay)
-                    else:
-                        # If this is the last attempt, use what we got
-                        all_results.extend(result)
-                        # Pad with "Unknown" to match expected length
-                        all_results.extend(["Unknown"] * (expected_lines - len(result)))
+                    # If this is the last attempt, use what we got
+                    all_results.extend(result)
+                    # Pad with "Unknown" to match expected length
+                    all_results.extend(["Unknown"] * (expected_lines - len(result)))
             except Exception as e:
                 write_log(
-                    f"Error during OpenAI API call (attempt {attempt+1}/{max_retries}): {str(e)}",
+                    f"Error during OpenAI API call (attempt {attempt + 1}/{max_retries}): {str(e)}",
                     level="error",
                 )
                 if attempt < max_retries - 1:
@@ -494,7 +482,7 @@ def process_openai_legacy(prompt: str, model: str, api_key: str) -> List[str]:
     return [r.rstrip(",") for r in all_results]
 
 
-def process_anthropic_legacy(prompt: str, model: str, api_key: str) -> List[str]:
+def process_anthropic_legacy(prompt: str, model: str, api_key: str) -> list[str]:
     """Process request using Anthropic models (legacy function)"""
     write_log(f"Using Anthropic API with model: {model}")
 
@@ -540,16 +528,16 @@ def process_anthropic_legacy(prompt: str, model: str, api_key: str) -> List[str]
             result = result[:cluster_count]
 
         return result
-    except ImportError:
+    except ImportError as err:
         raise ImportError(
             "Anthropic package not installed. Please install with 'pip install anthropic'."
-        )
+        ) from err
     except Exception as e:
         write_log(f"Error during Anthropic API call: {str(e)}", level="error")
         raise
 
 
-def process_deepseek_legacy(prompt: str, model: str, api_key: str) -> List[str]:
+def process_deepseek_legacy(prompt: str, model: str, api_key: str) -> list[str]:
     """Process request using DeepSeek models (legacy function)"""
     write_log(f"Using DeepSeek API with model: {model}")
 
@@ -572,7 +560,7 @@ def process_deepseek_legacy(prompt: str, model: str, api_key: str) -> List[str]:
 
         # Make the API call
         write_log("Sending request to DeepSeek API")
-        response = requests.post(url, headers=headers, json=payload)
+        response = requests.post(url, headers=headers, json=payload, timeout=30)
 
         # Check for errors
         if response.status_code != 200:
@@ -619,7 +607,7 @@ def process_deepseek_legacy(prompt: str, model: str, api_key: str) -> List[str]:
         raise
 
 
-def process_gemini_legacy(prompt: str, model: str, api_key: str) -> List[str]:
+def process_gemini_legacy(prompt: str, model: str, api_key: str) -> list[str]:
     """Process request using Gemini models (legacy function)"""
     write_log(f"Using Gemini API with model: {model}")
 
@@ -628,10 +616,10 @@ def process_gemini_legacy(prompt: str, model: str, api_key: str) -> List[str]:
         try:
             from google import genai
             from google.genai import types
-        except ImportError:
+        except ImportError as err:
             raise ImportError(
                 "Google Gen AI package not installed. Please install with 'pip install google-genai'."
-            )
+            ) from err
 
         # Initialize the client
         client = genai.Client(api_key=api_key)
@@ -678,7 +666,7 @@ def process_gemini_legacy(prompt: str, model: str, api_key: str) -> List[str]:
         raise
 
 
-def process_qwen_legacy(prompt: str, model: str, api_key: str) -> List[str]:
+def process_qwen_legacy(prompt: str, model: str, api_key: str) -> list[str]:
     """Process request using Qwen models (legacy function)"""
     write_log(f"Using Qwen API with model: {model}")
 
@@ -701,7 +689,7 @@ def process_qwen_legacy(prompt: str, model: str, api_key: str) -> List[str]:
 
         # Make the API call
         write_log("Sending request to Qwen API")
-        response = requests.post(url, headers=headers, json=payload)
+        response = requests.post(url, headers=headers, json=payload, timeout=30)
 
         # Check for errors
         if response.status_code != 200:
@@ -744,7 +732,7 @@ def process_qwen_legacy(prompt: str, model: str, api_key: str) -> List[str]:
         raise
 
 
-def process_stepfun_legacy(prompt: str, model: str, api_key: str) -> List[str]:
+def process_stepfun_legacy(prompt: str, model: str, api_key: str) -> list[str]:
     """Process request using Stepfun models (legacy function)"""
     write_log(f"Using Stepfun API with model: {model}")
 
@@ -767,7 +755,7 @@ def process_stepfun_legacy(prompt: str, model: str, api_key: str) -> List[str]:
 
         # Make the API call
         write_log("Sending request to Stepfun API")
-        response = requests.post(url, headers=headers, json=payload)
+        response = requests.post(url, headers=headers, json=payload, timeout=30)
 
         # Check for errors
         if response.status_code != 200:
@@ -814,7 +802,7 @@ def process_stepfun_legacy(prompt: str, model: str, api_key: str) -> List[str]:
         raise
 
 
-def process_zhipu_legacy(prompt: str, model: str, api_key: str) -> List[str]:
+def process_zhipu_legacy(prompt: str, model: str, api_key: str) -> list[str]:
     """Process request using Zhipu models (legacy function)"""
     write_log(f"Using Zhipu API with model: {model}")
 
@@ -837,7 +825,7 @@ def process_zhipu_legacy(prompt: str, model: str, api_key: str) -> List[str]:
 
         # Make the API call
         write_log("Sending request to Zhipu API")
-        response = requests.post(url, headers=headers, json=payload)
+        response = requests.post(url, headers=headers, json=payload, timeout=30)
 
         # Check for errors
         if response.status_code != 200:
@@ -884,7 +872,7 @@ def process_zhipu_legacy(prompt: str, model: str, api_key: str) -> List[str]:
         raise
 
 
-def process_minimax_legacy(prompt: str, model: str, api_key: str) -> List[str]:
+def process_minimax_legacy(prompt: str, model: str, api_key: str) -> list[str]:
     """Process request using MiniMax models (legacy function)"""
     write_log(f"Using MiniMax API with model: {model}")
 
@@ -907,7 +895,7 @@ def process_minimax_legacy(prompt: str, model: str, api_key: str) -> List[str]:
 
         # Make the API call
         write_log("Sending request to MiniMax API")
-        response = requests.post(url, headers=headers, json=payload)
+        response = requests.post(url, headers=headers, json=payload, timeout=30)
 
         # Check for errors
         if response.status_code != 200:
@@ -954,7 +942,7 @@ def process_minimax_legacy(prompt: str, model: str, api_key: str) -> List[str]:
         raise
 
 
-def process_grok_legacy(prompt: str, model: str, api_key: str) -> List[str]:
+def process_grok_legacy(prompt: str, model: str, api_key: str) -> list[str]:
     """Process request using Grok models (legacy function)"""
     write_log(f"Using Grok API with model: {model}")
 
@@ -962,10 +950,10 @@ def process_grok_legacy(prompt: str, model: str, api_key: str) -> List[str]:
         # Try to import the OpenAI library
         try:
             import openai
-        except ImportError:
+        except ImportError as err:
             raise ImportError(
                 "OpenAI package not installed. Please install with 'pip install openai'."
-            )
+            ) from err
 
         # Create a client
         client = openai.OpenAI(api_key=api_key, base_url="https://api.x.ai/v1")
