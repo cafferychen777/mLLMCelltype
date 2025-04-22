@@ -1,33 +1,29 @@
-"""
-Utility functions for LLMCellType.
-"""
+"""Utility functions for LLMCellType."""
+
+from __future__ import annotations
 
 import hashlib
 import json
-import logging
 import math
 import os
 import re
 import time
-from datetime import datetime
-from typing import Any, Dict, List, Optional, Tuple, Union
+from typing import Any, Optional, Union
 
-import jsonschema
 import pandas as pd
-from jsonschema.exceptions import ValidationError
 
 from .logger import write_log
 
 
 def load_api_key(provider: str) -> str:
-    """
-    Load API key for a specific provider from environment variables or .env file.
+    """Load API key for a specific provider from environment variables or .env file.
 
     Args:
         provider: The provider name (e.g., 'openai', 'anthropic')
 
     Returns:
         str: The API key
+
     """
     # Map of provider names to environment variable names
     env_var_map = {
@@ -78,7 +74,7 @@ def load_api_key(provider: str) -> str:
 
             if env_path:
                 write_log(f"Found .env file at {env_path}")
-                with open(env_path, "r") as f:
+                with open(env_path) as f:
                     for line in f:
                         line = line.strip()
                         if line and not line.startswith("#"):
@@ -89,7 +85,7 @@ def load_api_key(provider: str) -> str:
                                     f"Loaded API key for {provider} from .env file"
                                 )
                                 break
-        except Exception as e:
+        except (OSError, ValueError) as e:
             write_log(f"Error loading .env file: {str(e)}", level="warning")
 
     if not api_key:
@@ -101,8 +97,7 @@ def load_api_key(provider: str) -> str:
 
 
 def create_cache_key(prompt: str, model: str, provider: str) -> str:
-    """
-    Create a cache key for a specific request.
+    """Create a cache key for a specific request.
 
     Args:
         prompt: The prompt text
@@ -111,6 +106,7 @@ def create_cache_key(prompt: str, model: str, provider: str) -> str:
 
     Returns:
         str: The cache key
+
     """
     # Normalize inputs to ensure consistent keys
     normalized_provider = str(provider).lower().strip()
@@ -121,22 +117,22 @@ def create_cache_key(prompt: str, model: str, provider: str) -> str:
     hash_string = f"provider:{normalized_provider}||model:{normalized_model}||prompt:{normalized_prompt}"
 
     # Create hash
-    hash_object = hashlib.md5(hash_string.encode("utf-8"))
+    hash_object = hashlib.sha256(hash_string.encode("utf-8"))
     return hash_object.hexdigest()
 
 
 def save_to_cache(
     cache_key: str,
-    results: Union[List[str], Dict[str, Any]],
+    results: Union[list[str], dict[str, Any]],
     cache_dir: Optional[str] = None,
 ) -> None:
-    """
-    Save results to cache.
+    """Save results to cache.
 
     Args:
         cache_key: The cache key
         results: The results to cache (list of strings or dictionary)
         cache_dir: The cache directory. If None, uses default directory.
+
     """
     # Set cache directory
     if cache_dir is None:
@@ -156,22 +152,22 @@ def save_to_cache(
         with open(cache_file, "w") as f:
             json.dump(cache_data, f, indent=2)
         write_log(f"Saved results to cache: {cache_file}")
-    except Exception as e:
+    except (OSError, TypeError, ValueError) as e:
         write_log(f"Error saving to cache: {str(e)}", level="error")
 
 
 def load_from_cache(
     cache_key: str, cache_dir: Optional[str] = None
-) -> Optional[Union[List[str], Dict[str, Any]]]:
-    """
-    Load results from cache.
+) -> Optional[Union[list[str], dict[str, Any]]]:
+    """Load results from cache.
 
     Args:
         cache_key: The cache key
         cache_dir: The cache directory. If None, uses default directory.
 
     Returns:
-        Optional[Union[List[str], Dict[str, Any]]]: The cached results, or None if not found
+        Optional[Union[list[str], dict[str, Any]]]: The cached results, or None if not found
+
     """
     # Set cache directory
     if cache_dir is None:
@@ -186,7 +182,7 @@ def load_from_cache(
 
     # Load results from cache
     try:
-        with open(cache_file, "r") as f:
+        with open(cache_file) as f:
             cache_content = json.load(f)
 
         # Handle different cache formats
@@ -202,20 +198,26 @@ def load_from_cache(
             write_log(f"Loaded results from cache (legacy format): {cache_file}")
 
         return results
-    except Exception as e:
+    except (
+        OSError,
+        json.JSONDecodeError,
+        KeyError,
+        TypeError,
+        ValueError,
+    ) as e:
         write_log(f"Error loading from cache: {str(e)}", level="error")
         return None
 
 
-def parse_marker_genes(marker_genes_df: pd.DataFrame) -> Dict[str, List[str]]:
-    """
-    Parse marker genes dataframe into a dictionary.
+def parse_marker_genes(marker_genes_df: pd.DataFrame) -> dict[str, list[str]]:
+    """Parse marker genes dataframe into a dictionary.
 
     Args:
         marker_genes_df: DataFrame containing marker genes
 
     Returns:
-        Dict[str, List[str]]: Dictionary mapping cluster names to lists of marker genes
+        dict[str, list[str]]: Dictionary mapping cluster names to lists of marker genes
+
     """
     result = {}
 
@@ -249,52 +251,47 @@ def parse_marker_genes(marker_genes_df: pd.DataFrame) -> Dict[str, List[str]]:
 
 
 def get_annotation_metadata(
-    annotation_result: Dict[str, str],
-) -> Dict[str, Dict[str, Any]]:
-    """
-    Retrieve metadata for a specific annotation result.
+    annotation_result: dict[str, str],
+) -> dict[str, dict[str, Any]]:
+    """Retrieve metadata for a specific annotation result.
 
     Args:
         annotation_result: Dictionary mapping cluster IDs to cell type annotations
 
     Returns:
-        Dict[str, Dict[str, Any]]: Dictionary mapping cluster IDs to metadata
+        dict[str, dict[str, Any]]: Dictionary mapping cluster IDs to metadata
+
     """
     try:
         # Create a unique key for this annotation result
-        key = hashlib.md5(str(annotation_result).encode()).hexdigest()
+        key = hashlib.sha256(str(annotation_result).encode()).hexdigest()
 
         # Check if metadata exists in cache
         cache_dir = os.path.expanduser("~/.mllmcelltype/metadata")
         cache_file = os.path.join(cache_dir, f"{key}.json")
 
         if os.path.exists(cache_file):
-            with open(cache_file, "r") as f:
-                metadata = json.load(f)
-            return metadata
-        else:
-            write_log(
-                f"No metadata found for the given annotation result", level="debug"
-            )
-            return {}
-    except Exception as e:
+            with open(cache_file) as f:
+                return json.load(f)
+        write_log("No metadata found for the given annotation result", level="debug")
+        return {}
+    except (KeyError, TypeError, AttributeError, ValueError) as e:
         write_log(f"Failed to retrieve metadata: {str(e)}", level="debug")
         return {}
 
 
-def format_results(results: List[str], clusters: List[str]) -> Dict[str, str]:
-    """
-    Format results into a dictionary mapping cluster names to annotations.
+def format_results(results: list[str], clusters: list[str]) -> dict[str, str]:
+    """Format results into a dictionary mapping cluster names to annotations.
 
     Args:
         results: List of annotation results (one line per cluster)
         clusters: List of cluster names
 
     Returns:
-        Dict[str, str]: Dictionary mapping cluster names to annotations
+        dict[str, str]: Dictionary mapping cluster names to annotations
+
     """
     import json
-    import re
 
     # Clean up results (remove empty lines and whitespace)
     clean_results = [line.strip() for line in results if line.strip()]
@@ -334,10 +331,8 @@ def format_results(results: List[str], clusters: List[str]) -> Dict[str, str]:
         else:
             # If no code blocks, try to find JSON object directly
             json_match = re.search(r"(\{[\s\S]*\})", full_text)
-            if json_match:
-                json_str = json_match.group(1)
-            else:
-                json_str = full_text
+            # Extract JSON content or use full text
+            json_str = json_match.group(1) if json_match else full_text
 
         # Fix common JSON formatting issues
         # Add missing commas between JSON objects
@@ -383,7 +378,7 @@ def format_results(results: List[str], clusters: List[str]) -> Dict[str, str]:
                         os.makedirs(cache_dir, exist_ok=True)
 
                         # Create a unique key for this annotation result
-                        key = hashlib.md5(str(json_result).encode()).hexdigest()
+                        key = hashlib.sha256(str(json_result).encode()).hexdigest()
                         cache_file = os.path.join(cache_dir, f"{key}.json")
 
                         with open(cache_file, "w") as f:
@@ -392,11 +387,11 @@ def format_results(results: List[str], clusters: List[str]) -> Dict[str, str]:
                         write_log(
                             f"Stored annotation metadata to {cache_file}", level="debug"
                         )
-                    except Exception as e:
+                    except (OSError, TypeError, ValueError) as e:
                         write_log(f"Failed to store metadata: {str(e)}", level="debug")
 
                 return json_result
-    except Exception as e:
+    except (json.JSONDecodeError, ValueError, KeyError, TypeError, AttributeError) as e:
         write_log(f"Failed to parse JSON response: {str(e)}", level="debug")
 
     # Case 3: Check if this is a simple response where each line corresponds to a cluster
@@ -444,14 +439,14 @@ def format_results(results: List[str], clusters: List[str]) -> Dict[str, str]:
 
 
 def clean_annotation(annotation: str) -> str:
-    """
-    Clean up cell type annotation from LLM response.
+    """Clean up cell type annotation from LLM response.
 
     Args:
         annotation: Raw annotation string
 
     Returns:
         str: Cleaned annotation
+
     """
     # If input is empty or None, return an empty string
     if not annotation:
@@ -486,8 +481,6 @@ def clean_annotation(annotation: str) -> str:
         r"majority\s+prediction\s*:?\s*([\w\s-]+)",  # Match "majority prediction: X"
     ]
 
-    import re
-
     for pattern in patterns:
         match = re.search(pattern, annotation.lower())
         if match:
@@ -521,19 +514,19 @@ def clean_annotation(annotation: str) -> str:
 
 
 def find_agreement(
-    annotations: Dict[str, Dict[str, str]],
-) -> Tuple[Dict[str, str], Dict[str, float], Dict[str, float]]:
-    """
-    Find the level of agreement between different model annotations.
+    annotations: dict[str, dict[str, str]],
+) -> tuple[dict[str, str], dict[str, float], dict[str, float]]:
+    """Find the level of agreement between different model annotations.
 
     Args:
         annotations: Dictionary mapping model names to dictionaries of cluster annotations
 
     Returns:
-        Tuple[Dict[str, str], Dict[str, float], Dict[str, float]]:
+        tuple[dict[str, str], dict[str, float], dict[str, float]]:
             - Consensus annotations
             - Consensus proportion (confidence scores)
             - Entropy scores (measure of uncertainty)
+
     """
     consensus = {}
     confidence = {}
@@ -553,7 +546,7 @@ def find_agreement(
         # Collect all annotations for this cluster
         cluster_annotations = []
 
-        for model, results in annotations.items():
+        for _model, results in annotations.items():
             if cluster in results:
                 annotation = clean_annotation(results[cluster])
                 if annotation:
@@ -601,8 +594,7 @@ def find_agreement(
 
 
 def validate_cache(cache_key: str, cache_dir: Optional[str] = None) -> bool:
-    """
-    Validate cache content for a specific key.
+    """Validate cache content for a specific key.
 
     Args:
         cache_key: The cache key to validate
@@ -610,6 +602,7 @@ def validate_cache(cache_key: str, cache_dir: Optional[str] = None) -> bool:
 
     Returns:
         bool: True if cache is valid, False otherwise
+
     """
     # Set cache directory
     if cache_dir is None:
@@ -624,7 +617,7 @@ def validate_cache(cache_key: str, cache_dir: Optional[str] = None) -> bool:
 
     # Validate cache content
     try:
-        with open(cache_file, "r") as f:
+        with open(cache_file) as f:
             cache_content = json.load(f)
 
         # Check if cache content is in the new format
@@ -635,14 +628,13 @@ def validate_cache(cache_key: str, cache_dir: Optional[str] = None) -> bool:
         ):
             # New format with metadata
             return True
-        elif isinstance(cache_content, list) or isinstance(cache_content, dict):
+        if isinstance(cache_content, (list, dict)):
             # Legacy format - still valid but will be converted on next save
             return True
-        else:
-            # Invalid format
-            write_log(f"Invalid cache format for key {cache_key}", level="warning")
-            return False
-    except Exception as e:
+        # Invalid format
+        write_log(f"Invalid cache format for key {cache_key}", level="warning")
+        return False
+    except (OSError, json.JSONDecodeError, TypeError, ValueError) as e:
         write_log(
             f"Error validating cache for key {cache_key}: {str(e)}", level="warning"
         )
@@ -652,8 +644,7 @@ def validate_cache(cache_key: str, cache_dir: Optional[str] = None) -> bool:
 def clear_cache(
     cache_dir: Optional[str] = None, older_than: Optional[int] = None
 ) -> int:
-    """
-    Clear cache.
+    """Clear cache.
 
     Args:
         cache_dir: Cache directory
@@ -662,6 +653,7 @@ def clear_cache(
 
     Returns:
         int: Number of cache files removed
+
     """
     if cache_dir is None:
         cache_dir = os.path.join(os.path.expanduser("~"), ".llmcelltype", "cache")
@@ -679,46 +671,45 @@ def clear_cache(
             try:
                 os.remove(os.path.join(cache_dir, f))
                 count += 1
-            except Exception as e:
+            except OSError as e:
                 write_log(f"Error removing cache file {f}: {e}", level="warning")
         return count
-    else:
-        # Remove only older files
-        now = time.time()
-        count = 0
-        for f in cache_files:
-            file_path = os.path.join(cache_dir, f)
-            try:
-                # Check file age using metadata
-                with open(file_path, "r") as file:
-                    cache_data = json.load(file)
+    # Remove only older files
+    now = time.time()
+    count = 0
+    for f in cache_files:
+        file_path = os.path.join(cache_dir, f)
+        try:
+            # Check file age using metadata
+            with open(file_path) as file:
+                cache_data = json.load(file)
 
-                # Handle different cache formats
-                if isinstance(cache_data, dict) and "timestamp" in cache_data:
-                    # New format with metadata
-                    file_age = now - cache_data.get("timestamp", 0)
-                else:
-                    # Legacy format - use file modification time
-                    file_age = now - os.path.getmtime(file_path)
+            # Handle different cache formats
+            if isinstance(cache_data, dict) and "timestamp" in cache_data:
+                # New format with metadata
+                file_age = now - cache_data.get("timestamp", 0)
+            else:
+                # Legacy format - use file modification time
+                file_age = now - os.path.getmtime(file_path)
 
-                if file_age > older_than:
-                    os.remove(file_path)
-                    count += 1
-            except Exception as e:
-                write_log(f"Error processing cache file {f}: {e}", level="warning")
+            if file_age > older_than:
+                os.remove(file_path)
+                count += 1
+        except OSError as e:
+            write_log(f"Error processing cache file {f}: {e}", level="warning")
 
-        return count
+    return count
 
 
-def get_cache_stats(cache_dir: Optional[str] = None) -> Dict[str, Any]:
-    """
-    Get cache statistics.
+def get_cache_stats(cache_dir: Optional[str] = None) -> dict[str, Any]:
+    """Get cache statistics.
 
     Args:
         cache_dir: The cache directory
 
     Returns:
-        Dict[str, Any]: Cache statistics
+        dict[str, Any]: Cache statistics
+
     """
     if cache_dir is None:
         cache_dir = os.path.join(os.path.expanduser("~"), ".llmcelltype", "cache")
@@ -763,7 +754,7 @@ def get_cache_stats(cache_dir: Optional[str] = None) -> Dict[str, Any]:
             total_size += file_size
 
             # Load cache data
-            with open(file_path, "r") as file:
+            with open(file_path) as file:
                 cache_data = json.load(file)
 
             valid_files += 1
@@ -798,7 +789,14 @@ def get_cache_stats(cache_dir: Optional[str] = None) -> Dict[str, Any]:
                 # Unknown format
                 format_counts["unknown"] += 1
 
-        except Exception as e:
+        except (
+            OSError,
+            json.JSONDecodeError,
+            KeyError,
+            ValueError,
+            TypeError,
+            AttributeError,
+        ) as e:
             invalid_files += 1
             write_log(f"Error processing cache file {f}: {e}", level="warning")
 
@@ -819,7 +817,7 @@ def get_cache_stats(cache_dir: Optional[str] = None) -> Dict[str, Any]:
         "valid_files": valid_files,
         "invalid_files": invalid_files,
         "size": total_size,
-        "size_readable": f"{total_size / (1024*1024):.2f} MB",
+        "size_readable": f"{total_size / (1024 * 1024):.2f} MB",
         "oldest": oldest_str,
         "newest": newest_str,
         "format_counts": format_counts,
@@ -828,16 +826,16 @@ def get_cache_stats(cache_dir: Optional[str] = None) -> Dict[str, Any]:
 
 
 def combine_results(
-    model_results: Dict[str, Dict[str, str]],
-) -> Dict[str, Dict[str, str]]:
-    """
-    Combine results from multiple models into a single dictionary.
+    model_results: dict[str, dict[str, str]],
+) -> dict[str, dict[str, str]]:
+    """Combine results from multiple models into a single dictionary.
 
     Args:
         model_results: Dictionary mapping model names to dictionaries of cluster annotations
 
     Returns:
-        Dict[str, Dict[str, str]]: Combined results
+        dict[str, dict[str, str]]: Combined results
+
     """
     # Simply return the model results as they are already in the correct format
     return model_results
