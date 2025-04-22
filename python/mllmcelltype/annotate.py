@@ -17,6 +17,7 @@ from .providers import (
     process_grok,
     process_minimax,
     process_openai,
+    process_openrouter,
     process_qwen,
     process_stepfun,
     process_zhipu,
@@ -41,6 +42,7 @@ PROVIDER_FUNCTIONS = {
     "zhipu": process_zhipu,
     "minimax": process_minimax,
     "grok": process_grok,
+    "openrouter": process_openrouter,
 }
 
 
@@ -436,6 +438,7 @@ def get_default_model(provider: str) -> str:
         "zhipu": "glm-4",
         "minimax": "abab6-chat",
         "grok": "grok-3-latest",
+        "openrouter": "openai/gpt-4o",
     }
 
     return default_models.get(provider.lower(), "unknown")
@@ -507,6 +510,7 @@ def get_model_response(
         "zhipu": PROVIDER_FUNCTIONS["zhipu"],
         "minimax": PROVIDER_FUNCTIONS["minimax"],
         "grok": PROVIDER_FUNCTIONS["grok"],
+        "openrouter": PROVIDER_FUNCTIONS["openrouter"],
     }
 
     provider_func = provider_funcs.get(provider.lower())

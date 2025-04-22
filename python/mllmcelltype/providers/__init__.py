@@ -9,6 +9,7 @@ from .gemini import process_gemini
 from .grok import process_grok
 from .minimax import process_minimax
 from .openai import process_openai
+from .openrouter import process_openrouter
 from .qwen import process_qwen
 from .stepfun import process_stepfun
 from .zhipu import process_zhipu
@@ -23,4 +24,5 @@ __all__ = [
     "process_zhipu",
     "process_minimax",
     "process_grok",
+    "process_openrouter",
 ]
