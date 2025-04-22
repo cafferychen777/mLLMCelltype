@@ -193,17 +193,15 @@ openai_annotations = annotate_clusters(
     marker_genes=marker_genes,
     species='human',
     tissue='peripheral blood',
-    provider='openrouter',                # Specify OpenRouter as the provider
-    model='openai/gpt-4o',               # Format: 'provider/model-name'
+    provider_config={"provider": "openrouter", "model": "openai/gpt-4o"}
 )
 
-# Annotate using Anthropic's Claude via OpenRouter
+# Annotate using Anthropic's Claude model via OpenRouter
 anthropic_annotations = annotate_clusters(
     marker_genes=marker_genes,
     species='human',
     tissue='peripheral blood',
-    provider='openrouter',
-    model='anthropic/claude-3-opus',     # Different model through same API
+    provider_config={"provider": "openrouter", "model": "anthropic/claude-3-opus"}
 )
 
 # Annotate using Meta's Llama model via OpenRouter
@@ -211,8 +209,7 @@ meta_annotations = annotate_clusters(
     marker_genes=marker_genes,
     species='human',
     tissue='peripheral blood',
-    provider='openrouter',
-    model='meta-llama/llama-3-70b-instruct',
+    provider_config={"provider": "openrouter", "model": "meta-llama/llama-3-70b-instruct"}
 )
 
 # Print annotations from different models
@@ -225,7 +222,7 @@ for cluster in marker_genes.keys():
 
 #### Pure OpenRouter Consensus
 
-You can run consensus annotation using only OpenRouter models:
+You can run consensus annotation using only OpenRouter models. **Note: When using OpenRouter, you must specify models using a dictionary format with provider and model keys:**
 
 ```python
 from mllmcelltype import interactive_consensus_annotation, print_consensus_summary
@@ -236,9 +233,9 @@ result = interactive_consensus_annotation(
     species='human',
     tissue='peripheral blood',
     models=[
-        'openai/gpt-4o',                    # OpenRouter OpenAI
-        'anthropic/claude-3-opus',          # OpenRouter Anthropic
-        'meta-llama/llama-3-70b-instruct'   # OpenRouter Meta
+        {"provider": "openrouter", "model": "openai/gpt-4o"},             # OpenRouter OpenAI
+        {"provider": "openrouter", "model": "anthropic/claude-3-opus"},   # OpenRouter Anthropic
+        {"provider": "openrouter", "model": "meta-llama/llama-3-70b-instruct"}  # OpenRouter Meta
     ],
     consensus_threshold=0.7,
     max_discussion_rounds=3,
@@ -273,11 +270,11 @@ result = interactive_consensus_annotation(
     models=[                                              # Multiple LLM models
         'gpt-4o',                                         # OpenAI direct API
         'claude-3-7-sonnet-20250219',                     # Anthropic direct API
-        'gemini-2.5-pro-preview-03-25',                    # Google direct API
+        'gemini-2.5-pro-preview-03-25',                   # Google direct API
         'qwen-max-2025-01-25',                            # Alibaba direct API
-        'openai/gpt-4o',                                  # OpenRouter (OpenAI)
-        'anthropic/claude-3-opus',                        # OpenRouter (Anthropic)
-        'meta-llama/llama-3-70b-instruct',                # OpenRouter (Meta)
+        {"provider": "openrouter", "model": "openai/gpt-4o"},             # OpenRouter (OpenAI)
+        {"provider": "openrouter", "model": "anthropic/claude-3-opus"},   # OpenRouter (Anthropic)
+        {"provider": "openrouter", "model": "meta-llama/llama-3-70b-instruct"}  # OpenRouter (Meta)
     ],
     consensus_threshold=0.7,                              # Agreement threshold
     max_discussion_rounds=3,                              # Iterative refinement
@@ -300,8 +297,8 @@ result = interactive_consensus_annotation(
     tissue='lymphoid tissue',
     models=[
         'gpt-4o',                          # Direct API
-        'openai/gpt-4o',                    # OpenRouter
-        'anthropic/claude-3-opus',          # OpenRouter
+        {"provider": "openrouter", "model": "openai/gpt-4o"},             # OpenRouter
+        {"provider": "openrouter", "model": "anthropic/claude-3-opus"},   # OpenRouter
     ],
     consensus_threshold=0.8,                # Higher threshold to force discussion
     max_discussion_rounds=3,                # Allow multiple rounds of discussion
@@ -319,16 +316,14 @@ openai_via_openrouter = annotate_clusters(
     marker_genes=marker_genes,
     species='human',
     tissue='peripheral blood',
-    provider='openrouter',
-    model='openai/gpt-4o'
+    provider_config={"provider": "openrouter", "model": "openai/gpt-4o"}
 )
 
 anthropic_via_openrouter = annotate_clusters(
     marker_genes=marker_genes,
     species='human',
     tissue='peripheral blood',
-    provider='openrouter',
-    model='anthropic/claude-3-opus'
+    provider_config={"provider": "openrouter", "model": "anthropic/claude-3-opus"}
 )
 
 # Create a dictionary of model predictions for comparison
