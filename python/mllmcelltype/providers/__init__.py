@@ -1,7 +1,5 @@
-"""
-Provider modules for different LLM services.
-This package contains modules for interacting with various LLM providers.
-"""
+"""Provider modules for different LLM services.
+This package contains modules for interacting with various LLM providers."""
 
 from .anthropic import process_anthropic
 from .deepseek import process_deepseek

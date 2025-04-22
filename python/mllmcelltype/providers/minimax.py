@@ -1,11 +1,8 @@
-"""
-MiniMax provider module for LLMCellType.
-"""
+"""MiniMax provider module for LLMCellType."""
 
 import json
 import os
 import time
-from typing import List, Optional
 
 import requests
 
@@ -14,9 +11,8 @@ from ..logger import write_log
 
 def process_minimax(
     prompt: str, model: str, api_key: str, group_id: str = None
-) -> List[str]:
-    """
-    Process request using MiniMax models.
+) -> list[str]:
+    """Process request using MiniMax models.
 
     Args:
         prompt: The prompt to send to the API
@@ -26,6 +22,7 @@ def process_minimax(
 
     Returns:
         List[str]: Processed responses, one per cluster
+
     """
     write_log(f"Starting MiniMax API request with model: {model}")
 
@@ -65,7 +62,7 @@ def process_minimax(
     # Process each chunk
     all_results = []
     for i, chunk in enumerate(chunks):
-        write_log(f"Processing chunk {i+1} of {cutnum}")
+        write_log(f"Processing chunk {i + 1} of {cutnum}")
 
         # Prepare the request body - use the same format as in R version
         body = {
@@ -95,7 +92,7 @@ def process_minimax(
                 write_log(f"Request body: {json.dumps(body)}")
 
                 response = requests.post(
-                    url=url, headers=headers, data=json.dumps(body)
+                    url=url, headers=headers, data=json.dumps(body), timeout=30
                 )
 
                 # Log response details
@@ -110,15 +107,14 @@ def process_minimax(
                         write_log(
                             f"Error details: {error_message.get('error', {}).get('message', 'Unknown error')}"
                         )
-                    except Exception as e:
+                    except (ValueError, KeyError, json.JSONDecodeError):
                         write_log(
                             f"ERROR: MiniMax API request failed with status {response.status_code}"
                         )
                         write_log(f"Response text: {response.text}")
 
                     # If rate limited, wait and retry
-                    if response.status_code == 429:
-                        if attempt < max_retries - 1:
+                    if response.status_code == 429 and attempt < max_retries - 1:
                             wait_time = retry_delay * (2**attempt)
                             write_log(
                                 f"Rate limited. Waiting {wait_time} seconds before retrying..."
@@ -152,7 +148,7 @@ def process_minimax(
 
             except Exception as e:
                 write_log(
-                    f"Error during API call (attempt {attempt+1}/{max_retries}): {str(e)}"
+                    f"Error during API call (attempt {attempt + 1}/{max_retries}): {str(e)}"
                 )
                 if attempt < max_retries - 1:
                     wait_time = retry_delay * (2**attempt)

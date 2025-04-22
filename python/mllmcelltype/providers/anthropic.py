@@ -1,20 +1,15 @@
-"""
-Anthropic provider module for LLMCellType.
-"""
+"""Anthropic provider module for LLMCellType."""
 
 import json
-import os
 import time
-from typing import List, Optional
 
 import requests
 
 from ..logger import write_log
 
 
-def process_anthropic(prompt: str, model: str, api_key: str) -> List[str]:
-    """
-    Process request using Anthropic Claude models.
+def process_anthropic(prompt: str, model: str, api_key: str) -> list[str]:
+    """Process request using Anthropic Claude models.
 
     Args:
         prompt: The prompt to send to the API
@@ -23,6 +18,7 @@ def process_anthropic(prompt: str, model: str, api_key: str) -> List[str]:
 
     Returns:
         List[str]: Processed responses, one per cluster
+
     """
     write_log(f"Starting Anthropic API request with model: {model}")
 
@@ -64,10 +60,10 @@ def process_anthropic(prompt: str, model: str, api_key: str) -> List[str]:
         # Try to import Anthropic client
         try:
             import anthropic
-        except ImportError:
+        except ImportError as err:
             raise ImportError(
                 "Anthropic Python SDK not installed. Please install with 'pip install anthropic'."
-            )
+            ) from err
 
         # Create client
         client = anthropic.Anthropic(api_key=api_key)
@@ -106,14 +102,20 @@ def process_anthropic(prompt: str, model: str, api_key: str) -> List[str]:
         # Clean up response
         return [line.rstrip(",") for line in lines]
 
-    except Exception as e:
+    except (
+        requests.RequestException,
+        ValueError,
+        ImportError,
+        AttributeError,
+        json.JSONDecodeError,
+    ) as e:
         write_log(f"Error during Anthropic API call: {str(e)}", level="error")
 
         # Try alternative method with direct REST API if SDK fails
         return process_anthropic_direct(prompt, model, api_key)
 
 
-def process_anthropic_direct(prompt: str, model: str, api_key: str) -> List[str]:
+def process_anthropic_direct(prompt: str, model: str, api_key: str) -> list[str]:
     """Fallback method using direct API calls if the SDK fails"""
 
     write_log("Falling back to direct API calls for Anthropic")
@@ -145,7 +147,7 @@ def process_anthropic_direct(prompt: str, model: str, api_key: str) -> List[str]
 
     for attempt in range(max_retries):
         try:
-            response = requests.post(url=url, headers=headers, data=json.dumps(body))
+            response = requests.post(url=url, headers=headers, data=json.dumps(body), timeout=30)
 
             # Check for errors
             if response.status_code != 200:
@@ -155,14 +157,13 @@ def process_anthropic_direct(prompt: str, model: str, api_key: str) -> List[str]
                         "message", f"model: {model}"
                     )
                     write_log(f"ERROR: Anthropic API request failed: {error_detail}")
-                except:
+                except (ValueError, KeyError, json.JSONDecodeError):
                     write_log(
                         f"ERROR: Anthropic API request failed with status {response.status_code}"
                     )
 
                 # If rate limited, wait and retry
-                if response.status_code == 429:
-                    if attempt < max_retries - 1:
+                if response.status_code == 429 and attempt < max_retries - 1:
                         wait_time = retry_delay * (2**attempt)
                         write_log(
                             f"Rate limited. Waiting {wait_time} seconds before retrying..."
@@ -194,9 +195,14 @@ def process_anthropic_direct(prompt: str, model: str, api_key: str) -> List[str]
             # Clean up results (remove commas at the end of lines)
             return [line.rstrip(",") for line in res]
 
-        except Exception as e:
+        except (
+            requests.RequestException,
+            ValueError,
+            json.JSONDecodeError,
+            KeyError,
+        ) as e:
             write_log(
-                f"Error during direct API call (attempt {attempt+1}/{max_retries}): {str(e)}"
+                f"Error during direct API call (attempt {attempt + 1}/{max_retries}): {str(e)}"
             )
             if attempt < max_retries - 1:
                 wait_time = retry_delay * (2**attempt)
@@ -208,3 +214,5 @@ def process_anthropic_direct(prompt: str, model: str, api_key: str) -> List[str]
                     "All API attempts failed. Returning empty results.", level="error"
                 )
                 return ["Unknown"] * expected_lines
+    # 如果所有重试都失败，返回空结果
+    return ["Unknown"] * expected_lines

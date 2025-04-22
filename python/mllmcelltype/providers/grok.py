@@ -1,20 +1,15 @@
-"""
-Grok provider module for LLMCellType.
-"""
+"""Grok provider module for LLMCellType."""
 
 import json
-import os
 import time
-from typing import List, Optional
 
 import requests
 
 from ..logger import write_log
 
 
-def process_grok(prompt: str, model: str, api_key: str) -> List[str]:
-    """
-    Process request using Grok models from xAI.
+def process_grok(prompt: str, model: str, api_key: str) -> list[str]:
+    """Process request using Grok models from xAI.
 
     Args:
         prompt: The prompt to send to the API
@@ -23,6 +18,7 @@ def process_grok(prompt: str, model: str, api_key: str) -> List[str]:
 
     Returns:
         List[str]: Processed responses, one per cluster
+
     """
     write_log(f"Starting Grok API request with model: {model}")
 
@@ -37,9 +33,7 @@ def process_grok(prompt: str, model: str, api_key: str) -> List[str]:
     write_log(f"Using model: {model}")
 
     # Process all input at once
-    input_lines = prompt.split("\n")
-
-    write_log(f"Processing input in 1 chunk")
+    write_log("Processing input in 1 chunk")
 
     # Prepare the request body
     body = {"model": model, "messages": [{"role": "user", "content": prompt}]}
@@ -53,7 +47,7 @@ def process_grok(prompt: str, model: str, api_key: str) -> List[str]:
 
     for attempt in range(max_retries):
         try:
-            response = requests.post(url=url, headers=headers, data=json.dumps(body))
+            response = requests.post(url=url, headers=headers, data=json.dumps(body), timeout=30)
 
             # Check for errors
             if response.status_code != 200:
@@ -63,8 +57,7 @@ def process_grok(prompt: str, model: str, api_key: str) -> List[str]:
                 )
 
                 # If rate limited, wait and retry
-                if response.status_code == 429:
-                    if attempt < max_retries - 1:
+                if response.status_code == 429 and attempt < max_retries - 1:
                         wait_time = retry_delay * (2**attempt)
                         write_log(
                             f"Rate limited. Waiting {wait_time} seconds before retrying..."
@@ -87,7 +80,7 @@ def process_grok(prompt: str, model: str, api_key: str) -> List[str]:
 
         except Exception as e:
             write_log(
-                f"Error during API call (attempt {attempt+1}/{max_retries}): {str(e)}"
+                f"Error during API call (attempt {attempt + 1}/{max_retries}): {str(e)}"
             )
             if attempt < max_retries - 1:
                 wait_time = retry_delay * (2**attempt)

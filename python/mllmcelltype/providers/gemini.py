@@ -1,9 +1,6 @@
-"""
-Gemini provider module for LLMCellType.
-"""
+"""Gemini provider module for LLMCellType."""
 
 import time
-from typing import List
 
 from google import genai
 from google.genai import types
@@ -11,9 +8,8 @@ from google.genai import types
 from ..logger import write_log
 
 
-def process_gemini(prompt: str, model: str, api_key: str) -> List[str]:
-    """
-    Process request using Google Gemini models.
+def process_gemini(prompt: str, model: str, api_key: str) -> list[str]:
+    """Process request using Google Gemini models.
 
     Args:
         prompt: The prompt to send to the API
@@ -22,6 +18,7 @@ def process_gemini(prompt: str, model: str, api_key: str) -> List[str]:
 
     Returns:
         List[str]: Processed responses, one per cluster
+
     """
     write_log(f"Starting Gemini API request with model: {model}")
 
@@ -63,7 +60,7 @@ def process_gemini(prompt: str, model: str, api_key: str) -> List[str]:
 
         except Exception as e:
             write_log(
-                f"Error during API call (attempt {attempt+1}/{max_retries}): {str(e)}"
+                f"Error during API call (attempt {attempt + 1}/{max_retries}): {str(e)}"
             )
             if attempt < max_retries - 1:
                 wait_time = retry_delay * (2**attempt)
@@ -71,3 +68,5 @@ def process_gemini(prompt: str, model: str, api_key: str) -> List[str]:
                 time.sleep(wait_time)
             else:
                 raise
+    # 如果所有重试都失败，返回空结果
+    return ["Unknown"]
