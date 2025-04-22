@@ -429,16 +429,16 @@ def get_default_model(provider: str) -> str:
         str: Default model name
     """
     default_models = {
-        "openai": "gpt-4o",
-        "anthropic": "claude-3-opus-20240229",
+        "openai": "gpt-4.1",
+        "anthropic": "claude-3-7-sonnet-20250219",
         "deepseek": "deepseek-chat",
-        "gemini": "gemini-2.0-pro",
+        "gemini": "gemini-2.5-pro-preview-03-25",
         "qwen": "qwen-max-2025-01-25",
-        "stepfun": "llama3-70b-8192",
+        "stepfun": "step-2-16k",
         "zhipu": "glm-4",
-        "minimax": "abab6-chat",
-        "grok": "grok-3-latest",
-        "openrouter": "openai/gpt-4o",
+        "minimax": "MiniMax-Text-01",
+        "grok": "grok-3-beta",
+        "openrouter": "openai/gpt-4.1",
     }
 
     return default_models.get(provider.lower(), "unknown")

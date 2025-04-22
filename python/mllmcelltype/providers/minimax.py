@@ -35,13 +35,9 @@ def process_minimax(
         write_log(f"ERROR: {error_msg}")
         raise ValueError(error_msg)
 
-    # Check if group_id is provided
-    if not group_id:
-        group_id = os.getenv("MINIMAX_GROUP_ID")
-        if not group_id:
-            error_msg = "MiniMax Group ID is missing or empty"
-            write_log(f"ERROR: {error_msg}")
-            raise ValueError(error_msg)
+    # Group ID is no longer required for the new API
+    # If provided, use it; otherwise, it's not needed
+    group_id = group_id or os.getenv("MINIMAX_GROUP_ID")
 
     # MiniMax API endpoint - use the same endpoint as in R version
     url = "https://api.minimaxi.chat/v1/text/chatcompletion_v2"
@@ -82,8 +78,11 @@ def process_minimax(
         headers = {
             "Content-Type": "application/json",
             "Authorization": f"Bearer {api_key}",
-            "X-Minimax-Group-Id": group_id,
         }
+
+        # Add group_id to headers if it exists
+        if group_id:
+            headers["X-Minimax-Group-Id"] = group_id
 
         max_retries = 3
         retry_delay = 2

@@ -34,11 +34,27 @@ def process_anthropic(prompt: str, model: str, api_key: str) -> List[str]:
 
     # Handle old model names and map to the latest versions
     model_mapping = {
+        # Claude 3.7 series
+        "claude-3-7-sonnet-20250219": "claude-3-7-sonnet-20250219",
+        "claude-3-7-sonnet": "claude-3-7-sonnet-20250219",
+
+        # Claude 3.5 series
+        "claude-3-5-sonnet-20241022": "claude-3-5-sonnet-20241022",
+        "claude-3-5-sonnet-new": "claude-3-5-sonnet-20241022",
+        "claude-3-5-sonnet-20240620": "claude-3-5-sonnet-20240620",
+        "claude-3-5-sonnet-old": "claude-3-5-sonnet-20240620",
+        "claude-3-5-sonnet": "claude-3-5-sonnet-20241022",  # Default to new version
+        "claude-3-5-sonnet-latest": "claude-3-5-sonnet-20241022",
+
+        "claude-3-5-haiku-20241022": "claude-3-5-haiku-20241022",
+        "claude-3-5-haiku": "claude-3-5-haiku-20241022",
+        "claude-3-5-haiku-latest": "claude-3-5-haiku-20241022",
+
+        # Claude 3 series
         "claude-3-opus-20240229": "claude-3-opus-20240229",
         "claude-3-opus": "claude-3-opus-20240229",
-        "claude-3-7-sonnet-20250219": "claude-3-7-sonnet-20250219",
-        "claude-3-5-sonnet-latest": "claude-3-5-sonnet-20240620",
-        "claude-3-5-haiku-latest": "claude-3-haiku-20240307",
+
+        "claude-3-haiku-20240307": "claude-3-haiku-20240307",
         "claude-3-haiku": "claude-3-haiku-20240307",
     }
 

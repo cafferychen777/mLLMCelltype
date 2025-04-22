@@ -22,13 +22,13 @@ Single-cell RNA sequencing has revolutionized our understanding of cellular hete
 - **Comprehensive Provider Support**:
   - OpenAI (GPT-4o, O1, etc.)
   - Anthropic (Claude 3.7 Sonnet, Claude 3.5 Haiku, etc.)
-  - Google (Gemini 2.5 Pro, Gemini 2.0 Flash, etc.)
-  - Alibaba (Qwen-Max, etc.)
+  - Google (Gemini 2.5 Pro, Gemini 2.5 Flash, Gemini 2.0 Flash, Gemini 1.5 Pro, etc.)
+  - Alibaba (Qwen-Max-2025-01-25, Qwen-Plus, etc.)
   - DeepSeek (DeepSeek-Chat, DeepSeek-Reasoner)
-  - StepFun (Step-2-Mini, Step-2-16k, etc.)
-  - Zhipu AI (GLM-4-Plus, GLM-3-Turbo)
+  - StepFun (Step-2-16k, Step-2-Mini, Step-1-Flash, Step-1-8k, Step-1-32k, etc.)
+  - Zhipu AI (GLM-4, GLM-3-Turbo)
   - MiniMax (MiniMax-Text-01)
-  - X.AI (Grok-3-latest, Grok-3)
+  - X.AI (Grok-3-latest)
   - OpenRouter (Access to multiple models through a single API)
     - Supports models from OpenAI, Anthropic, Meta, Mistral and more
     - Format: 'provider/model-name' (e.g., 'openai/gpt-4o', 'anthropic/claude-3-opus')
@@ -109,15 +109,15 @@ mLLMCelltype requires API keys for the LLM providers you intend to use. These ca
 ### Environment Variables (Recommended)
 
 ```bash
-export OPENAI_API_KEY="your-openai-api-key"
-export ANTHROPIC_API_KEY="your-anthropic-api-key"
-export GEMINI_API_KEY="your-gemini-api-key"
-export QWEN_API_KEY="your-qwen-api-key"
-export DEEPSEEK_API_KEY="your-deepseek-api-key"
-export ZHIPU_API_KEY="your-zhipu-api-key"
-export STEPFUN_API_KEY="your-stepfun-api-key"
-export MINIMAX_API_KEY="your-minimax-api-key"
-export GROK_API_KEY="your-grok-api-key"
+export OPENAI_API_KEY="your-openai-api-key"  # For GPT models
+export ANTHROPIC_API_KEY="your-anthropic-api-key"  # For Claude models
+export GOOGLE_API_KEY="your-google-api-key"  # For Gemini models
+export QWEN_API_KEY="your-qwen-api-key"  # For Qwen-Max-2025-01-25, Qwen-Plus
+export DEEPSEEK_API_KEY="your-deepseek-api-key"  # For DeepSeek-Chat
+export ZHIPU_API_KEY="your-zhipu-api-key"  # For GLM-4, GLM-3-Turbo
+export STEPFUN_API_KEY="your-stepfun-api-key"  # For Step-2-16k, Step-2-Mini, etc.
+export MINIMAX_API_KEY="your-minimax-api-key"  # For MiniMax-Text-01
+export GROK_API_KEY="your-grok-api-key"  # For Grok-3-latest
 export OPENROUTER_API_KEY="your-openrouter-api-key"  # For accessing multiple models via OpenRouter
 # Additional providers as needed
 ```
@@ -273,7 +273,7 @@ result = interactive_consensus_annotation(
     models=[                                              # Multiple LLM models
         'gpt-4o',                                         # OpenAI direct API
         'claude-3-7-sonnet-20250219',                     # Anthropic direct API
-        'gemini-2.0-flash',                               # Google direct API
+        'gemini-2.5-pro-preview-03-25',                    # Google direct API
         'qwen-max-2025-01-25',                            # Alibaba direct API
         'openai/gpt-4o',                                  # OpenRouter (OpenAI)
         'anthropic/claude-3-opus',                        # OpenRouter (Anthropic)
@@ -361,8 +361,8 @@ import seaborn as sns
 model_predictions = {
     "OpenAI (GPT-4o)": results_openai,
     "Anthropic (Claude 3.7)": results_claude,
-    "Google (Gemini 2.5)": results_gemini,
-    "Alibaba (Qwen-Max)": results_qwen
+    "Google (Gemini 2.5 Pro)": results_gemini,
+    "Alibaba (Qwen-Max-2025-01-25)": results_qwen
 }
 
 # Perform comprehensive model comparison analysis
@@ -533,7 +533,7 @@ import mllmcelltype as mct
 consensus_results = mct.interactive_consensus_annotation(
     marker_genes=marker_genes,
     species='human',
-    models=['gpt-4o', 'claude-3-opus-20240229', 'gemini-1.5-pro', 'openai/gpt-4o'],  # Can include OpenRouter models
+    models=['gpt-4o', 'claude-3-7-sonnet-20250219', 'gemini-2.5-pro-preview-03-25', 'openai/gpt-4o'],  # Can include OpenRouter models
     consensus_threshold=0.7
 )
 
