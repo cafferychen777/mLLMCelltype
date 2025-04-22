@@ -276,16 +276,23 @@ pbmc_markers <- FindAllMarkers(pbmc,
                             logfc.threshold = 0.25)
 
 # Elegir un modelo de cualquier proveedor compatible
-# Ejemplos de modelos compatibles:
-# - Anthropic: "claude-3-7-sonnet-20250219", "claude-3-5-sonnet-latest"
-# - OpenAI: "gpt-4o"
-# - Google: "gemini-1.5-pro", "gemini-2.0-flash"
-# - DeepSeek: "deepseek-chat", "deepseek-reasoner"
-# - Alibaba: "qwen-max-2025-01-25"
-# - X.AI: "grok-3", "grok-3-mini"
-# - Zhipu: "glm-4-plus", "glm-3-turbo"
-# - MiniMax: "minimax-text-01"
-# - Stepfun: "step-2-16k", "step-2-mini"
+# Modelos compatibles incluyen:
+# - OpenAI: 'gpt-4o', 'gpt-4o-mini', 'gpt-4.1', 'gpt-4.1-mini', 'gpt-4.1-nano', 'gpt-4-turbo', 'gpt-3.5-turbo', 'o1', 'o1-mini', 'o1-preview', 'o1-pro'
+# - Anthropic: 'claude-3-7-sonnet-20250219', 'claude-3-5-sonnet-latest', 'claude-3-5-haiku-latest', 'claude-3-opus'
+# - DeepSeek: 'deepseek-chat', 'deepseek-reasoner'
+# - Google: 'gemini-2.5-pro', 'gemini-2.0-flash', 'gemini-2.0-flash-exp', 'gemini-1.5-pro', 'gemini-1.5-flash'
+# - Qwen: 'qwen-max-2025-01-25'
+# - Stepfun: 'step-2-mini', 'step-2-16k', 'step-1-8k'
+# - Zhipu: 'glm-4-plus', 'glm-3-turbo'
+# - MiniMax: 'minimax-text-01'
+# - Grok: 'grok-3', 'grok-3-latest', 'grok-3-fast', 'grok-3-fast-latest', 'grok-3-mini', 'grok-3-mini-latest', 'grok-3-mini-fast', 'grok-3-mini-fast-latest'
+# - OpenRouter: Acceso a múltiples modelos a través de una sola API. Formato: 'proveedor/nombre-modelo'
+#   - Modelos OpenAI: 'openai/gpt-4o', 'openai/gpt-4o-mini', 'openai/gpt-4-turbo', 'openai/gpt-4', 'openai/gpt-3.5-turbo'
+#   - Modelos Anthropic: 'anthropic/claude-3-7-sonnet-20250219', 'anthropic/claude-3-5-sonnet-latest', 'anthropic/claude-3-5-haiku-latest', 'anthropic/claude-3-opus'
+#   - Modelos Meta: 'meta-llama/llama-3-70b-instruct', 'meta-llama/llama-3-8b-instruct', 'meta-llama/llama-2-70b-chat'
+#   - Modelos Google: 'google/gemini-2.5-pro-preview-03-25', 'google/gemini-1.5-pro-latest', 'google/gemini-1.5-flash'
+#   - Modelos Mistral: 'mistralai/mistral-large', 'mistralai/mistral-medium', 'mistralai/mistral-small'
+#   - Otros modelos: 'microsoft/mai-ds-r1', 'perplexity/sonar-small-chat', 'cohere/command-r', 'deepseek/deepseek-chat', 'thudm/glm-z1-32b'
 
 # Ejecutar anotación de tipos celulares con un solo modelo LLM
 single_model_results <- annotate_cell_types(
