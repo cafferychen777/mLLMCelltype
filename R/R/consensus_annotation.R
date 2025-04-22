@@ -10,8 +10,37 @@
 #'
 #' @param input Either the differential gene table returned by Seurat FindAllMarkers() function, or a list of genes
 #' @param tissue_name Optional input of tissue name
-#' @param models Vector of model names to participate in the discussion
-#' @param api_keys Named list of API keys. Can use either provider names or model names as keys
+#' @param models Vector of model names to participate in the discussion. Supported models:
+#'   - OpenAI: 'gpt-4o', 'o1' 
+#'   - Anthropic: 'claude-3-7-sonnet-20250219', 'claude-3-5-sonnet-latest', 'claude-3-5-haiku-latest', 'claude-3-opus'
+#'   - DeepSeek: 'deepseek-chat', 'deepseek-reasoner'
+#'   - Google: 'gemini-2.0-flash', 'gemini-2.0-flash-exp', 'gemini-1.5-pro', 'gemini-1.5-flash'
+#'   - Alibaba: 'qwen-max-2025-01-25'
+#'   - Stepfun: 'step-2-16k', 'step-2-mini', 'step-1-8k'
+#'   - Zhipu: 'glm-4-plus', 'glm-3-turbo'
+#'   - MiniMax: 'minimax-text-01'
+#'   - X.AI: 'grok-3-latest', 'grok-3', 'grok-3-fast', 'grok-3-fast-latest', 'grok-3-mini', 'grok-3-mini-latest', 'grok-3-mini-fast', 'grok-3-mini-fast-latest'
+#'   - OpenRouter: Provides access to models from multiple providers through a single API. Format: 'provider/model-name'
+#'     - OpenAI models: 'openai/gpt-4o', 'openai/gpt-4o-mini', 'openai/gpt-4-turbo', 'openai/gpt-4', 'openai/gpt-3.5-turbo'
+#'     - Anthropic models: 'anthropic/claude-3-7-sonnet-20250219', 'anthropic/claude-3-5-sonnet-latest', 'anthropic/claude-3-5-haiku-latest', 'anthropic/claude-3-opus'
+#'     - Meta models: 'meta-llama/llama-3-70b-instruct', 'meta-llama/llama-3-8b-instruct', 'meta-llama/llama-2-70b-chat'
+#'     - Google models: 'google/gemini-2.5-pro-preview-03-25', 'google/gemini-1.5-pro-latest', 'google/gemini-1.5-flash'
+#'     - Mistral models: 'mistralai/mistral-large', 'mistralai/mistral-medium', 'mistralai/mistral-small'
+#'     - Other models: 'microsoft/mai-ds-r1', 'perplexity/sonar-small-chat', 'cohere/command-r', 'deepseek/deepseek-chat', 'thudm/glm-z1-32b'
+#' @param api_keys Named list of API keys. Can be provided in two formats:
+#'   1. With provider names as keys: `list("openai" = "sk-...", "anthropic" = "sk-ant-...", "openrouter" = "sk-or-...")`
+#'   2. With model names as keys: `list("gpt-4o" = "sk-...", "claude-3-opus" = "sk-ant-...")`
+#'   
+#'   The system first tries to find the API key using the provider name. If not found, it then tries using the model name.
+#'   Example:
+#'   ```r
+#'   api_keys <- list(
+#'     "openai" = Sys.getenv("OPENAI_API_KEY"),
+#'     "anthropic" = Sys.getenv("ANTHROPIC_API_KEY"),
+#'     "openrouter" = Sys.getenv("OPENROUTER_API_KEY"),
+#'     "claude-3-opus" = "sk-ant-api03-specific-key-for-opus"
+#'   )
+#'   ```
 #' @param top_gene_count Number of top differential genes to use
 #' @param controversy_threshold Consensus proportion threshold (default: 0.7). Clusters with consensus proportion below this value will be marked as controversial
 #' @param entropy_threshold Entropy threshold for identifying controversial clusters (default: 1.0)
@@ -504,8 +533,37 @@ combine_results <- function(initial_results, controversy_results, discussion_res
 #'
 #' @param input Either the differential gene table returned by Seurat FindAllMarkers() function, or a list of genes
 #' @param tissue_name Optional input of tissue name
-#' @param models Vector of model names to participate in the discussion
-#' @param api_keys Named list of API keys. Can use either provider names or model names as keys
+#' @param models Vector of model names to participate in the discussion. Supported models:
+#'   - OpenAI: 'gpt-4o', 'o1' 
+#'   - Anthropic: 'claude-3-7-sonnet-20250219', 'claude-3-5-sonnet-latest', 'claude-3-5-haiku-latest', 'claude-3-opus'
+#'   - DeepSeek: 'deepseek-chat', 'deepseek-reasoner'
+#'   - Google: 'gemini-2.0-flash', 'gemini-2.0-flash-exp', 'gemini-1.5-pro', 'gemini-1.5-flash'
+#'   - Alibaba: 'qwen-max-2025-01-25'
+#'   - Stepfun: 'step-2-16k', 'step-2-mini', 'step-1-8k'
+#'   - Zhipu: 'glm-4-plus', 'glm-3-turbo'
+#'   - MiniMax: 'minimax-text-01'
+#'   - X.AI: 'grok-3-latest', 'grok-3', 'grok-3-fast', 'grok-3-fast-latest', 'grok-3-mini', 'grok-3-mini-latest', 'grok-3-mini-fast', 'grok-3-mini-fast-latest'
+#'   - OpenRouter: Provides access to models from multiple providers through a single API. Format: 'provider/model-name'
+#'     - OpenAI models: 'openai/gpt-4o', 'openai/gpt-4o-mini', 'openai/gpt-4-turbo', 'openai/gpt-4', 'openai/gpt-3.5-turbo'
+#'     - Anthropic models: 'anthropic/claude-3-7-sonnet-20250219', 'anthropic/claude-3-5-sonnet-latest', 'anthropic/claude-3-5-haiku-latest', 'anthropic/claude-3-opus'
+#'     - Meta models: 'meta-llama/llama-3-70b-instruct', 'meta-llama/llama-3-8b-instruct', 'meta-llama/llama-2-70b-chat'
+#'     - Google models: 'google/gemini-2.5-pro-preview-03-25', 'google/gemini-1.5-pro-latest', 'google/gemini-1.5-flash'
+#'     - Mistral models: 'mistralai/mistral-large', 'mistralai/mistral-medium', 'mistralai/mistral-small'
+#'     - Other models: 'microsoft/mai-ds-r1', 'perplexity/sonar-small-chat', 'cohere/command-r', 'deepseek/deepseek-chat', 'thudm/glm-z1-32b'
+#' @param api_keys Named list of API keys. Can be provided in two formats:
+#'   1. With provider names as keys: `list("openai" = "sk-...", "anthropic" = "sk-ant-...", "openrouter" = "sk-or-...")`
+#'   2. With model names as keys: `list("gpt-4o" = "sk-...", "claude-3-opus" = "sk-ant-...")`
+#'   
+#'   The system first tries to find the API key using the provider name. If not found, it then tries using the model name.
+#'   Example:
+#'   ```r
+#'   api_keys <- list(
+#'     "openai" = Sys.getenv("OPENAI_API_KEY"),
+#'     "anthropic" = Sys.getenv("ANTHROPIC_API_KEY"),
+#'     "openrouter" = Sys.getenv("OPENROUTER_API_KEY"),
+#'     "claude-3-opus" = "sk-ant-api03-specific-key-for-opus"
+#'   )
+#'   ```
 #' @param top_gene_count Number of top differential genes to use
 #' @param controversy_threshold Consensus proportion threshold (default: 0.7). Clusters with consensus proportion below this value will be marked as controversial
 #' @param entropy_threshold Entropy threshold for identifying controversial clusters (default: 1.0)
