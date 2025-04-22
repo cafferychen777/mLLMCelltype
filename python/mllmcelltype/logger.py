@@ -1,6 +1,6 @@
-"""
-Logging module for LLMCellType.
-"""
+"""Logging module for LLMCellType."""
+
+from __future__ import annotations
 
 import datetime
 import logging
@@ -22,12 +22,12 @@ DEFAULT_LOG_DIR = os.path.join(os.path.expanduser("~"), ".llmcelltype", "logs")
 
 
 def setup_logging(log_dir: Optional[str] = None, log_level: str = "INFO") -> None:
-    """
-    Setup logging configuration.
+    """Setup logging configuration.
 
     Args:
         log_dir: Directory to store log files. If None, uses default directory.
         log_level: Logging level (DEBUG, INFO, WARNING, ERROR, CRITICAL)
+
     """
     # Set log directory
     if log_dir is None:
@@ -60,22 +60,22 @@ def setup_logging(log_dir: Optional[str] = None, log_level: str = "INFO") -> Non
 
 
 def write_log(message: str, level: str = "INFO") -> None:
-    """
-    Write a message to the log.
+    """Write a message to the log.
 
     Args:
         message: Message to log
         level: Log level (debug, info, warning, error, critical)
+
     """
     level_method = getattr(logger, level.lower())
     level_method(message)
 
 
 def get_logger():
-    """
-    Get the logger instance.
+    """Get the logger instance.
 
     Returns:
         Logger: The logger instance
+
     """
     return logger

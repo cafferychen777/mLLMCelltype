@@ -1,10 +1,9 @@
-"""
-Main annotation module for LLMCellType.
-"""
+"""Main annotation module for LLMCellType."""
 
-import os
+from __future__ import annotations
+
 import time
-from typing import Dict, List, Optional, Tuple, Union
+from typing import Optional, Union
 
 import pandas as pd
 
@@ -47,7 +46,7 @@ PROVIDER_FUNCTIONS = {
 
 
 def annotate_clusters(
-    marker_genes: Union[Dict[str, List[str]], pd.DataFrame],
+    marker_genes: Union[dict[str, list[str]], pd.DataFrame],
     species: str,
     provider: str = "openai",
     model: Optional[str] = None,
@@ -59,9 +58,8 @@ def annotate_clusters(
     cache_dir: Optional[str] = None,
     log_dir: Optional[str] = None,
     log_level: str = "INFO",
-) -> Dict[str, str]:
-    """
-    Annotate cell clusters using LLM.
+) -> dict[str, str]:
+    """Annotate cell clusters using LLM.
 
     Args:
         marker_genes: Dictionary mapping cluster names to lists of marker genes,
@@ -80,6 +78,7 @@ def annotate_clusters(
 
     Returns:
         Dict[str, str]: Dictionary mapping cluster names to annotations
+
     """
     # Setup logging
     setup_logging(log_dir=log_dir, log_level=log_level)
@@ -155,25 +154,24 @@ def annotate_clusters(
 
 
 def batch_annotate_clusters(
-    marker_genes_list: List[Union[Dict[str, List[str]], pd.DataFrame]],
+    marker_genes_list: list[Union[dict[str, list[str]], pd.DataFrame]],
     species: str,
     provider: str = "openai",
     model: Optional[str] = None,
     api_key: Optional[str] = None,
-    tissue: Optional[Union[str, List[str]]] = None,
+    tissue: Optional[Union[str, list[str]]] = None,
     additional_context: Optional[str] = None,
     prompt_template: Optional[str] = None,
     use_cache: bool = True,
     cache_dir: Optional[str] = None,
     log_dir: Optional[str] = None,
     log_level: str = "INFO",
-) -> List[Dict[str, str]]:
-    """
-    Batch annotate multiple sets of cell clusters using LLM.
+) -> list[dict[str, str]]:
+    """Batch annotate multiple sets of cell clusters using LLM.
 
     Args:
-        marker_genes_list: List of dictionaries mapping cluster names to lists of marker genes,
-                          or list of DataFrames with 'cluster' and 'gene' columns
+        marker_genes_list: List of dictionaries mapping cluster names to lists of 
+            marker genes, or list of DataFrames with 'cluster' and 'gene' columns
         species: Species name (e.g., 'human', 'mouse')
         provider: LLM provider (e.g., 'openai', 'anthropic')
         model: Model name (e.g., 'gpt-4o', 'claude-3-opus-20240229')
@@ -188,6 +186,7 @@ def batch_annotate_clusters(
 
     Returns:
         List[Dict[str, str]]: List of dictionaries mapping cluster names to annotations
+
     """
     # Setup logging
     setup_logging(log_dir=log_dir, log_level=log_level)
@@ -335,15 +334,12 @@ def batch_annotate_clusters(
 
                 # Extract JSON content if it's wrapped in ```json and ``` markers
                 json_match = re.search(r"```(?:json)?\s*([\s\S]*?)\s*```", full_text)
-                if json_match:
-                    json_str = json_match.group(1)
-                else:
+                json_str = json_match.group(1) if json_match else None
+
+                if not json_str:
                     # If no code blocks, try to find JSON object directly
                     json_match = re.search(r"(\{[\s\S]*\})", full_text)
-                    if json_match:
-                        json_str = json_match.group(1)
-                    else:
-                        json_str = None
+                    json_str = json_match.group(1) if json_match else None
 
                 if json_str:
                     try:
@@ -387,25 +383,27 @@ def batch_annotate_clusters(
                                 result_sets.append(set_groups[set_id])
                     except json.JSONDecodeError:
                         write_log(
-                            f"Warning: Failed to parse JSON response", level="warning"
+                            "Warning: Failed to parse JSON response", level="warning"
                         )
-            except Exception as e:
+            except (ValueError, KeyError, AttributeError, TypeError) as e:
                 write_log(
                     f"Warning: Error while trying to parse JSON: {str(e)}",
                     level="warning",
                 )
 
-        # If we still didn't get any properly formatted results, fall back to the old method
+        # If we still didn't get any properly formatted results, fall back to the 
+        # old method
         if not result_sets:
             write_log(
-                "Warning: Could not parse batch results, falling back to default parsing",
+                "Warning: Could not parse batch results, falling back to default "
+                "parsing",
                 level="warning",
             )
             result_sets = []
             for i, clusters in enumerate(clusters_list):
                 result_sets.append(
                     {
-                        str(cluster): f"Set {i+1} results not properly parsed"
+                        str(cluster): f"Set {i + 1} results not properly parsed"
                         for cluster in clusters
                     }
                 )
@@ -419,14 +417,14 @@ def batch_annotate_clusters(
 
 
 def get_default_model(provider: str) -> str:
-    """
-    Get default model for a provider.
+    """Get default model for a provider.
 
     Args:
         provider: Provider name
 
     Returns:
         str: Default model name
+
     """
     default_models = {
         "openai": "gpt-4.1",
@@ -452,8 +450,7 @@ def get_model_response(
     use_cache: bool = True,
     cache_dir: Optional[str] = None,
 ) -> str:
-    """
-    Get response from a model for a given prompt.
+    """Get response from a model for a given prompt.
 
     Args:
         prompt: The prompt to send to the model
@@ -465,8 +462,8 @@ def get_model_response(
 
     Returns:
         str: The model response
+
     """
-    from .functions import get_provider
 
     # Check if provider is valid
     if not provider:

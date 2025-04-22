@@ -1,15 +1,12 @@
-"""
-Module for comparing annotations from different LLM providers.
-"""
+"""Module for comparing annotations from different LLM providers."""
 
-import json
-import os
+from __future__ import annotations
+
 from collections import Counter
 from itertools import combinations
-from typing import Any, Dict, List, Optional, Tuple, Union
+from typing import Any
 
 import matplotlib.pyplot as plt
-import numpy as np
 import pandas as pd
 import seaborn as sns
 
@@ -19,19 +16,20 @@ from .utils import clean_annotation
 
 
 def compare_model_predictions(
-    model_predictions: Dict[str, Dict[str, str]], display_plot: bool = True
-) -> Tuple[pd.DataFrame, Dict[str, Any]]:
-    """
-    Compare cell type annotations from different LLM models.
+    model_predictions: dict[str, dict[str, str]], display_plot: bool = True
+) -> tuple[pd.DataFrame, dict[str, Any]]:
+    """Compare cell type annotations from different LLM models.
 
     Args:
-        model_predictions: Dictionary mapping model names to dictionaries of cluster annotations
+        model_predictions: Dictionary mapping model names to dictionaries of 
+            cluster annotations
         display_plot: Whether to display plots
 
     Returns:
         Tuple of:
             - DataFrame containing pairwise agreement scores
             - Dictionary with additional metrics
+
     """
     if not model_predictions:
         write_log("Error: No model predictions provided", level="error")
@@ -49,7 +47,7 @@ def compare_model_predictions(
     clusters = set()
     for model_results in model_predictions.values():
         clusters.update(model_results.keys())
-    clusters = sorted(list(clusters))
+    clusters = sorted(clusters)
 
     # Calculate pairwise agreement
     agreement_data = []
@@ -111,19 +109,19 @@ def compare_model_predictions(
 
             # Create heatmap
             plt.figure(figsize=(10, 8))
-            ax = sns.heatmap(
+            sns.heatmap(
                 model_matrix,
                 annot=True,
                 cmap="YlGnBu",
-                vmin=0,
-                vmax=1,
+                linewidths=0.5,
+                fmt=".2f",
                 square=True,
-                cbar_kws={"label": "Agreement Score"},
+                cbar_kws={"shrink": 0.8},
             )
             plt.title("Model Agreement Matrix")
             plt.tight_layout()
             plt.show()
-        except Exception as e:
+        except (ValueError, ImportError, RuntimeError, TypeError) as e:
             write_log(f"Warning: Could not create plot: {str(e)}", level="warning")
 
     # Calculate more metrics
@@ -164,16 +162,17 @@ def compare_model_predictions(
 
 
 def create_comparison_table(
-    model_predictions: Dict[str, Dict[str, str]],
+    model_predictions: dict[str, dict[str, str]],
 ) -> pd.DataFrame:
-    """
-    Create a table comparing cluster annotations from different models.
+    """Create a table comparing cluster annotations from different models.
 
     Args:
-        model_predictions: Dictionary mapping model names to dictionaries of cluster annotations
+        model_predictions: Dictionary mapping model names to dictionaries of 
+            cluster annotations
 
     Returns:
         pd.DataFrame: Table comparing annotations across models
+
     """
     if not model_predictions:
         return pd.DataFrame()
@@ -185,7 +184,7 @@ def create_comparison_table(
     clusters = set()
     for model_results in model_predictions.values():
         clusters.update(model_results.keys())
-    clusters = sorted(list(clusters))
+    clusters = sorted(clusters)
 
     # Create table
     table_data = []
@@ -205,16 +204,17 @@ def create_comparison_table(
 
 
 def analyze_confusion_patterns(
-    model_predictions: Dict[str, Dict[str, str]],
-) -> Dict[str, Any]:
-    """
-    Analyze patterns in disagreements between models.
+    model_predictions: dict[str, dict[str, str]],
+) -> dict[str, Any]:
+    """Analyze patterns in disagreements between models.
 
     Args:
-        model_predictions: Dictionary mapping model names to dictionaries of cluster annotations
+        model_predictions: Dictionary mapping model names to dictionaries of 
+            cluster annotations
 
     Returns:
         Dict[str, Any]: Dictionary with analysis results
+
     """
     if not model_predictions or len(model_predictions) < 2:
         return {"error": "Need at least 2 models to analyze confusion patterns"}
@@ -226,7 +226,7 @@ def analyze_confusion_patterns(
     clusters = set()
     for model_results in model_predictions.values():
         clusters.update(model_results.keys())
-    clusters = sorted(list(clusters))
+    clusters = sorted(clusters)
 
     # Analyze clusters with disagreements
     disagreement_data = {}
@@ -254,7 +254,7 @@ def analyze_confusion_patterns(
     # Count common disagreement pairs
     disagreement_pairs = []
 
-    for cluster, data in disagreement_data.items():
+    for _cluster, data in disagreement_data.items():
         # Get pairs of different annotations
         annotations = list(data["annotations"].values())
         for i, anno1 in enumerate(annotations):
@@ -269,9 +269,9 @@ def analyze_confusion_patterns(
     most_common_pairs = pair_counts.most_common(10)
 
     # Identify models with most disagreements
-    model_disagreements = {model: 0 for model in models}
+    model_disagreements = dict.fromkeys(models, 0)
 
-    for cluster, data in disagreement_data.items():
+    for _cluster, data in disagreement_data.items():
         # For each model, count how many other models it disagrees with
         for model1 in models:
             anno1 = data["annotations"].get(model1)

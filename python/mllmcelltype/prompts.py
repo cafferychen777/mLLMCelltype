@@ -1,8 +1,8 @@
-"""
-Prompt generation module for LLMCellType.
-"""
+"""Prompt generation module for LLMCellType."""
 
-from typing import Any, Dict, List, Optional, Union
+from __future__ import annotations
+
+from typing import Optional
 
 from .logger import write_log
 
@@ -60,15 +60,15 @@ Only provide the cell type name for each cluster. Be concise but specific.
 """
 
 
-def create_consensus_check_prompt(annotations: List[str]) -> str:
-    """
-    Create a prompt for checking consensus among different annotations.
+def create_consensus_check_prompt(annotations: list[str]) -> str:
+    """Create a prompt for checking consensus among different annotations.
 
     Args:
         annotations: List of cell type annotations from different models
 
     Returns:
         str: Formatted prompt for LLM to check consensus
+
     """
     prompt = """You are an expert in single-cell RNA-seq analysis and cell type annotation.
 
@@ -95,9 +95,7 @@ Only output these 4 lines, nothing else."""
     formatted_annotations = "\n".join([f"- {anno}" for anno in annotations])
 
     # Replace the placeholder
-    prompt = prompt.replace("{annotations}", formatted_annotations)
-
-    return prompt
+    return prompt.replace("{annotations}", formatted_annotations)
 
 
 # Original simpler batch template
@@ -248,14 +246,13 @@ RESPOND WITH EXACTLY FOUR LINES AS SPECIFIED ABOVE.
 
 
 def create_prompt(
-    marker_genes: Dict[str, List[str]],
+    marker_genes: dict[str, list[str]],
     species: str,
     tissue: Optional[str] = None,
     additional_context: Optional[str] = None,
     prompt_template: Optional[str] = None,
 ) -> str:
-    """
-    Create a prompt for cell type annotation.
+    """Create a prompt for cell type annotation.
 
     Args:
         marker_genes: Dictionary mapping cluster names to lists of marker genes
@@ -266,6 +263,7 @@ def create_prompt(
 
     Returns:
         str: The generated prompt
+
     """
     write_log(f"Creating prompt for {len(marker_genes)} clusters")
 
@@ -317,14 +315,13 @@ def create_prompt(
 
 
 def create_prompt_legacy(
-    marker_genes: Dict[str, List[str]],
+    marker_genes: dict[str, list[str]],
     species: str,
     tissue: Optional[str] = None,
     additional_context: Optional[str] = None,
     prompt_template: Optional[str] = None,
 ) -> str:
-    """
-    Create a prompt for cell type annotation using the legacy template format.
+    """Create a prompt for cell type annotation using the legacy template format.
 
     Args:
         marker_genes: Dictionary mapping cluster names to lists of marker genes
@@ -335,6 +332,7 @@ def create_prompt_legacy(
 
     Returns:
         str: The generated prompt
+
     """
     # Use default template if not provided
     if not prompt_template:
@@ -369,14 +367,13 @@ def create_prompt_legacy(
 
 
 def create_batch_prompt(
-    marker_genes_list: List[Dict[str, List[str]]],
+    marker_genes_list: list[dict[str, list[str]]],
     species: str,
     tissue: Optional[str] = None,
     additional_context: Optional[str] = None,
     prompt_template: Optional[str] = None,
 ) -> str:
-    """
-    Create a batch prompt for multiple sets of clusters.
+    """Create a batch prompt for multiple sets of clusters.
 
     Args:
         marker_genes_list: List of dictionaries mapping cluster names to lists of marker genes
@@ -387,6 +384,7 @@ def create_batch_prompt(
 
     Returns:
         str: The generated batch prompt
+
     """
     write_log(f"Creating batch prompt for {len(marker_genes_list)} sets of clusters")
 
@@ -412,7 +410,7 @@ def create_batch_prompt(
     marker_text_lines = []
 
     for i, marker_genes in enumerate(marker_genes_list):
-        marker_text_lines.append(f"\nSet {i+1}:")
+        marker_text_lines.append(f"\nSet {i + 1}:")
         for cluster, genes in marker_genes.items():
             marker_text_lines.append(f"Cluster {cluster}: {', '.join(genes)}")
 
@@ -441,14 +439,13 @@ def create_batch_prompt(
 
 
 def create_batch_prompt_legacy(
-    marker_genes_list: List[Dict[str, List[str]]],
+    marker_genes_list: list[dict[str, list[str]]],
     species: str,
     tissue: Optional[str] = None,
     additional_context: Optional[str] = None,
     prompt_template: Optional[str] = None,
 ) -> str:
-    """
-    Create a batch prompt for multiple sets of clusters using the legacy template format.
+    """Create a batch prompt for multiple sets of clusters using the legacy template format.
 
     Args:
         marker_genes_list: List of dictionaries mapping cluster names to lists of marker genes
@@ -459,6 +456,7 @@ def create_batch_prompt_legacy(
 
     Returns:
         str: The generated batch prompt
+
     """
     # Use default legacy template if not provided
     if not prompt_template:
@@ -482,7 +480,7 @@ def create_batch_prompt_legacy(
     # Create clusters string
     clusters_str = ""
     for i, marker_genes in enumerate(marker_genes_list):
-        clusters_str += f"Set {i+1}:\n"
+        clusters_str += f"Set {i + 1}:\n"
         for cluster, genes in marker_genes.items():
             genes_str = ", ".join(genes)
             clusters_str += f"Cluster {cluster}: {genes_str}\n"
@@ -496,13 +494,12 @@ def create_batch_prompt_legacy(
 
 
 def create_json_prompt(
-    marker_genes: Dict[str, List[str]],
+    marker_genes: dict[str, list[str]],
     species: str,
     tissue: Optional[str] = None,
     additional_context: Optional[str] = None,
 ) -> str:
-    """
-    Create a prompt for cell type annotation with JSON output format.
+    """Create a prompt for cell type annotation with JSON output format.
 
     Args:
         marker_genes: Dictionary mapping cluster names to lists of marker genes
@@ -512,6 +509,7 @@ def create_json_prompt(
 
     Returns:
         str: The generated prompt
+
     """
     return create_prompt(
         marker_genes=marker_genes,
@@ -524,15 +522,14 @@ def create_json_prompt(
 
 def create_discussion_prompt(
     cluster_id: str,
-    marker_genes: List[str],
-    model_votes: Dict[str, str],
+    marker_genes: list[str],
+    model_votes: dict[str, str],
     species: str,
     tissue: Optional[str] = None,
     previous_discussion: Optional[str] = None,
     prompt_template: Optional[str] = None,
 ) -> str:
-    """
-    Create a prompt for facilitating discussion about a controversial cluster.
+    """Create a prompt for facilitating discussion about a controversial cluster.
 
     Args:
         cluster_id: ID of the cluster
@@ -545,6 +542,7 @@ def create_discussion_prompt(
 
     Returns:
         str: The generated prompt
+
     """
     write_log(f"Creating discussion prompt for cluster {cluster_id}")
 
@@ -597,13 +595,12 @@ def create_discussion_prompt(
 
 
 def create_model_consensus_check_prompt(
-    predictions: Dict[str, Dict[str, str]],
+    predictions: dict[str, dict[str, str]],
     species: str,
     tissue: Optional[str] = None,
     prompt_template: Optional[str] = None,
 ) -> str:
-    """
-    Create a prompt for checking consensus across model predictions.
+    """Create a prompt for checking consensus across model predictions.
 
     Args:
         predictions: Dictionary mapping model names to dictionaries of cluster annotations
@@ -613,6 +610,7 @@ def create_model_consensus_check_prompt(
 
     Returns:
         str: The generated prompt
+
     """
     write_log(f"Creating consensus check prompt for {len(predictions)} models")
 
@@ -630,7 +628,7 @@ def create_model_consensus_check_prompt(
     clusters = set()
     for model_results in predictions.values():
         clusters.update(model_results.keys())
-    clusters = sorted(list(clusters))
+    clusters = sorted(clusters)
 
     # Format predictions text
     predictions_lines = []
@@ -659,8 +657,7 @@ def create_discussion_consensus_check_prompt(
     proposed_cell_type: str,
     prompt_template: Optional[str] = None,
 ) -> str:
-    """
-    Create a prompt for checking if consensus has been reached after a discussion round.
+    """Create a prompt for checking if consensus has been reached after a discussion round.
 
     Args:
         cluster_id: ID of the cluster being discussed
@@ -670,6 +667,7 @@ def create_discussion_consensus_check_prompt(
 
     Returns:
         str: The generated prompt
+
     """
     write_log(f"Creating consensus check prompt for cluster {cluster_id}")
 
@@ -691,10 +689,9 @@ def create_discussion_consensus_check_prompt(
 
 
 def create_initial_discussion_prompt(
-    cluster_id: str, marker_genes: List[str], species: str, tissue: Optional[str] = None
+    cluster_id: str, marker_genes: list[str], species: str, tissue: Optional[str] = None
 ) -> str:
-    """
-    Create a prompt for initial cell type discussion about a cluster.
+    """Create a prompt for initial cell type discussion about a cluster.
 
     Args:
         cluster_id: ID of the cluster
@@ -704,6 +701,7 @@ def create_initial_discussion_prompt(
 
     Returns:
         str: The generated prompt
+
     """
     write_log(f"Creating initial discussion prompt for cluster {cluster_id}")
 
