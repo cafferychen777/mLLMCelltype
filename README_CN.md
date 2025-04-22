@@ -60,6 +60,340 @@ pip install git+https://github.com/cafferychen777/mLLMCelltype.git
   - 支持来自OpenAI、Anthropic、Meta、Google、Mistral等多家提供商的模型
   - 格式: 'provider/model-name'（例如：'openai/gpt-4o'、'anthropic/claude-3-opus'）
 
+## 中国大陆用户指南
+
+为了帮助中国大陆用户更好地使用 mLLMCelltype，我们提供以下特别指南，解决可能遇到的网络限制和 API 访问问题。
+
+### 模型可访问性
+
+在中国大陆地区，不同的 LLM 模型有不同的可访问性：
+
+#### 直接可用的模型
+
+以下模型在中国大陆可以直接访问，无需特殊网络设置：
+
+- **DeepSeek**：DeepSeek-V3、DeepSeek-R1 等系列模型
+- **阿里云 Qwen**：Qwen2.5-Max 等千问系列模型
+- **智谱 AI**：GLM-4-Plus、GLM-3-Turbo 等系列模型
+- **MiniMax**：MiniMax-Text-01 等系列模型
+- **Stepfun**：Step-2-16K、Step-2-Mini、Step-1-8K 等系列模型
+
+这些模型是中国大陆用户的首选，因为它们提供稳定的 API 访问，且不需要特殊网络配置。
+
+#### 需要特殊网络设置的模型
+
+以下模型可能需要特殊网络设置才能在中国大陆访问：
+
+- **OpenAI**：GPT-4o、GPT-4.1 等系列模型
+- **Anthropic**：Claude-3.7-Sonnet、Claude-3.5-Haiku 等系列模型
+- **Google**：Gemini-2.0-Pro、Gemini-1.5-Flash 等系列模型
+- **X.AI**：Grok-3、Grok-3-Mini 等系列模型
+
+### 推荐使用方案
+
+#### 方案一：使用国内可直接访问的模型
+
+这是最简单的解决方案，使用中国大陆可直接访问的模型进行细胞类型注释：
+
+```python
+# Python 示例
+import os
+from mllmcelltype import interactive_consensus_annotation
+
+# 设置国内模型的 API 密钥
+os.environ["DEEPSEEK_API_KEY"] = "your-deepseek-api-key"  # DeepSeek API 密钥
+os.environ["QWEN_API_KEY"] = "your-qwen-api-key"        # 阿里云千问 API 密钥
+os.environ["ZHIPU_API_KEY"] = "your-zhipu-api-key"      # 智谱 GLM API 密钥
+
+# 使用国内模型进行共识注释
+consensus_results = interactive_consensus_annotation(
+    marker_genes=marker_genes,
+    species="human",
+    tissue="blood",
+    models=["deepseek-chat", "qwen-max-2025-01-25", "glm-4-plus"],
+    consensus_threshold=0.7
+)
+```
+
+```r
+# R 示例
+library(mLLMCelltype)
+
+# 使用国内模型进行共识注释
+consensus_results <- interactive_consensus_annotation(
+  input = pbmc_markers,
+  tissue_name = "human PBMC",
+  models = c(
+    "deepseek-chat",        # DeepSeek
+    "qwen-max-2025-01-25",  # 阿里云千问
+    "glm-4-plus"            # 智谱 GLM
+  ),
+  api_keys = list(
+    deepseek = "your-deepseek-key",
+    qwen = "your-qwen-key",
+    zhipu = "your-zhipu-key"
+  )
+)
+```
+
+#### 方案二：使用 OpenRouter 作为统一接入点
+
+OpenRouter 提供了一个统一的 API 接口，可以访问多种模型，包括部分在中国大陆难以直接访问的模型。通过 OpenRouter，您只需要一个 API 密钥即可使用多种模型：
+
+```python
+# Python 示例
+import os
+from mllmcelltype import interactive_consensus_annotation
+
+# 设置 OpenRouter API 密钥
+os.environ["OPENROUTER_API_KEY"] = "your-openrouter-api-key"
+
+# 使用 OpenRouter 访问多种模型
+consensus_results = interactive_consensus_annotation(
+    marker_genes=marker_genes,
+    species="human",
+    tissue="blood",
+    models=[
+        "openai/gpt-4o",                  # 通过 OpenRouter 访问 OpenAI
+        "anthropic/claude-3-opus",        # 通过 OpenRouter 访问 Anthropic
+        "deepseek/deepseek-chat"          # 通过 OpenRouter 访问 DeepSeek
+    ],
+    consensus_threshold=0.7
+)
+```
+
+```r
+# R 示例
+library(mLLMCelltype)
+
+# 使用 OpenRouter 进行共识注释
+consensus_results <- interactive_consensus_annotation(
+  input = pbmc_markers,
+  tissue_name = "human PBMC",
+  models = c(
+    "openai/gpt-4o",              # 通过 OpenRouter 访问 OpenAI
+    "anthropic/claude-3-opus",    # 通过 OpenRouter 访问 Anthropic
+    "deepseek/deepseek-chat"      # 通过 OpenRouter 访问 DeepSeek
+  ),
+  api_keys = list(
+    openrouter = "your-openrouter-key"  # 单一 API 密钥访问多种模型
+  )
+)
+```
+
+您可以在 [OpenRouter 官网](https://openrouter.ai/keys) 申请 API 密钥。
+
+#### 方案三：使用 Azure OpenAI 服务
+
+Microsoft 的 Azure OpenAI 服务在中国大陆有数据中心，可以提供更稳定的访问体验：
+
+```python
+# Python 示例
+import os
+from mllmcelltype import annotate_cell_types
+
+# 设置 Azure OpenAI 的凭证
+# 方式一：使用环境变量
+os.environ["AZURE_OPENAI_API_KEY"] = "your-azure-openai-key"
+os.environ["AZURE_OPENAI_ENDPOINT"] = "https://your-resource.openai.azure.com/"
+
+# 方式二：直接在函数中提供密钥和端点
+results = annotate_cell_types(
+    marker_genes=marker_genes,
+    species="human",
+    tissue="blood",
+    model="azure-gpt-4o",  # 注意模型名称前缀为 'azure-'
+    api_key="your-azure-openai-key|https://your-resource.openai.azure.com/"
+)
+```
+
+```r
+# R 示例
+library(mLLMCelltype)
+
+# 方式一：使用环境变量
+Sys.setenv(AZURE_OPENAI_API_KEY = "your-azure-openai-key")
+Sys.setenv(AZURE_OPENAI_ENDPOINT = "https://your-resource.openai.azure.com/")
+
+# 方式二：直接在函数中提供密钥和端点
+results <- annotate_cell_types(
+  input = pbmc_markers,
+  tissue_name = "human PBMC",
+  model = "azure-gpt-4o",  # 注意模型名称前缀为 'azure-'
+  api_key = "your-azure-openai-key|https://your-resource.openai.azure.com/"
+)
+```
+
+要使用 Azure OpenAI，您需要：
+1. 创建 Azure 账户并申请 Azure OpenAI 服务
+2. 创建部署，选择您需要的模型（如 gpt-4o）
+3. 获取 API 密钥和端点 URL
+
+### 网络配置建议
+
+如果您需要访问国际模型，且遇到网络连接问题，以下是一些配置建议：
+
+#### 自定义 base_url 功能（即将推出）
+
+我们正在开发对 mLLMCelltype 的自定义 base_url 功能支持，这将对中国大陆用户特别有用，可以连接到替代 API 端点。该功能将在下一版本中推出，实现后将支持以下用法：
+
+```r
+# R 中使用自定义 base_url（即将推出的功能）
+library(mLLMCelltype)
+
+# 使用替代端点进行注释
+results <- annotate_cell_types(
+  input = pbmc_markers,
+  tissue_name = "human PBMC",
+  model = "gpt-4o",
+  api_key = "your-openai-key",
+  base_url = "https://your-alternative-endpoint.com/v1"  # 替代 API 端点
+)
+```
+
+```python
+# Python 中使用自定义 base_url（即将推出的功能）
+from mllmcelltype import annotate_cell_types
+
+# 使用替代端点进行注释
+results = annotate_cell_types(
+    marker_genes=marker_genes,
+    species="human",
+    tissue="blood",
+    model="gpt-4o",
+    api_key="your-openai-key",
+    base_url="https://your-alternative-endpoint.com/v1"  # 替代 API 端点
+)
+```
+
+这个即将推出的功能将允许您使用各种兼容 OpenAI API 的替代服务，如 ellmer.tidyverse.org 等。我们正在积极开发这一功能，以便中国大陆用户能够更灵活地访问各种 LLM 服务。
+
+#### R 中设置代理
+
+```r
+# 在 R 中设置 HTTP 代理
+Sys.setenv(http_proxy = "http://proxy-server:port")
+Sys.setenv(https_proxy = "http://proxy-server:port")
+
+# 或者在 httr 请求中指定代理
+library(httr)
+set_config(use_proxy(url = "http://proxy-server:port"))
+```
+
+#### Python 中设置代理
+
+```python
+# 在 Python 中设置环境变量
+import os
+os.environ["HTTP_PROXY"] = "http://proxy-server:port"
+os.environ["HTTPS_PROXY"] = "http://proxy-server:port"
+
+# 或者在请求中指定代理
+import requests
+proxies = {
+    "http": "http://proxy-server:port",
+    "https": "http://proxy-server:port"
+}
+response = requests.get("https://api.example.com", proxies=proxies)
+```
+
+#### 超时和重试策略
+
+当访问国际 API 时，设置合理的超时时间和重试策略可以提高成功率：
+
+```r
+# R 中的超时和重试设置
+library(httr)
+config <- httr::config(timeout = 60)  # 设置 60 秒超时
+
+# 手动实现重试
+max_retries <- 3
+for (i in 1:max_retries) {
+  tryCatch({
+    response <- httr::POST(url, config = config, ...)
+    break  # 成功则退出循环
+  }, error = function(e) {
+    if (i == max_retries) stop(e)
+    Sys.sleep(2^i)  # 指数退避策略
+  })
+}
+```
+
+```python
+# Python 中的超时和重试设置
+import requests
+from requests.adapters import HTTPAdapter
+from urllib3.util.retry import Retry
+
+# 设置重试策略
+retry_strategy = Retry(
+    total=3,
+    backoff_factor=1,
+    status_forcelist=[429, 500, 502, 503, 504]
+)
+adapter = HTTPAdapter(max_retries=retry_strategy)
+http = requests.Session()
+http.mount("https://", adapter)
+http.mount("http://", adapter)
+
+# 使用设置的会话发送请求
+response = http.get("https://api.example.com", timeout=30)
+```
+
+### 故障排除与常见问题
+
+以下是中国大陆用户可能遇到的常见问题及解决方案：
+
+#### 1. API 连接超时
+
+**问题：** 连接到国际 API 时出现超时错误。
+
+**解决方案：**
+- 尝试使用上面提到的代理设置
+- 增加超时时间（如设置为 60 秒或更长）
+- 尝试使用 Azure OpenAI 或 OpenRouter 等替代服务
+- 在非高峰时段尝试访问
+
+#### 2. 模型响应慢
+
+**问题：** API 请求成功但响应时间过长。
+
+**解决方案：**
+- 减少输入标记基因的数量（使用 `top_gene_count` 参数）
+- 使用响应更快的模型（如 Claude-3.5-Haiku 或 GPT-3.5-Turbo）
+- 尝试国内模型，如 DeepSeek 或 Qwen
+- 将请求拆分为多个小批次处理
+
+#### 3. API 调用失败
+
+**问题：** API 调用返回错误代码或失败。
+
+**解决方案：**
+- 检查 API 密钥是否有效且正确输入
+- 确认模型名称是否正确（注意大小写和特殊字符）
+- 检查是否超出 API 调用限制或配额
+- 尝试使用不同的模型或提供商
+
+#### 4. 环境变量问题
+
+**问题：** 程序无法读取环境变量中的 API 密钥。
+
+**解决方案：**
+- 在 R 中使用 `Sys.setenv()` 而非 `Sys.setenv`
+- 确保环境变量名称正确（注意大小写）
+- 直接在函数调用中提供 API 密钥参数
+- 在 Python 中使用 `.env` 文件和 python-dotenv 包
+
+#### 5. 代理设置无效
+
+**问题：** 设置了代理但仍然无法连接。
+
+**解决方案：**
+- 确认代理服务器是否正常运行
+- 检查代理格式是否正确（应为 `http://host:port` 或 `socks5://host:port`）
+- 尝试在代码级别而非环境变量级别设置代理
+- 尝试使用 VPN 而非 HTTP 代理
+
 ## 使用示例
 
 ### Python
