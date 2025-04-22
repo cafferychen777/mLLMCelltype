@@ -56,6 +56,9 @@ pip install git+https://github.com/cafferychen777/mLLMCelltype.git
 - **Stepfun**: Step-2-16K ([API Key](https://platform.stepfun.com/account-info))
 - **Zhipu**: GLM-4 ([API Key](https://bigmodel.cn/))
 - **X.AI**: Grok-3/Grok-3-mini ([API Key](https://accounts.x.ai/))
+- **OpenRouter**: Access to multiple models through a single API ([API Key](https://openrouter.ai/keys))
+  - Supports models from OpenAI, Anthropic, Meta, Google, Mistral, and more
+  - Format: 'provider/model-name' (e.g., 'openai/gpt-4o', 'anthropic/claude-3-opus')
 
 ## Usage Examples
 
