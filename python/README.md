@@ -1,6 +1,6 @@
 # mLLMCelltype
 
-[![PyPI version](https://img.shields.io/badge/pypi-v1.0.0-blue.svg)](https://pypi.org/project/mllmcelltype/)
+[![PyPI version](https://img.shields.io/badge/pypi-v1.1.0-blue.svg)](https://pypi.org/project/mllmcelltype/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 ## Overview
@@ -28,7 +28,11 @@ Single-cell RNA sequencing has revolutionized our understanding of cellular hete
   - StepFun (Step-2-Mini, Step-2-16k, etc.)
   - Zhipu AI (GLM-4-Plus, GLM-3-Turbo)
   - MiniMax (MiniMax-Text-01)
-- **Seamless Integration**: 
+  - X.AI (Grok-3-latest, Grok-3)
+  - OpenRouter (Access to multiple models through a single API)
+    - Supports models from OpenAI, Anthropic, Meta, Mistral and more
+    - Format: 'provider/model-name' (e.g., 'openai/gpt-4o', 'anthropic/claude-3-opus')
+- **Seamless Integration**:
   - Works directly with Scanpy/AnnData workflows
   - Compatible with scverse ecosystem
   - Flexible input formats (dictionary, DataFrame, or AnnData)
@@ -109,6 +113,12 @@ export OPENAI_API_KEY="your-openai-api-key"
 export ANTHROPIC_API_KEY="your-anthropic-api-key"
 export GEMINI_API_KEY="your-gemini-api-key"
 export QWEN_API_KEY="your-qwen-api-key"
+export DEEPSEEK_API_KEY="your-deepseek-api-key"
+export ZHIPU_API_KEY="your-zhipu-api-key"
+export STEPFUN_API_KEY="your-stepfun-api-key"
+export MINIMAX_API_KEY="your-minimax-api-key"
+export GROK_API_KEY="your-grok-api-key"
+export OPENROUTER_API_KEY="your-openrouter-api-key"  # For accessing multiple models via OpenRouter
 # Additional providers as needed
 ```
 
@@ -158,7 +168,92 @@ for i, annotations in enumerate(batch_annotations):
         print(f"  Cluster {cluster}: {annotation}")
 ```
 
+### Using OpenRouter
+
+OpenRouter provides a unified API for accessing models from multiple providers. Our comprehensive testing shows that OpenRouter integration works seamlessly in all scenarios, including complex cell types and multi-round discussions.
+
+#### Single Model Annotation
+
+```python
+from mllmcelltype import annotate_clusters
+
+# Set your OpenRouter API key
+import os
+os.environ["OPENROUTER_API_KEY"] = "your-openrouter-api-key"
+
+# Define marker genes for each cluster
+marker_genes = {
+    "1": ["CD3D", "CD3E", "CD3G", "CD2", "IL7R", "TCF7"],           # T cells
+    "2": ["CD19", "MS4A1", "CD79A", "CD79B", "HLA-DRA", "CD74"],   # B cells
+    "3": ["CD14", "LYZ", "CSF1R", "ITGAM", "CD68", "FCGR3A"]      # Monocytes
+}
+
+# Annotate using OpenAI's GPT-4o via OpenRouter
+openai_annotations = annotate_clusters(
+    marker_genes=marker_genes,
+    species='human',
+    tissue='peripheral blood',
+    provider='openrouter',                # Specify OpenRouter as the provider
+    model='openai/gpt-4o',               # Format: 'provider/model-name'
+)
+
+# Annotate using Anthropic's Claude via OpenRouter
+anthropic_annotations = annotate_clusters(
+    marker_genes=marker_genes,
+    species='human',
+    tissue='peripheral blood',
+    provider='openrouter',
+    model='anthropic/claude-3-opus',     # Different model through same API
+)
+
+# Annotate using Meta's Llama model via OpenRouter
+meta_annotations = annotate_clusters(
+    marker_genes=marker_genes,
+    species='human',
+    tissue='peripheral blood',
+    provider='openrouter',
+    model='meta-llama/llama-3-70b-instruct',
+)
+
+# Print annotations from different models
+for cluster in marker_genes.keys():
+    print(f"Cluster {cluster}:")
+    print(f"  OpenAI GPT-4o: {openai_annotations[cluster]}")
+    print(f"  Anthropic Claude: {anthropic_annotations[cluster]}")
+    print(f"  Meta Llama: {meta_annotations[cluster]}")
+```
+
+#### Pure OpenRouter Consensus
+
+You can run consensus annotation using only OpenRouter models:
+
+```python
+from mllmcelltype import interactive_consensus_annotation, print_consensus_summary
+
+# Run consensus annotation with only OpenRouter models
+result = interactive_consensus_annotation(
+    marker_genes=marker_genes,
+    species='human',
+    tissue='peripheral blood',
+    models=[
+        'openai/gpt-4o',                    # OpenRouter OpenAI
+        'anthropic/claude-3-opus',          # OpenRouter Anthropic
+        'meta-llama/llama-3-70b-instruct'   # OpenRouter Meta
+    ],
+    consensus_threshold=0.7,
+    max_discussion_rounds=3,
+    verbose=True
+)
+
+# Print consensus summary
+print_consensus_summary(result)
+```
+
 ### Multi-LLM Consensus Annotation
+
+#### Mixed Direct API and OpenRouter Models
+
+Our testing confirms that OpenRouter models can seamlessly participate in consensus annotation alongside direct API models. They can also engage in discussion rounds when disagreements occur:
 
 ```python
 from mllmcelltype import interactive_consensus_annotation, print_consensus_summary
@@ -176,10 +271,13 @@ result = interactive_consensus_annotation(
     species='human',                                      # Organism species
     tissue='peripheral blood',                            # Tissue context
     models=[                                              # Multiple LLM models
-        'gpt-4o',                                         # OpenAI
-        'claude-3-7-sonnet-20250219',                     # Anthropic
-        'gemini-2.0-flash',                               # Google
-        'qwen-max-2025-01-25'                             # Alibaba
+        'gpt-4o',                                         # OpenAI direct API
+        'claude-3-7-sonnet-20250219',                     # Anthropic direct API
+        'gemini-2.0-flash',                               # Google direct API
+        'qwen-max-2025-01-25',                            # Alibaba direct API
+        'openai/gpt-4o',                                  # OpenRouter (OpenAI)
+        'anthropic/claude-3-opus',                        # OpenRouter (Anthropic)
+        'meta-llama/llama-3-70b-instruct',                # OpenRouter (Meta)
     ],
     consensus_threshold=0.7,                              # Agreement threshold
     max_discussion_rounds=3,                              # Iterative refinement
@@ -188,6 +286,61 @@ result = interactive_consensus_annotation(
 
 # Print comprehensive consensus summary with uncertainty metrics
 print_consensus_summary(result)
+```
+
+#### Handling Complex Cell Types and Discussions
+
+For challenging cell types that may trigger discussion rounds, OpenRouter models can effectively participate in the deliberation process:
+
+```python
+# For ambiguous or specialized cell types (e.g., regulatory T cells vs. CD4+ T cells)
+result = interactive_consensus_annotation(
+    marker_genes=specialized_marker_genes,  # Markers for specialized cell types
+    species='human',
+    tissue='lymphoid tissue',
+    models=[
+        'gpt-4o',                          # Direct API
+        'openai/gpt-4o',                    # OpenRouter
+        'anthropic/claude-3-opus',          # OpenRouter
+    ],
+    consensus_threshold=0.8,                # Higher threshold to force discussion
+    max_discussion_rounds=3,                # Allow multiple rounds of discussion
+    verbose=True
+)
+```
+
+#### Manual Comparison of OpenRouter Models
+
+You can also get individual annotations from different OpenRouter models and compare them manually:
+
+```python
+# Get annotations from different models via OpenRouter
+openai_via_openrouter = annotate_clusters(
+    marker_genes=marker_genes,
+    species='human',
+    tissue='peripheral blood',
+    provider='openrouter',
+    model='openai/gpt-4o'
+)
+
+anthropic_via_openrouter = annotate_clusters(
+    marker_genes=marker_genes,
+    species='human',
+    tissue='peripheral blood',
+    provider='openrouter',
+    model='anthropic/claude-3-opus'
+)
+
+# Create a dictionary of model predictions for comparison
+model_predictions = {
+    "OpenAI via OpenRouter": openai_via_openrouter,
+    "Anthropic via OpenRouter": anthropic_via_openrouter,
+    "Direct OpenAI": results_openai,  # From previous direct API calls
+}
+
+# Compare the results
+from mllmcelltype import compare_model_predictions
+agreement_df, metrics = compare_model_predictions(model_predictions)
 
 # Access results programmatically
 final_annotations = result["consensus"]
@@ -316,6 +469,7 @@ for cluster_id, annotation in json_annotations.items():
 ```
 
 Using JSON responses provides several advantages:
+
 - Structured data that can be easily processed
 - Additional metadata like confidence levels and key markers
 - More consistent parsing across different LLM providers
@@ -379,8 +533,7 @@ import mllmcelltype as mct
 consensus_results = mct.interactive_consensus_annotation(
     marker_genes=marker_genes,
     species='human',
-    providers=['openai', 'anthropic', 'gemini'],
-    models=['gpt-4o', 'claude-3-opus-20240229', 'gemini-1.5-pro'],
+    models=['gpt-4o', 'claude-3-opus-20240229', 'gemini-1.5-pro', 'openai/gpt-4o'],  # Can include OpenRouter models
     consensus_threshold=0.7
 )
 
@@ -418,7 +571,7 @@ If you use mLLMCelltype in your research, please cite:
   author = {Yang, Chen and Zhang, Xianyang and Chen, Jun},
   title = {mLLMCelltype: An iterative multi-LLM consensus framework for cell type annotation},
   url = {https://github.com/cafferychen777/mLLMCelltype},
-  version = {1.0.0},
+  version = {1.1.0},
   year = {2025}
 }
 ```

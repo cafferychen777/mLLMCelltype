@@ -39,6 +39,8 @@ def load_api_key(provider: str) -> str:
         "stepfun": "STEPFUN_API_KEY",
         "zhipu": "ZHIPU_API_KEY",
         "minimax": "MINIMAX_API_KEY",
+        "grok": "GROK_API_KEY",
+        "openrouter": "OPENROUTER_API_KEY",
     }
 
     # Get environment variable name for provider

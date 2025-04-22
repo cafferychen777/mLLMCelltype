@@ -77,6 +77,11 @@ def get_provider(model: str) -> str:
     Raises:
         ValueError: If the model is not supported
     """
+    # Check for OpenRouter format (provider/model-name)
+    if "/" in model:
+        write_log(f"Detected OpenRouter model format: {model}", "info")
+        return "openrouter"
+
     # Define supported models
     providers = {
         "openai": [
