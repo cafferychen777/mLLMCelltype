@@ -32,6 +32,9 @@ mLLMCelltype est un cadre de consensus multi-LLM itératif pour l'annotation des
 - **Stepfun**: Step-2-16K ([Clé API](https://platform.stepfun.com/account-info))
 - **Zhipu**: GLM-4 ([Clé API](https://bigmodel.cn/))
 - **X.AI**: Grok-3/Grok-3-mini ([Clé API](https://accounts.x.ai/))
+- **OpenRouter**: Accès à plusieurs modèles via une seule API ([Clé API](https://openrouter.ai/keys))
+  - Prend en charge les modèles d'OpenAI, Anthropic, Meta, Google, Mistral et plus
+  - Format: 'fournisseur/nom-du-modèle' (par exemple, 'openai/gpt-4o', 'anthropic/claude-3-opus')
 
 ## Structure des répertoires
 

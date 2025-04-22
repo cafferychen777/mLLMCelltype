@@ -48,14 +48,17 @@ pip install git+https://github.com/cafferychen777/mLLMCelltype.git
 ### Modelos Soportados
 
 - **OpenAI**: GPT-4.1/GPT-4.5/GPT-4o ([Clave API](https://platform.openai.com/settings/organization/billing/overview))
-- **Anthropic**: Claude-3.7-Sonnet/Claude-3.5-Haiku ([Clave API](https://console.anthropic.com/settings/keys))
-- **Google**: Gemini-2.0-Pro/Gemini-2.0-Flash ([Clave API](https://aistudio.google.com/app/apikey))
+- **Anthropic**: Claude-3.7-Sonnet/Claude-3.5-Haiku ([Clave API](https://console.anthropic.com/))
+- **Google**: Gemini-2.0-Pro/Gemini-2.0-Flash ([Clave API](https://ai.google.dev/?authuser=2))
 - **Alibaba**: Qwen2.5-Max ([Clave API](https://www.alibabacloud.com/en/product/modelstudio))
 - **DeepSeek**: DeepSeek-V3/DeepSeek-R1 ([Clave API](https://platform.deepseek.com/usage))
 - **Minimax**: MiniMax-Text-01 ([Clave API](https://intl.minimaxi.com/user-center/basic-information/interface-key))
 - **Stepfun**: Step-2-16K ([Clave API](https://platform.stepfun.com/account-info))
 - **Zhipu**: GLM-4 ([Clave API](https://bigmodel.cn/))
 - **X.AI**: Grok-3/Grok-3-mini ([Clave API](https://accounts.x.ai/))
+- **OpenRouter**: Acceso a múltiples modelos a través de una sola API ([Clave API](https://openrouter.ai/keys))
+  - Compatible con modelos de OpenAI, Anthropic, Meta, Google, Mistral y más
+  - Formato: 'proveedor/nombre-modelo' (por ejemplo, 'openai/gpt-4o', 'anthropic/claude-3-opus')
 
 ## Uso Rápido
 

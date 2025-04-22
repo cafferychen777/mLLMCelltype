@@ -32,6 +32,9 @@ mLLMCelltypeは、単一細胞RNAシーケンシングデータにおける細�
 - **Stepfun**: Step-2-16K ([APIキー](https://platform.stepfun.com/account-info))
 - **Zhipu**: GLM-4 ([APIキー](https://bigmodel.cn/))
 - **X.AI**: Grok-3/Grok-3-mini ([APIキー](https://accounts.x.ai/))
+- **OpenRouter**: 単一APIで複数のモデルにアクセス ([APIキー](https://openrouter.ai/keys))
+  - OpenAI、Anthropic、Meta、Google、Mistralなどのモデルをサポート
+  - 形式: 'provider/model-name'（例: 'openai/gpt-4o'、'anthropic/claude-3-opus'）
 
 ## ディレクトリ構造
 

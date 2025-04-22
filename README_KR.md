@@ -32,6 +32,9 @@ mLLMCelltype는 단일 세포 RNA 시퀀싱 데이터에서 세포 유형 주석
 - **Stepfun**: Step-2-16K ([API 키](https://platform.stepfun.com/account-info))
 - **Zhipu**: GLM-4 ([API 키](https://bigmodel.cn/))
 - **X.AI**: Grok-3/Grok-3-mini ([API 키](https://accounts.x.ai/))
+- **OpenRouter**: 단일 API로 여러 모델에 액세스 ([API 키](https://openrouter.ai/keys))
+  - OpenAI, Anthropic, Meta, Google, Mistral 등의 모델 지원
+  - 형식: 'provider/model-name' (예: 'openai/gpt-4o', 'anthropic/claude-3-opus')
 
 ## 디렉토리 구조
 
