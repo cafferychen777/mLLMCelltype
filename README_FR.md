@@ -6,7 +6,7 @@
   <a href="README.md">English</a> | <a href="README_CN.md">中文</a> | <a href="README_ES.md">Español</a> | <a href="README_JP.md">日本語</a> | <a href="README_DE.md">Deutsch</a> | <a href="README_KR.md">한국어</a>
 </div>
 
-mLLMCelltype est un cadre de consensus multi-LLM itératif pour l'annotation des types cellulaires dans les données de séquençage d'ARN unicellulaire. En exploitant les forces complémentaires de plusieurs grands modèles de langage (GPT, Claude, Gemini, Grok, DeepSeek, Qwen, etc.), ce cadre améliore considérablement la précision des annotations tout en fournissant une quantification transparente de l'incertitude.
+mLLMCelltype est un cadre de consensus multi-LLM itératif pour l'annotation des types cellulaires dans les données de séquençage d'ARN unicellulaire. En exploitant les forces complémentaires de plusieurs grands modèles de langage (OpenAI GPT-4o/4.1, Anthropic Claude-3.7/3.5, Google Gemini-2.0, X.AI Grok-3, DeepSeek-V3, Alibaba Qwen2.5, Zhipu GLM-4, MiniMax, Stepfun, et OpenRouter), ce cadre améliore considérablement la précision des annotations tout en fournissant une quantification transparente de l'incertitude.
 
 ## Caractéristiques principales
 
