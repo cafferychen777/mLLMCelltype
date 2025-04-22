@@ -8,7 +8,7 @@ import math
 import re
 import time
 from collections import Counter
-from typing import Any, Optional
+from typing import Any, Optional, Union
 
 import requests
 

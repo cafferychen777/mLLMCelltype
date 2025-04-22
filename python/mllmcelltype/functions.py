@@ -10,6 +10,7 @@ import requests
 
 from .logger import write_log
 from .utils import clean_annotation
+from .providers.openrouter import process_openrouter
 
 # Define supported models as literals for better type checking
 ModelType = Literal[
