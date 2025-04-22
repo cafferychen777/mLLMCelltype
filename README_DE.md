@@ -322,3 +322,44 @@ Wenn Sie mLLMCelltype in Ihrer Forschung verwenden, zitieren Sie bitte:
 Sie können auch im Klartext-Format zitieren:
 
 Yang, C., Zhang, X., & Chen, J. (2025). Large Language Model Consensus Substantially Improves the Cell Type Annotation Accuracy for scRNA-seq Data. *bioRxiv*. https://doi.org/10.1101/2025.04.10.647852
+
+## Mitwirken
+
+Wir begrüßen und schätzen Beiträge aus der Community! Es gibt viele Möglichkeiten, wie Sie zu mLLMCelltype beitragen können:
+
+### Probleme melden
+
+Wenn Sie auf Fehler stoßen, Funktionswünsche haben oder Fragen zur Verwendung von mLLMCelltype haben, [eröffnen Sie bitte ein Issue](https://github.com/cafferychen777/mLLMCelltype/issues) in unserem GitHub-Repository. Bei der Meldung von Fehlern geben Sie bitte Folgendes an:
+
+- Eine klare Beschreibung des Problems
+- Schritte zur Reproduktion des Problems
+- Erwartetes vs. tatsächliches Verhalten
+- Informationen zu Ihrem Betriebssystem und Paketversionen
+- Relevante Codeausschnitte oder Fehlermeldungen
+
+### Pull Requests
+
+Wir ermutigen Sie, Codeverbesserungen oder neue Funktionen über Pull Requests beizutragen:
+
+1. Forken Sie das Repository
+2. Erstellen Sie einen neuen Branch für Ihre Funktion (`git checkout -b feature/amazing-feature`)
+3. Committen Sie Ihre Änderungen (`git commit -m 'Eine tolle Funktion hinzufügen'`)
+4. Pushen Sie zum Branch (`git push origin feature/amazing-feature`)
+5. Eröffnen Sie einen Pull Request
+
+### Bereiche für Beiträge
+
+Hier sind einige Bereiche, in denen Beiträge besonders wertvoll wären:
+
+- Unterstützung für neue LLM-Modelle hinzufügen
+- Dokumentation und Beispiele verbessern
+- Leistungsoptimierung
+- Neue Visualisierungsoptionen hinzufügen
+- Funktionalität für spezialisierte Zelltypen oder Gewebe erweitern
+- Übersetzungen der Dokumentation in verschiedene Sprachen
+
+### Code-Stil
+
+Bitte folgen Sie dem bestehenden Code-Stil im Repository. Für R-Code folgen wir im Allgemeinen dem [tidyverse-Stilführer](https://style.tidyverse.org/). Für Python-Code folgen wir [PEP 8](https://www.python.org/dev/peps/pep-0008/).
+
+Vielen Dank für Ihre Hilfe bei der Verbesserung von mLLMCelltype!

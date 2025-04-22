@@ -519,3 +519,44 @@ If you use mLLMCelltype in your research, please cite:
 You can also cite this in plain text format:
 
 Yang, C., Zhang, X., & Chen, J. (2025). Large Language Model Consensus Substantially Improves the Cell Type Annotation Accuracy for scRNA-seq Data. *bioRxiv*. https://doi.org/10.1101/2025.04.10.647852
+
+## Contributing
+
+We welcome and appreciate contributions from the community! There are many ways you can contribute to mLLMCelltype:
+
+### Reporting Issues
+
+If you encounter any bugs, have feature requests, or have questions about using mLLMCelltype, please [open an issue](https://github.com/cafferychen777/mLLMCelltype/issues) on our GitHub repository. When reporting bugs, please include:
+
+- A clear description of the problem
+- Steps to reproduce the issue
+- Expected vs. actual behavior
+- Your operating system and package version information
+- Any relevant code snippets or error messages
+
+### Pull Requests
+
+We encourage you to contribute code improvements or new features through pull requests:
+
+1. Fork the repository
+2. Create a new branch for your feature (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add some amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
+
+### Areas for Contribution
+
+Here are some areas where contributions would be particularly valuable:
+
+- Adding support for new LLM models
+- Improving documentation and examples
+- Optimizing performance
+- Adding new visualization options
+- Extending functionality for specialized cell types or tissues
+- Translations of documentation into different languages
+
+### Code Style
+
+Please follow the existing code style in the repository. For R code, we generally follow the [tidyverse style guide](https://style.tidyverse.org/). For Python code, we follow [PEP 8](https://www.python.org/dev/peps/pep-0008/).
+
+Thank you for helping improve mLLMCelltype!

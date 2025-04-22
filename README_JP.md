@@ -322,3 +322,44 @@ cowplot::plot_grid(p1, p2, p3, p4, p5, ncol = 3)
 プレーンテキスト形式での引用：
 
 Yang, C., Zhang, X., & Chen, J. (2025). Large Language Model Consensus Substantially Improves the Cell Type Annotation Accuracy for scRNA-seq Data. *bioRxiv*. https://doi.org/10.1101/2025.04.10.647852
+
+## コントリビューション
+
+コミュニティからの貢献を歓迎し、感謝しています！mLLMCelltypeに貢献する方法は多数あります：
+
+### 問題の報告
+
+バグ、機能リクエスト、またはmLLMCelltypeの使用に関する質問がある場合は、GitHubリポジトリで[イシューを開いて](https://github.com/cafferychen777/mLLMCelltype/issues)ください。バグを報告する際には、以下の情報を含めてください：
+
+- 問題の明確な説明
+- 問題を再現する手順
+- 期待される動作と実際の動作
+- オペレーティングシステムとパッケージバージョン情報
+- 関連するコードスニペットやエラーメッセージ
+
+### プルリクエスト
+
+プルリクエストを通じてコードの改善や新機能の貢献を奥励します：
+
+1. リポジトリをフォークする
+2. 機能用の新しいブランチを作成する (`git checkout -b feature/amazing-feature`)
+3. 変更をコミットする (`git commit -m '素晴らしい機能を追加'`)
+4. ブランチにプッシュする (`git push origin feature/amazing-feature`)
+5. プルリクエストを開く
+
+### 貢献の分野
+
+特に価値のある貢献の分野は以下の通りです：
+
+- 新しいLLMモデルのサポートの追加
+- ドキュメントと例の改善
+- パフォーマンスの最適化
+- 新しい視覚化オプションの追加
+- 特定の細胞タイプや組織の機能拡張
+- ドキュメントの異なる言語への翻訳
+
+### コードスタイル
+
+リポジトリ内の既存のコードスタイルに従ってください。Rコードについては、一般的に[tidyverseスタイルガイド](https://style.tidyverse.org/)に従います。Pythonコードについては、[PEP 8](https://www.python.org/dev/peps/pep-0008/)に従います。
+
+mLLMCelltypeの改善にご協力いただき、ありがとうございます！

@@ -322,3 +322,44 @@ Si vous utilisez mLLMCelltype dans votre recherche, veuillez citer :
 Vous pouvez également citer au format texte simple :
 
 Yang, C., Zhang, X., & Chen, J. (2025). Large Language Model Consensus Substantially Improves the Cell Type Annotation Accuracy for scRNA-seq Data. *bioRxiv*. https://doi.org/10.1101/2025.04.10.647852
+
+## Contributions
+
+Nous accueillons et apprécions les contributions de la communauté ! Il existe de nombreuses façons de contribuer à mLLMCelltype :
+
+### Signaler des problèmes
+
+Si vous rencontrez des bugs, avez des demandes de fonctionnalités ou des questions sur l'utilisation de mLLMCelltype, veuillez [ouvrir une issue](https://github.com/cafferychen777/mLLMCelltype/issues) sur notre dépôt GitHub. Lors du signalement de bugs, veuillez inclure :
+
+- Une description claire du problème
+- Les étapes pour reproduire le problème
+- Comportement attendu vs comportement réel
+- Informations sur votre système d'exploitation et les versions des packages
+- Tout extrait de code pertinent ou messages d'erreur
+
+### Pull Requests
+
+Nous vous encourageons à contribuer des améliorations de code ou de nouvelles fonctionnalités via des pull requests :
+
+1. Forkez le dépôt
+2. Créez une nouvelle branche pour votre fonctionnalité (`git checkout -b feature/amazing-feature`)
+3. Committez vos modifications (`git commit -m 'Ajouter une fonctionnalité incroyable'`)
+4. Poussez vers la branche (`git push origin feature/amazing-feature`)
+5. Ouvrez une Pull Request
+
+### Domaines de contribution
+
+Voici quelques domaines où les contributions seraient particulièrement précieuses :
+
+- Ajout de support pour de nouveaux modèles LLM
+- Amélioration de la documentation et des exemples
+- Optimisation des performances
+- Ajout de nouvelles options de visualisation
+- Extension des fonctionnalités pour des types cellulaires ou tissus spécialisés
+- Traductions de la documentation dans différentes langues
+
+### Style de code
+
+Veuillez suivre le style de code existant dans le dépôt. Pour le code R, nous suivons généralement le [guide de style tidyverse](https://style.tidyverse.org/). Pour le code Python, nous suivons [PEP 8](https://www.python.org/dev/peps/pep-0008/).
+
+Merci de nous aider à améliorer mLLMCelltype !

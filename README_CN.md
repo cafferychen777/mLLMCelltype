@@ -805,3 +805,44 @@ MIT
 您也可以使用纯文本格式引用：
 
 Yang, C., Zhang, X., & Chen, J. (2025). Large Language Model Consensus Substantially Improves the Cell Type Annotation Accuracy for scRNA-seq Data. *bioRxiv*. https://doi.org/10.1101/2025.04.10.647852
+
+## 贡献
+
+我们欢迎并感谢来自社区的贡献！您可以通过多种方式为 mLLMCelltype 做出贡献：
+
+### 报告问题
+
+如果您遇到任何 bug、有功能请求或对使用 mLLMCelltype 有疑问，请在我们的 GitHub 仓库上[提交 issue](https://github.com/cafferychen777/mLLMCelltype/issues)。在报告 bug 时，请包括：
+
+- 问题的清晰描述
+- 复现问题的步骤
+- 预期行为与实际行为
+- 您的操作系统和软件包版本信息
+- 任何相关的代码片段或错误信息
+
+### Pull Requests
+
+我们鼓励您通过 pull requests 贡献代码改进或新功能：
+
+1. Fork 仓库
+2. 为您的功能创建一个新分支（`git checkout -b feature/amazing-feature`）
+3. 提交您的更改（`git commit -m '添加一些很棒的功能'`）
+4. 推送到分支（`git push origin feature/amazing-feature`）
+5. 提交 Pull Request
+
+### 贡献领域
+
+以下是特别欢迎贡献的领域：
+
+- 添加对新 LLM 模型的支持
+- 改进文档和示例
+- 优化性能
+- 添加新的可视化选项
+- 扩展对特定细胞类型或组织的功能
+- 将文档翻译成不同语言
+
+### 代码风格
+
+请遵循仓库中现有的代码风格。对于 R 代码，我们通常遵循 [tidyverse 风格指南](https://style.tidyverse.org/)。对于 Python 代码，我们遵循 [PEP 8](https://www.python.org/dev/peps/pep-0008/)。
+
+感谢您帮助改进 mLLMCelltype！
