@@ -20,6 +20,7 @@ get_model_response <- function(prompt, model, api_key) {
     "zhipu" = process_zhipu(prompt, model, api_key),
     "minimax" = process_minimax(prompt, model, api_key),
     "grok" = process_grok(prompt, model, api_key),
+    "openrouter" = process_openrouter(prompt, model, api_key),
     stop("Unsupported model provider: ", provider)
   )
   
