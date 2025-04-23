@@ -73,7 +73,7 @@ jobs:
     - name: Lint with ruff
       run: |
         cd python
-        ruff check --select=E,F,B,I mllmcelltype tests
+        ruff check --select=E,F,B,I --ignore=E501 mllmcelltype tests
     
     - name: Check formatting with ruff-format
       run: |
