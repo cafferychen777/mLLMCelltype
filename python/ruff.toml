@@ -1,0 +1,36 @@
+# ruff.toml
+
+# Enable flake8-bugbear (`B`) rules.
+select = ["E", "F", "B", "I"]
+
+# 忽略一些特定的规则
+ignore = [
+    "E501",  # 行太长
+    "E203",  # 冒号周围的空格
+]
+
+# 同时允许 `# noqa` 注释来忽略特定行的错误
+ignore-init-module-imports = true
+
+# 排除一些目录和文件
+exclude = [
+    ".git",
+    ".ruff_cache",
+    "__pycache__",
+    "build",
+    "dist",
+    "venv",
+    "env",
+    ".env",
+    ".venv",
+    "docs",
+]
+
+# 行长度设置
+line-length = 100
+
+# 目标 Python 版本
+target-version = "py39"
+
+[isort]
+known-first-party = ["mllmcelltype"]
