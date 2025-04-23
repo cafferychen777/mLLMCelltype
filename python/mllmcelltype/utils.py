@@ -81,17 +81,13 @@ def load_api_key(provider: str) -> str:
                             key, value = line.split("=", 1)
                             if key == env_var:
                                 api_key = value
-                                write_log(
-                                    f"Loaded API key for {provider} from .env file"
-                                )
+                                write_log(f"Loaded API key for {provider} from .env file")
                                 break
         except (OSError, ValueError) as e:
             write_log(f"Error loading .env file: {str(e)}", level="warning")
 
     if not api_key:
-        write_log(
-            f"WARNING: API key not found for provider: {env_var}", level="warning"
-        )
+        write_log(f"WARNING: API key not found for provider: {env_var}", level="warning")
 
     return api_key
 
@@ -114,7 +110,9 @@ def create_cache_key(prompt: str, model: str, provider: str) -> str:
     normalized_prompt = str(prompt).strip()
 
     # Create a string to hash with clear separators to avoid collisions
-    hash_string = f"provider:{normalized_provider}||model:{normalized_model}||prompt:{normalized_prompt}"
+    hash_string = (
+        f"provider:{normalized_provider}||model:{normalized_model}||prompt:{normalized_prompt}"
+    )
 
     # Create hash
     hash_object = hashlib.sha256(hash_string.encode("utf-8"))
@@ -231,16 +229,12 @@ def parse_marker_genes(marker_genes_df: pd.DataFrame) -> dict[str, list[str]]:
 
     # Check if 'cluster' column exists
     if "cluster" not in columns:
-        write_log(
-            "ERROR: 'cluster' column not found in marker genes dataframe", level="error"
-        )
+        write_log("ERROR: 'cluster' column not found in marker genes dataframe", level="error")
         raise ValueError("'cluster' column not found in marker genes dataframe")
 
     # Check if 'gene' column exists
     if "gene" not in columns:
-        write_log(
-            "ERROR: 'gene' column not found in marker genes dataframe", level="error"
-        )
+        write_log("ERROR: 'gene' column not found in marker genes dataframe", level="error")
         raise ValueError("'gene' column not found in marker genes dataframe")
 
     # Group by cluster and get list of genes
@@ -384,9 +378,7 @@ def format_results(results: list[str], clusters: list[str]) -> dict[str, str]:
                         with open(cache_file, "w") as f:
                             json.dump(metadata, f, indent=2)
 
-                        write_log(
-                            f"Stored annotation metadata to {cache_file}", level="debug"
-                        )
+                        write_log(f"Stored annotation metadata to {cache_file}", level="debug")
                     except (OSError, TypeError, ValueError) as e:
                         write_log(f"Failed to store metadata: {str(e)}", level="debug")
 
@@ -411,9 +403,7 @@ def format_results(results: list[str], clusters: list[str]) -> dict[str, str]:
             else:
                 simple_result[str(cluster)] = "Unknown"
 
-        write_log(
-            "Successfully parsed response as simple line-by-line format", level="info"
-        )
+        write_log("Successfully parsed response as simple line-by-line format", level="info")
         return simple_result
 
     # Case 4: Fall back to the original method
@@ -500,8 +490,7 @@ def clean_annotation(annotation: str) -> str:
 
     # Remove prefixes like "Final Cell Type:"
     if ":" in annotation and any(
-        x in annotation.lower()
-        for x in ["final", "type", "determination", "conclusion"]
+        x in annotation.lower() for x in ["final", "type", "determination", "conclusion"]
     ):
         parts = annotation.split(":", 1)
         annotation = parts[1].strip()
@@ -567,9 +556,7 @@ def find_agreement(
 
             # Calculate consensus proportion (confidence)
             consensus_proportion = (
-                most_common_count / len(cluster_annotations)
-                if cluster_annotations
-                else 0
+                most_common_count / len(cluster_annotations) if cluster_annotations else 0
             )
 
             # Calculate entropy (measure of uncertainty)
@@ -635,15 +622,11 @@ def validate_cache(cache_key: str, cache_dir: Optional[str] = None) -> bool:
         write_log(f"Invalid cache format for key {cache_key}", level="warning")
         return False
     except (OSError, json.JSONDecodeError, TypeError, ValueError) as e:
-        write_log(
-            f"Error validating cache for key {cache_key}: {str(e)}", level="warning"
-        )
+        write_log(f"Error validating cache for key {cache_key}: {str(e)}", level="warning")
         return False
 
 
-def clear_cache(
-    cache_dir: Optional[str] = None, older_than: Optional[int] = None
-) -> int:
+def clear_cache(cache_dir: Optional[str] = None, older_than: Optional[int] = None) -> int:
     """Clear cache.
 
     Args:
@@ -764,9 +747,7 @@ def get_cache_stats(cache_dir: Optional[str] = None) -> dict[str, Any]:
                 if "version" in cache_data and "data" in cache_data:
                     # New format with metadata
                     version = cache_data.get("version", "unknown")
-                    format_counts[
-                        version if version in format_counts else "unknown"
-                    ] += 1
+                    format_counts[version if version in format_counts else "unknown"] += 1
 
                     # Get timestamp
                     timestamp = cache_data.get("timestamp", 0)

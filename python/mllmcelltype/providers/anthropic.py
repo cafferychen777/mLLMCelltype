@@ -94,9 +94,7 @@ def process_anthropic(prompt: str, model: str, api_key: str) -> list[str]:
 
         # If we got more lines than expected, truncate
         if len(lines) > expected_lines:
-            write_log(
-                f"Warning: Got {len(lines)} lines but expected {expected_lines}. Truncating."
-            )
+            write_log(f"Warning: Got {len(lines)} lines but expected {expected_lines}. Truncating.")
             lines = lines[:expected_lines]
 
         # Clean up response
@@ -153,9 +151,7 @@ def process_anthropic_direct(prompt: str, model: str, api_key: str) -> list[str]
             if response.status_code != 200:
                 try:
                     error_message = response.json()
-                    error_detail = error_message.get("error", {}).get(
-                        "message", f"model: {model}"
-                    )
+                    error_detail = error_message.get("error", {}).get("message", f"model: {model}")
                     write_log(f"ERROR: Anthropic API request failed: {error_detail}")
                 except (ValueError, KeyError, json.JSONDecodeError):
                     write_log(
@@ -164,12 +160,10 @@ def process_anthropic_direct(prompt: str, model: str, api_key: str) -> list[str]
 
                 # If rate limited, wait and retry
                 if response.status_code == 429 and attempt < max_retries - 1:
-                        wait_time = retry_delay * (2**attempt)
-                        write_log(
-                            f"Rate limited. Waiting {wait_time} seconds before retrying..."
-                        )
-                        time.sleep(wait_time)
-                        continue
+                    wait_time = retry_delay * (2**attempt)
+                    write_log(f"Rate limited. Waiting {wait_time} seconds before retrying...")
+                    time.sleep(wait_time)
+                    continue
 
                 response.raise_for_status()
 
@@ -210,9 +204,7 @@ def process_anthropic_direct(prompt: str, model: str, api_key: str) -> list[str]
                 time.sleep(wait_time)
             else:
                 # If all attempts failed, return empty results
-                write_log(
-                    "All API attempts failed. Returning empty results.", level="error"
-                )
+                write_log("All API attempts failed. Returning empty results.", level="error")
                 return ["Unknown"] * expected_lines
     # 如果所有重试都失败，返回空结果
     return ["Unknown"] * expected_lines

@@ -118,9 +118,7 @@ class TestConsensus:
     ):
         """Test interactive_consensus_annotation function."""
         # Setup mocks
-        mock_get_provider.return_value = (
-            "openai"  # Ensure get_provider returns a valid provider
-        )
+        mock_get_provider.return_value = "openai"  # Ensure get_provider returns a valid provider
         mock_annotate_clusters.side_effect = [
             {"1": "T cells", "2": "B cells", "3": "NK cells"},
             {"1": "T lymphocytes", "2": "B lymphocytes", "3": "Natural killer cells"},

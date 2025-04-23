@@ -170,7 +170,7 @@ def batch_annotate_clusters(
     """Batch annotate multiple sets of cell clusters using LLM.
 
     Args:
-        marker_genes_list: List of dictionaries mapping cluster names to lists of 
+        marker_genes_list: List of dictionaries mapping cluster names to lists of
             marker genes, or list of DataFrames with 'cluster' and 'gene' columns
         species: Species name (e.g., 'human', 'mouse')
         provider: LLM provider (e.g., 'openai', 'anthropic')
@@ -201,9 +201,7 @@ def batch_annotate_clusters(
             parsed_marker_genes_list.append(marker_genes)
 
     # Get clusters for each set
-    clusters_list = [
-        list(marker_genes.keys()) for marker_genes in parsed_marker_genes_list
-    ]
+    clusters_list = [list(marker_genes.keys()) for marker_genes in parsed_marker_genes_list]
     write_log(f"Found {len(clusters_list)} sets of clusters")
 
     # Set default model based on provider
@@ -355,14 +353,10 @@ def batch_annotate_clusters(
                                 ):
                                     for cluster in set_data["clusters"]:
                                         if "id" in cluster and "cell_type" in cluster:
-                                            set_results[str(cluster["id"])] = cluster[
-                                                "cell_type"
-                                            ]
+                                            set_results[str(cluster["id"])] = cluster["cell_type"]
                                     result_sets.append(set_results)
                         # Check if it's a batch response with annotations array
-                        elif "annotations" in data and isinstance(
-                            data["annotations"], list
-                        ):
+                        elif "annotations" in data and isinstance(data["annotations"], list):
                             # Group by set if specified
                             set_groups = {}
                             for annotation in data["annotations"]:
@@ -374,29 +368,26 @@ def batch_annotate_clusters(
                                     set_id = annotation["set"]
                                     if set_id not in set_groups:
                                         set_groups[set_id] = {}
-                                    set_groups[set_id][str(annotation["cluster"])] = (
-                                        annotation["cell_type"]
-                                    )
+                                    set_groups[set_id][str(annotation["cluster"])] = annotation[
+                                        "cell_type"
+                                    ]
 
                             # Add all sets in order
                             for set_id in sorted(set_groups.keys()):
                                 result_sets.append(set_groups[set_id])
                     except json.JSONDecodeError:
-                        write_log(
-                            "Warning: Failed to parse JSON response", level="warning"
-                        )
+                        write_log("Warning: Failed to parse JSON response", level="warning")
             except (ValueError, KeyError, AttributeError, TypeError) as e:
                 write_log(
                     f"Warning: Error while trying to parse JSON: {str(e)}",
                     level="warning",
                 )
 
-        # If we still didn't get any properly formatted results, fall back to the 
+        # If we still didn't get any properly formatted results, fall back to the
         # old method
         if not result_sets:
             write_log(
-                "Warning: Could not parse batch results, falling back to default "
-                "parsing",
+                "Warning: Could not parse batch results, falling back to default parsing",
                 level="warning",
             )
             result_sets = []

@@ -21,11 +21,11 @@ def check_consensus_with_llm(
     predictions: dict[str, dict[str, str]], api_keys: Optional[dict[str, str]] = None
 ) -> tuple[dict[str, str], dict[str, float], dict[str, float]]:
     """Check consensus among different model predictions using LLM assistance.
-    This function uses an LLM (Qwen or Claude) to evaluate semantic similarity between 
+    This function uses an LLM (Qwen or Claude) to evaluate semantic similarity between
     annotations.
 
     Args:
-        predictions: Dictionary mapping model names to dictionaries of 
+        predictions: Dictionary mapping model names to dictionaries of
             cluster annotations
         api_keys: Dictionary mapping provider names to API keys
 
@@ -103,9 +103,7 @@ def check_consensus_with_llm(
                         model="qwen-max-2025-01-25",
                         api_key=qwen_api_key,
                     )
-                    write_log(
-                        f"Successfully got response from Qwen on attempt {attempt + 1}"
-                    )
+                    write_log(f"Successfully got response from Qwen on attempt {attempt + 1}")
                     break
                 write_log("No Qwen API key found, trying Claude")
                 break
@@ -115,9 +113,7 @@ def check_consensus_with_llm(
                 KeyError,
                 json.JSONDecodeError,
             ) as e:
-                write_log(
-                    f"Error on Qwen attempt {attempt + 1}: {str(e)}", level="warning"
-                )
+                write_log(f"Error on Qwen attempt {attempt + 1}: {str(e)}", level="warning")
                 if attempt == max_retries - 1:
                     write_log("All Qwen retry attempts failed, falling back to Claude")
                 else:
@@ -146,9 +142,7 @@ def check_consensus_with_llm(
                     )
                     write_log("Successfully got response from Claude as fallback")
                 else:
-                    write_log(
-                        "No Claude API key found, falling back to simple consensus"
-                    )
+                    write_log("No Claude API key found, falling back to simple consensus")
             except (
                 requests.RequestException,
                 ValueError,
@@ -168,7 +162,7 @@ def check_consensus_with_llm(
                 if len(lines) >= 4:
                     result_lines = lines[-4:]
 
-                    # Check if it's a standard format (0/1, proportion, entropy, 
+                    # Check if it's a standard format (0/1, proportion, entropy,
                     # annotation)
                     if (
                         re.match(r"^\s*[01]\s*$", result_lines[0])
@@ -231,7 +225,7 @@ def check_consensus(
     Uses LLM assistance to evaluate semantic similarity between annotations.
 
     Args:
-        predictions: Dictionary mapping model names to dictionaries of 
+        predictions: Dictionary mapping model names to dictionaries of
             cluster annotations
         consensus_threshold: Agreement threshold below which a cluster is considered controversial
         entropy_threshold: Entropy threshold above which a cluster is considered controversial
@@ -246,9 +240,7 @@ def check_consensus(
 
     """
     # Find consensus annotations and metrics using LLM
-    consensus, consensus_proportion, entropy = check_consensus_with_llm(
-        predictions, api_keys
-    )
+    consensus, consensus_proportion, entropy = check_consensus_with_llm(predictions, api_keys)
 
     # Find controversial clusters based on both consensus proportion and entropy
     controversial = [
@@ -280,7 +272,7 @@ def process_controversial_clusters(
     Args:
         marker_genes: Dictionary mapping cluster names to lists of marker genes
         controversial_clusters: List of controversial cluster IDs
-        model_predictions: Dictionary mapping model names to dictionaries of 
+        model_predictions: Dictionary mapping model names to dictionaries of
             cluster annotations
         species: Species name (e.g., 'human', 'mouse')
         tissue: Optional tissue name (e.g., 'brain', 'liver')
@@ -400,9 +392,7 @@ def process_controversial_clusters(
         # Start iterative discussion process
         try:
             while current_round <= max_discussion_rounds and not consensus_reached:
-                write_log(
-                    f"Starting discussion round {current_round} for cluster {cluster_id}"
-                )
+                write_log(f"Starting discussion round {current_round} for cluster {cluster_id}")
 
                 # Generate discussion prompt based on current round
                 if current_round == 1:
@@ -457,16 +447,12 @@ def process_controversial_clusters(
                     )
 
                     # Add consensus checker result to history
-                    rounds_history.append(
-                        f"Consensus Check {current_round}:\n{consensus_response}"
-                    )
+                    rounds_history.append(f"Consensus Check {current_round}:\n{consensus_response}")
 
                     # Previously had consensus indicators check here, now using metrics extraction
 
                     # Extract consensus proportion and entropy values for the current round
-                    cp_value, h_value = extract_consensus_metrics_from_discussion(
-                        response
-                    )
+                    cp_value, h_value = extract_consensus_metrics_from_discussion(response)
 
                     # If unable to extract from discussion, try to extract from consensus check response
                     if cp_value is None or h_value is None:
@@ -505,15 +491,12 @@ def process_controversial_clusters(
                     if consensus_reached:
                         final_decision = round_decision
                         write_log(
-                            f"Consensus reached for cluster {cluster_id} "
-                            f"in round {current_round}",
+                            f"Consensus reached for cluster {cluster_id} in round {current_round}",
                             level="info",
                         )
 
                         # Extract CP and H from the discussion if available
-                        cp_value, h_value = extract_consensus_metrics_from_discussion(
-                            response
-                        )
+                        cp_value, h_value = extract_consensus_metrics_from_discussion(response)
                         if cp_value is not None and h_value is not None:
                             updated_consensus_proportion[cluster_id] = cp_value
                             updated_entropy[cluster_id] = h_value
@@ -566,7 +549,7 @@ def process_controversial_clusters(
                             level="warning",
                         )
 
-                # If unable to extract majority_prediction, use the decision from the 
+                # If unable to extract majority_prediction, use the decision from the
                 # last round
                 if not final_decision and round_decision:
                     final_decision = round_decision
@@ -584,13 +567,11 @@ def process_controversial_clusters(
                     level="warning",
                 )
                 results[cluster_id] = "Inconclusive"
-                # For inconclusive results, extract metrics from the last round 
+                # For inconclusive results, extract metrics from the last round
                 # if available
                 if rounds_history:
                     last_round = rounds_history[-1]
-                    cp_value, h_value = extract_consensus_metrics_from_discussion(
-                        last_round
-                    )
+                    cp_value, h_value = extract_consensus_metrics_from_discussion(last_round)
                     if cp_value is not None and h_value is not None:
                         updated_consensus_proportion[cluster_id] = cp_value
                         updated_entropy[cluster_id] = h_value
@@ -608,9 +589,7 @@ def process_controversial_clusters(
                 # Extract metrics from the last round if available
                 if cluster_id not in updated_consensus_proportion and rounds_history:
                     last_round = rounds_history[-1]
-                    cp_value, h_value = extract_consensus_metrics_from_discussion(
-                        last_round
-                    )
+                    cp_value, h_value = extract_consensus_metrics_from_discussion(last_round)
                     if cp_value is not None and h_value is not None:
                         updated_consensus_proportion[cluster_id] = cp_value
                         updated_entropy[cluster_id] = h_value
@@ -799,13 +778,13 @@ def interactive_consensus_annotation(
         for model_item in models:
             # Handle both string models and dict models
             if isinstance(model_item, dict):
-                provider = model_item.get('provider')
+                provider = model_item.get("provider")
                 if not provider:
                     # Try to get provider from model name if not explicitly provided
-                    provider = get_provider(model_item.get('model', ''))
+                    provider = get_provider(model_item.get("model", ""))
             else:
                 provider = get_provider(model_item)
-                
+
             if provider and provider not in api_keys:
                 from .utils import load_api_key
 
@@ -819,9 +798,9 @@ def interactive_consensus_annotation(
     for model_item in models:
         # Handle both string models and dict models
         if isinstance(model_item, dict):
-            provider = model_item.get('provider')
-            model_name = model_item.get('model')
-            
+            provider = model_item.get("provider")
+            model_name = model_item.get("model")
+
             # If provider is not explicitly provided, try to get it from model name
             if not provider:
                 provider = get_provider(model_name)
@@ -834,7 +813,7 @@ def interactive_consensus_annotation(
         # For OpenRouter models, we need to keep the full model name with the provider prefix
         # The model name is already in the correct format (e.g., "openai/gpt-4o")
         # Do not modify the model name for OpenRouter
-        
+
         if not api_key:
             write_log(
                 f"Warning: No API key found for {provider}, skipping {model_name}",
@@ -886,9 +865,7 @@ def interactive_consensus_annotation(
     )
 
     if verbose:
-        write_log(
-            f"Found {len(controversial)} controversial clusters out of {len(consensus)}"
-        )
+        write_log(f"Found {len(controversial)} controversial clusters out of {len(consensus)}")
 
     # If there are controversial clusters, resolve them
     resolved = {}
@@ -903,8 +880,8 @@ def interactive_consensus_annotation(
             for model_item in models:
                 if isinstance(model_item, dict):
                     # For dictionary models, check the 'model' key
-                    if model_item.get('model') == preferred_model_name:
-                        discussion_provider = model_item.get('provider')
+                    if model_item.get("model") == preferred_model_name:
+                        discussion_provider = model_item.get("provider")
                         discussion_model = preferred_model_name
                         # If provider is not explicitly provided, try to get it from model name
                         if not discussion_provider:
@@ -927,9 +904,9 @@ def interactive_consensus_annotation(
             first_model = models[0]
             # Handle both string models and dict models
             if isinstance(first_model, dict):
-                discussion_provider = first_model.get('provider')
-                discussion_model = first_model.get('model')
-                
+                discussion_provider = first_model.get("provider")
+                discussion_model = first_model.get("model")
+
                 # If provider is not explicitly provided, try to get it from model name
                 if not discussion_provider and discussion_model:
                     discussion_provider = get_provider(discussion_model)
@@ -942,22 +919,20 @@ def interactive_consensus_annotation(
                 write_log(f"Resolving controversial clusters using {discussion_model}")
 
             try:
-                resolved, discussion_logs, updated_cp, updated_h = (
-                    process_controversial_clusters(
-                        marker_genes=marker_genes,
-                        controversial_clusters=controversial,
-                        model_predictions=model_results,
-                        species=species,
-                        tissue=tissue,
-                        provider=discussion_provider,
-                        model=discussion_model,
-                        api_key=api_keys.get(discussion_provider),
-                        max_discussion_rounds=max_discussion_rounds,
-                        consensus_threshold=consensus_threshold,
-                        entropy_threshold=entropy_threshold,
-                        use_cache=use_cache,
-                        cache_dir=cache_dir,
-                    )
+                resolved, discussion_logs, updated_cp, updated_h = process_controversial_clusters(
+                    marker_genes=marker_genes,
+                    controversial_clusters=controversial,
+                    model_predictions=model_results,
+                    species=species,
+                    tissue=tissue,
+                    provider=discussion_provider,
+                    model=discussion_model,
+                    api_key=api_keys.get(discussion_provider),
+                    max_discussion_rounds=max_discussion_rounds,
+                    consensus_threshold=consensus_threshold,
+                    entropy_threshold=entropy_threshold,
+                    use_cache=use_cache,
+                    cache_dir=cache_dir,
                 )
 
                 # Update consensus proportion and entropy for resolved clusters
@@ -968,9 +943,7 @@ def interactive_consensus_annotation(
                     entropy[cluster_id] = h
 
                 if verbose:
-                    write_log(
-                        f"Successfully resolved {len(resolved)} controversial clusters"
-                    )
+                    write_log(f"Successfully resolved {len(resolved)} controversial clusters")
             except (
                 requests.RequestException,
                 ValueError,
@@ -978,9 +951,7 @@ def interactive_consensus_annotation(
                 json.JSONDecodeError,
                 AttributeError,
             ) as e:
-                write_log(
-                    f"Error resolving controversial clusters: {str(e)}", level="error"
-                )
+                write_log(f"Error resolving controversial clusters: {str(e)}", level="error")
 
     # Merge consensus and resolved
     final_annotations = consensus.copy()
@@ -1039,9 +1010,7 @@ def print_consensus_summary(result: dict[str, Any]) -> None:
     # Print controversial clusters
     controversial = result.get("controversial_clusters", [])
     if controversial:
-        print(
-            f"Controversial clusters: {len(controversial)} - {', '.join(controversial)}"
-        )
+        print(f"Controversial clusters: {len(controversial)} - {', '.join(controversial)}")
     else:
         print("No controversial clusters found.")
     print()
@@ -1072,9 +1041,7 @@ def print_consensus_summary(result: dict[str, Any]) -> None:
                 # Look for CP and H in the last round
                 for line in reversed(logs_text.split("\n")):
                     if "Consensus Proportion (CP):" in line:
-                        cp_parts = (
-                            line.split("Consensus Proportion (CP):")[1].strip().split()
-                        )
+                        cp_parts = line.split("Consensus Proportion (CP):")[1].strip().split()
                         if cp_parts:
                             cp_value = cp_parts[0]
                     if "Shannon Entropy (H):" in line:
@@ -1082,9 +1049,7 @@ def print_consensus_summary(result: dict[str, Any]) -> None:
                         if h_parts:
                             h_value = h_parts[0]
 
-            print(
-                f"  Cluster {cluster}: {annotation} [Resolved, CP: {cp_value}, H: {h_value}]"
-            )
+            print(f"  Cluster {cluster}: {annotation} [Resolved, CP: {cp_value}, H: {h_value}]")
         else:
             # For non-resolved clusters, use the calculated CP and entropy values
             cp_value = cp
@@ -1092,9 +1057,7 @@ def print_consensus_summary(result: dict[str, Any]) -> None:
 
             # Display different messages based on agreement level
             # Use the already calculated entropy value
-            print(
-                f"  Cluster {cluster}: {annotation} [CP: {cp_value:.2f}, H: {h_value:.2f}]"
-            )
+            print(f"  Cluster {cluster}: {annotation} [CP: {cp_value:.2f}, H: {h_value:.2f}]")
     print()
 
     # Print model annotations comparison for controversial clusters
@@ -1107,9 +1070,7 @@ def print_consensus_summary(result: dict[str, Any]) -> None:
             print(f"\nCluster {cluster}:")
             for model in models:
                 if cluster in model_annotations.get(model, {}):
-                    print(
-                        f"  {model}: {model_annotations[model].get(cluster, 'Unknown')}"
-                    )
+                    print(f"  {model}: {model_annotations[model].get(cluster, 'Unknown')}")
             if cluster in resolved:
                 print(f"  RESOLVED: {resolved[cluster]}")
             print()

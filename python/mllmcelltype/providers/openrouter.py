@@ -43,10 +43,7 @@ def process_openrouter(prompt: str, model: str, api_key: str) -> list[str]:
         chunk_size = len(input_lines) // cutnum
         if len(input_lines) % cutnum > 0:
             chunk_size += 1
-        chunks = [
-            input_lines[i : i + chunk_size]
-            for i in range(0, len(input_lines), chunk_size)
-        ]
+        chunks = [input_lines[i : i + chunk_size] for i in range(0, len(input_lines), chunk_size)]
     else:
         chunks = [input_lines]
 
@@ -58,9 +55,17 @@ def process_openrouter(prompt: str, model: str, api_key: str) -> list[str]:
         # Prepare the request body
         # Ensure model ID is in the correct format for OpenRouter (provider/model)
         # If model doesn't contain a slash, it's likely not in the correct format
-        if '/' not in model and not model.startswith('anthropic/') and not model.startswith('openai/') and not model.startswith('meta-llama/') and not model.startswith('mistralai/'):
-            write_log(f"Warning: Model ID '{model}' may not be in the correct format for OpenRouter. Expected format: 'provider/model'")
-            
+        if (
+            "/" not in model
+            and not model.startswith("anthropic/")
+            and not model.startswith("openai/")
+            and not model.startswith("meta-llama/")
+            and not model.startswith("mistralai/")
+        ):
+            write_log(
+                f"Warning: Model ID '{model}' may not be in the correct format for OpenRouter. Expected format: 'provider/model'"
+            )
+
         body = {
             "model": model,
             "messages": [{"role": "user", "content": "\n".join(chunk)}],
@@ -93,12 +98,10 @@ def process_openrouter(prompt: str, model: str, api_key: str) -> list[str]:
 
                     # If rate limited, wait and retry
                     if response.status_code == 429 and attempt < max_retries - 1:
-                            wait_time = retry_delay * (2**attempt)
-                            write_log(
-                                f"Rate limited. Waiting {wait_time} seconds before retrying..."
-                            )
-                            time.sleep(wait_time)
-                            continue
+                        wait_time = retry_delay * (2**attempt)
+                        write_log(f"Rate limited. Waiting {wait_time} seconds before retrying...")
+                        time.sleep(wait_time)
+                        continue
 
                     response.raise_for_status()
 
@@ -112,9 +115,7 @@ def process_openrouter(prompt: str, model: str, api_key: str) -> list[str]:
                 break  # Success, exit retry loop
 
             except Exception as e:
-                write_log(
-                    f"Error during API call (attempt {attempt + 1}/{max_retries}): {str(e)}"
-                )
+                write_log(f"Error during API call (attempt {attempt + 1}/{max_retries}): {str(e)}")
                 if attempt < max_retries - 1:
                     wait_time = retry_delay * (2**attempt)
                     write_log(f"Waiting {wait_time} seconds before retrying...")

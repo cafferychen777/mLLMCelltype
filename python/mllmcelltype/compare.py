@@ -21,7 +21,7 @@ def compare_model_predictions(
     """Compare cell type annotations from different LLM models.
 
     Args:
-        model_predictions: Dictionary mapping model names to dictionaries of 
+        model_predictions: Dictionary mapping model names to dictionaries of
             cluster annotations
         display_plot: Whether to display plots
 
@@ -167,7 +167,7 @@ def create_comparison_table(
     """Create a table comparing cluster annotations from different models.
 
     Args:
-        model_predictions: Dictionary mapping model names to dictionaries of 
+        model_predictions: Dictionary mapping model names to dictionaries of
             cluster annotations
 
     Returns:
@@ -209,7 +209,7 @@ def analyze_confusion_patterns(
     """Analyze patterns in disagreements between models.
 
     Args:
-        model_predictions: Dictionary mapping model names to dictionaries of 
+        model_predictions: Dictionary mapping model names to dictionaries of
             cluster annotations
 
     Returns:

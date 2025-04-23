@@ -45,9 +45,7 @@ def process_gemini(prompt: str, model: str, api_key: str) -> list[str]:
             response = client.models.generate_content(
                 model=model,
                 contents=prompt,
-                config=types.GenerateContentConfig(
-                    temperature=0.7, max_output_tokens=4096
-                ),
+                config=types.GenerateContentConfig(temperature=0.7, max_output_tokens=4096),
             )
 
             # Parse the response
@@ -59,9 +57,7 @@ def process_gemini(prompt: str, model: str, api_key: str) -> list[str]:
             return [line.rstrip(",") for line in result]
 
         except Exception as e:
-            write_log(
-                f"Error during API call (attempt {attempt + 1}/{max_retries}): {str(e)}"
-            )
+            write_log(f"Error during API call (attempt {attempt + 1}/{max_retries}): {str(e)}")
             if attempt < max_retries - 1:
                 wait_time = retry_delay * (2**attempt)
                 write_log(f"Waiting {wait_time} seconds before retrying...")

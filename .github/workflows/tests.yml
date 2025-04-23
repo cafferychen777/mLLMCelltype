@@ -68,19 +68,14 @@ jobs:
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
-        python -m pip install ruff isort
+        python -m pip install ruff
     
     - name: Lint with ruff
       run: |
         cd python
-        ruff check mllmcelltype tests
+        ruff check --select=E,F,B,I mllmcelltype tests
     
     - name: Check formatting with ruff-format
       run: |
         cd python
         ruff format --check mllmcelltype tests
-    
-    - name: Check imports with isort
-      run: |
-        cd python
-        isort --check-only --profile black mllmcelltype tests

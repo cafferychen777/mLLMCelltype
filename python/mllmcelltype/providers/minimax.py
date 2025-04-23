@@ -9,9 +9,7 @@ import requests
 from ..logger import write_log
 
 
-def process_minimax(
-    prompt: str, model: str, api_key: str, group_id: str = None
-) -> list[str]:
+def process_minimax(prompt: str, model: str, api_key: str, group_id: str = None) -> list[str]:
     """Process request using MiniMax models.
 
     Args:
@@ -52,10 +50,7 @@ def process_minimax(
         chunk_size = len(input_lines) // cutnum
         if len(input_lines) % cutnum > 0:
             chunk_size += 1
-        chunks = [
-            input_lines[i : i + chunk_size]
-            for i in range(0, len(input_lines), chunk_size)
-        ]
+        chunks = [input_lines[i : i + chunk_size] for i in range(0, len(input_lines), chunk_size)]
     else:
         chunks = [input_lines]
 
@@ -115,12 +110,10 @@ def process_minimax(
 
                     # If rate limited, wait and retry
                     if response.status_code == 429 and attempt < max_retries - 1:
-                            wait_time = retry_delay * (2**attempt)
-                            write_log(
-                                f"Rate limited. Waiting {wait_time} seconds before retrying..."
-                            )
-                            time.sleep(wait_time)
-                            continue
+                        wait_time = retry_delay * (2**attempt)
+                        write_log(f"Rate limited. Waiting {wait_time} seconds before retrying...")
+                        time.sleep(wait_time)
+                        continue
 
                     response.raise_for_status()
 
@@ -147,9 +140,7 @@ def process_minimax(
                 break  # Success, exit retry loop
 
             except Exception as e:
-                write_log(
-                    f"Error during API call (attempt {attempt + 1}/{max_retries}): {str(e)}"
-                )
+                write_log(f"Error during API call (attempt {attempt + 1}/{max_retries}): {str(e)}")
                 if attempt < max_retries - 1:
                     wait_time = retry_delay * (2**attempt)
                     write_log(f"Waiting {wait_time} seconds before retrying...")

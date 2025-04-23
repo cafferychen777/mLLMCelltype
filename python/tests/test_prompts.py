@@ -27,9 +27,7 @@ class TestPrompts:
 
     def test_create_prompt_basic(self):
         """Test basic prompt creation."""
-        prompt = create_prompt(
-            marker_genes=self.marker_genes, species="human", tissue="blood"
-        )
+        prompt = create_prompt(marker_genes=self.marker_genes, species="human", tissue="blood")
 
         # Check that the prompt contains the expected elements
         assert isinstance(prompt, str)
@@ -88,9 +86,7 @@ Marker genes: {markers}"""
 
     def test_create_json_prompt(self):
         """Test JSON prompt creation."""
-        prompt = create_json_prompt(
-            marker_genes=self.marker_genes, species="human", tissue="blood"
-        )
+        prompt = create_json_prompt(marker_genes=self.marker_genes, species="human", tissue="blood")
 
         # Check that the prompt contains the expected elements
         assert isinstance(prompt, str)
@@ -122,9 +118,7 @@ Marker genes: {markers}"""
         assert "CD3D" in prompt
         assert "T cells" in prompt
         assert "NK cells" in prompt
-        assert (
-            "Cluster 1" in prompt or "cluster 1" in prompt or "Cluster ID: 1" in prompt
-        )
+        assert "Cluster 1" in prompt or "cluster 1" in prompt or "Cluster ID: 1" in prompt
 
     def test_create_consensus_check_prompt(self):
         """Test consensus check prompt creation."""

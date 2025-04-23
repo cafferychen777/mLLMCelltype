@@ -22,9 +22,7 @@ class TestAnnotation:
     """Test class for annotation functions."""
 
     @pytest.fixture(autouse=True)
-    def setup(
-        self, sample_marker_genes_df, sample_marker_genes_dict, mock_api_response
-    ):
+    def setup(self, sample_marker_genes_df, sample_marker_genes_dict, mock_api_response):
         """Set up test fixtures."""
         self.marker_genes_df = sample_marker_genes_df
         self.marker_genes_dict = sample_marker_genes_dict
@@ -136,12 +134,14 @@ class TestAnnotation:
         mock_provider_functions,
     ):
         """Test get_model_response function."""
+
         # Setup mocks
         def mock_provider_func(*args, **kwargs):
             return [
                 "Cluster 1: T cells",
                 "Cluster 2: B cells",
             ]
+
         # Set up PROVIDER_FUNCTIONS dictionary
         mock_provider_functions.__getitem__.side_effect = lambda key: (
             mock_provider_func if key == "openai" else None
@@ -175,9 +175,7 @@ class TestAnnotation:
     @patch.dict(os.environ, {}, clear=True)  # Clear all environment variables
     @patch("mllmcelltype.utils.load_api_key")
     @patch("mllmcelltype.annotate.load_api_key")
-    def test_get_model_response_missing_api_key(
-        self, mock_load_api_key, mock_utils_load_api_key
-    ):
+    def test_get_model_response_missing_api_key(self, mock_load_api_key, mock_utils_load_api_key):
         """Test get_model_response with missing API key."""
         # Ensure both load_api_key functions return None
         mock_load_api_key.return_value = None

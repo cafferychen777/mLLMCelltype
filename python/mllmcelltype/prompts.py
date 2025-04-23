@@ -293,14 +293,10 @@ def create_prompt(
     marker_text = "\n".join(marker_text_lines)
 
     # Add additional context if provided
-    context_text = (
-        f"\nAdditional context: {additional_context}\n" if additional_context else ""
-    )
+    context_text = f"\nAdditional context: {additional_context}\n" if additional_context else ""
 
     # Fill in the template
-    prompt = prompt_template.format(
-        species=species, tissue=tissue_text, markers=marker_text
-    )
+    prompt = prompt_template.format(species=species, tissue=tissue_text, markers=marker_text)
 
     # Add context
     if context_text:
@@ -417,14 +413,10 @@ def create_batch_prompt(
     marker_text = "\n".join(marker_text_lines)
 
     # Add additional context if provided
-    context_text = (
-        f"\nAdditional context: {additional_context}\n" if additional_context else ""
-    )
+    context_text = f"\nAdditional context: {additional_context}\n" if additional_context else ""
 
     # Fill in the template
-    prompt = prompt_template.format(
-        species=species, tissue=tissue_text, markers=marker_text
-    )
+    prompt = prompt_template.format(species=species, tissue=tissue_text, markers=marker_text)
 
     # Add context
     if context_text:
@@ -682,9 +674,7 @@ def create_discussion_consensus_check_prompt(
         proposed_cell_type=proposed_cell_type if proposed_cell_type else "Unclear",
     )
 
-    write_log(
-        f"Generated discussion consensus check prompt with {len(prompt)} characters"
-    )
+    write_log(f"Generated discussion consensus check prompt with {len(prompt)} characters")
     return prompt
 
 

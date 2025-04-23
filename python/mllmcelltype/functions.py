@@ -66,11 +66,11 @@ class LLMResponse:
 def get_provider(model: str) -> str:
     """Determine the provider based on the model name."""
     # Special case for OpenRouter models which may contain '/' in the model name
-    if isinstance(model, str) and '/' in model:
+    if isinstance(model, str) and "/" in model:
         # OpenRouter models are in the format 'provider/model'
         # e.g., 'anthropic/claude-3-opus'
-        return 'openrouter'
-        
+        return "openrouter"
+
     # Common model prefixes for each provider
     providers = {
         "openai": [
@@ -186,9 +186,7 @@ def select_best_prediction(predictions: list[dict[str, str]]) -> dict[str, str]:
     # For each cluster, select the most specific prediction
     best_predictions = {}
     for cluster in all_clusters:
-        cluster_predictions = [
-            pred.get(cluster, "") for pred in predictions if cluster in pred
-        ]
+        cluster_predictions = [pred.get(cluster, "") for pred in predictions if cluster in pred]
 
         # Filter out empty predictions
         cluster_predictions = [pred for pred in cluster_predictions if pred]
@@ -247,11 +245,7 @@ def identify_controversial_clusters(
         if counts:
             most_common = max(counts.items(), key=lambda x: x[1])
             most_common_count = most_common[1]
-            agreement = (
-                most_common_count / len(cluster_annotations)
-                if cluster_annotations
-                else 0
-            )
+            agreement = most_common_count / len(cluster_annotations) if cluster_annotations else 0
 
             # Mark as controversial if agreement is below threshold
             if agreement < threshold:
@@ -313,9 +307,7 @@ def annotate_cell_types(
     # Add JSON format instruction if requested
     if format_json:
         prompt_lines.append("")
-        prompt_lines.append(
-            "Format your response as a JSON object with the following structure:"
-        )
+        prompt_lines.append("Format your response as a JSON object with the following structure:")
         prompt_lines.append(
             """{
   "annotations": [
@@ -361,8 +353,7 @@ def annotate_cell_types(
 
             formatted_result = format_results(cached_result, cluster_ids)
             result_list = [
-                formatted_result.get(str(cluster_id), "Unknown")
-                for cluster_id in cluster_ids
+                formatted_result.get(str(cluster_id), "Unknown") for cluster_id in cluster_ids
             ]
 
             return LLMResponse(
@@ -429,9 +420,7 @@ def process_openai_legacy(prompt: str, model: str, api_key: str) -> list[str]:
     # Split into chunks of 30 like the R version
     input_lines = prompt.split("\n")
     chunk_size = 30
-    chunks = [
-        input_lines[i : i + chunk_size] for i in range(0, len(input_lines), chunk_size)
-    ]
+    chunks = [input_lines[i : i + chunk_size] for i in range(0, len(input_lines), chunk_size)]
 
     all_results = []
     for i, chunk in enumerate(chunks):
@@ -569,15 +558,11 @@ def process_deepseek_legacy(prompt: str, model: str, api_key: str) -> list[str]:
                 f"DeepSeek API error: {response.status_code} - {response.text}",
                 level="error",
             )
-            raise Exception(
-                f"DeepSeek API error: {response.status_code} - {response.text}"
-            )
+            raise Exception(f"DeepSeek API error: {response.status_code} - {response.text}")
 
         # Parse response
         response_data = response.json()
-        content = (
-            response_data.get("choices", [{}])[0].get("message", {}).get("content", "")
-        )
+        content = response_data.get("choices", [{}])[0].get("message", {}).get("content", "")
 
         # Split into lines
         result = content.strip().split("\n")
@@ -764,15 +749,11 @@ def process_stepfun_legacy(prompt: str, model: str, api_key: str) -> list[str]:
                 f"Stepfun API error: {response.status_code} - {response.text}",
                 level="error",
             )
-            raise Exception(
-                f"Stepfun API error: {response.status_code} - {response.text}"
-            )
+            raise Exception(f"Stepfun API error: {response.status_code} - {response.text}")
 
         # Parse response
         response_data = response.json()
-        content = (
-            response_data.get("choices", [{}])[0].get("message", {}).get("content", "")
-        )
+        content = response_data.get("choices", [{}])[0].get("message", {}).get("content", "")
 
         # Split into lines
         result = content.strip().split("\n")
@@ -834,15 +815,11 @@ def process_zhipu_legacy(prompt: str, model: str, api_key: str) -> list[str]:
                 f"Zhipu API error: {response.status_code} - {response.text}",
                 level="error",
             )
-            raise Exception(
-                f"Zhipu API error: {response.status_code} - {response.text}"
-            )
+            raise Exception(f"Zhipu API error: {response.status_code} - {response.text}")
 
         # Parse response
         response_data = response.json()
-        content = (
-            response_data.get("choices", [{}])[0].get("message", {}).get("content", "")
-        )
+        content = response_data.get("choices", [{}])[0].get("message", {}).get("content", "")
 
         # Split into lines
         result = content.strip().split("\n")
@@ -904,15 +881,11 @@ def process_minimax_legacy(prompt: str, model: str, api_key: str) -> list[str]:
                 f"MiniMax API error: {response.status_code} - {response.text}",
                 level="error",
             )
-            raise Exception(
-                f"MiniMax API error: {response.status_code} - {response.text}"
-            )
+            raise Exception(f"MiniMax API error: {response.status_code} - {response.text}")
 
         # Parse response
         response_data = response.json()
-        content = (
-            response_data.get("choices", [{}])[0].get("message", {}).get("content", "")
-        )
+        content = response_data.get("choices", [{}])[0].get("message", {}).get("content", "")
 
         # Split into lines
         result = content.strip().split("\n")
