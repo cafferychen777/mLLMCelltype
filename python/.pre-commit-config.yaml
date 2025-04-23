@@ -4,15 +4,26 @@ repos:
     hooks:
     -   id: ruff
         args: [--fix, --exit-non-zero-on-fix]
+        additional_dependencies: ['.'] # Install the package in the hook environment
+        language_version: python3
     -   id: ruff-format
+        additional_dependencies: ['.'] # Install the package in the hook environment
+        language_version: python3
 
 -   repo: https://github.com/pycqa/isort
     rev: 5.13.2
     hooks:
     -   id: isort
         args: ["--profile", "black"]
+        additional_dependencies: ['.'] # Install the package in the hook environment
+        language_version: python3
 
 -   repo: https://github.com/psf/black
     rev: 24.2.0
     hooks:
     -   id: black
+        additional_dependencies: ['.'] # Install the package in the hook environment
+        language_version: python3
+
+default_language_version:
+    python: python3 # 确保使用python3
