@@ -5,10 +5,6 @@
 Tests for prompt generation functionality in mLLMCelltype.
 """
 
-import os
-import sys
-from unittest.mock import MagicMock, patch
-
 import pytest
 
 from mllmcelltype.prompts import (

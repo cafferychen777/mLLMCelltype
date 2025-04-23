@@ -5,10 +5,6 @@
 Fixtures and configuration for pytest.
 """
 
-import os
-import sys
-from unittest.mock import MagicMock, patch
-
 import pandas as pd
 import pytest
 

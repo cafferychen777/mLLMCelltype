@@ -6,7 +6,6 @@ Tests for annotation functionality in mLLMCelltype.
 """
 
 import os
-import sys
 from unittest.mock import MagicMock, patch
 
 import pytest
@@ -138,10 +137,11 @@ class TestAnnotation:
     ):
         """Test get_model_response function."""
         # Setup mocks
-        mock_provider_func = lambda *args, **kwargs: [
-            "Cluster 1: T cells",
-            "Cluster 2: B cells",
-        ]
+        def mock_provider_func(*args, **kwargs):
+            return [
+                "Cluster 1: T cells",
+                "Cluster 2: B cells",
+            ]
         # Set up PROVIDER_FUNCTIONS dictionary
         mock_provider_functions.__getitem__.side_effect = lambda key: (
             mock_provider_func if key == "openai" else None

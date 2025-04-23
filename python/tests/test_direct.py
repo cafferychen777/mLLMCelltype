@@ -7,14 +7,11 @@ Tests for mLLMCelltype utility functions.
 
 import json
 import os
-import sys
 import tempfile
-from unittest.mock import MagicMock, patch
 
 import pandas as pd
 import pytest
 
-from mllmcelltype.logger import write_log
 from mllmcelltype.utils import (
     clean_annotation,
     create_cache_key,
