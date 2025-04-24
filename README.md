@@ -7,7 +7,9 @@
 </div>
 
 <div align="center">
-  <img src="https://starchart.cc/cafferychen777/mLLMCelltype.svg" alt="Star History Chart" width="600"/>
+  <a href="https://star-history.com/#cafferychen777/mLLMCelltype">
+    <img src="https://api.star-history.com/svg?repos=cafferychen777/mLLMCelltype&type=Date" alt="Star History Chart" width="600"/>
+  </a>
 </div>
 
 mLLMCelltype is an iterative multi-LLM consensus framework for cell type annotation in single-cell RNA sequencing data. By leveraging the complementary strengths of multiple large language models (OpenAI GPT-4o/4.1, Anthropic Claude-3.7/3.5, Google Gemini-2.0, X.AI Grok-3, DeepSeek-V3, Alibaba Qwen2.5, Zhipu GLM-4, MiniMax, Stepfun, and OpenRouter), this framework significantly improves annotation accuracy while providing transparent uncertainty quantification.
