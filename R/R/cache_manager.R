@@ -88,8 +88,28 @@ CacheManager <- R6::R6Class(
     #' @param key Cache key
     #' @param data Data to cache
     save_to_cache = function(key, data) {
+      # Ensure cache directory exists
+      if (!dir.exists(self$cache_dir)) {
+        dir.create(self$cache_dir, recursive = TRUE)
+      }
+      
+      # Create cache file path
       cache_file <- file.path(self$cache_dir, paste0(key, ".rds"))
-      saveRDS(data, cache_file)
+      
+      # Try to save with error handling
+      tryCatch({
+        saveRDS(data, cache_file)
+      }, error = function(e) {
+        warning(paste("Failed to save cache file:", e$message))
+        # Try to create parent directories if they don't exist
+        dir.create(dirname(cache_file), recursive = TRUE, showWarnings = FALSE)
+        # Try again
+        tryCatch({
+          saveRDS(data, cache_file)
+        }, error = function(e2) {
+          warning(paste("Second attempt to save cache file failed:", e2$message))
+        })
+      })
     },
     
     #' @description Load results from cache

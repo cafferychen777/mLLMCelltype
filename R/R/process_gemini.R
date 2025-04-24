@@ -71,8 +71,44 @@ process_gemini <- function(prompt, model, api_key) {
     write_log("Parsing API response...")
     # Parse the response
     content <- httr::content(response, "parsed")
-    # Gemini's response is in content$candidates[[1]]$content$parts[[1]]$text
-    res <- strsplit(content$candidates[[1]]$content$parts[[1]]$text, '\n')[[1]]
+    
+    # Add robust error handling for response structure
+    tryCatch({
+      # Check if the response has the expected structure
+      if (is.null(content$candidates) || length(content$candidates) == 0) {
+        write_log("ERROR: Unexpected response structure - no candidates")
+        write_log(sprintf("Response content: %s", jsonlite::toJSON(content, auto_unbox = TRUE, pretty = TRUE)))
+        return("Error: Unexpected API response structure")
+      }
+      
+      candidate <- content$candidates[[1]]
+      
+      # For Gemini 1.0 models
+      if (!is.null(candidate$content$parts[[1]]$text)) {
+        res <- strsplit(candidate$content$parts[[1]]$text, '\n')[[1]]
+      } 
+      # For Gemini 1.5/2.5 models (may have different structure)
+      else if (!is.null(candidate$text)) {
+        res <- strsplit(candidate$text, '\n')[[1]]
+      }
+      # Try other possible response structures
+      else if (!is.null(candidate$content$text)) {
+        res <- strsplit(candidate$content$text, '\n')[[1]]
+      }
+      else if (!is.null(content$text)) {
+        res <- strsplit(content$text, '\n')[[1]]
+      }
+      else {
+        # If we can't find the text in any expected location, log the structure and return an error
+        write_log("ERROR: Could not find text in response")
+        write_log(sprintf("Response structure: %s", jsonlite::toJSON(content, auto_unbox = TRUE, pretty = TRUE)))
+        return("Error: Could not parse API response")
+      }
+    }, error = function(e) {
+      write_log(sprintf("ERROR in parsing Gemini response: %s", e$message))
+      write_log(sprintf("Response content: %s", jsonlite::toJSON(content, auto_unbox = TRUE, pretty = TRUE)))
+      return("Error: Failed to parse API response")
+    })
     write_log(sprintf("Got response with %d lines", length(res)))
     write_log(sprintf("Raw response from Gemini:\n%s", paste(res, collapse = "\n")))
     

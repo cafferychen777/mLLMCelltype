@@ -206,9 +206,11 @@ identify_controversial_clusters <- function(input, individual_predictions, contr
       
       # For each cluster ID, if no prediction is found, try using index position
       for (cluster_id in all_clusters) {
-        if (is.null(model_structured[[cluster_id]]) && length(model_preds) > as.numeric(cluster_id)) {
+        # Try to convert cluster_id to numeric safely
+        cluster_idx <- suppressWarnings(as.numeric(cluster_id))
+        if (is.null(model_structured[[cluster_id]]) && !is.na(cluster_idx) && length(model_preds) > cluster_idx) {
           # Assume predictions are arranged in order of cluster ID
-          index <- as.numeric(cluster_id) + 1  # Convert from 0-based to 1-based
+          index <- cluster_idx + 1  # Convert from 0-based to 1-based
           if (index <= length(model_preds)) {
             potential_cell_type <- trimws(model_preds[index])
             # Check if it contains ":", if so, extract the part after it

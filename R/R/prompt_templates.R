@@ -308,9 +308,11 @@ create_initial_discussion_prompt <- function(cluster_id,
         }
         
         # If no prediction with cluster ID is found, try using index position
-        if (!has_cluster_id_format && length(pred) > as.numeric(cluster_id)) {
+        # Try to convert cluster_id to numeric safely
+        cluster_idx <- suppressWarnings(as.numeric(cluster_id))
+        if (!has_cluster_id_format && !is.na(cluster_idx) && length(pred) > cluster_idx) {
           # Assume predictions are arranged in order of cluster ID
-          index <- as.numeric(cluster_id) + 1  # Convert from 0-based to 1-based
+          index <- cluster_idx + 1  # Convert from 0-based to 1-based
           if (index <= length(pred)) {
             potential_cell_type <- trimws(pred[index])
             # Check if it contains ":", if so, extract the part after it
