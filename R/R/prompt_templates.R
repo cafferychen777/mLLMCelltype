@@ -210,7 +210,7 @@ create_discussion_prompt <- function(cluster_id,
   })
   
   sprintf(
-    "We are continuing the discussion for cluster %d (marker genes: %s%s).
+    "We are continuing the discussion for cluster %s (marker genes: %s%s).
     
     Previous discussion:
     %s
@@ -258,7 +258,7 @@ create_initial_discussion_prompt <- function(cluster_id,
                                              tissue_name,
                                              initial_predictions) {
   sprintf(
-    "We are analyzing cluster %d with the following marker genes: %s%s
+    "We are analyzing cluster %s with the following marker genes: %s%s
     Different models have made different predictions:
     %s
     
@@ -294,12 +294,35 @@ create_initial_discussion_prompt <- function(cluster_id,
       } else if (is.character(pred)) {
         # If it's a character vector, try to find the line for this cluster
         cell_type <- "No prediction"
+        
+        # Check if there are predictions with cluster ID
+        has_cluster_id_format <- FALSE
         for (line in pred) {
           if (trimws(line) == "") next
           parts <- strsplit(line, ":", fixed = TRUE)[[1]]
           if (length(parts) >= 2 && trimws(parts[1]) == as.character(cluster_id)) {
             cell_type <- trimws(paste(parts[-1], collapse = ":"))
+            has_cluster_id_format <- TRUE
             break
+          }
+        }
+        
+        # If no prediction with cluster ID is found, try using index position
+        if (!has_cluster_id_format && length(pred) > as.numeric(cluster_id)) {
+          # Assume predictions are arranged in order of cluster ID
+          index <- as.numeric(cluster_id) + 1  # Convert from 0-based to 1-based
+          if (index <= length(pred)) {
+            potential_cell_type <- trimws(pred[index])
+            # Check if it contains ":", if so, extract the part after it
+            if (grepl(":", potential_cell_type, fixed = TRUE)) {
+              parts <- strsplit(potential_cell_type, ":", fixed = TRUE)[[1]]
+              if (length(parts) >= 2) {
+                cell_type <- trimws(paste(parts[-1], collapse = ":"))
+              }
+            } else {
+              # Does not contain ":", use directly
+              cell_type <- potential_cell_type
+            }
           }
         }
       } else {

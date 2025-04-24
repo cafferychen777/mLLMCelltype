@@ -36,8 +36,8 @@ print_consensus_summary <- function(results) {
     for (cluster_id in results$controversial_clusters) {
       # Debug: Print current cluster ID
       cat(sprintf("DEBUG: Processing cluster_id: %s (type: %s)\n", cluster_id, typeof(cluster_id)))
+      # Ensure cluster_id is always a string type
       char_cluster_id <- as.character(cluster_id)
-      numeric_cluster_id <- as.numeric(cluster_id)
       
       cat(sprintf("\nCluster %s:\n", char_cluster_id))
       cat("Initial predictions:\n")
@@ -92,9 +92,11 @@ print_consensus_summary <- function(results) {
               prediction <- NA
             }
           } else {
-            # If no names, try using numeric indexing
-            if (numeric_cluster_id <= length(results$initial_results$individual_predictions[[model]])) {
-              prediction <- results$initial_results$individual_predictions[[model]][numeric_cluster_id]
+            # Even without a name, try to use string indexing
+            # First try to convert the string to a numeric value as an index
+            cluster_idx <- as.numeric(char_cluster_id)
+            if (!is.na(cluster_idx) && cluster_idx <= length(results$initial_results$individual_predictions[[model]])) {
+              prediction <- results$initial_results$individual_predictions[[model]][cluster_idx]
             } else {
               prediction <- NA
             }

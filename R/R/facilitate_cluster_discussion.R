@@ -13,35 +13,38 @@ facilitate_cluster_discussion <- function(cluster_id,
                                           entropy_threshold = 1.0,
                                           logger) {
   
+  # Ensure cluster_id is always a string
+  char_cluster_id <- as.character(cluster_id)
+  
   # Get marker genes for this cluster
   tryCatch({
     if (inherits(input, 'list')) {
-      # Check the structure of input[[cluster_id]]
-      if (is.list(input[[cluster_id]]) && "genes" %in% names(input[[cluster_id]])) {
+      # Check the structure of input[[char_cluster_id]]
+      if (is.list(input[[char_cluster_id]]) && "genes" %in% names(input[[char_cluster_id]])) {
         # If it's a list containing a 'genes' element, extract genes and convert to string
-        cluster_genes <- paste(head(input[[cluster_id]]$genes, top_gene_count), collapse = ",")
-      } else if (is.character(input[[cluster_id]])) {
+        cluster_genes <- paste(head(input[[char_cluster_id]]$genes, top_gene_count), collapse = ",")
+      } else if (is.character(input[[char_cluster_id]])) {
         # If it's already a character vector, use directly
-        cluster_genes <- paste(head(input[[cluster_id]], top_gene_count), collapse = ",")
+        cluster_genes <- paste(head(input[[char_cluster_id]], top_gene_count), collapse = ",")
       } else {
         # If it's another type, try to convert to string
-        cluster_genes <- paste("Cluster", cluster_id, "- Unable to extract specific genes")
-        warning("Unable to extract genes from input for cluster ", cluster_id)
+        cluster_genes <- paste("Cluster", char_cluster_id, "- Unable to extract specific genes")
+        warning("Unable to extract genes from input for cluster ", char_cluster_id)
       }
     } else {
       # For dataframe input
-      cluster_data <- input[input$cluster == cluster_id & input$avg_log2FC > 0, ]
+      cluster_data <- input[input$cluster == char_cluster_id & input$avg_log2FC > 0, ]
       if (nrow(cluster_data) > 0 && "gene" %in% names(cluster_data)) {
         cluster_genes <- paste(head(cluster_data$gene, top_gene_count), collapse = ",")
       } else {
-        cluster_genes <- paste("Cluster", cluster_id, "- No significant genes found")
-        warning("No significant genes found for cluster ", cluster_id)
+        cluster_genes <- paste("Cluster", char_cluster_id, "- No significant genes found")
+        warning("No significant genes found for cluster ", char_cluster_id)
       }
     }
   }, error = function(e) {
     # Catch all errors and provide a default value
-    cluster_genes <- paste("Cluster", cluster_id, "- Error extracting genes:", e$message)
-    warning("Error extracting genes for cluster ", cluster_id, ": ", e$message)
+    cluster_genes <- paste("Cluster", char_cluster_id, "- Error extracting genes:", e$message)
+    warning("Error extracting genes for cluster ", char_cluster_id, ": ", e$message)
   })
   
   # Initialize discussion log
@@ -54,14 +57,17 @@ facilitate_cluster_discussion <- function(cluster_id,
     # Check if model_preds is already structured by cluster_id
     if (is.list(model_preds) && !is.null(names(model_preds))) {
       # Already structured, just extract the prediction for this cluster
-      structured_predictions[[model_name]] <- if (!is.null(model_preds[[as.character(cluster_id)]])) {
-        model_preds[[as.character(cluster_id)]]
+      structured_predictions[[model_name]] <- if (!is.null(model_preds[[char_cluster_id]])) {
+        model_preds[[char_cluster_id]]
       } else {
         "Prediction_Missing"
       }
     } else if (is.character(model_preds)) {
       # Parse text lines to extract prediction for this cluster
       prediction <- "Prediction_Missing"
+      
+      # Check if there are predictions with cluster ID
+      has_cluster_id_format <- FALSE
       
       # Process each line which should be in format: "cluster_id: cell_type"
       for (line in model_preds) {
@@ -72,10 +78,30 @@ facilitate_cluster_discussion <- function(cluster_id,
         parts <- strsplit(line, ":", fixed = TRUE)[[1]]
         if (length(parts) >= 2) {
           line_cluster_id <- trimws(parts[1])
-          if (line_cluster_id == as.character(cluster_id)) {
+          if (line_cluster_id == char_cluster_id) {
             cell_type <- trimws(paste(parts[-1], collapse = ":"))
             prediction <- cell_type
+            has_cluster_id_format <- TRUE
             break
+          }
+        }
+      }
+      
+      # If no prediction with cluster ID is found, try using index position
+      if (!has_cluster_id_format && length(model_preds) > as.numeric(char_cluster_id)) {
+        # Assume predictions are arranged in order of cluster ID
+        index <- as.numeric(char_cluster_id) + 1  # Convert from 0-based to 1-based
+        if (index <= length(model_preds)) {
+          potential_cell_type <- trimws(model_preds[index])
+          # Check if it contains ":", if so, extract the part after it
+          if (grepl(":", potential_cell_type, fixed = TRUE)) {
+            parts <- strsplit(potential_cell_type, ":", fixed = TRUE)[[1]]
+            if (length(parts) >= 2) {
+              prediction <- trimws(paste(parts[-1], collapse = ":"))
+            }
+          } else {
+            # Does not contain ":", use directly
+            prediction <- potential_cell_type
           }
         }
       }
@@ -86,17 +112,17 @@ facilitate_cluster_discussion <- function(cluster_id,
   
   # Create the discussion log with extracted predictions
   discussion_log <- list(
-    cluster_id = cluster_id,
+    cluster_id = char_cluster_id,
     initial_predictions = structured_predictions,
     rounds = list()
   )
   
   # Initialize clustering discussion log file
-  logger$start_cluster_discussion(cluster_id, tissue_name, cluster_genes)
+  logger$start_cluster_discussion(char_cluster_id, tissue_name, cluster_genes)
   
   # First round: Initial reasoning
   first_round_prompt <- create_initial_discussion_prompt(
-    cluster_id = cluster_id,
+    cluster_id = char_cluster_id,
     cluster_genes = cluster_genes,
     tissue_name = tissue_name,
     initial_predictions = initial_predictions
@@ -152,7 +178,7 @@ facilitate_cluster_discussion <- function(cluster_id,
     
     # Create prompt that includes all previous responses
     discussion_prompt <- create_discussion_prompt(
-      cluster_id = cluster_id,
+      cluster_id = char_cluster_id,
       cluster_genes = cluster_genes,
       tissue_name = tissue_name,
       previous_rounds = discussion_log$rounds,
