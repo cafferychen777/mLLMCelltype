@@ -462,10 +462,19 @@ combine_results <- function(initial_results, controversy_results, discussion_res
   # Verify consistency between final annotations and discussion results
   for (cluster_id in names(discussion_results_map)) {
     if (cluster_id %in% names(final_annotations)) {
-      if (final_annotations[[cluster_id]] != discussion_results_map[[cluster_id]]) {
+      # Add NA check to avoid comparison errors
+      if (!is.na(final_annotations[[cluster_id]]) && 
+          !is.na(discussion_results_map[[cluster_id]]) && 
+          final_annotations[[cluster_id]] != discussion_results_map[[cluster_id]]) {
         logger$log_entry("WARNING", sprintf("Cluster %s final annotation '%s' differs from discussion result '%s', corrected",
                                           cluster_id,
                                           final_annotations[[cluster_id]],
+                                          discussion_results_map[[cluster_id]]))
+        final_annotations[[cluster_id]] <- discussion_results_map[[cluster_id]]
+      } else if (is.na(final_annotations[[cluster_id]]) && !is.na(discussion_results_map[[cluster_id]])) {
+        # Handle case where final_annotations has NA but discussion_results_map has a value
+        logger$log_entry("WARNING", sprintf("Cluster %s final annotation is NA, using discussion result '%s'",
+                                          cluster_id,
                                           discussion_results_map[[cluster_id]]))
         final_annotations[[cluster_id]] <- discussion_results_map[[cluster_id]]
       }
@@ -613,6 +622,11 @@ interactive_consensus_annotation <- function(input,
                                            log_dir = "logs",
                                            cache_dir = "consensus_cache",
                                            use_cache = TRUE) {
+
+  # Check if there are enough models for discussion (at least 2)
+  if (length(models) < 2) {
+    stop("At least 2 models are required for LLM discussion and consensus building. Please provide more models.")
+  }
 
   # Initialize logger and cache manager
   logger <- DiscussionLogger$new(log_dir)
