@@ -27,6 +27,27 @@ mLLMCelltype is an iterative multi-LLM consensus framework for cell type annotat
 - **Seamless Integration**: Works directly with standard Scanpy/Seurat workflows and marker gene outputs
 - **Modular Design**: Easily incorporate new LLMs as they become available
 
+## Recent Updates
+
+### v1.1.4 (2025-04-24)
+
+#### Bug Fixes
+- Fixed a critical issue with cluster index handling, now the package strictly accepts only 0-based indices (compatible with Seurat)
+- Fixed negative index (-1) issues that could occur when processing CSV input files
+- Added strict validation for input cluster indices to ensure they start from 0
+
+#### Improvements
+- Removed automatic conversion logic from 1-based to 0-based indices in `prompt_templates.R`
+- Added input validation in `consensus_annotation.R` to ensure cluster indices start from 0
+- Updated code comments to clearly indicate that the package only accepts 0-based indices
+
+### v1.1.3 (2025-04-15)
+- Added support for X.AI's Grok models
+- Updated the list of supported models, including Gemini 2.5 Pro
+- Improved error handling and logging
+
+See [NEWS.md](R/NEWS.md) for a complete changelog.
+
 ## Directory Structure
 
 - `R/`: R language interface and implementation
