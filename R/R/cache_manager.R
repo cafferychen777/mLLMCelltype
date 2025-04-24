@@ -45,8 +45,14 @@ CacheManager <- R6::R6Class(
         } else if (is.data.frame(input)) {
           # For data frame input, use cluster's genes
           if (all(c("cluster", "avg_log2FC", "gene") %in% names(input))) {
-            # Use original cluster ID, no conversion from 1-based to 0-based indexing
-            cluster_data <- input[input$cluster == as.numeric(cluster_id) & input$avg_log2FC > 0, ]
+            # Ensure cluster_id is treated as a string, consistent with other parts of the codebase
+            char_cluster_id <- as.character(cluster_id)
+            # Try to match cluster as string first
+            cluster_data <- input[input$cluster == char_cluster_id & input$avg_log2FC > 0, ]
+            # If no data found and cluster_id is numeric, try matching as numeric
+            if (nrow(cluster_data) == 0 && !is.na(suppressWarnings(as.numeric(char_cluster_id)))) {
+              cluster_data <- input[input$cluster == as.numeric(char_cluster_id) & input$avg_log2FC > 0, ]
+            }
             if (nrow(cluster_data) > 0) {
               input_hash <- digest::digest(sort(as.character(cluster_data$gene)))
             } else {
