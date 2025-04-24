@@ -411,7 +411,7 @@ process_controversial_clusters <- function(controversial_clusters, input, tissue
 #' @keywords internal
 clean_annotation <- function(annotation) {
   if (is.null(annotation) || is.na(annotation)) {
-    return(NA)
+    return("Annotation_Missing")
   }
 
   # Remove numbered prefixes like "1. ", "1: ", "1- ", etc.
@@ -462,19 +462,21 @@ combine_results <- function(initial_results, controversy_results, discussion_res
   # Verify consistency between final annotations and discussion results
   for (cluster_id in names(discussion_results_map)) {
     if (cluster_id %in% names(final_annotations)) {
-      # Add NA check to avoid comparison errors
-      if (!is.na(final_annotations[[cluster_id]]) && 
-          !is.na(discussion_results_map[[cluster_id]]) && 
-          final_annotations[[cluster_id]] != discussion_results_map[[cluster_id]]) {
+      # First handle NA values with descriptive replacements
+      if (is.na(final_annotations[[cluster_id]])) {
+        logger$log_entry("WARNING", sprintf("Cluster %s final annotation is NA, replacing with descriptive placeholder", cluster_id))
+        final_annotations[[cluster_id]] <- "Data_Missing_In_Final_Annotations"
+      }
+      if (is.na(discussion_results_map[[cluster_id]])) {
+        logger$log_entry("WARNING", sprintf("Cluster %s discussion result is NA, replacing with descriptive placeholder", cluster_id))
+        discussion_results_map[[cluster_id]] <- "Data_Missing_In_Discussion_Results"
+      }
+      
+      # Now we can safely compare without NA concerns
+      if (final_annotations[[cluster_id]] != discussion_results_map[[cluster_id]]) {
         logger$log_entry("WARNING", sprintf("Cluster %s final annotation '%s' differs from discussion result '%s', corrected",
                                           cluster_id,
                                           final_annotations[[cluster_id]],
-                                          discussion_results_map[[cluster_id]]))
-        final_annotations[[cluster_id]] <- discussion_results_map[[cluster_id]]
-      } else if (is.na(final_annotations[[cluster_id]]) && !is.na(discussion_results_map[[cluster_id]])) {
-        # Handle case where final_annotations has NA but discussion_results_map has a value
-        logger$log_entry("WARNING", sprintf("Cluster %s final annotation is NA, using discussion result '%s'",
-                                          cluster_id,
                                           discussion_results_map[[cluster_id]]))
         final_annotations[[cluster_id]] <- discussion_results_map[[cluster_id]]
       }

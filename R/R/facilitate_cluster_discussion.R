@@ -57,11 +57,11 @@ facilitate_cluster_discussion <- function(cluster_id,
       structured_predictions[[model_name]] <- if (!is.null(model_preds[[as.character(cluster_id)]])) {
         model_preds[[as.character(cluster_id)]]
       } else {
-        NA
+        "Prediction_Missing"
       }
     } else if (is.character(model_preds)) {
       # Parse text lines to extract prediction for this cluster
-      prediction <- NA
+      prediction <- "Prediction_Missing"
       
       # Process each line which should be in format: "cluster_id: cell_type"
       for (line in model_preds) {

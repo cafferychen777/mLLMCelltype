@@ -15,7 +15,7 @@ check_consensus <- function(round_responses, api_keys = NULL, controversy_thresh
   # Validate input
   if (length(round_responses) < 2) {
     write_log("WARNING: Not enough responses to check consensus")
-    return(list(reached = FALSE, consensus_proportion = 0, entropy = 0, majority_prediction = NA))
+    return(list(reached = FALSE, consensus_proportion = 0, entropy = 0, majority_prediction = "Insufficient_Responses"))
   }
   
   # Get the formatted prompt from the dedicated function
@@ -300,7 +300,7 @@ check_consensus <- function(round_responses, api_keys = NULL, controversy_thresh
     
     if (is.null(majority_prediction)) {
       write_log("WARNING: Could not find a valid majority prediction")
-      majority_prediction <- "Unknown"
+      majority_prediction <- "Parsing_Failed"
     }
   } else {
     write_log("WARNING: Not enough lines in response")

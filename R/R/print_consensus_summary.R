@@ -155,14 +155,17 @@ print_consensus_summary <- function(results) {
                     length(final_annotation) > 0, 
                     ifelse(is.vector(final_annotation), !is.character(final_annotation), TRUE)))
         
-        if (is.list(final_annotation) || (is.vector(final_annotation) && length(final_annotation) > 0 && !is.character(final_annotation))) {
+        # Handle NA values first
+        if (is.null(final_annotation) || is.na(final_annotation)) {
+          final_annotation_str <- "Final_Annotation_Missing"
+        } else if (is.list(final_annotation) || (is.vector(final_annotation) && length(final_annotation) > 0 && !is.character(final_annotation))) {
           # If it's a list or non-character vector, take the first element
           cat("DEBUG: Converting list/vector element to string\n")
           final_annotation_str <- tryCatch({
             as.character(final_annotation[[1]])
           }, error = function(e) {
             cat(sprintf("DEBUG: Error converting final_annotation[[1]] to string: %s\n", e$message))
-            "Error converting to string"
+            "Error_Converting_To_String"
           })
           cat(sprintf("DEBUG: final_annotation_str: %s\n", final_annotation_str))
         } else {
@@ -171,7 +174,7 @@ print_consensus_summary <- function(results) {
             as.character(final_annotation)
           }, error = function(e) {
             cat(sprintf("DEBUG: Error converting final_annotation to string: %s\n", e$message))
-            "Error converting to string"
+            "Error_Converting_To_String"
           })
           cat(sprintf("DEBUG: final_annotation_str: %s\n", final_annotation_str))
         }
