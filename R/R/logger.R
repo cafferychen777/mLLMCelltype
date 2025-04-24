@@ -32,7 +32,7 @@ DiscussionLogger <- R6::R6Class("DiscussionLogger",
     start_cluster_discussion = function(cluster_id, tissue_name = NULL, marker_genes) {
       private$close_current_log()
       
-      log_file <- file.path(private$session_dir, sprintf("cluster_%d_discussion.log", cluster_id))
+      log_file <- file.path(private$session_dir, sprintf("cluster_%s_discussion.log", cluster_id))
       self$current_log <- file(log_file, "w")
       
       # Log initial information
