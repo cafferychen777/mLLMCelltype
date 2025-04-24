@@ -696,6 +696,19 @@ interactive_consensus_annotation <- function(input,
   if (length(models) < 2) {
     stop("At least 2 models are required for LLM discussion and consensus building. Please provide more models or use annotate_cell_types() function for single-model annotation.")
   }
+  
+  # Check if input is a list with named elements (clusters)
+  if (is.list(input) && !is.data.frame(input) && !is.null(names(input))) {
+    # Try to convert named numeric indices to check if they start from 0
+    numeric_names <- suppressWarnings(as.numeric(names(input)))
+    if (!all(is.na(numeric_names))) {
+      # Has numeric indices, check if they start from 0
+      min_index <- min(numeric_names[!is.na(numeric_names)])
+      if (min_index > 0) {
+        stop("Cluster indices must start from 0 (0-based indexing). Found minimum index: ", min_index, ". Please convert your indices to start from 0.")
+      }
+    }
+  }
 
   # Initialize logger and cache manager
   logger <- DiscussionLogger$new(log_dir)

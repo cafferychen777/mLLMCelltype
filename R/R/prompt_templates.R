@@ -16,8 +16,8 @@ create_annotation_prompt <- function(input, tissue_name, top_gene_count = 10) {
       stop("When input is a list, each element must have a 'genes' field")
     }
     
-    # Create gene lists for each cluster - Ensure indices start from 0
-    # If input list originally starts with 1, convert to 0-based index
+    # Create gene lists for each cluster - Expect indices to start from 0
+    # We only accept 0-based indices (Seurat compatible)
     gene_lists <- list()
     names_vec <- names(input)
     
@@ -31,8 +31,12 @@ create_annotation_prompt <- function(input, tissue_name, top_gene_count = 10) {
           name <- names_vec[i]
           num_name <- suppressWarnings(as.numeric(name))
           if (!is.na(num_name)) {
-            # Index is numeric, convert to 0-based (subtract 1, if originally 1-based)
-            zero_based_name <- as.character(num_name - 1)
+            # Index is numeric, verify it's 0-based (no conversion needed)
+            # We only accept 0-based indices
+            if(num_name < 0) {
+              warning(sprintf("Negative cluster index detected: %s. Indices should start from 0.", name))
+            }
+            zero_based_name <- as.character(num_name)
             gene_lists[[zero_based_name]] <- paste(input[[name]]$genes, collapse = ", ")
           } else {
             # Non-numeric index, keep as is
@@ -46,7 +50,8 @@ create_annotation_prompt <- function(input, tissue_name, top_gene_count = 10) {
         }
       }
     } else {
-      # No named list case, use 0-based indices directly
+      # No named list case, expect indices to be 0-based
+      # Since R's seq_along starts from 1, we need to subtract 1 to get 0-based indices
       for (i in seq_along(input)) {
         gene_lists[[as.character(i-1)]] <- paste(input[[i]]$genes, collapse = ", ")
       }
@@ -94,21 +99,15 @@ create_annotation_prompt <- function(input, tissue_name, top_gene_count = 10) {
   # Force use of 0-based indices when creating prompts
   formatted_lines <- character(length(gene_lists))
   
-  # Force use of 0-based indices
+  # Use 0-based indices only
   for (i in 0:(length(gene_lists)-1)) {
     # Use 0,1,2... as indices
     if (as.character(i) %in% names(gene_lists)) {
-      # If already 0-based indices, use directly
+      # Process 0-based indices
       genes <- gene_lists[[as.character(i)]]
       formatted_lines[i+1] <- paste0(i, ": ", genes)
-    } else if ((i+1) <= length(gene_lists)) {
-      # If 1-based indices, convert to 0-based
-      old_id <- as.character(i+1)
-      if (old_id %in% names(gene_lists)) {
-        genes <- gene_lists[[old_id]]
-        formatted_lines[i+1] <- paste0(i, ": ", genes)
-      }
     }
+    # We no longer process 1-based indices as we require all inputs to be 0-based
   }
   
   # Remove empty elements
