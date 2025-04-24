@@ -627,7 +627,7 @@ interactive_consensus_annotation <- function(input,
 
   # Check if there are enough models for discussion (at least 2)
   if (length(models) < 2) {
-    stop("At least 2 models are required for LLM discussion and consensus building. Please provide more models.")
+    stop("At least 2 models are required for LLM discussion and consensus building. Please provide more models or use annotate_cell_types() function for single-model annotation.")
   }
 
   # Initialize logger and cache manager
