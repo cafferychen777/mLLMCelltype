@@ -14,6 +14,10 @@ mLLMCelltype is an iterative multi-LLM consensus framework for cell type annotat
   </a>
 </div>
 
+## News
+
+🎉 **April 2025**: We're thrilled to announce that less than a week after our preprint release, mLLMCelltype has surpassed 100 GitHub stars! We've also seen tremendous coverage from various media outlets and content creators. We extend our heartfelt gratitude to everyone who has supported this project through stars, shares, and contributions. Your enthusiasm drives our continued development and improvement of mLLMCelltype.
+
 ## Key Features
 
 - **Multi-LLM Consensus Architecture**: Harnesses collective intelligence from diverse LLMs to overcome single-model limitations and biases

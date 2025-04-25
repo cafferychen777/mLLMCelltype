@@ -8,6 +8,10 @@
 
 mLLMCelltype是一个迭代式多大语言模型（Multi-LLM）共识框架，专为单细胞RNA测序数据的细胞类型注释而设计。通过利用多种大语言模型（如OpenAI GPT-4o/4.1、Anthropic Claude-3.7/3.5、Google Gemini-2.0、X.AI Grok-3、DeepSeek-V3、阿里云 Qwen2.5、智谱 GLM-4、MiniMax、Stepfun、和 OpenRouter）的互补优势，该框架显著提高了注释准确性，同时提供透明的不确定性量化。
 
+## 新闻
+
+🎉 **2025年4月**：我们非常高兴地宣布，在预印本发布不到一周的时间里，mLLMCelltype已经突破了100个GitHub星标！我们也看到了来自各种媒体和内容创作者的大量报道。我们向所有通过星标、分享和贡献支持这个项目的人表示衷心的感谢。您的热情推动着我们继续开发和改进mLLMCelltype。
+
 ## 主要特点
 
 - **多LLM共识架构**：汇集多种大语言模型的集体智慧，克服单一模型的局限性和偏见
