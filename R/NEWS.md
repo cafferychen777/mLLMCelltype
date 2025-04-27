@@ -1,5 +1,16 @@
 # mLLMCelltype Changelog
 
+## 1.1.5 (2025-04-27)
+
+### Bug Fixes
+* Fixed an issue with cluster index validation that caused errors when processing certain CSV input files
+* Improved error handling for negative indices with clearer error messages
+
+### Improvements
+* Added example script for CSV-based annotation workflow (cat_heart_annotation.R)
+* Enhanced input validation with more detailed diagnostics
+* Updated documentation to clarify CSV input format requirements
+
 ## 1.1.4 (2025-04-24)
 
 ### Bug Fixes
