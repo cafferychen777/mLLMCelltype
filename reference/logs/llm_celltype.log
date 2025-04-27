@@ -1,0 +1,13 @@
+[2025-04-27 02:45:50] Processing input with Model: gpt-4o (Provider: openai)
+[2025-04-27 02:45:50] 
+Gene lists for each cluster:
+[2025-04-27 02:45:50] Cluster t_cells: CD3D, CD3E, CD3G, CD28
+[2025-04-27 02:45:50] Cluster b_cells: CD19, CD79A, CD79B, MS4A1
+[2025-04-27 02:45:50] Cluster monocytes: CD14, CD68, CSF1R, FCGR3A
+[2025-04-27 02:45:50] 
+Generated prompt:
+[2025-04-27 02:45:50] You are a cell type annotation expert. Below are marker genes for different cell clusters in human PBMC.
+
+
+
+For each numbered cluster, provide only the cell type name in a new line, without any explanation.

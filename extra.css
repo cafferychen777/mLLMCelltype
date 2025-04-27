@@ -1,0 +1,41 @@
+/* Fix for navbar overlapping main content */
+main {
+  padding-top: 70px; /* Adjust this value as needed */
+}
+
+/* Improve spacing for better readability */
+.page-header {
+  margin-top: 20px;
+}
+
+/* Ensure content has enough space from the top on mobile */
+@media (max-width: 767px) {
+  main {
+    padding-top: 80px; /* Slightly more padding on mobile */
+  }
+}
+
+/* Improve link visibility */
+a {
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+/* Make code blocks more readable */
+pre, code {
+  border-radius: 4px;
+}
+
+/* Better spacing for section headers */
+h2, h3, h4 {
+  margin-top: 2rem;
+  margin-bottom: 1rem;
+}
+
+/* Improve table styling */
+table {
+  margin-bottom: 1.5rem;
+}
