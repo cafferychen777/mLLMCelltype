@@ -1,0 +1,516 @@
+---
+title: "Visualization Guide"
+author: "Chen Yang"
+date: "`r Sys.Date()`"
+output: 
+  html_document:
+    toc: true
+    toc_float: true
+    toc_depth: 3
+    theme: flatly
+vignette: >
+  %\VignetteIndexEntry{Visualization Guide}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+  echo = TRUE,
+  message = FALSE,
+  warning = FALSE,
+  eval = FALSE,
+  fig.width = 10,
+  fig.height = 6
+)
+```
+
+<img src="../man/figures/logo.png" align="right" height="139" />
+
+# Visualization Guide
+
+This guide provides detailed instructions for visualizing mLLMCelltype results. Creating effective visualizations is crucial for interpreting cell type annotations and communicating uncertainty metrics in your single-cell RNA sequencing analysis.
+
+## Basic Visualization Concepts
+
+mLLMCelltype provides three key types of information that can be visualized:
+
+1. **Cell Type Annotations**: The final cell type labels assigned to each cluster
+2. **Consensus Proportion**: A measure of agreement among models (0-1)
+3. **Shannon Entropy**: A measure of uncertainty in the annotations (lower is better)
+
+These can be visualized separately or combined into informative multi-panel figures.
+
+## Integrating with Seurat
+
+### Adding mLLMCelltype Results to Seurat Objects
+
+Before visualization, you need to add the mLLMCelltype results to your Seurat object:
+
+```{r}
+library(Seurat)
+library(mLLMCelltype)
+library(ggplot2)
+library(patchwork)
+
+# Assuming you have a Seurat object named 'seurat_obj' and consensus results
+# Add consensus annotations to Seurat object
+seurat_obj$cell_type_consensus <- plyr::mapvalues(
+  x = as.character(Idents(seurat_obj)),
+  from = as.character(0:(length(consensus_results$final_consensus)-1)),
+  to = consensus_results$final_consensus
+)
+
+# Add consensus proportion (agreement level) to Seurat object
+seurat_obj$consensus_proportion <- as.numeric(plyr::mapvalues(
+  x = as.character(Idents(seurat_obj)),
+  from = as.character(0:(length(consensus_results$consensus_proportion)-1)),
+  to = consensus_results$consensus_proportion
+))
+
+# Add Shannon entropy (uncertainty measure) to Seurat object
+seurat_obj$shannon_entropy <- as.numeric(plyr::mapvalues(
+  x = as.character(Idents(seurat_obj)),
+  from = as.character(0:(length(consensus_results$shannon_entropy)-1)),
+  to = consensus_results$shannon_entropy
+))
+```
+
+### Basic Visualization with Seurat
+
+#### Cell Type Annotations
+
+```{r}
+# Basic cell type visualization
+p1 <- DimPlot(seurat_obj, 
+              group.by = "cell_type_consensus", 
+              label = TRUE, 
+              repel = TRUE) +
+  ggtitle("Cell Type Annotations") +
+  theme(plot.title = element_text(hjust = 0.5))
+
+p1
+```
+
+#### Consensus Proportion
+
+```{r}
+# Visualize consensus proportion
+p2 <- FeaturePlot(seurat_obj, 
+                 features = "consensus_proportion", 
+                 cols = c("yellow", "green", "blue"),
+                 min.cutoff = 0.3,
+                 max.cutoff = 1) +
+  ggtitle("Consensus Proportion") +
+  theme(plot.title = element_text(hjust = 0.5))
+
+p2
+```
+
+#### Shannon Entropy
+
+```{r}
+# Visualize Shannon entropy
+p3 <- FeaturePlot(seurat_obj, 
+                 features = "shannon_entropy", 
+                 cols = c("red", "orange", "yellow"),
+                 min.cutoff = 0,
+                 max.cutoff = 1.5) +
+  scale_color_gradient(low = "red", high = "yellow") +
+  ggtitle("Shannon Entropy") +
+  theme(plot.title = element_text(hjust = 0.5))
+
+p3
+```
+
+#### Combined Visualization
+
+```{r}
+# Combine all three visualizations
+p1 | p2 | p3
+```
+
+## Publication-Ready Visualizations with SCpubr
+
+For publication-quality visualizations, we recommend using the SCpubr package, which provides enhanced aesthetics for single-cell visualizations:
+
+```{r}
+# Install SCpubr if not already installed
+if (!requireNamespace("SCpubr", quietly = TRUE)) {
+  remotes::install_github("enblacar/SCpubr")
+}
+
+library(SCpubr)
+
+# Cell type annotations with SCpubr
+p1 <- SCpubr::do_DimPlot(seurat_obj,
+                         group.by = "cell_type_consensus",
+                         label = TRUE,
+                         repel = TRUE,
+                         legend.position = "right",
+                         font.size = 14,
+                         pt.size = 0.5,
+                         title = "Cell Type Annotations")
+
+# Consensus proportion with SCpubr
+p2 <- SCpubr::do_FeaturePlot(seurat_obj,
+                            features = "consensus_proportion",
+                            order = TRUE,
+                            pt.size = 0.5,
+                            colors.use = c("yellow", "green", "blue"),
+                            legend.position = "right",
+                            font.size = 14,
+                            title = "Consensus Proportion")
+
+# Shannon entropy with SCpubr
+p3 <- SCpubr::do_FeaturePlot(seurat_obj,
+                            features = "shannon_entropy",
+                            order = TRUE,
+                            pt.size = 0.5,
+                            colors.use = c("red", "orange", "yellow"),
+                            legend.position = "right",
+                            font.size = 14,
+                            title = "Shannon Entropy")
+
+# Combine plots with patchwork
+combined_plot <- p1 | p2 | p3
+
+# Add a common title
+combined_plot <- combined_plot + 
+  plot_annotation(
+    title = "mLLMCelltype Results",
+    theme = theme(plot.title = element_text(size = 16, hjust = 0.5, face = "bold"))
+  )
+
+combined_plot
+```
+
+## Advanced Visualization Techniques
+
+### Highlighting Controversial Clusters
+
+You can highlight clusters with low consensus or high uncertainty:
+
+```{r}
+# Create a new column to identify controversial clusters
+seurat_obj$controversial <- ifelse(seurat_obj$consensus_proportion < 0.5, "Controversial", "Consensus")
+
+# Visualize controversial clusters
+SCpubr::do_DimPlot(seurat_obj,
+                  group.by = "controversial",
+                  colors.use = c("Controversial" = "red", "Consensus" = "blue"),
+                  label = FALSE,
+                  pt.size = 0.5,
+                  title = "Controversial vs. Consensus Clusters")
+```
+
+### Visualizing Model Agreement
+
+To visualize how different models agree or disagree:
+
+```{r}
+# Assuming you have individual model results in the Seurat object
+# Create a function to calculate agreement with consensus
+calculate_agreement <- function(seurat_obj, model_column, consensus_column) {
+  seurat_obj$agreement <- ifelse(
+    seurat_obj[[model_column]] == seurat_obj[[consensus_column]],
+    "Agrees with consensus",
+    "Disagrees with consensus"
+  )
+  return(seurat_obj)
+}
+
+# Apply to each model
+models <- c("claude_3_7_sonnet", "gpt_4o", "gemini_1_5_pro")
+plot_list <- list()
+
+for (model in models) {
+  column_name <- paste0("cell_type_", model)
+  temp_obj <- calculate_agreement(seurat_obj, column_name, "cell_type_consensus")
+  
+  plot_list[[model]] <- SCpubr::do_DimPlot(temp_obj,
+                                          group.by = "agreement",
+                                          colors.use = c("Agrees with consensus" = "darkgreen", 
+                                                        "Disagrees with consensus" = "darkred"),
+                                          pt.size = 0.5,
+                                          title = paste0(model, " Agreement"))
+}
+
+# Combine all agreement plots
+wrap_plots(plot_list, ncol = 2)
+```
+
+### Heatmap of Model Predictions
+
+Create a heatmap to visualize all model predictions for each cluster:
+
+```{r}
+library(pheatmap)
+
+# Create a matrix of model predictions for each cluster
+create_prediction_matrix <- function(consensus_results, models) {
+  n_clusters <- length(consensus_results$final_consensus)
+  prediction_matrix <- matrix(NA, nrow = n_clusters, ncol = length(models))
+  rownames(prediction_matrix) <- paste0("Cluster_", 0:(n_clusters-1))
+  colnames(prediction_matrix) <- models
+  
+  for (i in 1:length(models)) {
+    model <- models[i]
+    predictions <- consensus_results$initial_results[[model]]
+    prediction_matrix[, i] <- predictions
+  }
+  
+  return(prediction_matrix)
+}
+
+# Convert cell type names to numeric codes for visualization
+encode_cell_types <- function(prediction_matrix) {
+  unique_types <- unique(as.vector(prediction_matrix))
+  type_mapping <- setNames(1:length(unique_types), unique_types)
+  
+  encoded_matrix <- matrix(NA, nrow = nrow(prediction_matrix), ncol = ncol(prediction_matrix))
+  rownames(encoded_matrix) <- rownames(prediction_matrix)
+  colnames(encoded_matrix) <- colnames(prediction_matrix)
+  
+  for (i in 1:nrow(prediction_matrix)) {
+    for (j in 1:ncol(prediction_matrix)) {
+      encoded_matrix[i, j] <- type_mapping[prediction_matrix[i, j]]
+    }
+  }
+  
+  return(list(matrix = encoded_matrix, mapping = type_mapping))
+}
+
+# Create and plot the heatmap
+models <- c("claude-3-7-sonnet-20250219", "gpt-4o", "gemini-1.5-pro")
+prediction_matrix <- create_prediction_matrix(consensus_results, models)
+encoded_data <- encode_cell_types(prediction_matrix)
+
+# Add consensus and uncertainty metrics as annotations
+annotation_row <- data.frame(
+  Consensus = consensus_results$final_consensus,
+  Proportion = consensus_results$consensus_proportion,
+  Entropy = consensus_results$shannon_entropy
+)
+rownames(annotation_row) <- rownames(prediction_matrix)
+
+# Create color scales
+n_types <- length(encoded_data$mapping)
+cell_type_colors <- colorRampPalette(rainbow(n_types))(n_types)
+names(cell_type_colors) <- 1:n_types
+
+proportion_colors <- colorRampPalette(c("yellow", "green", "blue"))(100)
+entropy_colors <- colorRampPalette(c("red", "orange", "yellow"))(100)
+
+annotation_colors <- list(
+  Proportion = proportion_colors,
+  Entropy = entropy_colors
+)
+
+# Plot heatmap
+pheatmap(
+  encoded_data$matrix,
+  cluster_rows = FALSE,
+  cluster_cols = FALSE,
+  annotation_row = annotation_row,
+  annotation_colors = annotation_colors,
+  main = "Model Predictions by Cluster",
+  fontsize = 10,
+  cellwidth = 30,
+  cellheight = 30,
+  legend = TRUE,
+  display_numbers = TRUE,
+  number_format = function(x) names(encoded_data$mapping)[encoded_data$mapping == x]
+)
+```
+
+## Visualizing Discussion Logs
+
+The discussion logs contain valuable information about the reasoning process. Here's how to visualize key aspects:
+
+```{r}
+library(tidytext)
+library(wordcloud)
+library(stringr)
+
+# Extract discussion text for a specific cluster
+extract_discussion_text <- function(consensus_results, cluster_id) {
+  discussion_logs <- consensus_results$discussion_logs
+  if (is.null(discussion_logs) || !cluster_id %in% names(discussion_logs)) {
+    return(NULL)
+  }
+  
+  discussion_text <- discussion_logs[[cluster_id]]
+  return(discussion_text)
+}
+
+# Create a word cloud from discussion text
+create_discussion_wordcloud <- function(discussion_text, title = "Discussion Word Cloud") {
+  # Clean and tokenize text
+  words <- discussion_text %>%
+    str_remove_all("[[:punct:]]") %>%
+    str_remove_all("[[:digit:]]") %>%
+    str_to_lower() %>%
+    str_split("\\s+") %>%
+    unlist()
+  
+  # Remove stop words
+  stop_words <- c("the", "and", "a", "to", "of", "is", "in", "that", "this", "it", "as", "for", "with", "be", "are", "on", "by", "an", "or", "at", "but", "not", "from", "have", "has", "was", "were")
+  words <- words[!words %in% stop_words]
+  
+  # Count word frequencies
+  word_freq <- table(words)
+  word_freq <- sort(word_freq, decreasing = TRUE)
+  
+  # Create word cloud
+  par(mar = c(0, 0, 2, 0))
+  wordcloud(names(word_freq), freq = word_freq, min.freq = 2, max.words = 100, 
+            random.order = FALSE, colors = brewer.pal(8, "Dark2"), main = title)
+  title(main = title)
+}
+
+# Example usage
+cluster_id <- "0"  # Replace with the cluster you want to visualize
+discussion_text <- extract_discussion_text(consensus_results, cluster_id)
+if (!is.null(discussion_text)) {
+  create_discussion_wordcloud(discussion_text, 
+                             title = paste("Cluster", cluster_id, "Discussion Keywords"))
+}
+```
+
+## Saving Visualizations
+
+To save your visualizations for publications or presentations:
+
+```{r}
+# Save a single plot
+ggsave("cell_type_annotations.png", plot = p1, width = 10, height = 8, dpi = 300)
+
+# Save the combined plot
+ggsave("mLLMCelltype_results.png", plot = combined_plot, width = 15, height = 8, dpi = 300)
+
+# Save as PDF for vector graphics
+ggsave("mLLMCelltype_results.pdf", plot = combined_plot, width = 15, height = 8)
+```
+
+## Visualization Best Practices
+
+### Color Selection
+
+- **Cell Type Annotations**: Use distinct colors for different cell types
+- **Consensus Proportion**: Use a gradient from yellow (low) to blue (high)
+- **Shannon Entropy**: Use a gradient from red (low uncertainty) to yellow (high uncertainty)
+
+### Layout Considerations
+
+- Arrange plots in a logical order (annotations, consensus, entropy)
+- Use consistent point sizes and fonts across plots
+- Include informative titles and legends
+- Consider adding cluster labels for easier reference
+
+### Accessibility
+
+- Choose colorblind-friendly palettes when possible
+- Include text labels in addition to colors
+- Ensure sufficient contrast for readability
+- Consider alternative representations for complex data
+
+## Example: Complete Visualization Workflow
+
+Here's a complete example workflow for creating publication-ready visualizations:
+
+```{r}
+library(Seurat)
+library(mLLMCelltype)
+library(ggplot2)
+library(patchwork)
+library(SCpubr)
+
+# Load data and results
+# Assuming you have a Seurat object and consensus results
+
+# Add results to Seurat object
+seurat_obj$cell_type_consensus <- plyr::mapvalues(
+  x = as.character(Idents(seurat_obj)),
+  from = as.character(0:(length(consensus_results$final_consensus)-1)),
+  to = consensus_results$final_consensus
+)
+
+seurat_obj$consensus_proportion <- as.numeric(plyr::mapvalues(
+  x = as.character(Idents(seurat_obj)),
+  from = as.character(0:(length(consensus_results$consensus_proportion)-1)),
+  to = consensus_results$consensus_proportion
+))
+
+seurat_obj$shannon_entropy <- as.numeric(plyr::mapvalues(
+  x = as.character(Idents(seurat_obj)),
+  from = as.character(0:(length(consensus_results$shannon_entropy)-1)),
+  to = consensus_results$shannon_entropy
+))
+
+# Create publication-ready visualizations
+p1 <- SCpubr::do_DimPlot(seurat_obj,
+                         group.by = "cell_type_consensus",
+                         label = TRUE,
+                         repel = TRUE,
+                         legend.position = "right",
+                         font.size = 14,
+                         pt.size = 0.5,
+                         title = "Cell Type Annotations")
+
+p2 <- SCpubr::do_FeaturePlot(seurat_obj,
+                            features = "consensus_proportion",
+                            order = TRUE,
+                            pt.size = 0.5,
+                            colors.use = c("yellow", "green", "blue"),
+                            legend.position = "right",
+                            font.size = 14,
+                            title = "Consensus Proportion")
+
+p3 <- SCpubr::do_FeaturePlot(seurat_obj,
+                            features = "shannon_entropy",
+                            order = TRUE,
+                            pt.size = 0.5,
+                            colors.use = c("red", "orange", "yellow"),
+                            legend.position = "right",
+                            font.size = 14,
+                            title = "Shannon Entropy")
+
+# Combine plots
+combined_plot <- p1 | p2 | p3
+
+# Add annotation
+combined_plot <- combined_plot + 
+  plot_annotation(
+    title = "mLLMCelltype Results",
+    subtitle = "Cell type annotations with uncertainty metrics",
+    caption = "Created with mLLMCelltype and SCpubr",
+    theme = theme(
+      plot.title = element_text(size = 16, hjust = 0.5, face = "bold"),
+      plot.subtitle = element_text(size = 12, hjust = 0.5),
+      plot.caption = element_text(size = 10, hjust = 1)
+    )
+  )
+
+# Save the visualization
+ggsave("mLLMCelltype_visualization.png", 
+       plot = combined_plot, 
+       width = 15, 
+       height = 8, 
+       dpi = 300)
+
+# Also save as PDF for vector graphics
+ggsave("mLLMCelltype_visualization.pdf", 
+       plot = combined_plot, 
+       width = 15, 
+       height = 8)
+```
+
+## Next Steps
+
+Now that you know how to create effective visualizations for mLLMCelltype results, you can explore:
+
+- [FAQ](07-faq.html): Find answers to common questions
+- [Advanced Features](08-advanced-features.html): Explore hierarchical annotation and other advanced features
+- [Contributing Guide](09-contributing-guide.html): Learn how to contribute to the project
+- [Version History](10-version-history.html): Review the development history of mLLMCelltype

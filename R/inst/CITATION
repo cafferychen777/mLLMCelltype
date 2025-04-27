@@ -1,0 +1,20 @@
+citHeader("To cite mLLMCelltype in publications use:")
+
+citEntry(
+  entry    = "Article",
+  title    = "Large Language Model Consensus Substantially Improves the Cell Type Annotation Accuracy for scRNA-seq Data",
+  author   = personList(as.person("Chen Yang"),
+                       as.person("Xianyang Zhang"),
+                       as.person("Jun Chen")),
+  journal  = "bioRxiv",
+  year     = "2025",
+  url      = "https://www.biorxiv.org/content/early/2025/04/17/2025.04.10.647852",
+  doi      = "10.1101/2025.04.10.647852",
+  publisher = "Cold Spring Harbor Laboratory",
+  textVersion = paste(
+    "Yang, C., Zhang, X., & Chen, J. (2025).",
+    "Large Language Model Consensus Substantially Improves the Cell Type Annotation Accuracy for scRNA-seq Data.",
+    "bioRxiv.",
+    "https://doi.org/10.1101/2025.04.10.647852"
+  )
+)

@@ -1,0 +1,223 @@
+---
+title: "Installation Guide"
+author: "Chen Yang"
+date: "`r Sys.Date()`"
+output: 
+  html_document:
+    toc: true
+    toc_float: true
+    toc_depth: 3
+    theme: flatly
+vignette: >
+  %\VignetteIndexEntry{Installation Guide}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+  echo = TRUE,
+  message = FALSE,
+  warning = FALSE,
+  eval = FALSE
+)
+```
+
+<img src="../man/figures/logo.png" align="right" height="139" />
+
+# Installation Guide
+
+This guide provides detailed instructions for installing and configuring mLLMCelltype for cell type annotation in single-cell RNA sequencing data.
+
+## System Requirements
+
+Before installing mLLMCelltype, ensure your system meets the following requirements:
+
+- **R version**: 4.0.0 or higher
+- **Memory**: At least 8GB RAM recommended (more for large datasets)
+- **Operating System**: Windows, macOS, or Linux
+- **Internet Connection**: Required for API calls to LLM providers
+
+## Installing the R Package
+
+### Installation from GitHub
+
+The recommended way to install mLLMCelltype is directly from GitHub using the `devtools` package:
+
+```{r}
+# Install devtools if not already installed
+if (!requireNamespace("devtools", quietly = TRUE)) {
+  install.packages("devtools")
+}
+
+# Install mLLMCelltype
+devtools::install_github("cafferychen777/mLLMCelltype", subdir = "R")
+```
+
+This will install the latest development version of mLLMCelltype with all the required dependencies.
+
+### Installation from a Local Source
+
+If you have downloaded the source code or need to install from a local copy:
+
+```{r}
+# Assuming the package is in the current working directory
+devtools::install_local("path/to/mLLMCelltype/R")
+```
+
+## Dependencies
+
+mLLMCelltype depends on several R packages that will be automatically installed during the installation process. The main dependencies include:
+
+- **dplyr**: For data manipulation
+- **httr**: For API requests
+- **jsonlite**: For JSON parsing
+- **R6**: For object-oriented programming
+- **digest**: For caching mechanisms
+- **magrittr**: For pipe operations
+
+For visualization and integration with single-cell analysis workflows, the following packages are recommended but not required:
+
+- **Seurat**: For integration with Seurat objects
+- **ggplot2**: For visualization
+- **SCpubr**: For publication-ready visualizations
+
+## API Keys Setup
+
+mLLMCelltype requires API keys to access different LLM providers. You will need to obtain API keys for at least one of the supported providers:
+
+### Obtaining API Keys
+
+1. **OpenAI (GPT-4o/4.1)**
+   - Visit [OpenAI Platform](https://platform.openai.com/)
+   - Create an account or log in
+   - Navigate to API keys section
+   - Create a new API key
+
+2. **Anthropic (Claude-3.7/3.5)**
+   - Visit [Anthropic Console](https://console.anthropic.com/)
+   - Create an account or log in
+   - Generate an API key
+
+3. **Google (Gemini-2.0/2.5)**
+   - Visit [Google AI Studio](https://makersuite.google.com/)
+   - Create a Google account or log in
+   - Generate an API key
+
+4. **Other Providers**
+   - Similar processes apply for DeepSeek, Qwen, Zhipu, MiniMax, Stepfun, and Grok
+   - Visit their respective websites to obtain API keys
+
+### Setting Up API Keys
+
+There are three ways to set up your API keys:
+
+#### 1. Environment Variables
+
+Create a `.env` file in your project directory with your API keys:
+
+```
+# API Keys for different LLM models
+OPENAI_API_KEY=your-openai-key
+ANTHROPIC_API_KEY=your-anthropic-key
+GEMINI_API_KEY=your-gemini-key
+DEEPSEEK_API_KEY=your-deepseek-key
+QWEN_API_KEY=your-qwen-key
+ZHIPU_API_KEY=your-zhipu-key
+STEPFUN_API_KEY=your-stepfun-key
+MINIMAX_API_KEY=your-minimax-key
+GROK_API_KEY=your-grok-key
+OPENROUTER_API_KEY=your-openrouter-key
+```
+
+Then load the environment variables in your R script:
+
+```{r}
+library(dotenv)
+dotenv::load_dot_env()
+```
+
+#### 2. Direct Specification in Function Calls
+
+You can directly provide API keys in function calls:
+
+```{r}
+library(mLLMCelltype)
+
+results <- annotate_cell_types(
+  input = your_marker_data,
+  tissue_name = "human PBMC",
+  model = "claude-3-7-sonnet-20250219",
+  api_key = "your-anthropic-key",
+  top_gene_count = 10
+)
+```
+
+#### 3. R Environment Variables
+
+Set API keys as R environment variables:
+
+```{r}
+Sys.setenv(OPENAI_API_KEY = "your-openai-key")
+Sys.setenv(ANTHROPIC_API_KEY = "your-anthropic-key")
+# Set other API keys as needed
+```
+
+## Verifying Installation
+
+To verify that mLLMCelltype is installed correctly and API keys are set up properly:
+
+```{r}
+library(mLLMCelltype)
+
+# Check if the package is loaded correctly
+packageVersion("mLLMCelltype")
+
+# Verify API key setup for a specific provider
+api_key <- get_api_key("anthropic")
+if (!is.null(api_key) && api_key != "") {
+  cat("Anthropic API key is set up correctly\n")
+} else {
+  cat("Anthropic API key is not set up\n")
+}
+```
+
+## Common Installation Issues
+
+### Package Installation Failures
+
+If you encounter issues during installation:
+
+1. **Check R version**: Ensure you're using R 4.0.0 or higher
+2. **Update devtools**: Run `install.packages("devtools")` to ensure you have the latest version
+3. **Check dependencies**: Some dependencies might require system libraries on Linux
+
+### API Connection Issues
+
+If you encounter issues connecting to LLM APIs:
+
+1. **Verify API keys**: Ensure your API keys are correct and have not expired
+2. **Check internet connection**: Ensure you have a stable internet connection
+3. **Proxy settings**: If you're behind a proxy, configure R to use your proxy settings
+
+```{r}
+# Example of setting proxy for httr
+httr::set_config(httr::use_proxy(url = "proxy_url", port = proxy_port))
+```
+
+### Memory Limitations
+
+For large datasets, you might encounter memory issues:
+
+1. **Increase R memory limit**: Use `memory.limit(size = 16000)` on Windows to increase available memory
+2. **Process data in batches**: Consider processing large datasets in smaller batches
+
+## Next Steps
+
+Now that you have installed mLLMCelltype, you can proceed to:
+
+- [Getting Started](03-getting-started.html): Learn the basics of using mLLMCelltype
+- [Usage Tutorial](04-usage-tutorial.html): Explore more advanced usage scenarios
+- [Visualization Guide](06-visualization-guide.html): Learn how to visualize your results
+
+If you encounter any issues not covered in this guide, please [open an issue](https://github.com/cafferychen777/mLLMCelltype/issues) on our GitHub repository.
