@@ -1,0 +1,454 @@
+---
+title: "Usage Tutorial"
+author: "Chen Yang"
+date: "`r Sys.Date()`"
+output: 
+  html_document:
+    toc: true
+    toc_float: true
+    toc_depth: 3
+    theme: flatly
+vignette: >
+  %\VignetteIndexEntry{Usage Tutorial}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+  echo = TRUE,
+  message = FALSE,
+  warning = FALSE,
+  eval = FALSE
+)
+```
+
+<img src="../man/figures/logo.png" align="right" height="139" />
+
+# Usage Tutorial
+
+This tutorial provides detailed instructions for using mLLMCelltype for cell type annotation in single-cell RNA sequencing data. We'll cover various usage scenarios, parameter configurations, and integration with Seurat.
+
+## Comprehensive Function Parameters
+
+### annotate_cell_types()
+
+The main function for cell type annotation with a single model:
+
+```{r}
+library(mLLMCelltype)
+
+results <- annotate_cell_types(
+  input,                # Marker gene data (data frame, list, or file path)
+  tissue_name,          # Tissue name (e.g., "human PBMC", "mouse brain")
+  model,                # LLM model to use
+  api_key = NULL,       # API key (if not set in environment)
+  top_gene_count = 10,  # Number of top genes per cluster to use
+  cache = TRUE,         # Whether to cache results
+  cache_dir = NULL,     # Custom cache directory
+  verbose = TRUE,       # Whether to print progress messages
+  timeout = 60,         # Timeout for API calls in seconds
+  max_retries = 3       # Maximum number of retries for failed API calls
+)
+```
+
+### create_consensus()
+
+Function for creating consensus annotations from multiple models:
+
+```{r}
+consensus_results <- create_consensus(
+  results,              # List of results from multiple models
+  input,                # Original marker gene data
+  tissue_name,          # Tissue name
+  model,                # Model to use for discussion (usually Claude)
+  api_key = NULL,       # API key for discussion model
+  cache = TRUE,         # Whether to cache results
+  cache_dir = NULL,     # Custom cache directory
+  verbose = TRUE,       # Whether to print progress messages
+  timeout = 60,         # Timeout for API calls in seconds
+  max_retries = 3,      # Maximum number of retries
+  discussion_threshold = 0.5  # Threshold for identifying controversial clusters
+)
+```
+
+### print_consensus_summary()
+
+Function for printing a summary of consensus results:
+
+```{r}
+print_consensus_summary(
+  consensus_results,    # Results from create_consensus()
+  show_discussion = FALSE,  # Whether to show discussion logs
+  show_initial = TRUE   # Whether to show initial predictions
+)
+```
+
+## Detailed Usage Scenarios
+
+### Scenario 1: Basic Annotation with a Single Model
+
+For quick exploration or when API usage is a concern:
+
+```{r}
+# Load example data
+library(Seurat)
+data("pbmc_small")
+
+# Find markers
+pbmc_markers <- FindAllMarkers(pbmc_small, only.pos = TRUE, min.pct = 0.25, logfc.threshold = 0.25)
+
+# Run annotation with a single model
+results <- annotate_cell_types(
+  input = pbmc_markers,
+  tissue_name = "human PBMC",
+  model = "claude-3-7-sonnet-20250219",
+  api_key = Sys.getenv("ANTHROPIC_API_KEY"),
+  top_gene_count = 10
+)
+
+# Add annotations to Seurat object
+pbmc_small$cell_type_claude <- plyr::mapvalues(
+  x = as.character(Idents(pbmc_small)),
+  from = as.character(0:(length(results)-1)),
+  to = results
+)
+
+# Visualize
+DimPlot(pbmc_small, group.by = "cell_type_claude", label = TRUE)
+```
+
+### Scenario 2: Multi-Model Consensus for High Accuracy
+
+For publication-quality annotations with uncertainty quantification:
+
+```{r}
+# Define multiple models to use
+models <- c(
+  "claude-3-7-sonnet-20250219",  # Anthropic
+  "gpt-4o",                      # OpenAI
+  "gemini-1.5-pro",              # Google
+  "grok-3"                       # X.AI
+)
+
+# API keys for different providers
+api_keys <- list(
+  anthropic = Sys.getenv("ANTHROPIC_API_KEY"),
+  openai = Sys.getenv("OPENAI_API_KEY"),
+  gemini = Sys.getenv("GEMINI_API_KEY"),
+  grok = Sys.getenv("GROK_API_KEY")
+)
+
+# Run annotation with multiple models
+results <- list()
+for (model in models) {
+  provider <- get_provider(model)
+  api_key <- api_keys[[provider]]
+  
+  results[[model]] <- annotate_cell_types(
+    input = pbmc_markers,
+    tissue_name = "human PBMC",
+    model = model,
+    api_key = api_key,
+    top_gene_count = 10
+  )
+}
+
+# Create consensus
+consensus_results <- create_consensus(
+  results = results,
+  input = pbmc_markers,
+  tissue_name = "human PBMC",
+  model = "claude-3-7-sonnet-20250219",
+  api_key = api_keys[["anthropic"]]
+)
+
+# Print consensus summary
+print_consensus_summary(consensus_results)
+
+# Add consensus annotations and metrics to Seurat object
+pbmc_small$cell_type_consensus <- plyr::mapvalues(
+  x = as.character(Idents(pbmc_small)),
+  from = as.character(0:(length(consensus_results$final_consensus)-1)),
+  to = consensus_results$final_consensus
+)
+
+pbmc_small$consensus_proportion <- plyr::mapvalues(
+  x = as.character(Idents(pbmc_small)),
+  from = as.character(0:(length(consensus_results$consensus_proportion)-1)),
+  to = consensus_results$consensus_proportion
+)
+
+pbmc_small$shannon_entropy <- plyr::mapvalues(
+  x = as.character(Idents(pbmc_small)),
+  from = as.character(0:(length(consensus_results$shannon_entropy)-1)),
+  to = consensus_results$shannon_entropy
+)
+```
+
+### Scenario 3: Working with CSV Files
+
+For users who prefer working with files:
+
+```{r}
+# Save markers to CSV
+write.csv(pbmc_markers, "pbmc_markers.csv", row.names = FALSE)
+
+# Run annotation using the CSV file
+results <- annotate_cell_types(
+  input = "pbmc_markers.csv",
+  tissue_name = "human PBMC",
+  model = "claude-3-7-sonnet-20250219",
+  api_key = Sys.getenv("ANTHROPIC_API_KEY")
+)
+```
+
+### Scenario 4: Custom Caching
+
+For better control over caching behavior:
+
+```{r}
+# Set custom cache directory
+custom_cache_dir <- "path/to/cache"
+
+# Run with custom caching
+results <- annotate_cell_types(
+  input = pbmc_markers,
+  tissue_name = "human PBMC",
+  model = "claude-3-7-sonnet-20250219",
+  api_key = Sys.getenv("ANTHROPIC_API_KEY"),
+  cache = TRUE,
+  cache_dir = custom_cache_dir
+)
+
+# Clear cache if needed
+cache_manager <- CacheManager$new(cache_dir = custom_cache_dir)
+cache_manager$clear_cache()
+```
+
+## Model Selection Guide
+
+mLLMCelltype supports a wide range of LLM models. Here's a guide to help you choose:
+
+### High Performance Models
+
+For the most accurate annotations:
+
+- **Anthropic Claude 3.7 Sonnet** (`claude-3-7-sonnet-20250219`): Excellent biological knowledge, best for discussion
+- **OpenAI GPT-4o** (`gpt-4o`): Strong overall performance, good biological knowledge
+- **Google Gemini 1.5 Pro** (`gemini-1.5-pro`): Good performance with detailed reasoning
+
+### Balanced Performance/Cost Models
+
+For good results with lower API costs:
+
+- **Anthropic Claude 3.5 Sonnet** (`claude-3-5-sonnet-20240620`): Good balance of performance and cost
+- **X.AI Grok-3** (`grok-3`): Competitive performance at lower cost
+- **DeepSeek V3** (`deepseek-v3`): Good performance for specialized tissues
+
+### Economy Models
+
+For preliminary exploration or large datasets:
+
+- **Qwen 2.5** (`qwen-max-2025-01-25`): Good performance for the cost
+- **Zhipu GLM-4** (`glm-4`): Economical option with decent performance
+- **MiniMax** (`minimax`): Cost-effective for initial exploration
+
+## Integration with Seurat Workflow
+
+Here's a complete example of integrating mLLMCelltype with a Seurat workflow:
+
+```{r}
+library(Seurat)
+library(mLLMCelltype)
+library(ggplot2)
+
+# Load data
+data("pbmc_small")
+
+# Standard Seurat preprocessing
+pbmc_small <- NormalizeData(pbmc_small)
+pbmc_small <- FindVariableFeatures(pbmc_small)
+pbmc_small <- ScaleData(pbmc_small)
+pbmc_small <- RunPCA(pbmc_small)
+pbmc_small <- FindNeighbors(pbmc_small)
+pbmc_small <- FindClusters(pbmc_small, resolution = 0.5)
+pbmc_small <- RunUMAP(pbmc_small, dims = 1:10)
+
+# Find markers for each cluster
+pbmc_markers <- FindAllMarkers(pbmc_small, only.pos = TRUE, min.pct = 0.25, logfc.threshold = 0.25)
+
+# Define models to use
+models <- c(
+  "claude-3-7-sonnet-20250219",
+  "gpt-4o",
+  "gemini-1.5-pro"
+)
+
+# API keys
+api_keys <- list(
+  anthropic = Sys.getenv("ANTHROPIC_API_KEY"),
+  openai = Sys.getenv("OPENAI_API_KEY"),
+  gemini = Sys.getenv("GEMINI_API_KEY")
+)
+
+# Run annotation with multiple models
+results <- list()
+for (model in models) {
+  provider <- get_provider(model)
+  api_key <- api_keys[[provider]]
+  
+  results[[model]] <- annotate_cell_types(
+    input = pbmc_markers,
+    tissue_name = "human PBMC",
+    model = model,
+    api_key = api_key,
+    top_gene_count = 10
+  )
+  
+  # Add individual model results to Seurat object
+  column_name <- paste0("cell_type_", gsub("[^a-zA-Z0-9]", "_", model))
+  pbmc_small[[column_name]] <- plyr::mapvalues(
+    x = as.character(Idents(pbmc_small)),
+    from = as.character(0:(length(results[[model]])-1)),
+    to = results[[model]]
+  )
+}
+
+# Create consensus
+consensus_results <- create_consensus(
+  results = results,
+  input = pbmc_markers,
+  tissue_name = "human PBMC",
+  model = "claude-3-7-sonnet-20250219",
+  api_key = api_keys[["anthropic"]]
+)
+
+# Add consensus results to Seurat object
+pbmc_small$cell_type_consensus <- plyr::mapvalues(
+  x = as.character(Idents(pbmc_small)),
+  from = as.character(0:(length(consensus_results$final_consensus)-1)),
+  to = consensus_results$final_consensus
+)
+
+pbmc_small$consensus_proportion <- as.numeric(plyr::mapvalues(
+  x = as.character(Idents(pbmc_small)),
+  from = as.character(0:(length(consensus_results$consensus_proportion)-1)),
+  to = consensus_results$consensus_proportion
+))
+
+pbmc_small$shannon_entropy <- as.numeric(plyr::mapvalues(
+  x = as.character(Idents(pbmc_small)),
+  from = as.character(0:(length(consensus_results$shannon_entropy)-1)),
+  to = consensus_results$shannon_entropy
+))
+
+# Visualize results
+p1 <- DimPlot(pbmc_small, group.by = "cell_type_consensus", label = TRUE, repel = TRUE) +
+  ggtitle("Cell Type Annotations") +
+  theme(plot.title = element_text(hjust = 0.5))
+
+p2 <- FeaturePlot(pbmc_small, features = "consensus_proportion", cols = c("yellow", "green", "blue")) +
+  ggtitle("Consensus Proportion") +
+  theme(plot.title = element_text(hjust = 0.5))
+
+p3 <- FeaturePlot(pbmc_small, features = "shannon_entropy", cols = c("red", "orange")) +
+  ggtitle("Shannon Entropy") +
+  theme(plot.title = element_text(hjust = 0.5))
+
+# Combine plots
+p1 | p2 | p3
+```
+
+## Advanced Parameter Tuning
+
+### Adjusting top_gene_count
+
+The `top_gene_count` parameter controls how many top marker genes per cluster are used for annotation:
+
+```{r}
+# Using more genes (better for well-characterized tissues)
+results_more_genes <- annotate_cell_types(
+  input = pbmc_markers,
+  tissue_name = "human PBMC",
+  model = "claude-3-7-sonnet-20250219",
+  api_key = Sys.getenv("ANTHROPIC_API_KEY"),
+  top_gene_count = 20  # Using more genes
+)
+
+# Using fewer genes (better for noisy data)
+results_fewer_genes <- annotate_cell_types(
+  input = pbmc_markers,
+  tissue_name = "human PBMC",
+  model = "claude-3-7-sonnet-20250219",
+  api_key = Sys.getenv("ANTHROPIC_API_KEY"),
+  top_gene_count = 5   # Using fewer genes
+)
+```
+
+### Adjusting discussion_threshold
+
+The `discussion_threshold` parameter controls which clusters are considered controversial and require discussion:
+
+```{r}
+# Lower threshold (more clusters will be discussed)
+consensus_results_low_threshold <- create_consensus(
+  results = results,
+  input = pbmc_markers,
+  tissue_name = "human PBMC",
+  model = "claude-3-7-sonnet-20250219",
+  api_key = Sys.getenv("ANTHROPIC_API_KEY"),
+  discussion_threshold = 0.3  # Lower threshold
+)
+
+# Higher threshold (fewer clusters will be discussed)
+consensus_results_high_threshold <- create_consensus(
+  results = results,
+  input = pbmc_markers,
+  tissue_name = "human PBMC",
+  model = "claude-3-7-sonnet-20250219",
+  api_key = Sys.getenv("ANTHROPIC_API_KEY"),
+  discussion_threshold = 0.7  # Higher threshold
+)
+```
+
+## Performance Considerations
+
+### API Rate Limits and Costs
+
+Different LLM providers have different rate limits and pricing:
+
+- **OpenAI**: Higher rate limits but can be more expensive
+- **Anthropic**: Good balance of rate limits and cost
+- **Google**: Competitive pricing with good rate limits
+- **Others**: Generally lower cost but may have stricter rate limits
+
+To manage costs and rate limits:
+
+1. Use caching to avoid redundant API calls
+2. Start with a single model for exploration
+3. Use more economical models for initial testing
+4. Reserve multi-model consensus for final analysis
+
+### Execution Time
+
+Typical execution times:
+
+- Single model annotation: 5-30 seconds per cluster
+- Multi-model consensus: 1-5 minutes for a typical dataset
+- Discussion process: Additional 1-3 minutes per controversial cluster
+
+To improve performance:
+
+1. Use a smaller `top_gene_count` for faster execution
+2. Enable caching to reuse results
+3. Use a higher `discussion_threshold` to reduce the number of clusters that require discussion
+
+## Next Steps
+
+Now that you understand the detailed usage of mLLMCelltype, you can explore:
+
+- [Consensus Annotation Principles](05-consensus-principles.html): Learn about the technical principles
+- [Visualization Guide](06-visualization-guide.html): Create publication-ready visualizations
+- [FAQ](07-faq.html): Find answers to common questions
+- [Advanced Features](08-advanced-features.html): Explore hierarchical annotation and other advanced features

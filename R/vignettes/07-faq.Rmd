@@ -1,0 +1,375 @@
+---
+title: "Frequently Asked Questions"
+author: "Chen Yang"
+date: "`r Sys.Date()`"
+output: 
+  html_document:
+    toc: true
+    toc_float: true
+    toc_depth: 3
+    theme: flatly
+vignette: >
+  %\VignetteIndexEntry{Frequently Asked Questions}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+  echo = TRUE,
+  message = FALSE,
+  warning = FALSE,
+  eval = FALSE
+)
+```
+
+<img src="../man/figures/logo.png" align="right" height="139" />
+
+# Frequently Asked Questions
+
+This document addresses common questions about using mLLMCelltype for cell type annotation in single-cell RNA sequencing data.
+
+## General Questions
+
+### What makes mLLMCelltype different from other cell type annotation tools?
+
+mLLMCelltype differs from traditional cell type annotation tools in several key ways:
+
+1. **No reference dataset required**: Unlike reference-based methods, mLLMCelltype doesn't require a pre-existing reference dataset.
+
+2. **Multi-model consensus**: mLLMCelltype leverages multiple large language models to achieve more reliable annotations than any single model could provide.
+
+3. **Transparent reasoning**: The package provides complete reasoning chains for annotations, making the process interpretable and transparent.
+
+4. **Uncertainty quantification**: mLLMCelltype provides explicit uncertainty metrics (consensus proportion and Shannon entropy) to identify ambiguous cell populations.
+
+5. **Structured deliberation**: For controversial clusters, mLLMCelltype initiates a structured discussion process among models to reach a more reliable consensus.
+
+### Which tissues and species does mLLMCelltype support?
+
+mLLMCelltype can annotate cell types from virtually any tissue and species, as it relies on the biological knowledge embedded in large language models rather than pre-defined reference datasets. However, performance may vary depending on how well-characterized the tissue is in the scientific literature.
+
+The package has been extensively tested on:
+- Human tissues (PBMC, bone marrow, brain, lung, liver, kidney, etc.)
+- Mouse tissues (brain, lung, kidney, etc.)
+- Other model organisms (zebrafish, fruit fly, etc.)
+
+For very specialized or poorly characterized tissues, the uncertainty metrics will help identify clusters that may require expert review.
+
+### How accurate is mLLMCelltype compared to other methods?
+
+In our benchmarking studies (see our [paper](https://doi.org/10.1101/2025.04.10.647852)), mLLMCelltype consistently outperformed both traditional annotation methods and single-LLM approaches:
+
+- Compared to reference-based methods (e.g., SingleR, Seurat label transfer), mLLMCelltype showed comparable or better performance without requiring a reference dataset.
+- Compared to marker-based methods (e.g., SCINA, CellAssign), mLLMCelltype demonstrated higher accuracy and flexibility.
+- Compared to single-LLM approaches, the consensus mechanism improved accuracy by 15-30% depending on the tissue type.
+
+The accuracy advantage is particularly pronounced for rare cell types and tissues with limited reference data.
+
+## Technical Questions
+
+### How does mLLMCelltype handle 0-based vs. 1-based cluster indices?
+
+mLLMCelltype strictly works with 0-based cluster indices, which is compatible with Seurat's default indexing. This means:
+
+- Cluster indices should start from 0, not 1
+- If your data uses 1-based indexing, you need to convert it to 0-based before using mLLMCelltype
+- The package performs validation to ensure that cluster indices start from 0
+
+This design choice was made to ensure compatibility with Seurat, which is one of the most widely used single-cell analysis frameworks.
+
+### What is the recommended number of marker genes per cluster?
+
+The default setting uses the top 10 marker genes per cluster, which works well for most scenarios. However, you can adjust this using the `top_gene_count` parameter:
+
+- For well-characterized cell types: 5-10 marker genes is usually sufficient
+- For rare or poorly characterized cell types: 10-20 marker genes may be beneficial
+- For noisy data: Fewer genes (5-7) might give better results by focusing on the strongest signals
+
+The optimal number depends on the quality of your marker genes and the complexity of the tissue. We recommend starting with the default of 10 and adjusting based on the results.
+
+### How does caching work in mLLMCelltype?
+
+mLLMCelltype implements a caching system to avoid redundant API calls, which saves time and reduces costs:
+
+- By default, caching is enabled (`cache = TRUE`)
+- The cache is based on a hash of the input data, model, and other parameters
+- Results are stored in a local directory (default: a temporary directory)
+- You can specify a custom cache directory using the `cache_dir` parameter
+
+To clear the cache:
+
+```r
+cache_manager <- CacheManager$new()
+cache_manager$clear_cache()
+```
+
+To disable caching for a specific run:
+
+```r
+results <- annotate_cell_types(..., cache = FALSE)
+```
+
+### How does mLLMCelltype handle rate limits and API errors?
+
+The package includes robust error handling for API calls:
+
+- Automatic retries: Failed API calls are automatically retried up to `max_retries` times (default: 3)
+- Exponential backoff: Each retry waits longer to accommodate rate limits
+- Detailed error messages: When an API call fails permanently, the error message includes details to help diagnose the issue
+
+If you're processing many clusters, you might encounter rate limits. In this case:
+
+1. Increase the `timeout` parameter (default: 60 seconds)
+2. Reduce the number of models used for initial annotation
+3. Process batches of clusters separately with pauses between batches
+
+## Performance and Optimization
+
+### How long does it take to run mLLMCelltype?
+
+The runtime depends on several factors:
+
+- **Number of clusters**: Each cluster requires separate API calls
+- **Number of models**: More models means more API calls
+- **Discussion process**: Controversial clusters require additional API calls for discussion
+- **API response times**: Different providers have different response times
+- **Network conditions**: Internet speed and reliability affect performance
+
+Typical runtimes:
+- Single model, 10 clusters: 1-2 minutes
+- Multi-model consensus (3 models), 10 clusters: 3-5 minutes
+- Multi-model consensus with discussion, 10 clusters: 5-10 minutes
+
+To optimize runtime:
+- Enable caching to reuse results
+- Start with fewer models for initial exploration
+- Use a higher `discussion_threshold` to reduce the number of controversial clusters
+- Process large datasets in batches
+
+### What are the API costs associated with using mLLMCelltype?
+
+The API costs depend on the models you use and the number of clusters:
+
+- **OpenAI models** (GPT-4o, etc.): $0.01-0.05 per cluster for annotation
+- **Anthropic models** (Claude 3.7, etc.): $0.01-0.03 per cluster for annotation
+- **Google models** (Gemini 1.5, etc.): $0.001-0.01 per cluster for annotation
+- **Other models**: Generally lower cost
+
+For a typical dataset with 10-20 clusters:
+- Single model annotation: $0.10-1.00 total
+- Multi-model consensus (3 models): $0.30-3.00 total
+- With discussion process: Additional $0.10-1.00
+
+To reduce costs:
+- Use caching to avoid redundant API calls
+- Start with more economical models
+- Use fewer models for initial exploration
+- Reserve multi-model consensus for final analysis
+
+### How can I improve the accuracy of annotations?
+
+To get the most accurate annotations:
+
+1. **Use multiple high-quality models**: Include diverse, high-performing models like Claude 3.7, GPT-4o, and Gemini 1.5
+
+2. **Provide good marker genes**: Use robust differential expression analysis to identify strong marker genes
+
+3. **Specify the correct tissue**: Always provide the correct tissue name to give models the proper context
+
+4. **Review uncertainty metrics**: Pay attention to consensus proportion and Shannon entropy to identify clusters that may need manual review
+
+5. **Examine discussion logs**: For controversial clusters, review the discussion logs to understand the reasoning
+
+6. **Iterate if needed**: If results are unsatisfactory, try adjusting parameters or providing additional context
+
+## Troubleshooting
+
+### Why am I getting different results with the same input?
+
+There are several possible reasons for getting different results with the same input:
+
+1. **Model updates**: LLMs are regularly updated, which can change their outputs
+
+2. **Temperature/sampling**: Some randomness is inherent in LLM outputs
+
+3. **Context window limitations**: Different runs might include slightly different context
+
+4. **API changes**: Providers may change how their APIs work
+
+To ensure reproducibility:
+- Use caching to reuse results
+- Specify model versions explicitly when available
+- Set a random seed if the API supports it
+- Save and document your results
+
+### I'm getting an error about invalid cluster indices. What should I do?
+
+If you see an error like "Cluster indices must start from 0", it means your data is using 1-based indexing instead of the required 0-based indexing. To fix this:
+
+1. Check your cluster column to ensure it starts from 0, not 1
+2. If using Seurat's FindAllMarkers output, this should already be 0-based
+3. If your data is 1-based, convert it:
+
+```r
+# Convert 1-based to 0-based indexing
+markers$cluster <- markers$cluster - 1
+```
+
+### How do I handle "API key not found" errors?
+
+If you get an error about missing API keys:
+
+1. **Check environment variables**: Ensure your API keys are set correctly in your `.env` file or environment
+
+2. **Provide keys directly**: Pass the API key directly to the function:
+```r
+results <- annotate_cell_types(..., api_key = "your-api-key")
+```
+
+3. **Check provider name**: Make sure you're using the correct provider name for your API key:
+```r
+# Set API key for a specific provider
+Sys.setenv(ANTHROPIC_API_KEY = "your-anthropic-key")
+```
+
+4. **Verify key validity**: Check if your API key is still valid by testing it directly with the provider's API
+
+### Why are some cell types not being correctly identified?
+
+If specific cell types are not being correctly identified:
+
+1. **Check marker genes**: Ensure the marker genes for these cell types are strong and specific
+
+2. **Provide more context**: Specify the tissue type accurately to give models the right context
+
+3. **Use more models**: Different models have different strengths; using multiple models improves coverage
+
+4. **Increase marker count**: Try increasing `top_gene_count` to include more marker genes
+
+5. **Review discussion logs**: For controversial clusters, examine the discussion to understand the reasoning
+
+6. **Consider rare cell types**: Some cell types may be poorly represented in the training data of LLMs
+
+## Integration with Other Tools
+
+### How does mLLMCelltype integrate with Seurat?
+
+mLLMCelltype integrates seamlessly with Seurat:
+
+1. **Input**: You can directly use Seurat's `FindAllMarkers()` output as input
+
+2. **Output**: Annotation results can be easily added to your Seurat object:
+```r
+seurat_obj$cell_type_consensus <- plyr::mapvalues(
+  x = as.character(Idents(seurat_obj)),
+  from = as.character(0:(length(consensus_results$final_consensus)-1)),
+  to = consensus_results$final_consensus
+)
+```
+
+3. **Visualization**: Use Seurat's visualization functions with the added annotations:
+```r
+DimPlot(seurat_obj, group.by = "cell_type_consensus", label = TRUE)
+```
+
+### Can I use mLLMCelltype with Scanpy/AnnData in R?
+
+Yes, you can use mLLMCelltype with Scanpy/AnnData objects in R:
+
+1. **Extract marker genes**: Export marker genes from your Scanpy analysis to a CSV file
+
+2. **Run mLLMCelltype**: Use the CSV file as input to mLLMCelltype
+
+3. **Import results**: Add the annotation results back to your AnnData object
+
+Alternatively, you can use the Python version of mLLMCelltype for direct integration with Scanpy.
+
+### How can I combine mLLMCelltype with traditional annotation methods?
+
+mLLMCelltype can be used alongside traditional annotation methods:
+
+1. **Complementary approach**: Use both methods and compare results
+
+2. **Validation**: Use mLLMCelltype to validate annotations from reference-based methods
+
+3. **Hybrid approach**: Use reference-based methods for well-characterized cell types and mLLMCelltype for novel or rare cell types
+
+4. **Ensemble method**: Create a consensus between mLLMCelltype and traditional methods
+
+## Advanced Usage
+
+### How can I customize the prompts used by mLLMCelltype?
+
+While mLLMCelltype uses carefully designed prompts, advanced users can customize them:
+
+```r
+# Create a custom annotation prompt
+custom_prompt <- create_annotation_prompt(
+  marker_data = your_markers,
+  tissue_name = "your_tissue",
+  top_gene_count = 10,
+  custom_instructions = "Also consider developmental stage and activation state."
+)
+
+# Use the custom prompt directly
+response <- get_model_response(
+  prompt = custom_prompt,
+  model = "claude-3-7-sonnet-20250219",
+  api_key = your_api_key
+)
+```
+
+### Can I add my own custom LLM models?
+
+Yes, you can register custom models and providers:
+
+```r
+# Register a custom provider
+register_custom_provider(
+  provider_name = "my_provider",
+  api_url = "https://api.my-provider.com/v1/chat/completions",
+  api_key_env_var = "MY_PROVIDER_API_KEY",
+  process_function = function(prompt, api_key, ...) {
+    # Custom implementation
+  }
+)
+
+# Register a custom model
+register_custom_model(
+  model_name = "my-custom-model",
+  provider = "my_provider"
+)
+
+# Use the custom model
+results <- annotate_cell_types(
+  input = your_markers,
+  tissue_name = "your_tissue",
+  model = "my-custom-model",
+  api_key = your_api_key
+)
+```
+
+### How can I contribute to mLLMCelltype?
+
+We welcome contributions! Here are some ways to contribute:
+
+1. **Report issues**: Report bugs or suggest features on our [GitHub repository](https://github.com/cafferychen777/mLLMCelltype/issues)
+
+2. **Improve documentation**: Help us improve documentation and examples
+
+3. **Add new models**: Implement support for new LLM models
+
+4. **Share benchmarks**: Share your benchmarking results with different tissues and species
+
+5. **Develop new features**: Contribute code for new features or improvements
+
+See our [Contributing Guide](09-contributing-guide.html) for more details.
+
+## Next Steps
+
+Now that you have answers to common questions, you can explore:
+
+- [Advanced Features](08-advanced-features.html): Learn about hierarchical annotation and other advanced features
+- [Contributing Guide](09-contributing-guide.html): Find out how to contribute to the project
+- [Version History](10-version-history.html): Review the development history of mLLMCelltype

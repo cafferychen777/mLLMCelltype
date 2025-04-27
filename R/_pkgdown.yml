@@ -1,0 +1,223 @@
+url: https://cafferychen777.github.io/mLLMCelltype/
+
+template:
+  bootstrap: 5
+  bootswatch: flatly
+  bslib:
+    primary: "#0054AD"
+    base_font: {google: "Roboto"}
+    heading_font: {google: "Roboto Slab"}
+    code_font: {google: "Fira Mono"}
+  includes:
+    in_header: |
+      <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+      <style>
+        /* Fix for navbar overlapping main content */
+        main {
+          padding-top: 70px; /* Adjust this value as needed */
+        }
+        /* Improve spacing for better readability */
+        .page-header {
+          margin-top: 20px;
+        }
+        /* Ensure content has enough space from the top on mobile */
+        @media (max-width: 767px) {
+          main {
+            padding-top: 80px; /* Slightly more padding on mobile */
+          }
+        }
+        /* Better spacing for section headers */
+        h2, h3, h4 {
+          margin-top: 2rem;
+          margin-bottom: 1rem;
+        }
+      </style>
+  opengraph:
+    image:
+      src: man/figures/social-card.png
+      alt: "mLLMCelltype - Cell Type Annotation Using Large Language Models"
+    twitter:
+      card: summary_large_image
+      creator: "@ChenYang_cs"
+      site: "@ChenYang_cs"
+
+favicon: man/figures/logo.png
+logo: man/figures/logo.png
+
+development:
+  mode: auto
+
+navbar:
+  structure:
+    left:  [intro, reference, articles, tutorials, news]
+    right: [paper, github]
+  components:
+    intro:
+      text: Introduction
+      href: articles/01-introduction.html
+    reference:
+      text: Function Reference
+      href: reference/index.html
+    articles:
+      text: Articles
+      menu:
+      - text: All Articles
+        href: articles/index.html
+      - text: "---"
+      - text: Getting Started
+      - text: Introduction to mLLMCelltype
+        href: articles/01-introduction.html
+      - text: Installation Guide
+        href: articles/02-installation.html
+      - text: Getting Started
+        href: articles/03-getting-started.html
+      - text: "---"
+      - text: Usage and Features
+      - text: Usage Tutorial
+        href: articles/04-usage-tutorial.html
+      - text: Consensus Annotation Principles
+        href: articles/05-consensus-principles.html
+      - text: Visualization Guide
+        href: articles/06-visualization-guide.html
+      - text: "---"
+      - text: Advanced Topics
+      - text: Frequently Asked Questions
+        href: articles/07-faq.html
+      - text: Advanced Features & Case Studies
+        href: articles/08-advanced-features.html
+      - text: "---"
+      - text: Development
+      - text: Contributing Guide
+        href: articles/09-contributing-guide.html
+      - text: Version History & Changelog
+        href: articles/10-version-history.html
+    paper:
+      icon: bi-file-earmark-text
+      href: https://www.biorxiv.org/content/10.1101/2025.04.10.647852v1
+      aria-label: Paper
+    github:
+      icon: bi-github
+      href: https://github.com/cafferychen777/mLLMCelltype
+      aria-label: GitHub
+
+reference:
+  - title: "Core Functions"
+    desc: >
+      Core functions for cell type annotation
+    contents:
+      - annotate_cell_types
+      - interactive_consensus_annotation
+      - compare_model_predictions
+  - title: "API and Providers"
+    desc: "API processing functions for different LLM providers"
+    contents:
+      - get_provider
+      - get_api_key
+      - process_openrouter
+      - starts_with("register_")
+      - list_custom_providers
+      - list_custom_models
+  - title: "Utility Functions"
+    desc: "Helper tools and utility functions"
+    contents:
+      - CacheManager
+      - DiscussionLogger
+      - create_annotation_prompt
+      - write_log
+
+home:
+  sidebar:
+    structure: [links, license, community, citation, authors, dev]
+  citation:
+    title: Citation
+    text: |
+      If you use mLLMCelltype in your research, please cite our paper:
+      
+      <p>Yang, C., Zhang, X., & Chen, J. (2025).
+      <em>Large Language Model Consensus Substantially Improves the Cell Type Annotation Accuracy for scRNA-seq Data</em>.
+      bioRxiv. <a href="https://doi.org/10.1101/2025.04.10.647852">doi:10.1101/2025.04.10.647852</a>.</p>
+      
+      ```bibtex
+      @article{Yang2025.04.10.647852,
+        author = {Chen Yang and Xianyang Zhang and Jun Chen},
+        title = {Large Language Model Consensus Substantially Improves the Cell Type Annotation Accuracy for scRNA-seq Data},
+        elocation-id = {2025.04.10.647852},
+        year = {2025},
+        doi = {10.1101/2025.04.10.647852},
+        publisher = {Cold Spring Harbor Laboratory},
+        URL = {https://www.biorxiv.org/content/early/2025/04/17/2025.04.10.647852},
+        journal = {bioRxiv}
+      }
+      ```
+  title: mLLMCelltype
+  description: |
+    <div class="row">
+      <div class="col-md-3">
+        <img src="man/figures/logo.png" alt="mLLMCelltype logo" class="img-fluid" style="max-width: 100%; margin-bottom: 15px;">
+      </div>
+      <div class="col-md-9">
+        <p>mLLMCelltype is an R package that leverages various large language models (LLMs) for automated cell type annotation in single-cell RNA sequencing data.</p>
+        <p>The package implements a <strong>multi-LLM consensus architecture</strong> where multiple LLMs collaborate through structured deliberation to provide more reliable annotations than any single model could achieve alone.</p>
+        <p>Key features include:</p>
+        <ul>
+          <li>Multi-LLM consensus for robust annotations</li>
+          <li>Structured deliberation process for controversial clusters</li>
+          <li>Uncertainty quantification with consensus proportion and Shannon entropy</li>
+          <li>No reference dataset required</li>
+          <li>Support for multiple LLM providers:
+            <ul>
+              <li>OpenAI (GPT-4o, GPT-4.1, GPT-3.5-Turbo, O1 series)</li>
+              <li>Anthropic (Claude 3.7 Sonnet, Claude 3.5 Sonnet/Haiku/Opus)</li>
+              <li>Google (Gemini 2.5 Pro, Gemini 2.0, Gemini 1.5 series)</li>
+              <li>X.AI (Grok-3, Grok-3 Fast, Grok-3 Mini series)</li>
+              <li>DeepSeek (DeepSeek Chat, DeepSeek Reasoner)</li>
+              <li>Qwen (Qwen Max)</li>
+              <li>Zhipu (GLM-4 Plus, GLM-3 Turbo)</li>
+              <li>MiniMax (MiniMax Text)</li>
+              <li>Stepfun (Step-2, Step-1 series)</li>
+              <li>OpenRouter (access to Meta Llama, Mistral, Microsoft, Perplexity, Cohere, and more)</li>
+            </ul>
+          </li>
+          <li>Seamless integration with Seurat</li>
+        </ul>
+        <p>For more details, please refer to our paper: <a href="https://doi.org/10.1101/2025.04.10.647852" class="external-link">doi:10.1101/2025.04.10.647852</a></p>
+      </div>
+    </div>
+  links:
+    - text: Report Issues
+      href: https://github.com/cafferychen777/mLLMCelltype/issues
+    - text: Feature Requests
+      href: https://github.com/cafferychen777/mLLMCelltype/issues
+    - text: GitHub Repository
+      href: https://github.com/cafferychen777/mLLMCelltype
+
+footer:
+  structure:
+    left: developed_by
+    right: [built_with, legal]
+  components:
+    legal: <br>© 2024 Chen Yang
+
+articles:
+  - title: Getting Started
+    navbar: Getting Started
+    contents:
+      - 01-introduction
+      - 02-installation
+      - 03-getting-started
+  - title: Usage and Features
+    navbar: Usage and Features
+    contents:
+      - 04-usage-tutorial
+      - 05-consensus-principles
+      - 06-visualization-guide
+  - title: Advanced Topics
+    navbar: Advanced Topics
+    contents:
+      - 07-faq
+      - 08-advanced-features
+  - title: Development
+    navbar: Development
+    contents:
+      - 09-contributing-guide
+      - 10-version-history

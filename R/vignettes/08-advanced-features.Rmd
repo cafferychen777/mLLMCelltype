@@ -1,0 +1,587 @@
+---
+title: "Advanced Features & Case Studies"
+author: "Chen Yang"
+date: "`r Sys.Date()`"
+output: 
+  html_document:
+    toc: true
+    toc_float: true
+    toc_depth: 3
+    theme: flatly
+vignette: >
+  %\VignetteIndexEntry{Advanced Features & Case Studies}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+  echo = TRUE,
+  message = FALSE,
+  warning = FALSE,
+  eval = FALSE
+)
+```
+
+<img src="../man/figures/logo.png" align="right" height="139" />
+
+# Advanced Features & Case Studies
+
+This article explores advanced features of mLLMCelltype and presents real-world case studies demonstrating its application in various research contexts.
+
+## Hierarchical Cell Type Annotation
+
+### Understanding Hierarchical Annotation
+
+Cell types often exist in hierarchical relationships. For example, T cells can be further classified into CD4+ T cells, CD8+ T cells, regulatory T cells, etc. mLLMCelltype supports hierarchical annotation to capture these relationships.
+
+### Implementing Hierarchical Annotation
+
+To perform hierarchical annotation:
+
+```{r}
+library(mLLMCelltype)
+library(Seurat)
+
+# Step 1: Perform initial high-level annotation
+high_level_results <- annotate_cell_types(
+  input = marker_data,
+  tissue_name = "human PBMC",
+  model = "claude-3-7-sonnet-20250219",
+  api_key = Sys.getenv("ANTHROPIC_API_KEY"),
+  top_gene_count = 10
+)
+
+# Step 2: Add high-level annotations to Seurat object
+seurat_obj$high_level_celltype <- plyr::mapvalues(
+  x = as.character(Idents(seurat_obj)),
+  from = as.character(0:(length(high_level_results)-1)),
+  to = high_level_results
+)
+
+# Step 3: Subset T cells for further annotation
+t_cells <- subset(seurat_obj, high_level_celltype == "T cells")
+
+# Step 4: Find markers within T cells
+t_cell_markers <- FindAllMarkers(t_cells, only.pos = TRUE, min.pct = 0.25, logfc.threshold = 0.25)
+
+# Step 5: Perform T cell subtype annotation
+t_cell_subtypes <- annotate_cell_types(
+  input = t_cell_markers,
+  tissue_name = "human PBMC T cells",
+  model = "claude-3-7-sonnet-20250219",
+  api_key = Sys.getenv("ANTHROPIC_API_KEY"),
+  top_gene_count = 10
+)
+
+# Step 6: Add T cell subtypes back to original object
+t_cell_barcodes <- WhichCells(t_cells)
+seurat_obj$detailed_celltype <- seurat_obj$high_level_celltype
+seurat_obj$detailed_celltype[t_cell_barcodes] <- plyr::mapvalues(
+  x = as.character(Idents(t_cells)),
+  from = as.character(0:(length(t_cell_subtypes)-1)),
+  to = paste0("T cells: ", t_cell_subtypes)
+)
+```
+
+### Ensuring Parent-Child Consistency
+
+To ensure consistency between hierarchical levels:
+
+```{r}
+# Function to check parent-child consistency
+check_hierarchy_consistency <- function(high_level, detailed_level) {
+  # Extract parent type from detailed annotation (before the colon)
+  parent_from_detailed <- sapply(strsplit(detailed_level, ": "), function(x) x[1])
+  
+  # Check if parent matches high-level annotation
+  consistent <- parent_from_detailed == high_level
+  
+  # Return consistency check results
+  data.frame(
+    high_level = high_level,
+    detailed_level = detailed_level,
+    consistent = consistent
+  )
+}
+
+# Apply consistency check
+hierarchy_check <- check_hierarchy_consistency(
+  seurat_obj$high_level_celltype,
+  seurat_obj$detailed_celltype
+)
+
+# Identify inconsistencies
+inconsistencies <- hierarchy_check[!hierarchy_check$consistent, ]
+print(inconsistencies)
+```
+
+## Handling Noisy Input Data
+
+### Strategies for Noisy Marker Genes
+
+Real-world scRNA-seq data often contains noise. Here are strategies for handling noisy input:
+
+#### 1. Adjust the top_gene_count parameter
+
+```{r}
+# For noisy data, use fewer top genes
+results_fewer_genes <- annotate_cell_types(
+  input = noisy_markers,
+  tissue_name = "human PBMC",
+  model = "claude-3-7-sonnet-20250219",
+  api_key = Sys.getenv("ANTHROPIC_API_KEY"),
+  top_gene_count = 5  # Use fewer genes to focus on strongest signals
+)
+```
+
+#### 2. Use stricter filtering for marker genes
+
+```{r}
+# Apply stricter filtering to marker genes
+filtered_markers <- marker_data %>%
+  filter(p_val_adj < 0.01, avg_log2FC > 1.0)  # Stricter thresholds
+
+# Annotate with filtered markers
+results_filtered <- annotate_cell_types(
+  input = filtered_markers,
+  tissue_name = "human PBMC",
+  model = "claude-3-7-sonnet-20250219",
+  api_key = Sys.getenv("ANTHROPIC_API_KEY")
+)
+```
+
+#### 3. Use multi-model consensus
+
+```{r}
+# Use multiple models to overcome noise
+models <- c(
+  "claude-3-7-sonnet-20250219",
+  "gpt-4o",
+  "gemini-1.5-pro"
+)
+
+# Run annotation with multiple models
+results <- list()
+for (model in models) {
+  provider <- get_provider(model)
+  api_key <- api_keys[[provider]]
+  
+  results[[model]] <- annotate_cell_types(
+    input = noisy_markers,
+    tissue_name = "human PBMC",
+    model = model,
+    api_key = api_key
+  )
+}
+
+# Create consensus
+consensus_results <- create_consensus(
+  results = results,
+  input = noisy_markers,
+  tissue_name = "human PBMC",
+  model = "claude-3-7-sonnet-20250219",
+  api_key = api_keys[["anthropic"]]
+)
+```
+
+### Case Study: Annotation with Batch Effects
+
+This case study demonstrates how mLLMCelltype handles data with batch effects:
+
+```{r}
+# Simulated data with batch effects
+# In real scenarios, this would be your actual data with batch effects
+batch_affected_markers <- read.csv("path/to/batch_affected_markers.csv")
+
+# Approach 1: Use multi-model consensus
+batch_consensus <- create_consensus(
+  results = batch_results,  # Results from multiple models
+  input = batch_affected_markers,
+  tissue_name = "mouse brain",
+  model = "claude-3-7-sonnet-20250219",
+  api_key = Sys.getenv("ANTHROPIC_API_KEY"),
+  discussion_threshold = 0.4  # Lower threshold to discuss more clusters
+)
+
+# Approach 2: Include batch information in tissue context
+batch_aware_results <- annotate_cell_types(
+  input = batch_affected_markers,
+  tissue_name = "mouse brain with technical batch effects",  # Include batch context
+  model = "claude-3-7-sonnet-20250219",
+  api_key = Sys.getenv("ANTHROPIC_API_KEY")
+)
+```
+
+## Integration with External Knowledge
+
+### Incorporating Prior Knowledge
+
+You can incorporate prior biological knowledge to improve annotations:
+
+```{r}
+# Create a custom annotation prompt with prior knowledge
+custom_prompt <- create_annotation_prompt(
+  marker_data = marker_data,
+  tissue_name = "human PBMC",
+  top_gene_count = 10,
+  custom_instructions = "
+    Consider the following prior knowledge:
+    1. This sample is from a patient with rheumatoid arthritis
+    2. We expect to see activated T cells and B cells
+    3. Previous studies have identified CXCR4-high monocytes in this condition
+    Please take this information into account when making annotations.
+  "
+)
+
+# Use the custom prompt
+custom_results <- get_model_response(
+  prompt = custom_prompt,
+  model = "claude-3-7-sonnet-20250219",
+  api_key = Sys.getenv("ANTHROPIC_API_KEY")
+)
+```
+
+### Integrating with External Databases
+
+```{r}
+# Example of integrating with CellMarker database
+library(httr)
+library(jsonlite)
+
+# Function to query CellMarker database
+query_cellmarker <- function(cell_type, species = "Human") {
+  url <- paste0(
+    "http://bio-bigdata.hrbmu.edu.cn/CellMarker/search.do?species=", 
+    URLencode(species), 
+    "&cellType=", 
+    URLencode(cell_type)
+  )
+  
+  response <- GET(url)
+  content <- content(response, "text")
+  
+  # Parse the response (simplified example)
+  # In practice, you would need to parse the HTML response
+  markers <- c("Example marker 1", "Example marker 2")
+  
+  return(markers)
+}
+
+# Enhance annotation with CellMarker database
+enhance_annotation_with_cellmarker <- function(annotation_results) {
+  enhanced_results <- list()
+  
+  for (i in 1:length(annotation_results)) {
+    cell_type <- annotation_results[i]
+    database_markers <- query_cellmarker(cell_type)
+    
+    enhanced_results[[i]] <- list(
+      cell_type = cell_type,
+      database_markers = database_markers
+    )
+  }
+  
+  return(enhanced_results)
+}
+
+# Apply enhancement
+enhanced_annotations <- enhance_annotation_with_cellmarker(results)
+```
+
+## Case Studies
+
+### Case Study 1: PBMC Dataset
+
+This case study demonstrates the application of mLLMCelltype to a standard PBMC dataset:
+
+```{r}
+library(Seurat)
+library(mLLMCelltype)
+library(ggplot2)
+library(patchwork)
+
+# Load PBMC data
+pbmc <- readRDS("path/to/pbmc_data.rds")
+
+# Find marker genes
+pbmc_markers <- FindAllMarkers(pbmc, only.pos = TRUE, min.pct = 0.25, logfc.threshold = 0.25)
+
+# Define models to use
+models <- c(
+  "claude-3-7-sonnet-20250219",
+  "gpt-4o",
+  "gemini-1.5-pro"
+)
+
+# API keys
+api_keys <- list(
+  anthropic = Sys.getenv("ANTHROPIC_API_KEY"),
+  openai = Sys.getenv("OPENAI_API_KEY"),
+  gemini = Sys.getenv("GEMINI_API_KEY")
+)
+
+# Run annotation with multiple models
+results <- list()
+for (model in models) {
+  provider <- get_provider(model)
+  api_key <- api_keys[[provider]]
+  
+  results[[model]] <- annotate_cell_types(
+    input = pbmc_markers,
+    tissue_name = "human PBMC",
+    model = model,
+    api_key = api_key
+  )
+}
+
+# Create consensus
+consensus_results <- create_consensus(
+  results = results,
+  input = pbmc_markers,
+  tissue_name = "human PBMC",
+  model = "claude-3-7-sonnet-20250219",
+  api_key = api_keys[["anthropic"]]
+)
+
+# Print consensus summary
+print_consensus_summary(consensus_results)
+
+# Add results to Seurat object
+pbmc$cell_type_consensus <- plyr::mapvalues(
+  x = as.character(Idents(pbmc)),
+  from = as.character(0:(length(consensus_results$final_consensus)-1)),
+  to = consensus_results$final_consensus
+)
+
+# Visualize results
+DimPlot(pbmc, group.by = "cell_type_consensus", label = TRUE) +
+  ggtitle("PBMC Cell Types")
+```
+
+### Case Study 2: Rare Cell Type Identification
+
+This case study demonstrates how mLLMCelltype can identify rare cell types:
+
+```{r}
+# Load dataset with rare cell types
+rare_cell_data <- readRDS("path/to/rare_cell_data.rds")
+
+# Find markers
+rare_cell_markers <- FindAllMarkers(rare_cell_data, only.pos = TRUE, min.pct = 0.25, logfc.threshold = 0.25)
+
+# Use multiple models with higher top_gene_count for rare cells
+models <- c(
+  "claude-3-7-sonnet-20250219",
+  "gpt-4o",
+  "gemini-1.5-pro"
+)
+
+# Run annotation with multiple models
+rare_cell_results <- list()
+for (model in models) {
+  provider <- get_provider(model)
+  api_key <- api_keys[[provider]]
+  
+  rare_cell_results[[model]] <- annotate_cell_types(
+    input = rare_cell_markers,
+    tissue_name = "human bone marrow",
+    model = model,
+    api_key = api_key,
+    top_gene_count = 15  # Use more genes for rare cell types
+  )
+}
+
+# Create consensus with lower discussion threshold
+rare_cell_consensus <- create_consensus(
+  results = rare_cell_results,
+  input = rare_cell_markers,
+  tissue_name = "human bone marrow",
+  model = "claude-3-7-sonnet-20250219",
+  api_key = api_keys[["anthropic"]],
+  discussion_threshold = 0.4  # Lower threshold to discuss more clusters
+)
+
+# Analyze discussion logs for rare cell clusters
+rare_cell_discussions <- rare_cell_consensus$discussion_logs
+```
+
+### Case Study 3: Cross-Species Comparison
+
+This case study demonstrates how mLLMCelltype can be used for cross-species comparison:
+
+```{r}
+# Load human and mouse brain data
+human_brain <- readRDS("path/to/human_brain.rds")
+mouse_brain <- readRDS("path/to/mouse_brain.rds")
+
+# Find markers for both datasets
+human_markers <- FindAllMarkers(human_brain, only.pos = TRUE, min.pct = 0.25, logfc.threshold = 0.25)
+mouse_markers <- FindAllMarkers(mouse_brain, only.pos = TRUE, min.pct = 0.25, logfc.threshold = 0.25)
+
+# Annotate human brain
+human_results <- annotate_cell_types(
+  input = human_markers,
+  tissue_name = "human brain cortex",
+  model = "claude-3-7-sonnet-20250219",
+  api_key = Sys.getenv("ANTHROPIC_API_KEY")
+)
+
+# Annotate mouse brain
+mouse_results <- annotate_cell_types(
+  input = mouse_markers,
+  tissue_name = "mouse brain cortex",
+  model = "claude-3-7-sonnet-20250219",
+  api_key = Sys.getenv("ANTHROPIC_API_KEY")
+)
+
+# Add annotations to Seurat objects
+human_brain$cell_type <- plyr::mapvalues(
+  x = as.character(Idents(human_brain)),
+  from = as.character(0:(length(human_results)-1)),
+  to = human_results
+)
+
+mouse_brain$cell_type <- plyr::mapvalues(
+  x = as.character(Idents(mouse_brain)),
+  from = as.character(0:(length(mouse_results)-1)),
+  to = mouse_results
+)
+
+# Compare cell type proportions
+human_proportions <- table(human_brain$cell_type) / length(human_brain$cell_type)
+mouse_proportions <- table(mouse_brain$cell_type) / length(mouse_brain$cell_type)
+
+# Create comparison plot
+comparison_data <- data.frame(
+  cell_type = names(human_proportions),
+  human = as.numeric(human_proportions),
+  mouse = as.numeric(mouse_proportions)[match(names(human_proportions), names(mouse_proportions))]
+)
+
+ggplot(comparison_data, aes(x = human, y = mouse, label = cell_type)) +
+  geom_point() +
+  geom_text_repel() +
+  geom_abline(slope = 1, intercept = 0, linetype = "dashed") +
+  labs(x = "Human Brain Proportion", y = "Mouse Brain Proportion", 
+       title = "Cross-Species Cell Type Comparison") +
+  theme_minimal()
+```
+
+## Performance Benchmarking
+
+### Accuracy Benchmarking
+
+This section presents benchmarking results comparing mLLMCelltype to other annotation methods:
+
+```{r}
+# Load benchmark results
+benchmark_results <- read.csv("path/to/benchmark_results.csv")
+
+# Plot accuracy comparison
+ggplot(benchmark_results, aes(x = Method, y = Accuracy, fill = Method)) +
+  geom_bar(stat = "identity") +
+  geom_errorbar(aes(ymin = Accuracy - SE, ymax = Accuracy + SE), width = 0.2) +
+  labs(title = "Cell Type Annotation Accuracy Comparison",
+       x = "Method", y = "Accuracy (%)") +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+```
+
+### Runtime and Cost Comparison
+
+```{r}
+# Load runtime and cost data
+performance_data <- read.csv("path/to/performance_data.csv")
+
+# Plot runtime comparison
+p1 <- ggplot(performance_data, aes(x = Method, y = Runtime_seconds, fill = Method)) +
+  geom_bar(stat = "identity") +
+  labs(title = "Runtime Comparison",
+       x = "Method", y = "Runtime (seconds)") +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+
+# Plot cost comparison
+p2 <- ggplot(performance_data, aes(x = Method, y = Cost_USD, fill = Method)) +
+  geom_bar(stat = "identity") +
+  labs(title = "Cost Comparison",
+       x = "Method", y = "Cost (USD)") +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+
+p1 / p2
+```
+
+## Advanced Customization
+
+### Custom Processing Functions
+
+For advanced users, mLLMCelltype allows custom processing functions:
+
+```{r}
+# Define a custom processing function
+custom_process <- function(prompt, api_key, timeout = 60, max_retries = 3) {
+  # Custom implementation to process prompts and get responses
+  # This is a simplified example
+  response <- "Custom cell type: T cells"
+  return(response)
+}
+
+# Register the custom processing function
+register_custom_provider(
+  provider_name = "custom_provider",
+  api_url = "https://api.custom-provider.com/v1/chat/completions",
+  api_key_env_var = "CUSTOM_API_KEY",
+  process_function = custom_process
+)
+
+# Register a custom model
+register_custom_model(
+  model_name = "custom-model",
+  provider = "custom_provider"
+)
+
+# Use the custom model
+custom_results <- annotate_cell_types(
+  input = marker_data,
+  tissue_name = "human PBMC",
+  model = "custom-model",
+  api_key = "your-custom-api-key"
+)
+```
+
+### Advanced Logging
+
+mLLMCelltype provides advanced logging capabilities:
+
+```{r}
+# Create a custom logger
+logger <- DiscussionLogger$new(log_file = "path/to/log_file.txt")
+
+# Log a message
+logger$log("Starting annotation process")
+
+# Log with a specific level
+logger$log("Detailed information", level = "DEBUG")
+
+# Log an error
+logger$log("An error occurred", level = "ERROR")
+
+# Use the logger in annotation
+results <- annotate_cell_types(
+  input = marker_data,
+  tissue_name = "human PBMC",
+  model = "claude-3-7-sonnet-20250219",
+  api_key = Sys.getenv("ANTHROPIC_API_KEY"),
+  verbose = TRUE  # Enable detailed logging
+)
+```
+
+## Next Steps
+
+Now that you've explored the advanced features of mLLMCelltype, you can:
+
+- [Contribute to the project](09-contributing-guide.html): Learn how to contribute to mLLMCelltype
+- [Review the version history](10-version-history.html): Explore the development history of the package
+- [Return to the introduction](01-introduction.html): Review the basic concepts

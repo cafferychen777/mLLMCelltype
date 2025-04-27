@@ -1,0 +1,240 @@
+---
+title: "Getting Started with mLLMCelltype"
+author: "Chen Yang"
+date: "`r Sys.Date()`"
+output: 
+  html_document:
+    toc: true
+    toc_float: true
+    toc_depth: 3
+    theme: flatly
+vignette: >
+  %\VignetteIndexEntry{Getting Started with mLLMCelltype}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+  echo = TRUE,
+  message = FALSE,
+  warning = FALSE,
+  eval = FALSE
+)
+```
+
+<img src="../man/figures/logo.png" align="right" height="139" />
+
+# Getting Started with mLLMCelltype
+
+This guide provides a quick introduction to using mLLMCelltype for cell type annotation in single-cell RNA sequencing data. We'll cover the basic workflow, input data requirements, and a simple example to get you started.
+
+## Basic Workflow
+
+The mLLMCelltype workflow consists of these main steps:
+
+1. **Prepare marker gene data** for each cluster
+2. **Run annotation** using one or multiple LLMs
+3. **Create consensus** from multiple model predictions (optional)
+4. **Integrate results** with your Seurat or Scanpy object
+5. **Visualize results** with uncertainty metrics
+
+## Loading the Package
+
+First, load the mLLMCelltype package:
+
+```{r}
+library(mLLMCelltype)
+```
+
+## Input Data Requirements
+
+mLLMCelltype accepts marker gene data in several formats:
+
+### 1. Data Frame Format
+
+A data frame with the following columns:
+- `cluster`: Cluster ID (must be 0-based)
+- `gene`: Gene name/symbol
+- `avg_log2FC` or similar metric: Log fold change
+- `p_val_adj` or similar metric: Adjusted p-value
+
+Example:
+
+```{r}
+# Example marker data frame
+markers_df <- data.frame(
+  cluster = c(0, 0, 0, 1, 1, 1),
+  gene = c("CD3D", "CD3E", "CD2", "CD14", "LYZ", "CST3"),
+  avg_log2FC = c(2.5, 2.3, 2.1, 3.1, 2.8, 2.5),
+  p_val_adj = c(0.001, 0.001, 0.002, 0.0001, 0.0002, 0.0005)
+)
+```
+
+### 2. Seurat FindMarkers Output
+
+You can directly use the output from Seurat's `FindAllMarkers()` function:
+
+```{r}
+# Assuming you have a Seurat object named 'seurat_obj'
+library(Seurat)
+all_markers <- FindAllMarkers(seurat_obj, only.pos = TRUE, min.pct = 0.25, logfc.threshold = 0.25)
+```
+
+### 3. CSV File Path
+
+A path to a CSV file containing marker gene data:
+
+```{r}
+# Path to your CSV file
+markers_file <- "path/to/markers.csv"
+```
+
+### 4. List Format
+
+A list where each element contains marker genes for a cluster:
+
+```{r}
+# Example marker list
+markers_list <- list(
+  "0" = c("CD3D", "CD3E", "CD2", "IL7R", "LTB"),
+  "1" = c("CD14", "LYZ", "CST3", "MS4A7", "FCGR3A")
+)
+```
+
+## Basic Usage Example
+
+Here's a simple example using a single LLM model for annotation:
+
+```{r}
+# Example marker data
+markers <- data.frame(
+  cluster = c(0, 0, 0, 0, 0, 1, 1, 1, 1, 1),
+  gene = c("CD3D", "CD3E", "CD2", "IL7R", "LTB", "CD14", "LYZ", "CST3", "MS4A7", "FCGR3A"),
+  avg_log2FC = c(2.5, 2.3, 2.1, 1.8, 1.7, 3.1, 2.8, 2.5, 2.2, 2.0),
+  p_val_adj = c(0.001, 0.001, 0.002, 0.003, 0.005, 0.0001, 0.0002, 0.0005, 0.001, 0.002)
+)
+
+# Run annotation with a single model
+results <- annotate_cell_types(
+  input = markers,
+  tissue_name = "human PBMC",
+  model = "claude-3-7-sonnet-20250219",
+  api_key = Sys.getenv("ANTHROPIC_API_KEY"),
+  top_gene_count = 10
+)
+
+# Print results
+print(results)
+```
+
+## Multi-Model Consensus Example
+
+For more reliable annotations, you can use multiple models and create a consensus:
+
+```{r}
+# Define models to use
+models <- c(
+  "claude-3-7-sonnet-20250219",  # Anthropic
+  "gpt-4o",                      # OpenAI
+  "gemini-1.5-pro"               # Google
+)
+
+# API keys for different providers
+api_keys <- list(
+  anthropic = Sys.getenv("ANTHROPIC_API_KEY"),
+  openai = Sys.getenv("OPENAI_API_KEY"),
+  gemini = Sys.getenv("GEMINI_API_KEY")
+)
+
+# Run annotation with multiple models
+results <- list()
+for (model in models) {
+  provider <- get_provider(model)
+  api_key <- api_keys[[provider]]
+  
+  results[[model]] <- annotate_cell_types(
+    input = markers,
+    tissue_name = "human PBMC",
+    model = model,
+    api_key = api_key,
+    top_gene_count = 10
+  )
+}
+
+# Create consensus
+consensus_results <- create_consensus(
+  results = results,
+  input = markers,
+  tissue_name = "human PBMC",
+  model = "claude-3-7-sonnet-20250219",
+  api_key = api_keys[["anthropic"]]
+)
+
+# Print consensus results
+print_consensus_summary(consensus_results)
+```
+
+## Integrating with Seurat
+
+To add the annotations to your Seurat object:
+
+```{r}
+# Assuming you have a Seurat object named 'seurat_obj' and consensus results
+library(Seurat)
+
+# Add consensus annotations to Seurat object
+seurat_obj$cell_type_consensus <- plyr::mapvalues(
+  x = as.character(Idents(seurat_obj)),
+  from = as.character(0:(length(consensus_results$final_consensus)-1)),
+  to = consensus_results$final_consensus
+)
+
+# Add consensus proportion (agreement level) to Seurat object
+seurat_obj$consensus_proportion <- plyr::mapvalues(
+  x = as.character(Idents(seurat_obj)),
+  from = as.character(0:(length(consensus_results$consensus_proportion)-1)),
+  to = consensus_results$consensus_proportion
+)
+
+# Add Shannon entropy (uncertainty measure) to Seurat object
+seurat_obj$shannon_entropy <- plyr::mapvalues(
+  x = as.character(Idents(seurat_obj)),
+  from = as.character(0:(length(consensus_results$shannon_entropy)-1)),
+  to = consensus_results$shannon_entropy
+)
+```
+
+## Basic Visualization
+
+Here's a simple visualization of the results using Seurat:
+
+```{r}
+# Plot UMAP with cell type annotations
+DimPlot(seurat_obj, group.by = "cell_type_consensus", label = TRUE, repel = TRUE) +
+  ggtitle("Cell Type Annotations") +
+  theme(plot.title = element_text(hjust = 0.5))
+```
+
+## Understanding the Output
+
+The output of `annotate_cell_types()` is a vector of cell type annotations, where each element corresponds to a cluster.
+
+The output of `create_consensus()` is a list containing:
+
+- `final_consensus`: Final consensus cell type annotations
+- `initial_results`: Initial predictions from each model
+- `consensus_proportion`: Proportion of models agreeing with the consensus (0-1)
+- `shannon_entropy`: Shannon entropy as a measure of uncertainty (lower is better)
+- `discussion_logs`: Detailed logs of the discussion process
+
+## Next Steps
+
+Now that you understand the basics of mLLMCelltype, you can explore:
+
+- [Usage Tutorial](04-usage-tutorial.html): More detailed usage examples
+- [Consensus Annotation Principles](05-consensus-principles.html): Learn about the consensus mechanism
+- [Visualization Guide](06-visualization-guide.html): Create publication-ready visualizations
+- [Advanced Features](08-advanced-features.html): Explore hierarchical annotation and other advanced features
+
+If you encounter any issues, check the [FAQ](07-faq.html) or [open an issue](https://github.com/cafferychen777/mLLMCelltype/issues) on our GitHub repository.

@@ -1,0 +1,347 @@
+---
+title: "Contributing Guide"
+author: "Chen Yang"
+date: "`r Sys.Date()`"
+output: 
+  html_document:
+    toc: true
+    toc_float: true
+    toc_depth: 3
+    theme: flatly
+vignette: >
+  %\VignetteIndexEntry{Contributing Guide}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+  echo = TRUE,
+  message = FALSE,
+  warning = FALSE,
+  eval = FALSE
+)
+```
+
+<img src="../man/figures/logo.png" align="right" height="139" />
+
+# Contributing to mLLMCelltype
+
+Thank you for your interest in contributing to mLLMCelltype! This guide will help you understand how to contribute to the project effectively.
+
+## Getting Started
+
+### Fork and Clone the Repository
+
+1. Fork the [mLLMCelltype repository](https://github.com/cafferychen777/mLLMCelltype) on GitHub
+2. Clone your fork to your local machine:
+
+```bash
+git clone https://github.com/YOUR-USERNAME/mLLMCelltype.git
+cd mLLMCelltype
+```
+
+3. Add the original repository as an upstream remote:
+
+```bash
+git remote add upstream https://github.com/cafferychen777/mLLMCelltype.git
+```
+
+### Setting Up the Development Environment
+
+For R package development:
+
+```r
+# Install required packages for development
+install.packages(c("devtools", "roxygen2", "testthat", "knitr", "rmarkdown"))
+
+# Install the package in development mode
+devtools::install_dev("R")
+```
+
+## Project Structure
+
+The mLLMCelltype project has the following structure:
+
+```
+mLLMCelltype/
+├── R/                  # R package source code
+│   ├── R/              # R functions
+│   ├── man/            # Documentation
+│   ├── tests/          # Unit tests
+│   ├── vignettes/      # Package vignettes
+│   └── DESCRIPTION     # Package metadata
+├── python/             # Python package source code
+├── .github/            # GitHub workflows and templates
+├── assets/             # Images and other assets
+├── examples/           # Example notebooks and scripts
+└── README.md           # Project overview
+```
+
+## Development Workflow
+
+### Creating a New Feature
+
+1. Create a new branch for your feature:
+
+```bash
+git checkout -b feature/your-feature-name
+```
+
+2. Make your changes to the codebase
+3. Add and commit your changes:
+
+```bash
+git add .
+git commit -m "Add your descriptive commit message here"
+```
+
+4. Push your changes to your fork:
+
+```bash
+git push origin feature/your-feature-name
+```
+
+5. Create a pull request from your fork to the main repository
+
+### Code Style Guidelines
+
+#### R Code Style
+
+We follow the [tidyverse style guide](https://style.tidyverse.org/) for R code:
+
+- Use snake_case for variable and function names
+- Use spaces around operators and after commas
+- Use 2 spaces for indentation
+- Limit line length to 80 characters
+- Use roxygen2 for documentation
+
+Example of properly formatted R code:
+
+```r
+#' Annotate Cell Types
+#'
+#' This function annotates cell types based on marker genes.
+#'
+#' @param input A data frame containing marker genes.
+#' @param tissue_name The name of the tissue.
+#' @param model The LLM model to use.
+#' @param api_key The API key for the LLM provider.
+#'
+#' @return A vector of cell type annotations.
+#' @export
+annotate_cell_types <- function(input, tissue_name, model, api_key) {
+  # Function implementation
+  results <- process_markers(input, top_n = 10)
+  
+  for (i in seq_along(results)) {
+    if (is_valid_result(results[i])) {
+      results[i] <- clean_result(results[i])
+    }
+  }
+  
+  return(results)
+}
+```
+
+#### Documentation Guidelines
+
+All functions should be documented using roxygen2 with the following sections:
+
+- Title (first line)
+- Description (paragraph after title)
+- @param for each parameter
+- @return for the return value
+- @examples for usage examples
+- @export if the function should be exported
+
+### Testing
+
+We use the testthat package for testing. Tests should be placed in the `R/tests/testthat/` directory.
+
+To run tests:
+
+```r
+devtools::test()
+```
+
+Example test file (`test-annotate_cell_types.R`):
+
+```r
+context("Cell type annotation")
+
+test_that("annotate_cell_types returns expected format", {
+  # Setup test data
+  test_markers <- data.frame(
+    cluster = c(0, 0, 1, 1),
+    gene = c("CD3D", "CD3E", "CD19", "MS4A1"),
+    avg_log2FC = c(2.5, 2.3, 3.1, 2.8),
+    p_val_adj = c(0.001, 0.002, 0.001, 0.003)
+  )
+  
+  # Mock the API response
+  mockery::stub(
+    annotate_cell_types, 
+    "get_model_response", 
+    function(...) c("T cells", "B cells")
+  )
+  
+  # Run the function
+  result <- annotate_cell_types(
+    input = test_markers,
+    tissue_name = "test tissue",
+    model = "test-model",
+    api_key = "test-key"
+  )
+  
+  # Assertions
+  expect_is(result, "character")
+  expect_length(result, 2)
+  expect_equal(result, c("T cells", "B cells"))
+})
+```
+
+## Contributing Areas
+
+### Adding Support for New LLM Models
+
+To add support for a new LLM model:
+
+1. Identify the model provider and API endpoint
+2. Create a new processing function in `R/R/process_[provider].R`
+3. Update the `get_provider()` function in `R/R/get_provider.R`
+4. Add the model to the supported models list
+5. Create tests for the new model
+6. Update documentation
+
+Example of adding a new model:
+
+```r
+# In process_newprovider.R
+process_newprovider <- function(prompt, api_key, timeout = 60, max_retries = 3) {
+  # Implementation for the new provider
+  url <- "https://api.newprovider.com/v1/completions"
+  
+  headers <- c(
+    "Content-Type" = "application/json",
+    "Authorization" = paste("Bearer", api_key)
+  )
+  
+  body <- list(
+    model = "newprovider-model",
+    prompt = prompt,
+    max_tokens = 1000,
+    temperature = 0.1
+  )
+  
+  response <- make_api_request(url, headers, body, timeout, max_retries)
+  
+  # Parse the response
+  parsed_response <- jsonlite::fromJSON(response)
+  result <- parsed_response$choices[[1]]$text
+  
+  return(result)
+}
+
+# In get_provider.R
+get_provider <- function(model) {
+  # Add to the model mapping
+  model_mapping <- list(
+    # Existing models...
+    "newprovider-model" = "newprovider"
+  )
+  
+  provider <- model_mapping[[model]]
+  if (is.null(provider)) {
+    stop("Unsupported model: ", model)
+  }
+  
+  return(provider)
+}
+```
+
+### Improving Documentation
+
+Documentation improvements are always welcome:
+
+1. Update function documentation with roxygen2
+2. Improve vignettes with more examples and explanations
+3. Add tutorials for specific use cases
+4. Fix typos and clarify existing documentation
+
+### Adding New Features
+
+Some ideas for new features:
+
+1. Integration with additional single-cell analysis frameworks
+2. Support for spatial transcriptomics data
+3. Interactive visualization tools
+4. Batch processing for large datasets
+5. Performance optimizations
+
+### Reporting Issues
+
+When reporting issues, please include:
+
+1. A minimal reproducible example
+2. The version of mLLMCelltype you're using
+3. The error message or unexpected behavior
+4. Your R session information (`sessionInfo()`)
+
+## Pull Request Process
+
+1. Ensure your code follows the style guidelines
+2. Add or update tests as necessary
+3. Update documentation to reflect your changes
+4. Ensure all tests pass
+5. Submit your pull request with a clear description of the changes
+
+## Code Review Process
+
+All pull requests will be reviewed by the maintainers. The review process includes:
+
+1. Checking that the code follows style guidelines
+2. Verifying that tests pass
+3. Ensuring documentation is updated
+4. Evaluating the overall design and implementation
+
+## Release Process
+
+mLLMCelltype follows semantic versioning (MAJOR.MINOR.PATCH):
+
+- MAJOR version for incompatible API changes
+- MINOR version for new functionality in a backward-compatible manner
+- PATCH version for backward-compatible bug fixes
+
+## Community Guidelines
+
+### Code of Conduct
+
+We follow a code of conduct to ensure a welcoming and inclusive community:
+
+- Be respectful and inclusive
+- Be collaborative
+- Be open to feedback
+- Focus on the best solution for the community
+
+### Communication Channels
+
+- GitHub Issues: For bug reports, feature requests, and discussions
+- GitHub Discussions: For general questions and community discussions
+- Pull Requests: For code contributions
+
+## Acknowledgment
+
+Contributors will be acknowledged in the package documentation and README.
+
+## License
+
+By contributing to mLLMCelltype, you agree that your contributions will be licensed under the same license as the project (MIT License).
+
+## Next Steps
+
+Now that you know how to contribute to mLLMCelltype, you can:
+
+- [Review the version history](10-version-history.html) to understand recent changes
+- [Explore advanced features](08-advanced-features.html) to identify areas for improvement
+- [Check the FAQ](07-faq.html) to see common questions that might need better documentation
