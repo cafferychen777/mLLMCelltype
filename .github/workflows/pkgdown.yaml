@@ -26,16 +26,16 @@ jobs:
         with:
           use-public-rspm: true
 
-      - uses: r-lib/actions/setup-r-dependencies@v2
-        with:
-          extra-packages: any::pkgdown, local::./R
-          working-directory: ./R
-          needs: website
-
-      - name: Install system dependencies
+      - name: Install required packages
         run: |
-          sudo apt-get update
-          sudo apt-get install -y libcurl4-openssl-dev libssl-dev libxml2-dev
+          install.packages(c("pkgdown", "knitr", "rmarkdown", "devtools"))
+        shell: Rscript {0}
+      
+      - name: Install package dependencies
+        run: |
+          cd R
+          devtools::install_deps(dependencies = TRUE)
+        shell: Rscript {0}
 
       - name: Build site
         run: |
