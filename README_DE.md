@@ -54,6 +54,122 @@ mLLMCelltype ist ein iteratives Multi-LLM-Konsensus-Framework für die Zelltyp-A
 devtools::install_github("cafferychen777/mLLMCelltype", subdir = "R")
 ```
 
+#### CSV-Eingabebeispiel
+
+Sie können mLLMCelltype auch direkt mit CSV-Dateien verwenden, ohne Seurat zu benötigen. Dies ist nützlich, wenn Sie bereits Markergene im CSV-Format haben:
+
+```r
+# Installieren Sie die neueste Version von mLLMCelltype
+devtools::install_github("cafferychen777/mLLMCelltype", subdir = "R", force = TRUE)
+
+# Laden Sie die notwendigen Pakete
+library(mLLMCelltype)
+
+# Erstellen Sie Cache- und Log-Verzeichnisse
+cache_dir <- "path/to/your/cache"
+log_dir <- "path/to/your/logs"
+dir.create(cache_dir, showWarnings = FALSE, recursive = TRUE)
+dir.create(log_dir, showWarnings = FALSE, recursive = TRUE)
+
+# Lesen Sie den Inhalt der CSV-Datei
+markers_file <- "path/to/your/markers.csv"
+file_content <- readLines(markers_file)
+
+# Überspringen Sie die Header-Zeile
+data_lines <- file_content[-1]
+
+# Konvertieren Sie die Daten in ein Listenformat mit numerischen Indizes als Schlüssel
+marker_genes_list <- list()
+cluster_names <- c()
+
+# Sammeln Sie zuerst alle Clusternamen
+for(line in data_lines) {
+  parts <- strsplit(line, ",", fixed = TRUE)[[1]]
+  cluster_names <- c(cluster_names, parts[1])
+}
+
+# Erstellen Sie dann marker_genes_list mit numerischen Indizes
+for(i in 1:length(data_lines)) {
+  line <- data_lines[i]
+  parts <- strsplit(line, ",", fixed = TRUE)[[1]]
+  
+  # Der erste Teil ist der Clustername
+  cluster_name <- parts[1]
+  
+  # Verwenden Sie den Index als Schlüssel (0-basierter Index, kompatibel mit Seurat)
+  cluster_id <- as.character(i - 1)
+  
+  # Die übrigen Teile sind Gene
+  genes <- parts[-1]
+  
+  # Filtern Sie NA und leere Strings
+  genes <- genes[!is.na(genes) & genes != ""]
+  
+  # Fügen Sie zur marker_genes_list hinzu
+  marker_genes_list[[cluster_id]] <- list(genes = genes)
+}
+
+# Setzen Sie API-Schlüssel
+api_keys <- list(
+  gemini = "YOUR_GEMINI_API_KEY",
+  qwen = "YOUR_QWEN_API_KEY",
+  grok = "YOUR_GROK_API_KEY",
+  openai = "YOUR_OPENAI_API_KEY",
+  anthropic = "YOUR_ANTHROPIC_API_KEY"
+)
+
+# Führen Sie die Konsensus-Annotation durch
+consensus_results <- 
+  interactive_consensus_annotation(
+    input = marker_genes_list,
+    tissue_name = "your tissue type", # z.B. "human heart"
+    models = c("gemini-2.0-flash", 
+              "gemini-1.5-pro", 
+              "qwen-max-2025-01-25", 
+              "grok-3-latest", 
+              "anthropic/claude-3-7-sonnet-20250219",
+              "openai/gpt-4o"),
+    api_keys = api_keys,
+    controversy_threshold = 0.6,
+    entropy_threshold = 1.0,
+    max_discussion_rounds = 3,
+    cache_dir = cache_dir,
+    log_dir = log_dir
+  )
+
+# Speichern Sie die Ergebnisse
+saveRDS(consensus_results, "your_results.rds")
+
+# Drucken Sie eine Zusammenfassung der Ergebnisse
+cat("\nErgebniszusammenfassung:\n")
+cat("Verfügbare Felder:", paste(names(consensus_results), collapse=", "), "\n\n")
+
+# Drucken Sie die endgültigen Annotationen
+cat("Endgültige Zelltyp-Annotationen:\n")
+for(cluster in names(consensus_results$final_annotations)) {
+  cat(sprintf("%s: %s\n", cluster, consensus_results$final_annotations[[cluster]]))
+}
+```
+
+**Hinweise zum CSV-Format**:
+- Die CSV-Datei sollte Clusternamen in der ersten Spalte haben
+- Nachfolgende Spalten sollten Markergene für jeden Cluster enthalten
+- Eine Beispiel-CSV-Datei für Katzenherz-Gewebe ist im Paket unter `inst/extdata/Cat_Heart_markers.csv` enthalten
+
+Beispielstruktur der CSV-Datei:
+```
+cluster,gene
+Fibroblasts,Negr1,Cask,Tshz2,Ston2,Fstl1,Dse,Celf2,Hmcn2,Setbp1,Cblb
+Cardiomyocytes,Palld,Grb14,Mybpc3,Ensfcag00000044939,Dcun1d2,Acacb,Slco1c1,Ppp1r3c,Sema3c,Ppp1r14c
+Endothelial cells,Adgrf5,Tbx1,Slco2b1,Pi15,Adam23,Bmx,Pde8b,Pkhd1l1,Dtx1,Ensfcag00000051556
+T cells,Clec2d,Trat1,Rasgrp1,Card11,Cytip,Sytl3,Tmem156,Bcl11b,Lcp1,Lcp2
+```
+
+Sie können auf die Beispieldaten in Ihrem R-Skript mit folgendem Code zugreifen:
+```r
+system.file("extdata", "Cat_Heart_markers.csv", package = "mLLMCelltype")
+```
+
 ### Python-Version
 
 ```bash

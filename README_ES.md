@@ -39,6 +39,122 @@ mLLMCelltype es un marco de consenso iterativo multi-LLM para la anotación de t
 devtools::install_github("cafferychen777/mLLMCelltype", subdir = "R")
 ```
 
+#### Ejemplo de entrada CSV
+
+También puede usar mLLMCelltype directamente con archivos CSV sin necesidad de Seurat, lo cual es útil para casos donde ya tiene genes marcadores disponibles en formato CSV:
+
+```r
+# Instalar la versión más reciente de mLLMCelltype
+devtools::install_github("cafferychen777/mLLMCelltype", subdir = "R", force = TRUE)
+
+# Cargar paquetes necesarios
+library(mLLMCelltype)
+
+# Crear directorios de caché y registros
+cache_dir <- "path/to/your/cache"
+log_dir <- "path/to/your/logs"
+dir.create(cache_dir, showWarnings = FALSE, recursive = TRUE)
+dir.create(log_dir, showWarnings = FALSE, recursive = TRUE)
+
+# Leer el contenido del archivo CSV
+markers_file <- "path/to/your/markers.csv"
+file_content <- readLines(markers_file)
+
+# Omitir la fila de encabezado
+data_lines <- file_content[-1]
+
+# Convertir datos a formato de lista, usando índices numéricos como claves
+marker_genes_list <- list()
+cluster_names <- c()
+
+# Primero recopilar todos los nombres de clusters
+for(line in data_lines) {
+  parts <- strsplit(line, ",", fixed = TRUE)[[1]]
+  cluster_names <- c(cluster_names, parts[1])
+}
+
+# Luego crear marker_genes_list con índices numéricos
+for(i in 1:length(data_lines)) {
+  line <- data_lines[i]
+  parts <- strsplit(line, ",", fixed = TRUE)[[1]]
+  
+  # La primera parte es el nombre del cluster
+  cluster_name <- parts[1]
+  
+  # Usar el índice como clave (índice base 0, compatible con Seurat)
+  cluster_id <- as.character(i - 1)
+  
+  # Las partes restantes son genes
+  genes <- parts[-1]
+  
+  # Filtrar NA y cadenas vacías
+  genes <- genes[!is.na(genes) & genes != ""]
+  
+  # Agregar a marker_genes_list
+  marker_genes_list[[cluster_id]] <- list(genes = genes)
+}
+
+# Configurar claves API
+api_keys <- list(
+  gemini = "YOUR_GEMINI_API_KEY",
+  qwen = "YOUR_QWEN_API_KEY",
+  grok = "YOUR_GROK_API_KEY",
+  openai = "YOUR_OPENAI_API_KEY",
+  anthropic = "YOUR_ANTHROPIC_API_KEY"
+)
+
+# Ejecutar anotación de consenso
+consensus_results <- 
+  interactive_consensus_annotation(
+    input = marker_genes_list,
+    tissue_name = "your tissue type", # p.ej., "human heart"
+    models = c("gemini-2.0-flash", 
+              "gemini-1.5-pro", 
+              "qwen-max-2025-01-25", 
+              "grok-3-latest", 
+              "anthropic/claude-3-7-sonnet-20250219",
+              "openai/gpt-4o"),
+    api_keys = api_keys,
+    controversy_threshold = 0.6,
+    entropy_threshold = 1.0,
+    max_discussion_rounds = 3,
+    cache_dir = cache_dir,
+    log_dir = log_dir
+  )
+
+# Guardar resultados
+saveRDS(consensus_results, "your_results.rds")
+
+# Imprimir resumen de resultados
+cat("\nResumen de resultados:\n")
+cat("Campos disponibles:", paste(names(consensus_results), collapse=", "), "\n\n")
+
+# Imprimir anotaciones finales
+cat("Anotaciones finales de tipos celulares:\n")
+for(cluster in names(consensus_results$final_annotations)) {
+  cat(sprintf("%s: %s\n", cluster, consensus_results$final_annotations[[cluster]]))
+}
+```
+
+**Notas sobre el formato CSV**:
+- El archivo CSV debe tener nombres de clusters en la primera columna
+- Las columnas subsiguientes deben contener genes marcadores para cada cluster
+- Se incluye un archivo CSV de ejemplo para tejido cardíaco de gato en el paquete: `inst/extdata/Cat_Heart_markers.csv`
+
+Estructura de ejemplo del archivo CSV:
+```
+cluster,gene
+Fibroblasts,Negr1,Cask,Tshz2,Ston2,Fstl1,Dse,Celf2,Hmcn2,Setbp1,Cblb
+Cardiomyocytes,Palld,Grb14,Mybpc3,Ensfcag00000044939,Dcun1d2,Acacb,Slco1c1,Ppp1r3c,Sema3c,Ppp1r14c
+Endothelial cells,Adgrf5,Tbx1,Slco2b1,Pi15,Adam23,Bmx,Pde8b,Pkhd1l1,Dtx1,Ensfcag00000051556
+T cells,Clec2d,Trat1,Rasgrp1,Card11,Cytip,Sytl3,Tmem156,Bcl11b,Lcp1,Lcp2
+```
+
+Puede acceder a los datos de ejemplo en su script de R con el siguiente código:
+```r
+system.file("extdata", "Cat_Heart_markers.csv", package = "mLLMCelltype")
+```
+
 ### Versión Python
 
 ```bash
