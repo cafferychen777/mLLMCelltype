@@ -10,8 +10,11 @@ Authors@R:
 Description: An R package that leverages various large language models (LLMs) 
     for automated cell type annotation in single-cell RNA sequencing data. 
     Implements a consensus-based approach where multiple LLMs collaborate 
-    to provide more reliable annotations.
+    to provide more reliable annotations. For more details, please refer to 
+    our paper: <doi:10.1101/2025.04.10.647852>.
 License: MIT + file LICENSE
+BugReports: https://github.com/cafferychen777/mLLMCelltype/issues
+URL: https://cafferychen777.github.io/mLLMCelltype
 Encoding: UTF-8
 Imports:
     dplyr,
@@ -26,7 +29,11 @@ Suggests:
     mockery,
     dotenv,
     devtools,
-    withr (>= 2.4.0)
+    withr (>= 2.4.0),
+    knitr,
+    rmarkdown,
+    pkgdown (>= 2.0.0)
 Config/testthat/edition: 3
 RoxygenNote: 7.3.2
 Roxygen: list(markdown = TRUE)
+VignetteBuilder: knitr
