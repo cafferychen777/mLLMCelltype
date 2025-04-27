@@ -54,6 +54,122 @@ mLLMCelltypeは、単一細胞RNAシーケンシングデータにおける細�
 devtools::install_github("cafferychen777/mLLMCelltype", subdir = "R")
 ```
 
+#### CSV入力の例
+
+Seuratを使用せずに、CSVファイルから直接mLLMCelltypeを使用することもできます。これは、マーカー遺伝子が既にCSV形式で利用可能な場合に便利です：
+
+```r
+# 最新版のmLLMCelltypeをインストール
+devtools::install_github("cafferychen777/mLLMCelltype", subdir = "R", force = TRUE)
+
+# 必要なパッケージを読み込む
+library(mLLMCelltype)
+
+# キャッシュとログのディレクトリを作成
+cache_dir <- "path/to/your/cache"
+log_dir <- "path/to/your/logs"
+dir.create(cache_dir, showWarnings = FALSE, recursive = TRUE)
+dir.create(log_dir, showWarnings = FALSE, recursive = TRUE)
+
+# CSVファイルの内容を読み込む
+markers_file <- "path/to/your/markers.csv"
+file_content <- readLines(markers_file)
+
+# ヘッダー行をスキップ
+data_lines <- file_content[-1]
+
+# データをリスト形式に変換し、数値インデックスをキーとして使用
+marker_genes_list <- list()
+cluster_names <- c()
+
+# まず全てのクラスター名を収集
+for(line in data_lines) {
+  parts <- strsplit(line, ",", fixed = TRUE)[[1]]
+  cluster_names <- c(cluster_names, parts[1])
+}
+
+# 次に数値インデックスを使ってmarker_genes_listを作成
+for(i in 1:length(data_lines)) {
+  line <- data_lines[i]
+  parts <- strsplit(line, ",", fixed = TRUE)[[1]]
+  
+  # 最初の部分はクラスター名
+  cluster_name <- parts[1]
+  
+  # インデックスをキーとして使用（0ベースのインデックス、Seuratと互換性あり）
+  cluster_id <- as.character(i - 1)
+  
+  # 残りの部分は遺伝子
+  genes <- parts[-1]
+  
+  # NAと空の文字列をフィルタリング
+  genes <- genes[!is.na(genes) & genes != ""]
+  
+  # marker_genes_listに追加
+  marker_genes_list[[cluster_id]] <- list(genes = genes)
+}
+
+# APIキーを設定
+api_keys <- list(
+  gemini = "YOUR_GEMINI_API_KEY",
+  qwen = "YOUR_QWEN_API_KEY",
+  grok = "YOUR_GROK_API_KEY",
+  openai = "YOUR_OPENAI_API_KEY",
+  anthropic = "YOUR_ANTHROPIC_API_KEY"
+)
+
+# コンセンサスアノテーションを実行
+consensus_results <- 
+  interactive_consensus_annotation(
+    input = marker_genes_list,
+    tissue_name = "your tissue type", # 例："human heart"
+    models = c("gemini-2.0-flash", 
+              "gemini-1.5-pro", 
+              "qwen-max-2025-01-25", 
+              "grok-3-latest", 
+              "anthropic/claude-3-7-sonnet-20250219",
+              "openai/gpt-4o"),
+    api_keys = api_keys,
+    controversy_threshold = 0.6,
+    entropy_threshold = 1.0,
+    max_discussion_rounds = 3,
+    cache_dir = cache_dir,
+    log_dir = log_dir
+  )
+
+# 結果を保存
+saveRDS(consensus_results, "your_results.rds")
+
+# 結果の要約を表示
+cat("\n結果の要約:\n")
+cat("利用可能なフィールド:", paste(names(consensus_results), collapse=", "), "\n\n")
+
+# 最終アノテーションを表示
+cat("最終的な細胞タイプアノテーション:\n")
+for(cluster in names(consensus_results$final_annotations)) {
+  cat(sprintf("%s: %s\n", cluster, consensus_results$final_annotations[[cluster]]))
+}
+```
+
+**CSV形式に関する注意**:
+- CSVファイルは最初の列にクラスター名を持つ必要があります
+- 続く列には各クラスターのマーカー遺伝子を含める必要があります
+- パッケージには猫の心臓組織のサンプルCSVファイルが含まれています：`inst/extdata/Cat_Heart_markers.csv`
+
+CSVファイルの例：
+```
+cluster,gene
+Fibroblasts,Negr1,Cask,Tshz2,Ston2,Fstl1,Dse,Celf2,Hmcn2,Setbp1,Cblb
+Cardiomyocytes,Palld,Grb14,Mybpc3,Ensfcag00000044939,Dcun1d2,Acacb,Slco1c1,Ppp1r3c,Sema3c,Ppp1r14c
+Endothelial cells,Adgrf5,Tbx1,Slco2b1,Pi15,Adam23,Bmx,Pde8b,Pkhd1l1,Dtx1,Ensfcag00000051556
+T cells,Clec2d,Trat1,Rasgrp1,Card11,Cytip,Sytl3,Tmem156,Bcl11b,Lcp1,Lcp2
+```
+
+Rスクリプトでサンプルデータにアクセスするには、次のコードを使用してください：
+```r
+system.file("extdata", "Cat_Heart_markers.csv", package = "mLLMCelltype")
+```
+
 ### Pythonバージョン
 
 ```bash

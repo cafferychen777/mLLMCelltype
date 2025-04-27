@@ -54,6 +54,122 @@ mLLMCelltype는 단일 세포 RNA 시퀀싱 데이터에서 세포 유형 주석
 devtools::install_github("cafferychen777/mLLMCelltype", subdir = "R")
 ```
 
+#### CSV 입력 예제
+
+Seurat을 사용하지 않고 CSV 파일에서 직접 mLLMCelltype를 사용할 수도 있으며, 이는 마커 유전자가 이미 CSV 형식으로 사용 가능한 경우에 유용합니다:
+
+```r
+# 최신 버전의 mLLMCelltype 설치
+devtools::install_github("cafferychen777/mLLMCelltype", subdir = "R", force = TRUE)
+
+# 필요한 패키지 로드
+library(mLLMCelltype)
+
+# 캐시 및 로그 디렉토리 생성
+cache_dir <- "path/to/your/cache"
+log_dir <- "path/to/your/logs"
+dir.create(cache_dir, showWarnings = FALSE, recursive = TRUE)
+dir.create(log_dir, showWarnings = FALSE, recursive = TRUE)
+
+# CSV 파일 내용 읽기
+markers_file <- "path/to/your/markers.csv"
+file_content <- readLines(markers_file)
+
+# 헤더 행 건너뛰기
+data_lines <- file_content[-1]
+
+# 데이터를 리스트 형식으로 변환하고, 숫자 인덱스를 키로 사용
+marker_genes_list <- list()
+cluster_names <- c()
+
+# 먼저 모든 클러스터 이름 수집
+for(line in data_lines) {
+  parts <- strsplit(line, ",", fixed = TRUE)[[1]]
+  cluster_names <- c(cluster_names, parts[1])
+}
+
+# 그런 다음 숫자 인덱스로 marker_genes_list 생성
+for(i in 1:length(data_lines)) {
+  line <- data_lines[i]
+  parts <- strsplit(line, ",", fixed = TRUE)[[1]]
+  
+  # 첫 부분은 클러스터 이름
+  cluster_name <- parts[1]
+  
+  # 인덱스를 키로 사용(0 기반 인덱스, Seurat과 호환)
+  cluster_id <- as.character(i - 1)
+  
+  # 나머지 부분은 유전자들
+  genes <- parts[-1]
+  
+  # NA와 빈 문자열 필터링
+  genes <- genes[!is.na(genes) & genes != ""]
+  
+  # marker_genes_list에 추가
+  marker_genes_list[[cluster_id]] <- list(genes = genes)
+}
+
+# API 키 설정
+api_keys <- list(
+  gemini = "YOUR_GEMINI_API_KEY",
+  qwen = "YOUR_QWEN_API_KEY",
+  grok = "YOUR_GROK_API_KEY",
+  openai = "YOUR_OPENAI_API_KEY",
+  anthropic = "YOUR_ANTHROPIC_API_KEY"
+)
+
+# 콘센서스 주석 실행
+consensus_results <- 
+  interactive_consensus_annotation(
+    input = marker_genes_list,
+    tissue_name = "your tissue type", # 예: "human heart"
+    models = c("gemini-2.0-flash", 
+              "gemini-1.5-pro", 
+              "qwen-max-2025-01-25", 
+              "grok-3-latest", 
+              "anthropic/claude-3-7-sonnet-20250219",
+              "openai/gpt-4o"),
+    api_keys = api_keys,
+    controversy_threshold = 0.6,
+    entropy_threshold = 1.0,
+    max_discussion_rounds = 3,
+    cache_dir = cache_dir,
+    log_dir = log_dir
+  )
+
+# 결과 저장
+saveRDS(consensus_results, "your_results.rds")
+
+# 결과 요약 출력
+cat("\n결과 요약:\n")
+cat("사용 가능한 필드:", paste(names(consensus_results), collapse=", "), "\n\n")
+
+# 최종 주석 출력
+cat("최종 세포 유형 주석:\n")
+for(cluster in names(consensus_results$final_annotations)) {
+  cat(sprintf("%s: %s\n", cluster, consensus_results$final_annotations[[cluster]]))
+}
+```
+
+**CSV 형식 관련 참고사항**:
+- CSV 파일은 첫 번째 열에 클러스터 이름을 가져야 합니다
+- 다음 열에는 각 클러스터의 마커 유전자를 포함해야 합니다
+- 패키지에는 고양이 심장 조직용 예제 CSV 파일이 포함되어 있습니다: `inst/extdata/Cat_Heart_markers.csv`
+
+CSV 파일 구조 예제:
+```
+cluster,gene
+Fibroblasts,Negr1,Cask,Tshz2,Ston2,Fstl1,Dse,Celf2,Hmcn2,Setbp1,Cblb
+Cardiomyocytes,Palld,Grb14,Mybpc3,Ensfcag00000044939,Dcun1d2,Acacb,Slco1c1,Ppp1r3c,Sema3c,Ppp1r14c
+Endothelial cells,Adgrf5,Tbx1,Slco2b1,Pi15,Adam23,Bmx,Pde8b,Pkhd1l1,Dtx1,Ensfcag00000051556
+T cells,Clec2d,Trat1,Rasgrp1,Card11,Cytip,Sytl3,Tmem156,Bcl11b,Lcp1,Lcp2
+```
+
+R 스크립트에서 예제 데이터에 액세스하는 방법:
+```r
+system.file("extdata", "Cat_Heart_markers.csv", package = "mLLMCelltype")
+```
+
 ### Python 버전
 
 ```bash
