@@ -54,122 +54,6 @@ mLLMCelltype est un cadre de consensus multi-LLM itératif pour l'annotation des
 devtools::install_github("cafferychen777/mLLMCelltype", subdir = "R")
 ```
 
-#### Exemple d'entrée CSV
-
-Vous pouvez également utiliser mLLMCelltype directement avec des fichiers CSV sans avoir besoin de Seurat, ce qui est utile lorsque vous disposez déjà de gènes marqueurs au format CSV :
-
-```r
-# Installer la dernière version de mLLMCelltype
-devtools::install_github("cafferychen777/mLLMCelltype", subdir = "R", force = TRUE)
-
-# Charger les packages nécessaires
-library(mLLMCelltype)
-
-# Créer des répertoires pour le cache et les journaux
-cache_dir <- "path/to/your/cache"
-log_dir <- "path/to/your/logs"
-dir.create(cache_dir, showWarnings = FALSE, recursive = TRUE)
-dir.create(log_dir, showWarnings = FALSE, recursive = TRUE)
-
-# Lire le contenu du fichier CSV
-markers_file <- "path/to/your/markers.csv"
-file_content <- readLines(markers_file)
-
-# Ignorer la ligne d'en-tête
-data_lines <- file_content[-1]
-
-# Convertir les données au format liste, en utilisant des indices numériques comme clés
-marker_genes_list <- list()
-cluster_names <- c()
-
-# D'abord collecter tous les noms de clusters
-for(line in data_lines) {
-  parts <- strsplit(line, ",", fixed = TRUE)[[1]]
-  cluster_names <- c(cluster_names, parts[1])
-}
-
-# Ensuite créer marker_genes_list avec des indices numériques
-for(i in 1:length(data_lines)) {
-  line <- data_lines[i]
-  parts <- strsplit(line, ",", fixed = TRUE)[[1]]
-  
-  # La première partie est le nom du cluster
-  cluster_name <- parts[1]
-  
-  # Utiliser l'indice comme clé (indice base 0, compatible avec Seurat)
-  cluster_id <- as.character(i - 1)
-  
-  # Les parties restantes sont des gènes
-  genes <- parts[-1]
-  
-  # Filtrer les NA et les chaînes vides
-  genes <- genes[!is.na(genes) & genes != ""]
-  
-  # Ajouter à marker_genes_list
-  marker_genes_list[[cluster_id]] <- list(genes = genes)
-}
-
-# Configurer les clés API
-api_keys <- list(
-  gemini = "YOUR_GEMINI_API_KEY",
-  qwen = "YOUR_QWEN_API_KEY",
-  grok = "YOUR_GROK_API_KEY",
-  openai = "YOUR_OPENAI_API_KEY",
-  anthropic = "YOUR_ANTHROPIC_API_KEY"
-)
-
-# Exécuter l'annotation de consensus
-consensus_results <- 
-  interactive_consensus_annotation(
-    input = marker_genes_list,
-    tissue_name = "your tissue type", # par ex., "human heart"
-    models = c("gemini-2.0-flash", 
-              "gemini-1.5-pro", 
-              "qwen-max-2025-01-25", 
-              "grok-3-latest", 
-              "anthropic/claude-3-7-sonnet-20250219",
-              "openai/gpt-4o"),
-    api_keys = api_keys,
-    controversy_threshold = 0.6,
-    entropy_threshold = 1.0,
-    max_discussion_rounds = 3,
-    cache_dir = cache_dir,
-    log_dir = log_dir
-  )
-
-# Sauvegarder les résultats
-saveRDS(consensus_results, "your_results.rds")
-
-# Imprimer un résumé des résultats
-cat("\nRésumé des résultats:\n")
-cat("Champs disponibles:", paste(names(consensus_results), collapse=", "), "\n\n")
-
-# Imprimer les annotations finales
-cat("Annotations finales des types cellulaires:\n")
-for(cluster in names(consensus_results$final_annotations)) {
-  cat(sprintf("%s: %s\n", cluster, consensus_results$final_annotations[[cluster]]))
-}
-```
-
-**Notes sur le format CSV**:
-- Le fichier CSV doit comporter les noms des clusters dans la première colonne
-- Les colonnes suivantes doivent contenir des gènes marqueurs pour chaque cluster
-- Un fichier CSV exemple pour le tissu cardiaque de chat est inclus dans le package : `inst/extdata/Cat_Heart_markers.csv`
-
-Structure exemple du fichier CSV :
-```
-cluster,gene
-Fibroblasts,Negr1,Cask,Tshz2,Ston2,Fstl1,Dse,Celf2,Hmcn2,Setbp1,Cblb
-Cardiomyocytes,Palld,Grb14,Mybpc3,Ensfcag00000044939,Dcun1d2,Acacb,Slco1c1,Ppp1r3c,Sema3c,Ppp1r14c
-Endothelial cells,Adgrf5,Tbx1,Slco2b1,Pi15,Adam23,Bmx,Pde8b,Pkhd1l1,Dtx1,Ensfcag00000051556
-T cells,Clec2d,Trat1,Rasgrp1,Card11,Cytip,Sytl3,Tmem156,Bcl11b,Lcp1,Lcp2
-```
-
-Vous pouvez accéder aux données d'exemple dans votre script R avec le code suivant :
-```r
-system.file("extdata", "Cat_Heart_markers.csv", package = "mLLMCelltype")
-```
-
 ### Version Python
 
 ```bash
@@ -210,6 +94,123 @@ for (cluster_id in names(consensus_results$final_annotations)) {
   cell_types[cell_types == cluster_id] <- consensus_results$final_annotations[[cluster_id]]
 }
 seurat_obj$cell_type <- cell_types
+```
+
+#### Exemple d'entrée CSV
+
+Vous pouvez également utiliser mLLMCelltype directement avec des fichiers CSV sans Seurat, ce qui est utile lorsque vous avez déjà des gènes marqueurs au format CSV :
+
+```r
+# Installer la version la plus récente de mLLMCelltype
+devtools::install_github("cafferychen777/mLLMCelltype", subdir = "R", force = TRUE)
+
+# Charger les packages nécessaires
+library(mLLMCelltype)
+
+# Créer des répertoires de cache et de journaux
+cache_dir <- "path/to/your/cache"
+log_dir <- "path/to/your/logs"
+dir.create(cache_dir, showWarnings = FALSE, recursive = TRUE)
+dir.create(log_dir, showWarnings = FALSE, recursive = TRUE)
+
+# Lire le contenu du fichier CSV
+markers_file <- "path/to/your/markers.csv"
+file_content <- readLines(markers_file)
+
+# Ignorer la ligne d'en-tête
+data_lines <- file_content[-1]
+
+# Convertir les données au format liste, en utilisant des indices numériques comme clés
+marker_genes_list <- list()
+cluster_names <- c()
+
+# D'abord collecter tous les noms de clusters
+for(line in data_lines) {
+  parts <- strsplit(line, ",", fixed = TRUE)[[1]]
+  cluster_names <- c(cluster_names, parts[1])
+}
+
+# Ensuite créer marker_genes_list avec des indices numériques
+for(i in seq_along(data_lines)) {
+  line <- data_lines[i]
+  parts <- strsplit(line, ",", fixed = TRUE)[[1]]
+  
+  # La première partie est le nom du cluster
+  cluster_name <- parts[1]
+  
+  # Utiliser l'indice comme clé (indice à base 0, compatible avec Seurat)
+  cluster_id <- as.character(i - 1)
+  
+  # Le reste sont des gènes
+  genes <- parts[-1]
+  
+  # Filtrer les NA et les chaînes vides
+  genes <- genes[!is.na(genes) & genes != ""]
+  
+  # Ajouter à marker_genes_list
+  marker_genes_list[[cluster_id]] <- list(genes = genes)
+}
+
+# Configurer les clés API
+api_keys <- list(
+  gemini = "YOUR_GEMINI_API_KEY",
+  qwen = "YOUR_QWEN_API_KEY",
+  grok = "YOUR_GROK_API_KEY",
+  openai = "YOUR_OPENAI_API_KEY",
+  anthropic = "YOUR_ANTHROPIC_API_KEY"
+)
+
+# Exécuter l'annotation par consensus
+consensus_results <- 
+  interactive_consensus_annotation(
+    input = marker_genes_list,
+    tissue_name = "your tissue type", # Exemple : "human heart"
+    models = c("gemini-2.0-flash", 
+              "gemini-1.5-pro", 
+              "qwen-max-2025-01-25", 
+              "grok-3-latest", 
+              "anthropic/claude-3-7-sonnet-20250219",
+              "openai/gpt-4o"),
+    api_keys = api_keys,
+    controversy_threshold = 0.6,
+    entropy_threshold = 1.0,
+    max_discussion_rounds = 3,
+    cache_dir = cache_dir,
+    log_dir = log_dir
+  )
+
+# Enregistrer les résultats
+saveRDS(consensus_results, "your_results.rds")
+
+# Imprimer le résumé des résultats
+cat("\nRésumé des résultats :\n")
+cat("Champs disponibles :", paste(names(consensus_results), collapse=", "), "\n\n")
+
+# Imprimer les annotations finales
+cat("Annotations finales des types cellulaires :\n")
+for(cluster in names(consensus_results$final_annotations)) {
+  cat(sprintf("%s: %s\n", cluster, consensus_results$final_annotations[[cluster]]))
+}
+```
+
+**Remarques sur le format CSV** :
+- La première colonne du fichier CSV peut contenir n'importe quelle valeur (comme des noms de clusters, des séquences numériques comme 0,1,2,3 ou 1,2,3,4, etc.), qui seront utilisées comme indices
+- Les valeurs de la première colonne sont uniquement utilisées comme référence et ne sont pas transmises aux modèles LLM
+- Les colonnes suivantes doivent contenir des gènes marqueurs pour chaque cluster
+- Un fichier CSV d'exemple pour le tissu cardiaque de chat est inclus dans le package : `inst/extdata/Cat_Heart_markers.csv`
+
+Exemple de structure CSV :
+```
+cluster,gene
+Fibroblasts,Negr1,Cask,Tshz2,Ston2,Fstl1,Dse,Celf2,Hmcn2,Setbp1,Cblb
+Cardiomyocytes,Palld,Grb14,Mybpc3,Ensfcag00000044939,Dcun1d2,Acacb,Slco1c1,Ppp1r3c,Sema3c,Ppp1r14c
+Endothelial cells,Adgrf5,Tbx1,Slco2b1,Pi15,Adam23,Bmx,Pde8b,Pkhd1l1,Dtx1,Ensfcag00000051556
+T cells,Clec2d,Trat1,Rasgrp1,Card11,Cytip,Sytl3,Tmem156,Bcl11b,Lcp1,Lcp2
+```
+
+Vous pouvez accéder aux données d'exemple dans votre script R en utilisant :
+```r
+system.file("extdata", "Cat_Heart_markers.csv", package = "mLLMCelltype")
 ```
 
 ### Exemple d'utilisation en Python

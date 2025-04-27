@@ -39,121 +39,7 @@ mLLMCelltype是一个迭代式多大语言模型（Multi-LLM）共识框架，�
 devtools::install_github("cafferychen777/mLLMCelltype", subdir = "R")
 ```
 
-#### CSV输入示例
 
-您也可以直接使用CSV文件而不需要Seurat，这对于已经有CSV格式标记基因的情况非常有用：
-
-```r
-# 安装最新版本的mLLMCelltype
-devtools::install_github("cafferychen777/mLLMCelltype", subdir = "R", force = TRUE)
-
-# 加载必要的包
-library(mLLMCelltype)
-
-# 创建缓存和日志目录
-cache_dir <- "path/to/your/cache"
-log_dir <- "path/to/your/logs"
-dir.create(cache_dir, showWarnings = FALSE, recursive = TRUE)
-dir.create(log_dir, showWarnings = FALSE, recursive = TRUE)
-
-# 读取CSV文件内容
-markers_file <- "path/to/your/markers.csv"
-file_content <- readLines(markers_file)
-
-# 跳过标题行
-data_lines <- file_content[-1]
-
-# 将数据转换为list格式，使用数字索引作为键
-marker_genes_list <- list()
-cluster_names <- c()
-
-# 首先收集所有的集群名称
-for(line in data_lines) {
-  parts <- strsplit(line, ",", fixed = TRUE)[[1]]
-  cluster_names <- c(cluster_names, parts[1])
-}
-
-# 然后创建带数字索引的marker_genes_list
-for(i in 1:length(data_lines)) {
-  line <- data_lines[i]
-  parts <- strsplit(line, ",", fixed = TRUE)[[1]]
-  
-  # 第一部分是cluster名称
-  cluster_name <- parts[1]
-  
-  # 使用索引作为键 (0-based索引，与Seurat兼容)
-  cluster_id <- as.character(i - 1)
-  
-  # 其余部分是基因
-  genes <- parts[-1]
-  
-  # 过滤掉NA和空字符串
-  genes <- genes[!is.na(genes) & genes != ""]
-  
-  # 添加到marker_genes_list
-  marker_genes_list[[cluster_id]] <- list(genes = genes)
-}
-
-# 设置API密钥
-api_keys <- list(
-  gemini = "YOUR_GEMINI_API_KEY",
-  qwen = "YOUR_QWEN_API_KEY",
-  grok = "YOUR_GROK_API_KEY",
-  openai = "YOUR_OPENAI_API_KEY",
-  anthropic = "YOUR_ANTHROPIC_API_KEY"
-)
-
-# 运行consensus annotation
-consensus_results <- 
-  interactive_consensus_annotation(
-    input = marker_genes_list,
-    tissue_name = "your tissue type", # 例如："human heart"
-    models = c("gemini-2.0-flash", 
-              "gemini-1.5-pro", 
-              "qwen-max-2025-01-25", 
-              "grok-3-latest", 
-              "anthropic/claude-3-7-sonnet-20250219",
-              "openai/gpt-4o"),
-    api_keys = api_keys,
-    controversy_threshold = 0.6,
-    entropy_threshold = 1.0,
-    max_discussion_rounds = 3,
-    cache_dir = cache_dir,
-    log_dir = log_dir
-  )
-
-# 保存结果
-saveRDS(consensus_results, "your_results.rds")
-
-# 打印结果摘要
-cat("\n结果摘要:\n")
-cat("可用字段:", paste(names(consensus_results), collapse=", "), "\n\n")
-
-# 打印最终注释
-cat("最终细胞类型注释:\n")
-for(cluster in names(consensus_results$final_annotations)) {
-  cat(sprintf("%s: %s\n", cluster, consensus_results$final_annotations[[cluster]]))
-}
-```
-
-**CSV格式说明**：
-- CSV文件第一列应该是集群名称
-- 随后的列应该包含每个集群的标记基因
-- 包内已包含猫心脏组织的示例CSV文件: `inst/extdata/Cat_Heart_markers.csv`
-
-CSV文件结构示例：
-```
-cluster,gene
-Fibroblasts,Negr1,Cask,Tshz2,Ston2,Fstl1,Dse,Celf2,Hmcn2,Setbp1,Cblb
-Cardiomyocytes,Palld,Grb14,Mybpc3,Ensfcag00000044939,Dcun1d2,Acacb,Slco1c1,Ppp1r3c,Sema3c,Ppp1r14c
-Endothelial cells,Adgrf5,Tbx1,Slco2b1,Pi15,Adam23,Bmx,Pde8b,Pkhd1l1,Dtx1,Ensfcag00000051556
-T cells,Clec2d,Trat1,Rasgrp1,Card11,Cytip,Sytl3,Tmem156,Bcl11b,Lcp1,Lcp2
-```
-
-您可以在R脚本中使用以下代码访问示例数据：
-```r
-system.file("extdata", "Cat_Heart_markers.csv", package = "mLLMCelltype")
-```
 
 ### Python版本
 
@@ -790,6 +676,123 @@ pdf("pbmc_uncertainty_metrics.pdf", width=18, height=7)
 combined_plot <- cowplot::plot_grid(p1, p2, p3, ncol = 3, rel_widths = c(1.2, 1.2, 1.2))
 print(combined_plot)
 dev.off()
+```
+
+#### CSV输入示例
+
+您也可以直接使用CSV文件而不需要Seurat，这对于已经有CSV格式标记基因的情况非常有用：
+
+```r
+# 安装最新版本的mLLMCelltype
+devtools::install_github("cafferychen777/mLLMCelltype", subdir = "R", force = TRUE)
+
+# 加载必要的包
+library(mLLMCelltype)
+
+# 创建缓存和日志目录
+cache_dir <- "path/to/your/cache"
+log_dir <- "path/to/your/logs"
+dir.create(cache_dir, showWarnings = FALSE, recursive = TRUE)
+dir.create(log_dir, showWarnings = FALSE, recursive = TRUE)
+
+# 读取CSV文件内容
+markers_file <- "path/to/your/markers.csv"
+file_content <- readLines(markers_file)
+
+# 跳过标题行
+data_lines <- file_content[-1]
+
+# 将数据转换为list格式，使用数字索引作为键
+marker_genes_list <- list()
+cluster_names <- c()
+
+# 首先收集所有的集群名称
+for(line in data_lines) {
+  parts <- strsplit(line, ",", fixed = TRUE)[[1]]
+  cluster_names <- c(cluster_names, parts[1])
+}
+
+# 然后创建带数字索引的marker_genes_list
+for(i in 1:length(data_lines)) {
+  line <- data_lines[i]
+  parts <- strsplit(line, ",", fixed = TRUE)[[1]]
+  
+  # 第一部分是cluster名称
+  cluster_name <- parts[1]
+  
+  # 使用索引作为键 (0-based索引，与Seurat兼容)
+  cluster_id <- as.character(i - 1)
+  
+  # 其余部分是基因
+  genes <- parts[-1]
+  
+  # 过滤掉NA和空字符串
+  genes <- genes[!is.na(genes) & genes != ""]
+  
+  # 添加到marker_genes_list
+  marker_genes_list[[cluster_id]] <- list(genes = genes)
+}
+
+# 设置API密钥
+api_keys <- list(
+  gemini = "YOUR_GEMINI_API_KEY",
+  qwen = "YOUR_QWEN_API_KEY",
+  grok = "YOUR_GROK_API_KEY",
+  openai = "YOUR_OPENAI_API_KEY",
+  anthropic = "YOUR_ANTHROPIC_API_KEY"
+)
+
+# 运行consensus annotation
+consensus_results <- 
+  interactive_consensus_annotation(
+    input = marker_genes_list,
+    tissue_name = "your tissue type", # 例如："human heart"
+    models = c("gemini-2.0-flash", 
+              "gemini-1.5-pro", 
+              "qwen-max-2025-01-25", 
+              "grok-3-latest", 
+              "anthropic/claude-3-7-sonnet-20250219",
+              "openai/gpt-4o"),
+    api_keys = api_keys,
+    controversy_threshold = 0.6,
+    entropy_threshold = 1.0,
+    max_discussion_rounds = 3,
+    cache_dir = cache_dir,
+    log_dir = log_dir
+  )
+
+# 保存结果
+saveRDS(consensus_results, "your_results.rds")
+
+# 打印结果摘要
+cat("\n结果摘要:\n")
+cat("可用字段:", paste(names(consensus_results), collapse=", "), "\n\n")
+
+# 打印最终注释
+cat("最终细胞类型注释:\n")
+for(cluster in names(consensus_results$final_annotations)) {
+  cat(sprintf("%s: %s\n", cluster, consensus_results$final_annotations[[cluster]]))
+}
+```
+
+**CSV格式说明**：
+- CSV文件第一列可以是任何值（如集群名称、数字序列如0,1,2,3或1,2,3,4等），这些值将用作索引
+- 第一列的值仅用于参考，不会传递给LLM模型
+- 随后的列应该包含每个集群的标记基因
+- 包内已包含猫心脏组织的示例CSV文件: `inst/extdata/Cat_Heart_markers.csv`
+
+CSV文件结构示例：
+```
+cluster,gene
+Fibroblasts,Negr1,Cask,Tshz2,Ston2,Fstl1,Dse,Celf2,Hmcn2,Setbp1,Cblb
+Cardiomyocytes,Palld,Grb14,Mybpc3,Ensfcag00000044939,Dcun1d2,Acacb,Slco1c1,Ppp1r3c,Sema3c,Ppp1r14c
+Endothelial cells,Adgrf5,Tbx1,Slco2b1,Pi15,Adam23,Bmx,Pde8b,Pkhd1l1,Dtx1,Ensfcag00000051556
+T cells,Clec2d,Trat1,Rasgrp1,Card11,Cytip,Sytl3,Tmem156,Bcl11b,Lcp1,Lcp2
+```
+
+您可以在R脚本中使用以下代码访问示例数据：
+```r
+system.file("extdata", "Cat_Heart_markers.csv", package = "mLLMCelltype")
 ```
 
 ### 使用单个 LLM 模型
