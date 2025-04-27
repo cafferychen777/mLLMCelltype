@@ -1,70 +1,69 @@
 ---
-name: Bug Report | 错误报告
-about: Report a bug in mLLMCelltype | 报告mLLMCelltype中的错误
+name: Bug Report
+about: Report a bug in mLLMCelltype
 title: '[BUG] '
 labels: bug
 assignees: ''
 ---
 
-## Bug Description | 错误描述
+## Bug Description
 
-<!-- Please provide a clear and concise description of the bug | 请提供清晰简洁的错误描述 -->
+<!-- Please provide a clear and concise description of the bug -->
 
-## Reproduction Steps | 复现步骤
+## Reproduction Steps
 
-<!-- Please provide steps to reproduce the behavior | 请提供复现此错误的步骤 -->
+<!-- Please provide steps to reproduce the behavior -->
 
 1. 
 2. 
 3. 
 
-## Expected Behavior | 预期行为
+## Expected Behavior
 
-<!-- Please describe what you expected to happen | 请描述您期望发生的结果 -->
+<!-- Please describe what you expected to happen -->
 
-## Actual Behavior | 实际行为
+## Actual Behavior
 
-<!-- Please describe what actually happened | 请描述实际发生的结果 -->
+<!-- Please describe what actually happened -->
 
-## Environment Information | 环境信息
+## Environment Information
 
-- **mLLMCelltype Version | 版本**: <!-- e.g., 1.0.2 -->
-- **Language | 使用语言**: <!-- Python or R | Python或R -->
-- **Language Version | 语言版本**: <!-- e.g., Python 3.10.4 or R 4.2.0 -->
-- **Operating System | 操作系统**: <!-- e.g., Windows 11, macOS 13.1, Ubuntu 22.04 -->
-- **Used LLM Models | 使用的LLM模型**: <!-- e.g., GPT-4o, Claude-3.7-Sonnet, Gemini-1.5-Pro -->
+- **mLLMCelltype Version**: <!-- e.g., 1.0.2 -->
+- **Language**: <!-- Python or R -->
+- **Language Version**: <!-- e.g., Python 3.10.4 or R 4.2.0 -->
+- **Operating System**: <!-- e.g., Windows 11, macOS 13.1, Ubuntu 22.04 -->
+- **Used LLM Models**: <!-- e.g., GPT-4o, Claude-3.7-Sonnet, Gemini-1.5-Pro -->
 
-## Error Messages/Logs | 错误信息/日志
+## Error Messages/Logs
 
 ```
-<!-- Please paste any error messages or log output here | 请在此粘贴任何错误信息或日志输出 -->
+<!-- Please paste any error messages or log output here -->
 ```
 
-## Example Dataset and Code | 示例数据集和代码
+## Example Dataset and Code
 
 <!-- 
-重要提示: 为了帮助我们更快地解决您的问题，请务必提供:
-1. 一个可以复现错误的最小示例数据集（如可能，请提供可公开访问的链接或小型样本数据）
-2. 完整的导致错误的代码
+IMPORTANT: To help us resolve your issue more quickly, please provide:
+1. A minimal example dataset that reproduces the issue (if possible, provide a publicly accessible link or a small sample dataset)
+2. The complete code that causes the error
 
-没有这些信息，我们可能无法准确诊断和解决您的问题。
+Without this information, we may not be able to accurately diagnose and fix your issue.
 -->
 
-### Example Dataset | 示例数据集
+### Example Dataset
 
-<!-- Please provide access to an example dataset that reproduces the issue | 请提供一个可复现问题的示例数据集 -->
+<!-- Please provide access to an example dataset that reproduces the issue -->
 
-### Example Code | 示例代码
+### Example Code
 
 ```python
 # Please provide the complete code that reproduces the error
-# 请提供可复现错误的完整代码
 ```
 
-## Additional Context | 附加上下文
+## Additional Context
 
-<!-- Add any other context about the problem here | 在此添加关于问题的任何其他上下文 -->
+<!-- Add any other context about the problem here -->
 
-## Possible Solution | 可能的解决方案
+## Possible Solution
 
-<!-- If you have a suggestion for a fix, please provide it here | 如果您对修复有建议，请在此提供 -->
+<!-- If you have a suggestion for a fix, please provide it here -->
