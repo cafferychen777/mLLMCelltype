@@ -33,13 +33,13 @@ jobs:
       
       - name: Install package dependencies
         run: |
-          cd R
+          setwd("R")
           devtools::install_deps(dependencies = TRUE)
         shell: Rscript {0}
 
       - name: Build site
         run: |
-          cd R
+          setwd("R")
           pkgdown::build_site()
         shell: Rscript {0}
 
