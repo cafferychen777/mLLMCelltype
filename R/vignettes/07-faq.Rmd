@@ -104,25 +104,19 @@ cache_manager <- CacheManager$new()
 cache_manager$clear_cache()
 ```
 
-To disable caching for a specific run:
-
-```r
-results <- annotate_cell_types(..., cache = FALSE)
-```
+Note: The `annotate_cell_types` function does not have built-in caching. If you need caching, you'll need to implement it separately.
 
 ### How does mLLMCelltype handle rate limits and API errors?
 
-The package includes robust error handling for API calls:
+The package includes error handling for API calls:
 
-- Automatic retries: Failed API calls are automatically retried up to `max_retries` times (default: 3)
-- Exponential backoff: Each retry waits longer to accommodate rate limits
-- Detailed error messages: When an API call fails permanently, the error message includes details to help diagnose the issue
+- Detailed error messages: When an API call fails, the error message includes details to help diagnose the issue
 
 If you're processing many clusters, you might encounter rate limits. In this case:
 
-1. Increase the `timeout` parameter (default: 60 seconds)
-2. Reduce the number of models used for initial annotation
-3. Process batches of clusters separately with pauses between batches
+1. Reduce the number of models used for initial annotation
+2. Process batches of clusters separately with pauses between batches
+3. Consider implementing your own retry mechanism if needed
 
 ## Performance and Optimization
 
@@ -142,9 +136,9 @@ Typical runtimes:
 - Multi-model consensus with discussion, 10 clusters: 5-10 minutes
 
 To optimize runtime:
-- Enable caching to reuse results
+- Implement your own caching mechanism if needed
 - Start with fewer models for initial exploration
-- Use a higher `discussion_threshold` to reduce the number of controversial clusters
+- Use a higher `controversy_threshold` to reduce the number of controversial clusters
 - Process large datasets in batches
 
 ### What are the API costs associated with using mLLMCelltype?
@@ -164,7 +158,7 @@ For a typical dataset with 10-20 clusters:
 - Using OpenRouter free models: $0.00 total
 
 To reduce costs:
-- Use caching to avoid redundant API calls
+- Implement your own caching mechanism to avoid redundant API calls
 - Start with more economical models
 - Use fewer models for initial exploration
 - Reserve multi-model consensus for final analysis
@@ -188,8 +182,8 @@ results <- annotate_cell_types(
   input = marker_data,
   tissue_name = "human PBMC",
   model = "meta-llama/llama-4-maverick:free",  # Note the :free suffix
-  api_key = Sys.getenv("OPENROUTER_API_KEY"),
-  provider = "openrouter"  # Specify OpenRouter as the provider
+  api_key = Sys.getenv("OPENROUTER_API_KEY")
+  # No need to specify provider - it's automatically detected from the model name format
 )
 ```
 
@@ -232,10 +226,10 @@ There are several possible reasons for getting different results with the same i
 4. **API changes**: Providers may change how their APIs work
 
 To ensure reproducibility:
-- Use caching to reuse results
+- Implement your own caching mechanism to reuse results
 - Specify model versions explicitly when available
-- Set a random seed if the API supports it
 - Save and document your results
+- Consider saving the raw API responses for future reference
 
 ### I'm getting an error about invalid cluster indices. What should I do?
 
@@ -364,7 +358,7 @@ register_custom_provider(
   provider_name = "my_provider",
   api_url = "https://api.my-provider.com/v1/chat/completions",
   api_key_env_var = "MY_PROVIDER_API_KEY",
-  process_function = function(prompt, api_key, ...) {
+  process_function = function(prompt, api_key) {
     # Custom implementation
   }
 )
