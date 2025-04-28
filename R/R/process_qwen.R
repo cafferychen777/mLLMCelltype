@@ -3,8 +3,75 @@
 process_qwen <- function(prompt, model, api_key) {
   write_log(sprintf("Starting QWEN API request with model: %s", model))
   
-  # QWEN API endpoint
-  url <- "https://dashscope-intl.aliyuncs.com/compatible-mode/v1/chat/completions"
+  # Determine the appropriate API endpoint based on the key
+  # Try international endpoint first, if it fails, try mainland endpoint
+  international_endpoint <- "https://dashscope-intl.aliyuncs.com/compatible-mode/v1/chat/completions"
+  mainland_endpoint <- "https://dashscope.aliyuncs.com/compatible-mode/v1/chat/completions"
+  
+  # Function to detect API key type
+  detect_api_endpoint <- function(api_key) {
+    # First try with international endpoint
+    test_url <- international_endpoint
+    test_body <- list(
+      model = model,
+      max_tokens = 10,
+      messages = list(list(role = "user", content = "test"))
+    )
+    
+    test_response <- tryCatch({
+      httr::POST(
+        url = test_url,
+        httr::add_headers(
+          "Authorization" = paste("Bearer", api_key),
+          "Content-Type" = "application/json"
+        ),
+        body = jsonlite::toJSON(test_body, auto_unbox = TRUE),
+        encode = "json"
+      )
+    }, error = function(e) {
+      write_log(sprintf("Error testing international endpoint: %s", e$message))
+      return(NULL)
+    })
+    
+    # Check if international endpoint works
+    if (!is.null(test_response) && !httr::http_error(test_response)) {
+      write_log("International API endpoint detected and working")
+      return(international_endpoint)
+    }
+    
+    # If international fails, try mainland endpoint
+    write_log("International endpoint failed, trying mainland endpoint")
+    test_url <- mainland_endpoint
+    
+    test_response <- tryCatch({
+      httr::POST(
+        url = test_url,
+        httr::add_headers(
+          "Authorization" = paste("Bearer", api_key),
+          "Content-Type" = "application/json"
+        ),
+        body = jsonlite::toJSON(test_body, auto_unbox = TRUE),
+        encode = "json"
+      )
+    }, error = function(e) {
+      write_log(sprintf("Error testing mainland endpoint: %s", e$message))
+      return(NULL)
+    })
+    
+    # Check if mainland endpoint works
+    if (!is.null(test_response) && !httr::http_error(test_response)) {
+      write_log("Mainland API endpoint detected and working")
+      return(mainland_endpoint)
+    }
+    
+    # If both fail, default to international endpoint and let the main function handle the error
+    write_log("Both endpoints failed, defaulting to international endpoint")
+    return(international_endpoint)
+  }
+  
+  # Detect and use the appropriate endpoint
+  url <- detect_api_endpoint(api_key)
+  write_log(sprintf("Using endpoint: %s", url))
   write_log(sprintf("Using model: %s", model))
   
   # Process all input at once
