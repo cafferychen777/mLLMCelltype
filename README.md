@@ -709,4 +709,8 @@ Here are some areas where contributions would be particularly valuable:
 
 Please follow the existing code style in the repository. For R code, we generally follow the [tidyverse style guide](https://style.tidyverse.org/). For Python code, we follow [PEP 8](https://www.python.org/dev/peps/pep-0008/).
 
+### Community
+
+Join our [Discord community](https://discord.gg/pb2aZdG4) to get real-time updates about mLLMCelltype, ask questions, share your experiences, or collaborate with other users and developers. This is a great place to connect with the team and other users working on single-cell RNA-seq analysis.
+
 Thank you for helping improve mLLMCelltype!
