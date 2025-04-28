@@ -249,7 +249,7 @@ a consensus:</p>
 <span><span class="kw">for</span> <span class="op">(</span><span class="va">model</span> <span class="kw">in</span> <span class="va">models</span><span class="op">)</span> <span class="op">{</span></span>
 <span>  <span class="va">provider</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_provider.html">get_provider</a></span><span class="op">(</span><span class="va">model</span><span class="op">)</span></span>
 <span>  <span class="va">api_key</span> <span class="op">&lt;-</span> <span class="va">api_keys</span><span class="op">[[</span><span class="va">provider</span><span class="op">]</span><span class="op">]</span></span>
-<span>  </span>
+<span></span>
 <span>  <span class="va">results</span><span class="op">[[</span><span class="va">model</span><span class="op">]</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/annotate_cell_types.html">annotate_cell_types</a></span><span class="op">(</span></span>
 <span>    input <span class="op">=</span> <span class="va">markers</span>,</span>
 <span>    tissue_name <span class="op">=</span> <span class="st">"human PBMC"</span>,</span>
@@ -260,12 +260,14 @@ a consensus:</p>
 <span><span class="op">}</span></span>
 <span></span>
 <span><span class="co"># Create consensus</span></span>
-<span><span class="va">consensus_results</span> <span class="op">&lt;-</span> <span class="fu">create_consensus</span><span class="op">(</span></span>
-<span>  results <span class="op">=</span> <span class="va">results</span>,</span>
+<span><span class="va">consensus_results</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/interactive_consensus_annotation.html">interactive_consensus_annotation</a></span><span class="op">(</span></span>
 <span>  input <span class="op">=</span> <span class="va">markers</span>,</span>
 <span>  tissue_name <span class="op">=</span> <span class="st">"human PBMC"</span>,</span>
-<span>  model <span class="op">=</span> <span class="st">"claude-3-7-sonnet-20250219"</span>,</span>
-<span>  api_key <span class="op">=</span> <span class="va">api_keys</span><span class="op">[[</span><span class="st">"anthropic"</span><span class="op">]</span><span class="op">]</span></span>
+<span>  models <span class="op">=</span> <span class="va">models</span>,  <span class="co"># Use all the models defined above</span></span>
+<span>  api_keys <span class="op">=</span> <span class="va">api_keys</span>,</span>
+<span>  controversy_threshold <span class="op">=</span> <span class="fl">0.7</span>,</span>
+<span>  entropy_threshold <span class="op">=</span> <span class="fl">1.0</span>,</span>
+<span>  consensus_check_model <span class="op">=</span> <span class="st">"claude-3-7-sonnet-20250219"</span></span>
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Print consensus results</span></span>
@@ -282,22 +284,36 @@ a consensus:</p>
 <span><span class="co"># Add consensus annotations to Seurat object</span></span>
 <span><span class="va">seurat_obj</span><span class="op">$</span><span class="va">cell_type_consensus</span> <span class="op">&lt;-</span> <span class="fu">plyr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/plyr/man/mapvalues.html" class="external-link">mapvalues</a></span><span class="op">(</span></span>
 <span>  x <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/character.html" class="external-link">as.character</a></span><span class="op">(</span><span class="fu"><a href="https://satijalab.github.io/seurat-object/reference/Idents.html" class="external-link">Idents</a></span><span class="op">(</span><span class="va">seurat_obj</span><span class="op">)</span><span class="op">)</span>,</span>
-<span>  from <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/character.html" class="external-link">as.character</a></span><span class="op">(</span><span class="fl">0</span><span class="op">:</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">consensus_results</span><span class="op">$</span><span class="va">final_consensus</span><span class="op">)</span><span class="op">-</span><span class="fl">1</span><span class="op">)</span><span class="op">)</span>,</span>
-<span>  to <span class="op">=</span> <span class="va">consensus_results</span><span class="op">$</span><span class="va">final_consensus</span></span>
+<span>  from <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/character.html" class="external-link">as.character</a></span><span class="op">(</span><span class="fl">0</span><span class="op">:</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">consensus_results</span><span class="op">$</span><span class="va">final_annotations</span><span class="op">)</span><span class="op">-</span><span class="fl">1</span><span class="op">)</span><span class="op">)</span>,</span>
+<span>  to <span class="op">=</span> <span class="va">consensus_results</span><span class="op">$</span><span class="va">final_annotations</span></span>
 <span><span class="op">)</span></span>
 <span></span>
-<span><span class="co"># Add consensus proportion (agreement level) to Seurat object</span></span>
+<span><span class="co"># Extract consensus metrics from the consensus results</span></span>
+<span><span class="co"># Note: These metrics are available in the consensus_results$initial_results$consensus_results</span></span>
+<span><span class="va">consensus_metrics</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">lapply</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">consensus_results</span><span class="op">$</span><span class="va">initial_results</span><span class="op">$</span><span class="va">consensus_results</span><span class="op">)</span>, <span class="kw">function</span><span class="op">(</span><span class="va">cluster_id</span><span class="op">)</span> <span class="op">{</span></span>
+<span>  <span class="va">metrics</span> <span class="op">&lt;-</span> <span class="va">consensus_results</span><span class="op">$</span><span class="va">initial_results</span><span class="op">$</span><span class="va">consensus_results</span><span class="op">[[</span><span class="va">cluster_id</span><span class="op">]</span><span class="op">]</span></span>
+<span>  <span class="kw"><a href="https://rdrr.io/r/base/function.html" class="external-link">return</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
+<span>    cluster <span class="op">=</span> <span class="va">cluster_id</span>,</span>
+<span>    consensus_proportion <span class="op">=</span> <span class="va">metrics</span><span class="op">$</span><span class="va">consensus_proportion</span>,</span>
+<span>    entropy <span class="op">=</span> <span class="va">metrics</span><span class="op">$</span><span class="va">entropy</span></span>
+<span>  <span class="op">)</span><span class="op">)</span></span>
+<span><span class="op">}</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Convert to data frame for easier handling</span></span>
+<span><span class="va">metrics_df</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/do.call.html" class="external-link">do.call</a></span><span class="op">(</span><span class="va">rbind</span>, <span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">lapply</a></span><span class="op">(</span><span class="va">consensus_metrics</span>, <span class="va">data.frame</span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Add consensus proportion to Seurat object</span></span>
 <span><span class="va">seurat_obj</span><span class="op">$</span><span class="va">consensus_proportion</span> <span class="op">&lt;-</span> <span class="fu">plyr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/plyr/man/mapvalues.html" class="external-link">mapvalues</a></span><span class="op">(</span></span>
 <span>  x <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/character.html" class="external-link">as.character</a></span><span class="op">(</span><span class="fu"><a href="https://satijalab.github.io/seurat-object/reference/Idents.html" class="external-link">Idents</a></span><span class="op">(</span><span class="va">seurat_obj</span><span class="op">)</span><span class="op">)</span>,</span>
-<span>  from <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/character.html" class="external-link">as.character</a></span><span class="op">(</span><span class="fl">0</span><span class="op">:</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">consensus_results</span><span class="op">$</span><span class="va">consensus_proportion</span><span class="op">)</span><span class="op">-</span><span class="fl">1</span><span class="op">)</span><span class="op">)</span>,</span>
-<span>  to <span class="op">=</span> <span class="va">consensus_results</span><span class="op">$</span><span class="va">consensus_proportion</span></span>
+<span>  from <span class="op">=</span> <span class="va">metrics_df</span><span class="op">$</span><span class="va">cluster</span>,</span>
+<span>  to <span class="op">=</span> <span class="va">metrics_df</span><span class="op">$</span><span class="va">consensus_proportion</span></span>
 <span><span class="op">)</span></span>
 <span></span>
-<span><span class="co"># Add Shannon entropy (uncertainty measure) to Seurat object</span></span>
-<span><span class="va">seurat_obj</span><span class="op">$</span><span class="va">shannon_entropy</span> <span class="op">&lt;-</span> <span class="fu">plyr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/plyr/man/mapvalues.html" class="external-link">mapvalues</a></span><span class="op">(</span></span>
+<span><span class="co"># Add entropy to Seurat object</span></span>
+<span><span class="va">seurat_obj</span><span class="op">$</span><span class="va">entropy</span> <span class="op">&lt;-</span> <span class="fu">plyr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/plyr/man/mapvalues.html" class="external-link">mapvalues</a></span><span class="op">(</span></span>
 <span>  x <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/character.html" class="external-link">as.character</a></span><span class="op">(</span><span class="fu"><a href="https://satijalab.github.io/seurat-object/reference/Idents.html" class="external-link">Idents</a></span><span class="op">(</span><span class="va">seurat_obj</span><span class="op">)</span><span class="op">)</span>,</span>
-<span>  from <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/character.html" class="external-link">as.character</a></span><span class="op">(</span><span class="fl">0</span><span class="op">:</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">consensus_results</span><span class="op">$</span><span class="va">shannon_entropy</span><span class="op">)</span><span class="op">-</span><span class="fl">1</span><span class="op">)</span><span class="op">)</span>,</span>
-<span>  to <span class="op">=</span> <span class="va">consensus_results</span><span class="op">$</span><span class="va">shannon_entropy</span></span>
+<span>  from <span class="op">=</span> <span class="va">metrics_df</span><span class="op">$</span><span class="va">cluster</span>,</span>
+<span>  to <span class="op">=</span> <span class="va">metrics_df</span><span class="op">$</span><span class="va">entropy</span></span>
 <span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level3">
@@ -315,24 +331,24 @@ a consensus:</p>
 </h3>
 <p>The output of <code><a href="../reference/annotate_cell_types.html">annotate_cell_types()</a></code> is a vector of cell
 type annotations, where each element corresponds to a cluster.</p>
-<p>The output of <code>create_consensus()</code> is a list
-containing:</p>
+<p>The output of <code><a href="../reference/interactive_consensus_annotation.html">interactive_consensus_annotation()</a></code> is a
+list containing:</p>
 <ul>
 <li>
-<code>final_consensus</code>: Final consensus cell type
+<code>final_annotations</code>: Final consensus cell type
 annotations</li>
 <li>
 <code>initial_results</code>: Initial predictions from each
 model</li>
 <li>
-<code>consensus_proportion</code>: Proportion of models agreeing
-with the consensus (0-1)</li>
-<li>
-<code>shannon_entropy</code>: Shannon entropy as a measure of
-uncertainty (lower is better)</li>
+<code>controversial_clusters</code>: List of clusters that required
+discussion</li>
 <li>
 <code>discussion_logs</code>: Detailed logs of the discussion
 process</li>
+<li>
+<code>session_id</code>: Unique identifier for the annotation
+session</li>
 </ul>
 </div>
 <div class="section level3">
