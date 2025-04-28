@@ -21,7 +21,7 @@
 #'     converted to 0-based indexing (e.g., cluster 1 becomes cluster 0) for consistency.
 #' @param tissue_name Optional input of tissue name
 #' @param models Vector of model names to participate in the discussion. Supported models:
-#'   - OpenAI: 'gpt-4o', 'o1' 
+#'   - OpenAI: 'gpt-4o', 'o1'
 #'   - Anthropic: 'claude-3-7-sonnet-20250219', 'claude-3-5-sonnet-latest', 'claude-3-5-haiku-latest', 'claude-3-opus'
 #'   - DeepSeek: 'deepseek-chat', 'deepseek-reasoner'
 #'   - Google: 'gemini-2.0-flash', 'gemini-2.0-flash-exp', 'gemini-1.5-pro', 'gemini-1.5-flash'
@@ -40,7 +40,7 @@
 #' @param api_keys Named list of API keys. Can be provided in two formats:
 #'   1. With provider names as keys: `list("openai" = "sk-...", "anthropic" = "sk-ant-...", "openrouter" = "sk-or-...")`
 #'   2. With model names as keys: `list("gpt-4o" = "sk-...", "claude-3-opus" = "sk-ant-...")`
-#'   
+#'
 #'   The system first tries to find the API key using the provider name. If not found, it then tries using the model name.
 #'   Example:
 #'   ```r
@@ -152,26 +152,26 @@ identify_controversial_clusters <- function(input, individual_predictions, contr
   } else {
     unique(input$cluster)
   }
-  
+
   # Restructure individual_predictions to be indexed by cluster_id
   # This handles the case where individual_predictions are returned as text lines from models
   structured_predictions <- list()
-  
+
   for (model_name in names(individual_predictions)) {
     model_preds <- individual_predictions[[model_name]]
-    
+
     # Check if model_preds is already structured by cluster_id
     if (is.list(model_preds) && !is.null(names(model_preds))) {
       structured_predictions[[model_name]] <- model_preds
     } else if (is.character(model_preds)) {
       # Parse text lines into a structured format
       model_structured <- list()
-      
+
       # Process each line which should be in format: "cluster_id: cell_type"
       for (line in model_preds) {
         # Skip empty lines
         if (trimws(line) == "") next
-        
+
         # Try to parse the line as "cluster_id: cell_type"
         parts <- strsplit(line, ":", fixed = TRUE)[[1]]
         if (length(parts) >= 2) {
@@ -195,7 +195,7 @@ identify_controversial_clusters <- function(input, individual_predictions, contr
           }
         }
       }
-      
+
       # If no predictions were found in the above processing, try using index position
       # Get all cluster IDs
       all_clusters <- if (inherits(input, 'list')) {
@@ -203,7 +203,7 @@ identify_controversial_clusters <- function(input, individual_predictions, contr
       } else {
         as.character(unique(input$cluster))
       }
-      
+
       # For each cluster ID, if no prediction is found, try using index position
       for (cluster_id in all_clusters) {
         # Try to convert cluster_id to numeric safely
@@ -233,11 +233,11 @@ identify_controversial_clusters <- function(input, individual_predictions, contr
           }
         }
       }
-      
+
       structured_predictions[[model_name]] <- model_structured
     }
   }
-  
+
   for (cluster_id in clusters) {
     # Use original cluster ID for log output, no conversion needed
     logger$log_entry("INFO", sprintf("Analyzing cluster %s...", cluster_id))
@@ -346,7 +346,7 @@ select_best_prediction <- function(consensus_result, valid_predictions) {
 process_controversial_clusters <- function(controversial_clusters, input, tissue_name,
                                           successful_models, api_keys, individual_predictions,
                                           top_gene_count, controversy_threshold, entropy_threshold, max_discussion_rounds,
-                                          logger, cache_manager, use_cache) {
+                                          logger, cache_manager, use_cache, consensus_check_model = NULL) {
 
   if (length(controversial_clusters) == 0) {
     logger$log_entry("INFO", "No controversial clusters found. All clusters have reached consensus.")
@@ -422,6 +422,7 @@ process_controversial_clusters <- function(controversial_clusters, input, tissue
         max_rounds = max_discussion_rounds,
         controversy_threshold = controversy_threshold,
         entropy_threshold = entropy_threshold,
+        consensus_check_model = consensus_check_model,
         logger = logger
       )
 
@@ -449,7 +450,7 @@ process_controversial_clusters <- function(controversial_clusters, input, tissue
     if (!is.null(discussion_result) && !is.character(discussion_result$cluster_id)) {
       discussion_result$cluster_id <- char_cluster_id
     }
-    
+
     discussion_logs[[char_cluster_id]] <- discussion_result
     final_annotations[[char_cluster_id]] <- final_annotation
 
@@ -536,7 +537,7 @@ combine_results <- function(initial_results, controversy_results, discussion_res
         logger$log_entry("WARNING", sprintf("Cluster %s discussion result is NA, replacing with descriptive placeholder", char_cluster_id))
         discussion_results_map[[char_cluster_id]] <- "Data_Missing_In_Discussion_Results"
       }
-      
+
       # Now we can safely compare without NA concerns
       if (final_annotations[[char_cluster_id]] != discussion_results_map[[char_cluster_id]]) {
         logger$log_entry("WARNING", sprintf("Cluster %s final annotation '%s' differs from discussion result '%s', corrected",
@@ -632,7 +633,7 @@ combine_results <- function(initial_results, controversy_results, discussion_res
 #'     converted to 0-based indexing (e.g., cluster 1 becomes cluster 0) for consistency.
 #' @param tissue_name Optional input of tissue name
 #' @param models Vector of model names to participate in the discussion. Supported models:
-#'   - OpenAI: 'gpt-4o', 'o1' 
+#'   - OpenAI: 'gpt-4o', 'o1'
 #'   - Anthropic: 'claude-3-7-sonnet-20250219', 'claude-3-5-sonnet-latest', 'claude-3-5-haiku-latest', 'claude-3-opus'
 #'   - DeepSeek: 'deepseek-chat', 'deepseek-reasoner'
 #'   - Google: 'gemini-2.0-flash', 'gemini-2.0-flash-exp', 'gemini-1.5-pro', 'gemini-1.5-flash'
@@ -651,7 +652,7 @@ combine_results <- function(initial_results, controversy_results, discussion_res
 #' @param api_keys Named list of API keys. Can be provided in two formats:
 #'   1. With provider names as keys: `list("openai" = "sk-...", "anthropic" = "sk-ant-...", "openrouter" = "sk-or-...")`
 #'   2. With model names as keys: `list("gpt-4o" = "sk-...", "claude-3-opus" = "sk-ant-...")`
-#'   
+#'
 #'   The system first tries to find the API key using the provider name. If not found, it then tries using the model name.
 #'   Example:
 #'   ```r
@@ -696,7 +697,7 @@ interactive_consensus_annotation <- function(input,
   if (length(models) < 2) {
     stop("At least 2 models are required for LLM discussion and consensus building. Please provide more models or use annotate_cell_types() function for single-model annotation.")
   }
-  
+
   # Check if input is a list with named elements (clusters)
   if (is.list(input) && !is.data.frame(input) && !is.null(names(input))) {
     # Try to convert named numeric indices to check if they start from 0
@@ -739,7 +740,7 @@ interactive_consensus_annotation <- function(input,
     consensus_check_model <- models[1]
     logger$log_entry("INFO", sprintf("No consensus_check_model specified, using %s", consensus_check_model))
   }
-  
+
   controversy_results <- identify_controversial_clusters(
     input = input,
     individual_predictions = initial_results$individual_predictions,
@@ -764,7 +765,8 @@ interactive_consensus_annotation <- function(input,
     max_discussion_rounds = max_discussion_rounds,
     logger = logger,
     cache_manager = cache_manager,
-    use_cache = use_cache
+    use_cache = use_cache,
+    consensus_check_model = consensus_check_model
   )
 
   # Combine results from all phases
