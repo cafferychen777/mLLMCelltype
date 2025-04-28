@@ -2,7 +2,7 @@
 title: "Frequently Asked Questions"
 author: "Chen Yang"
 date: "`r Sys.Date()`"
-output: 
+output:
   html_document:
     toc: true
     toc_float: true
@@ -155,17 +155,51 @@ The API costs depend on the models you use and the number of clusters:
 - **Anthropic models** (Claude 3.7, etc.): $0.01-0.03 per cluster for annotation
 - **Google models** (Gemini 1.5, etc.): $0.001-0.01 per cluster for annotation
 - **Other models**: Generally lower cost
+- **OpenRouter free models**: $0.00 (free with `:free` suffix)
 
 For a typical dataset with 10-20 clusters:
 - Single model annotation: $0.10-1.00 total
 - Multi-model consensus (3 models): $0.30-3.00 total
 - With discussion process: Additional $0.10-1.00
+- Using OpenRouter free models: $0.00 total
 
 To reduce costs:
 - Use caching to avoid redundant API calls
 - Start with more economical models
 - Use fewer models for initial exploration
 - Reserve multi-model consensus for final analysis
+- Consider using OpenRouter free models (see below)
+
+### How can I use OpenRouter free models?
+
+OpenRouter provides access to several high-quality models for free:
+
+1. **Sign up for an OpenRouter account** at [openrouter.ai](https://openrouter.ai/keys)
+
+2. **Get your API key** from the OpenRouter dashboard
+
+3. **Use models with the `:free` suffix**:
+```r
+# Set your OpenRouter API key
+Sys.setenv(OPENROUTER_API_KEY = "your-openrouter-api-key")
+
+# Use a free model
+results <- annotate_cell_types(
+  input = marker_data,
+  tissue_name = "human PBMC",
+  model = "meta-llama/llama-4-maverick:free",  # Note the :free suffix
+  api_key = Sys.getenv("OPENROUTER_API_KEY"),
+  provider = "openrouter"  # Specify OpenRouter as the provider
+)
+```
+
+4. **Recommended free models**:
+   - `meta-llama/llama-4-maverick:free` - Meta Llama 4 Maverick (256K context)
+   - `nvidia/llama-3.1-nemotron-ultra-253b-v1:free` - NVIDIA Nemotron Ultra 253B
+   - `deepseek/deepseek-chat-v3-0324:free` - DeepSeek Chat v3
+   - `microsoft/mai-ds-r1:free` - Microsoft MAI-DS-R1
+
+Free models don't consume credits but may have limitations compared to paid models.
 
 ### How can I improve the accuracy of annotations?
 

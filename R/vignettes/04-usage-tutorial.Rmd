@@ -2,7 +2,7 @@
 title: "Usage Tutorial"
 author: "Chen Yang"
 date: "`r Sys.Date()`"
-output: 
+output:
   html_document:
     toc: true
     toc_float: true
@@ -144,7 +144,7 @@ results <- list()
 for (model in models) {
   provider <- get_provider(model)
   api_key <- api_keys[[provider]]
-  
+
   results[[model]] <- annotate_cell_types(
     input = pbmc_markers,
     tissue_name = "human PBMC",
@@ -184,6 +184,65 @@ pbmc_small$shannon_entropy <- plyr::mapvalues(
   from = as.character(0:(length(consensus_results$shannon_entropy)-1)),
   to = consensus_results$shannon_entropy
 )
+```
+
+### Scenario 2b: Using Free OpenRouter Models
+
+For users with limited API credits or budget constraints:
+
+```{r}
+# Set OpenRouter API key
+openrouter_api_key <- Sys.getenv("OPENROUTER_API_KEY")
+
+# Define free OpenRouter models to use
+free_models <- c(
+  "meta-llama/llama-4-maverick:free",                # Meta Llama 4 Maverick (free)
+  "nvidia/llama-3.1-nemotron-ultra-253b-v1:free",    # NVIDIA Nemotron Ultra 253B (free)
+  "deepseek/deepseek-chat-v3-0324:free",             # DeepSeek Chat v3 (free)
+  "microsoft/mai-ds-r1:free"                         # Microsoft MAI-DS-R1 (free)
+)
+
+# Run annotation with free OpenRouter models
+free_results <- list()
+for (model in free_models) {
+  free_results[[model]] <- annotate_cell_types(
+    input = pbmc_markers,
+    tissue_name = "human PBMC",
+    model = model,
+    api_key = openrouter_api_key,
+    provider = "openrouter",  # Specify OpenRouter as the provider
+    top_gene_count = 10
+  )
+}
+
+# Create consensus with free models
+free_consensus_results <- create_consensus(
+  results = free_results,
+  input = pbmc_markers,
+  tissue_name = "human PBMC",
+  model = "meta-llama/llama-4-maverick:free",  # Use a free model for discussion
+  api_key = openrouter_api_key,
+  provider = "openrouter"
+)
+
+# Print consensus summary
+print_consensus_summary(free_consensus_results)
+
+# Add free model consensus annotations to Seurat object
+pbmc_small$free_model_consensus <- plyr::mapvalues(
+  x = as.character(Idents(pbmc_small)),
+  from = as.character(0:(length(free_consensus_results$final_consensus)-1)),
+  to = free_consensus_results$final_consensus
+)
+
+# Compare paid vs. free model results
+comparison <- data.frame(
+  cluster = as.character(0:(length(consensus_results$final_consensus)-1)),
+  paid_models = consensus_results$final_consensus,
+  free_models = free_consensus_results$final_consensus,
+  agreement = consensus_results$final_consensus == free_consensus_results$final_consensus
+)
+print(comparison)
 ```
 
 ### Scenario 3: Working with CSV Files
@@ -254,6 +313,17 @@ For preliminary exploration or large datasets:
 - **Zhipu GLM-4** (`glm-4`): Economical option with decent performance
 - **MiniMax** (`minimax`): Cost-effective for initial exploration
 
+### Free Models via OpenRouter
+
+For users with limited API credits or budget constraints:
+
+- **Meta Llama 4 Maverick** (`meta-llama/llama-4-maverick:free`): Free model with 256K context window
+- **NVIDIA Nemotron Ultra 253B** (`nvidia/llama-3.1-nemotron-ultra-253b-v1:free`): Free 253B parameter model
+- **DeepSeek Chat v3** (`deepseek/deepseek-chat-v3-0324:free`): Free model with 163K context window
+- **Microsoft MAI-DS-R1** (`microsoft/mai-ds-r1:free`): Free model with 163K context window
+
+These free models are accessed through OpenRouter and don't consume credits, but may have limitations compared to paid models. Use the `:free` suffix in the model name to access them.
+
 ## Integration with Seurat Workflow
 
 Here's a complete example of integrating mLLMCelltype with a Seurat workflow:
@@ -297,7 +367,7 @@ results <- list()
 for (model in models) {
   provider <- get_provider(model)
   api_key <- api_keys[[provider]]
-  
+
   results[[model]] <- annotate_cell_types(
     input = pbmc_markers,
     tissue_name = "human PBMC",
@@ -305,7 +375,7 @@ for (model in models) {
     api_key = api_key,
     top_gene_count = 10
   )
-  
+
   # Add individual model results to Seurat object
   column_name <- paste0("cell_type_", gsub("[^a-zA-Z0-9]", "_", model))
   pbmc_small[[column_name]] <- plyr::mapvalues(
