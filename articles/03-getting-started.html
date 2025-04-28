@@ -108,7 +108,7 @@
             
             <h4 data-toc-skip class="date">2025-04-28</h4>
       
-      <small class="dont-index">Source: <a href="https://github.com/cafferychen777/mLLMCelltype/blob/main/vignettes/03-getting-started.Rmd" class="external-link"><code>vignettes/03-getting-started.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/cafferychen777/mLLMCelltype/blob/dev/vignettes/03-getting-started.Rmd" class="external-link"><code>vignettes/03-getting-started.Rmd</code></a></small>
       <div class="d-none name"><code>03-getting-started.Rmd</code></div>
     </div>
 
@@ -142,11 +142,36 @@ object</li>
 </ol>
 </div>
 <div class="section level3">
-<h3 id="loading-the-package">Loading the Package<a class="anchor" aria-label="anchor" href="#loading-the-package"></a>
+<h3 id="loading-the-package-and-setting-up-api-keys">Loading the Package and Setting Up API Keys<a class="anchor" aria-label="anchor" href="#loading-the-package-and-setting-up-api-keys"></a>
 </h3>
 <p>First, load the mLLMCelltype package:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://cafferychen777.github.io/mLLMCelltype">mLLMCelltype</a></span><span class="op">)</span></span></code></pre></div>
+<div class="section level4">
+<h4 id="setting-up-api-keys">Setting Up API Keys<a class="anchor" aria-label="anchor" href="#setting-up-api-keys"></a>
+</h4>
+<p>Before using mLLMCelltype, you need to set up API keys for the LLM
+providers you plan to use:</p>
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Set API keys as environment variables</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/Sys.setenv.html" class="external-link">Sys.setenv</a></span><span class="op">(</span>ANTHROPIC_API_KEY <span class="op">=</span> <span class="st">"your-anthropic-api-key"</span><span class="op">)</span>  <span class="co"># For Claude models</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/Sys.setenv.html" class="external-link">Sys.setenv</a></span><span class="op">(</span>OPENAI_API_KEY <span class="op">=</span> <span class="st">"your-openai-api-key"</span><span class="op">)</span>        <span class="co"># For GPT models</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/Sys.setenv.html" class="external-link">Sys.setenv</a></span><span class="op">(</span>GEMINI_API_KEY <span class="op">=</span> <span class="st">"your-gemini-api-key"</span><span class="op">)</span>        <span class="co"># For Gemini models</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/Sys.setenv.html" class="external-link">Sys.setenv</a></span><span class="op">(</span>OPENROUTER_API_KEY <span class="op">=</span> <span class="st">"your-openrouter-api-key"</span><span class="op">)</span> <span class="co"># For OpenRouter models</span></span></code></pre></div>
+<p>You can obtain API keys from: - Anthropic: <a href="https://console.anthropic.com/keys" class="external-link uri">https://console.anthropic.com/keys</a> - OpenAI: <a href="https://platform.openai.com/api-keys" class="external-link uri">https://platform.openai.com/api-keys</a> - Google (Gemini):
+<a href="https://ai.google.dev/" class="external-link uri">https://ai.google.dev/</a>
+- OpenRouter: <a href="https://openrouter.ai/keys" class="external-link uri">https://openrouter.ai/keys</a></p>
+<p>Alternatively, you can provide API keys directly in function
+calls:</p>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">results</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/annotate_cell_types.html">annotate_cell_types</a></span><span class="op">(</span></span>
+<span>  input <span class="op">=</span> <span class="va">markers</span>,</span>
+<span>  tissue_name <span class="op">=</span> <span class="st">"human PBMC"</span>,</span>
+<span>  model <span class="op">=</span> <span class="st">"claude-3-7-sonnet-20250219"</span>,</span>
+<span>  api_key <span class="op">=</span> <span class="st">"your-anthropic-api-key"</span>,  <span class="co"># Direct API key</span></span>
+<span>  top_gene_count <span class="op">=</span> <span class="fl">10</span></span>
+<span><span class="op">)</span></span></code></pre></div>
+</div>
 </div>
 <div class="section level3">
 <h3 id="input-data-requirements">Input Data Requirements<a class="anchor" aria-label="anchor" href="#input-data-requirements"></a>
@@ -160,7 +185,7 @@ Cluster ID (must be 0-based) - <code>gene</code>: Gene name/symbol -
 <code>avg_log2FC</code> or similar metric: Log fold change -
 <code>p_val_adj</code> or similar metric: Adjusted p-value</p>
 <p>Example:</p>
-<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Example marker data frame</span></span>
 <span><span class="va">markers_df</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
 <span>  cluster <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">0</span>, <span class="fl">0</span>, <span class="fl">1</span>, <span class="fl">1</span>, <span class="fl">1</span><span class="op">)</span>,</span>
@@ -174,7 +199,7 @@ Cluster ID (must be 0-based) - <code>gene</code>: Gene name/symbol -
 </h4>
 <p>You can directly use the output from Seurat’s
 <code><a href="https://satijalab.org/seurat/reference/FindAllMarkers.html" class="external-link">FindAllMarkers()</a></code> function:</p>
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Assuming you have a Seurat object named 'seurat_obj'</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://satijalab.org/seurat" class="external-link">Seurat</a></span><span class="op">)</span></span>
 <span><span class="va">all_markers</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://satijalab.org/seurat/reference/FindAllMarkers.html" class="external-link">FindAllMarkers</a></span><span class="op">(</span><span class="va">seurat_obj</span>, only.pos <span class="op">=</span> <span class="cn">TRUE</span>, min.pct <span class="op">=</span> <span class="fl">0.25</span>, logfc.threshold <span class="op">=</span> <span class="fl">0.25</span><span class="op">)</span></span></code></pre></div>
@@ -183,7 +208,7 @@ Cluster ID (must be 0-based) - <code>gene</code>: Gene name/symbol -
 <h4 id="csv-file-path">3. CSV File Path<a class="anchor" aria-label="anchor" href="#csv-file-path"></a>
 </h4>
 <p>A path to a CSV file containing marker gene data:</p>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Path to your CSV file</span></span>
 <span><span class="va">markers_file</span> <span class="op">&lt;-</span> <span class="st">"path/to/markers.csv"</span></span></code></pre></div>
 </div>
@@ -191,7 +216,7 @@ Cluster ID (must be 0-based) - <code>gene</code>: Gene name/symbol -
 <h4 id="list-format">4. List Format<a class="anchor" aria-label="anchor" href="#list-format"></a>
 </h4>
 <p>A list where each element contains marker genes for a cluster:</p>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Example marker list</span></span>
 <span><span class="va">markers_list</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
 <span>  <span class="st">"0"</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"CD3D"</span>, <span class="st">"CD3E"</span>, <span class="st">"CD2"</span>, <span class="st">"IL7R"</span>, <span class="st">"LTB"</span><span class="op">)</span>,</span>
@@ -200,10 +225,63 @@ Cluster ID (must be 0-based) - <code>gene</code>: Gene name/symbol -
 </div>
 </div>
 <div class="section level3">
+<h3 id="function-parameters">Function Parameters<a class="anchor" aria-label="anchor" href="#function-parameters"></a>
+</h3>
+<p>The <code>annotate_cell_types</code> function has the following
+parameters:</p>
+<table class="table">
+<colgroup>
+<col width="28%">
+<col width="33%">
+<col width="38%">
+</colgroup>
+<thead><tr class="header">
+<th>Parameter</th>
+<th>Description</th>
+<th>Default Value</th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td><code>input</code></td>
+<td>Marker gene data (data frame, list, or file path)</td>
+<td>(required)</td>
+</tr>
+<tr class="even">
+<td><code>tissue_name</code></td>
+<td>Tissue name (e.g., “human PBMC”, “mouse brain”)</td>
+<td><code>NULL</code></td>
+</tr>
+<tr class="odd">
+<td><code>model</code></td>
+<td>LLM model to use</td>
+<td><code>"gpt-4o"</code></td>
+</tr>
+<tr class="even">
+<td><code>api_key</code></td>
+<td>API key (if not set in environment)</td>
+<td><code>NA</code></td>
+</tr>
+<tr class="odd">
+<td><code>top_gene_count</code></td>
+<td>Number of top genes per cluster to use</td>
+<td><code>10</code></td>
+</tr>
+<tr class="even">
+<td><code>debug</code></td>
+<td>Whether to print debugging information</td>
+<td><code>FALSE</code></td>
+</tr>
+</tbody>
+</table>
+<p>Note: If <code>api_key</code> is set to <code>NA</code>, the function
+will return the generated prompt without making an API call, which is
+useful for reviewing the prompt before sending it to the API.</p>
+</div>
+<div class="section level3">
 <h3 id="basic-usage-example">Basic Usage Example<a class="anchor" aria-label="anchor" href="#basic-usage-example"></a>
 </h3>
 <p>Here’s a simple example using a single LLM model for annotation:</p>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Example marker data</span></span>
 <span><span class="va">markers</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
 <span>  cluster <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">0</span>, <span class="fl">0</span>, <span class="fl">0</span>, <span class="fl">0</span>, <span class="fl">1</span>, <span class="fl">1</span>, <span class="fl">1</span>, <span class="fl">1</span>, <span class="fl">1</span><span class="op">)</span>,</span>
@@ -218,18 +296,27 @@ Cluster ID (must be 0-based) - <code>gene</code>: Gene name/symbol -
 <span>  tissue_name <span class="op">=</span> <span class="st">"human PBMC"</span>,</span>
 <span>  model <span class="op">=</span> <span class="st">"claude-3-7-sonnet-20250219"</span>,</span>
 <span>  api_key <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Sys.getenv.html" class="external-link">Sys.getenv</a></span><span class="op">(</span><span class="st">"ANTHROPIC_API_KEY"</span><span class="op">)</span>,</span>
-<span>  top_gene_count <span class="op">=</span> <span class="fl">10</span></span>
+<span>  top_gene_count <span class="op">=</span> <span class="fl">10</span>,</span>
+<span>  debug <span class="op">=</span> <span class="cn">FALSE</span>  <span class="co"># Set to TRUE for more detailed output</span></span>
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Print results</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">results</span><span class="op">)</span></span></code></pre></div>
+<div class="section level4">
+<h4 id="example-output">Example Output<a class="anchor" aria-label="anchor" href="#example-output"></a>
+</h4>
+<p>When using a single model like Claude, the output will be a character
+vector with one annotation per cluster:</p>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" tabindex="-1"></a><span class="sc">&gt;</span> <span class="fu">print</span>(results)</span>
+<span id="cb9-2"><a href="#cb9-2" tabindex="-1"></a>[<span class="dv">1</span>] <span class="st">"0: T cells"</span>   <span class="st">"1: Monocytes"</span></span></code></pre></div>
+</div>
 </div>
 <div class="section level3">
 <h3 id="multi-model-consensus-example">Multi-Model Consensus Example<a class="anchor" aria-label="anchor" href="#multi-model-consensus-example"></a>
 </h3>
 <p>For more reliable annotations, you can use multiple models and create
 a consensus:</p>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Define models to use</span></span>
 <span><span class="va">models</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
 <span>  <span class="st">"claude-3-7-sonnet-20250219"</span>,  <span class="co"># Anthropic</span></span>
@@ -272,12 +359,41 @@ a consensus:</p>
 <span></span>
 <span><span class="co"># Print consensus results</span></span>
 <span><span class="fu"><a href="../reference/print_consensus_summary.html">print_consensus_summary</a></span><span class="op">(</span><span class="va">consensus_results</span><span class="op">)</span></span></code></pre></div>
+<div class="section level4">
+<h4 id="consensus-output-example">Consensus Output Example<a class="anchor" aria-label="anchor" href="#consensus-output-example"></a>
+</h4>
+<p>The consensus results contain more detailed information:</p>
+<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" tabindex="-1"></a><span class="sc">&gt;</span> <span class="fu">print_consensus_summary</span>(consensus_results)</span>
+<span id="cb11-2"><a href="#cb11-2" tabindex="-1"></a>Consensus Summary<span class="sc">:</span></span>
+<span id="cb11-3"><a href="#cb11-3" tabindex="-1"></a><span class="sc">-----------------</span></span>
+<span id="cb11-4"><a href="#cb11-4" tabindex="-1"></a>Total clusters<span class="sc">:</span> <span class="dv">2</span></span>
+<span id="cb11-5"><a href="#cb11-5" tabindex="-1"></a>Controversial clusters<span class="sc">:</span> <span class="dv">0</span></span>
+<span id="cb11-6"><a href="#cb11-6" tabindex="-1"></a>Consensus achieved <span class="cf">for</span> all clusters</span>
+<span id="cb11-7"><a href="#cb11-7" tabindex="-1"></a></span>
+<span id="cb11-8"><a href="#cb11-8" tabindex="-1"></a>Cluster <span class="dv">0</span><span class="sc">:</span></span>
+<span id="cb11-9"><a href="#cb11-9" tabindex="-1"></a>  Final annotation<span class="sc">:</span> T cells</span>
+<span id="cb11-10"><a href="#cb11-10" tabindex="-1"></a>  Consensus proportion<span class="sc">:</span> <span class="fl">1.0</span></span>
+<span id="cb11-11"><a href="#cb11-11" tabindex="-1"></a>  Entropy<span class="sc">:</span> <span class="fl">0.0</span></span>
+<span id="cb11-12"><a href="#cb11-12" tabindex="-1"></a>  Model predictions<span class="sc">:</span></span>
+<span id="cb11-13"><a href="#cb11-13" tabindex="-1"></a>    <span class="sc">-</span> claude<span class="dv">-3-7</span><span class="sc">-</span>sonnet<span class="dv">-20250219</span><span class="sc">:</span> T cells</span>
+<span id="cb11-14"><a href="#cb11-14" tabindex="-1"></a>    <span class="sc">-</span> gpt<span class="dv">-4</span>o<span class="sc">:</span> T cells</span>
+<span id="cb11-15"><a href="#cb11-15" tabindex="-1"></a>    <span class="sc">-</span> gemini<span class="fl">-1.5</span><span class="sc">-</span>pro<span class="sc">:</span> T cells</span>
+<span id="cb11-16"><a href="#cb11-16" tabindex="-1"></a></span>
+<span id="cb11-17"><a href="#cb11-17" tabindex="-1"></a>Cluster <span class="dv">1</span><span class="sc">:</span></span>
+<span id="cb11-18"><a href="#cb11-18" tabindex="-1"></a>  Final annotation<span class="sc">:</span> Monocytes</span>
+<span id="cb11-19"><a href="#cb11-19" tabindex="-1"></a>  Consensus proportion<span class="sc">:</span> <span class="fl">1.0</span></span>
+<span id="cb11-20"><a href="#cb11-20" tabindex="-1"></a>  Entropy<span class="sc">:</span> <span class="fl">0.0</span></span>
+<span id="cb11-21"><a href="#cb11-21" tabindex="-1"></a>  Model predictions<span class="sc">:</span></span>
+<span id="cb11-22"><a href="#cb11-22" tabindex="-1"></a>    <span class="sc">-</span> claude<span class="dv">-3-7</span><span class="sc">-</span>sonnet<span class="dv">-20250219</span><span class="sc">:</span> Monocytes</span>
+<span id="cb11-23"><a href="#cb11-23" tabindex="-1"></a>    <span class="sc">-</span> gpt<span class="dv">-4</span>o<span class="sc">:</span> Monocytes</span>
+<span id="cb11-24"><a href="#cb11-24" tabindex="-1"></a>    <span class="sc">-</span> gemini<span class="fl">-1.5</span><span class="sc">-</span>pro<span class="sc">:</span> Monocytes</span></code></pre></div>
+</div>
 </div>
 <div class="section level3">
 <h3 id="integrating-with-seurat">Integrating with Seurat<a class="anchor" aria-label="anchor" href="#integrating-with-seurat"></a>
 </h3>
 <p>To add the annotations to your Seurat object:</p>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Assuming you have a Seurat object named 'seurat_obj' and consensus results</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://satijalab.org/seurat" class="external-link">Seurat</a></span><span class="op">)</span></span>
 <span></span>
@@ -320,7 +436,7 @@ a consensus:</p>
 <h3 id="basic-visualization">Basic Visualization<a class="anchor" aria-label="anchor" href="#basic-visualization"></a>
 </h3>
 <p>Here’s a simple visualization of the results using Seurat:</p>
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Plot UMAP with cell type annotations</span></span>
 <span><span class="fu"><a href="https://satijalab.org/seurat/reference/DimPlot.html" class="external-link">DimPlot</a></span><span class="op">(</span><span class="va">seurat_obj</span>, group.by <span class="op">=</span> <span class="st">"cell_type_consensus"</span>, label <span class="op">=</span> <span class="cn">TRUE</span>, repel <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu">ggtitle</span><span class="op">(</span><span class="st">"Cell Type Annotations"</span><span class="op">)</span> <span class="op">+</span></span>
@@ -350,6 +466,97 @@ process</li>
 <code>session_id</code>: Unique identifier for the annotation
 session</li>
 </ul>
+<div class="section level4">
+<h4 id="understanding-uncertainty-metrics">Understanding Uncertainty Metrics<a class="anchor" aria-label="anchor" href="#understanding-uncertainty-metrics"></a>
+</h4>
+<p>When using consensus annotation, two key metrics help evaluate the
+reliability of annotations:</p>
+<ul>
+<li>
+<strong>Consensus Proportion</strong>: Ranges from 0 to 1,
+indicating the proportion of models that agree on the final annotation.
+Higher values indicate stronger agreement.</li>
+<li>
+<strong>Entropy</strong>: Measures the uncertainty in model
+predictions. Lower values indicate more certainty. An entropy of 0 means
+all models agree perfectly.</li>
+</ul>
+<p>Clusters with low consensus proportion or high entropy may require
+manual review.</p>
+</div>
+</div>
+<div class="section level3">
+<h3 id="using-openrouter-free-models">Using OpenRouter Free Models<a class="anchor" aria-label="anchor" href="#using-openrouter-free-models"></a>
+</h3>
+<p>If you don’t have access to paid API keys, you can use OpenRouter’s
+free models:</p>
+<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Set OpenRouter API key</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/Sys.setenv.html" class="external-link">Sys.setenv</a></span><span class="op">(</span>OPENROUTER_API_KEY <span class="op">=</span> <span class="st">"your-openrouter-api-key"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Use a free model</span></span>
+<span><span class="va">free_results</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/annotate_cell_types.html">annotate_cell_types</a></span><span class="op">(</span></span>
+<span>  input <span class="op">=</span> <span class="va">markers</span>,</span>
+<span>  tissue_name <span class="op">=</span> <span class="st">"human PBMC"</span>,</span>
+<span>  model <span class="op">=</span> <span class="st">"meta-llama/llama-4-maverick:free"</span>,  <span class="co"># Note the :free suffix</span></span>
+<span>  api_key <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Sys.getenv.html" class="external-link">Sys.getenv</a></span><span class="op">(</span><span class="st">"OPENROUTER_API_KEY"</span><span class="op">)</span>,</span>
+<span>  top_gene_count <span class="op">=</span> <span class="fl">10</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Print results</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">free_results</span><span class="op">)</span></span></code></pre></div>
+<p>Available free models include:</p>
+<ul>
+<li>
+<code>meta-llama/llama-4-maverick:free</code> - Meta Llama 4
+Maverick (256K context)</li>
+<li>
+<code>nvidia/llama-3.1-nemotron-ultra-253b-v1:free</code> - NVIDIA
+Nemotron Ultra 253B</li>
+<li>
+<code>deepseek/deepseek-chat-v3-0324:free</code> - DeepSeek Chat
+v3</li>
+<li>
+<code>microsoft/mai-ds-r1:free</code> - Microsoft MAI-DS-R1</li>
+</ul>
+<p>Free models don’t consume credits but may have limitations compared
+to paid models.</p>
+</div>
+<div class="section level3">
+<h3 id="troubleshooting">Troubleshooting<a class="anchor" aria-label="anchor" href="#troubleshooting"></a>
+</h3>
+<div class="section level4">
+<h4 id="common-issues">Common Issues<a class="anchor" aria-label="anchor" href="#common-issues"></a>
+</h4>
+<ol style="list-style-type: decimal">
+<li>
+<p><strong>API Key Not Found</strong>:</p>
+<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" tabindex="-1"></a>Error<span class="sc">:</span> No auth credentials found</span></code></pre></div>
+<p><strong>Solution</strong>: Ensure you’ve set the correct API key
+environment variable or provided it directly in the function
+call.</p>
+</li>
+<li>
+<p><strong>Rate Limiting</strong>:</p>
+<div class="sourceCode" id="cb16"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" tabindex="-1"></a>Error<span class="sc">:</span> Rate limit exceeded</span></code></pre></div>
+<p><strong>Solution</strong>: Wait a few minutes before trying again, or
+reduce the number of API calls by processing fewer clusters at
+once.</p>
+</li>
+<li>
+<p><strong>Invalid Model Name</strong>:</p>
+<div class="sourceCode" id="cb17"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" tabindex="-1"></a>Error<span class="sc">:</span> Unsupported model<span class="sc">:</span> [model_name]</span></code></pre></div>
+<p><strong>Solution</strong>: Check that you’re using a supported model
+name and that it’s spelled correctly.</p>
+</li>
+<li>
+<p><strong>Network Issues</strong>:</p>
+<div class="sourceCode" id="cb18"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" tabindex="-1"></a>Error<span class="sc">:</span> Could not connect to API</span></code></pre></div>
+<p><strong>Solution</strong>: Check your internet connection and try
+again. If the problem persists, the API service might be down.</p>
+</li>
+</ol>
+</div>
 </div>
 <div class="section level3">
 <h3 id="next-steps">Next Steps<a class="anchor" aria-label="anchor" href="#next-steps"></a>
@@ -369,6 +576,8 @@ Create publication-ready visualizations</li>
 <li>
 <a href="08-advanced-features.html">Advanced Features</a>: Explore
 hierarchical annotation and other advanced features</li>
+<li>
+<a href="07-faq.html">FAQ</a>: Answers to common questions</li>
 </ul>
 <p>If you encounter any issues, check the <a href="07-faq.html">FAQ</a>
 or <a href="https://github.com/cafferychen777/mLLMCelltype/issues" class="external-link">open
