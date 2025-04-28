@@ -316,6 +316,8 @@ uncertainty_metrics <- data.frame(
 )
 
 # Add uncertainty metrics for each cell
+# Use seurat_clusters to match each cell with its corresponding cluster metrics
+current_clusters <- pbmc$seurat_clusters
 pbmc$consensus_proportion <- uncertainty_metrics$consensus_proportion[match(current_clusters, uncertainty_metrics$cluster_id)]
 pbmc$entropy <- uncertainty_metrics$entropy[match(current_clusters, uncertainty_metrics$cluster_id)]
 
