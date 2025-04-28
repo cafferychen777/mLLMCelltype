@@ -17,7 +17,8 @@ process_controversial_clusters(
   max_discussion_rounds,
   logger,
   cache_manager,
-  use_cache
+  use_cache,
+  consensus_check_model = NULL
 )
 }
 \arguments{

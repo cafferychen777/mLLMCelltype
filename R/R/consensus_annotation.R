@@ -21,22 +21,23 @@
 #'     converted to 0-based indexing (e.g., cluster 1 becomes cluster 0) for consistency.
 #' @param tissue_name Optional input of tissue name
 #' @param models Vector of model names to participate in the discussion. Supported models:
-#'   - OpenAI: 'gpt-4o', 'o1'
+#'   - OpenAI: 'gpt-4o', 'gpt-4o-mini', 'gpt-4.1', 'gpt-4.1-mini', 'gpt-4.1-nano', 'gpt-4-turbo', 'gpt-3.5-turbo', 'o1', 'o1-mini', 'o1-preview', 'o1-pro'
 #'   - Anthropic: 'claude-3-7-sonnet-20250219', 'claude-3-5-sonnet-latest', 'claude-3-5-haiku-latest', 'claude-3-opus'
-#'   - DeepSeek: 'deepseek-chat', 'deepseek-reasoner'
-#'   - Google: 'gemini-2.0-flash', 'gemini-2.0-flash-exp', 'gemini-1.5-pro', 'gemini-1.5-flash'
+#'   - DeepSeek: 'deepseek-chat', 'deepseek-reasoner', 'deepseek-v3'
+#'   - Google: 'gemini-2.5-pro', 'gemini-2.5-pro-preview-03-25', 'gemini-2.0-flash', 'gemini-2.0-flash-exp', 'gemini-1.5-pro', 'gemini-1.5-flash'
 #'   - Alibaba: 'qwen-max-2025-01-25'
-#'   - Stepfun: 'step-2-16k', 'step-2-mini', 'step-1-8k'
-#'   - Zhipu: 'glm-4-plus', 'glm-3-turbo'
+#'   - Stepfun: 'step-2-16k', 'step-2-mini', 'step-1-8k', 'step-1-flash', 'step-1-32k', 'step-1-128k', 'step-1-256k'
+#'   - Zhipu: 'glm-4-plus', 'glm-3-turbo', 'glm-4'
 #'   - MiniMax: 'minimax-text-01'
 #'   - X.AI: 'grok-3-latest', 'grok-3', 'grok-3-fast', 'grok-3-fast-latest', 'grok-3-mini', 'grok-3-mini-latest', 'grok-3-mini-fast', 'grok-3-mini-fast-latest'
 #'   - OpenRouter: Provides access to models from multiple providers through a single API. Format: 'provider/model-name'
 #'     - OpenAI models: 'openai/gpt-4o', 'openai/gpt-4o-mini', 'openai/gpt-4-turbo', 'openai/gpt-4', 'openai/gpt-3.5-turbo'
 #'     - Anthropic models: 'anthropic/claude-3-7-sonnet-20250219', 'anthropic/claude-3-5-sonnet-latest', 'anthropic/claude-3-5-haiku-latest', 'anthropic/claude-3-opus'
-#'     - Meta models: 'meta-llama/llama-3-70b-instruct', 'meta-llama/llama-3-8b-instruct', 'meta-llama/llama-2-70b-chat'
+#'     - Meta models: 'meta-llama/llama-3-70b-instruct', 'meta-llama/llama-3-8b-instruct', 'meta-llama/llama-2-70b-chat', 'meta-llama/llama-4-maverick'
 #'     - Google models: 'google/gemini-2.5-pro-preview-03-25', 'google/gemini-1.5-pro-latest', 'google/gemini-1.5-flash'
 #'     - Mistral models: 'mistralai/mistral-large', 'mistralai/mistral-medium', 'mistralai/mistral-small'
 #'     - Other models: 'microsoft/mai-ds-r1', 'perplexity/sonar-small-chat', 'cohere/command-r', 'deepseek/deepseek-chat', 'thudm/glm-z1-32b'
+#'     - Free models: 'meta-llama/llama-4-maverick:free', 'nvidia/llama-3.1-nemotron-ultra-253b-v1:free', 'deepseek/deepseek-chat-v3-0324:free', 'microsoft/mai-ds-r1:free'
 #' @param api_keys Named list of API keys. Can be provided in two formats:
 #'   1. With provider names as keys: `list("openai" = "sk-...", "anthropic" = "sk-ant-...", "openrouter" = "sk-or-...")`
 #'   2. With model names as keys: `list("gpt-4o" = "sk-...", "claude-3-opus" = "sk-ant-...")`

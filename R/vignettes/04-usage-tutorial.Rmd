@@ -68,7 +68,7 @@ consensus_results <- create_consensus(
   verbose = TRUE,       # Whether to print progress messages
   timeout = 60,         # Timeout for API calls in seconds
   max_retries = 3,      # Maximum number of retries
-  discussion_threshold = 0.5  # Threshold for identifying controversial clusters
+  controversy_threshold = 0.5  # Threshold for identifying controversial clusters
 )
 ```
 
@@ -324,6 +324,21 @@ For users with limited API credits or budget constraints:
 
 These free models are accessed through OpenRouter and don't consume credits, but may have limitations compared to paid models. Use the `:free` suffix in the model name to access them.
 
+```{r}
+# Example of using a free model via OpenRouter
+# First, set your OpenRouter API key
+Sys.setenv(OPENROUTER_API_KEY = "your-openrouter-api-key")
+
+# Then use a free model with the :free suffix
+free_model_results <- annotate_cell_types(
+  input = pbmc_markers,
+  tissue_name = "human PBMC",
+  model = "meta-llama/llama-4-maverick:free",  # Note the :free suffix
+  api_key = Sys.getenv("OPENROUTER_API_KEY"),
+  provider = "openrouter"  # Specify OpenRouter as the provider
+)
+```
+
 ## Integration with Seurat Workflow
 
 Here's a complete example of integrating mLLMCelltype with a Seurat workflow:
@@ -456,9 +471,9 @@ results_fewer_genes <- annotate_cell_types(
 )
 ```
 
-### Adjusting discussion_threshold
+### Adjusting controversy_threshold
 
-The `discussion_threshold` parameter controls which clusters are considered controversial and require discussion:
+The `controversy_threshold` parameter controls which clusters are considered controversial and require discussion:
 
 ```{r}
 # Lower threshold (more clusters will be discussed)
@@ -468,7 +483,7 @@ consensus_results_low_threshold <- create_consensus(
   tissue_name = "human PBMC",
   model = "claude-3-7-sonnet-20250219",
   api_key = Sys.getenv("ANTHROPIC_API_KEY"),
-  discussion_threshold = 0.3  # Lower threshold
+  controversy_threshold = 0.3  # Lower threshold
 )
 
 # Higher threshold (fewer clusters will be discussed)
@@ -478,7 +493,7 @@ consensus_results_high_threshold <- create_consensus(
   tissue_name = "human PBMC",
   model = "claude-3-7-sonnet-20250219",
   api_key = Sys.getenv("ANTHROPIC_API_KEY"),
-  discussion_threshold = 0.7  # Higher threshold
+  controversy_threshold = 0.7  # Higher threshold
 )
 ```
 
@@ -512,7 +527,7 @@ To improve performance:
 
 1. Use a smaller `top_gene_count` for faster execution
 2. Enable caching to reuse results
-3. Use a higher `discussion_threshold` to reduce the number of clusters that require discussion
+3. Use a higher `controversy_threshold` to reduce the number of clusters that require discussion
 
 ## Next Steps
 
