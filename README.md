@@ -267,6 +267,43 @@ sc.pl.umap(adata, color='entropy', ax=ax2, title='Annotation Uncertainty (Shanno
 plt.tight_layout()
 ```
 
+### Using a Single Free OpenRouter Model
+
+For users who prefer a simpler approach with just one model, the Microsoft MAI-DS-R1 free model via OpenRouter provides excellent results:
+
+```python
+import os
+from mllmcelltype import annotate_clusters, setup_logging
+
+# Setup logging
+setup_logging()
+
+# Set your OpenRouter API key
+os.environ["OPENROUTER_API_KEY"] = "your-openrouter-api-key"
+
+# Define marker genes for each cluster
+marker_genes = {
+    "0": ["CD3D", "CD3E", "CD3G", "CD2", "IL7R", "TCF7"],           # T cells
+    "1": ["CD19", "MS4A1", "CD79A", "CD79B", "HLA-DRA", "CD74"],   # B cells
+    "2": ["CD14", "LYZ", "CSF1R", "ITGAM", "CD68", "FCGR3A"]      # Monocytes
+}
+
+# Annotate using Microsoft MAI-DS-R1 free model
+annotations = annotate_clusters(
+    marker_genes=marker_genes,
+    species='human',
+    tissue='peripheral blood',
+    provider='openrouter',
+    model='microsoft/mai-ds-r1:free'  # Free model
+)
+
+# Print annotations
+for cluster, annotation in annotations.items():
+    print(f"Cluster {cluster}: {annotation}")
+```
+
+This approach is fast, accurate, and doesn't require any API credits, making it ideal for quick analyses or when you have limited API access.
+
 ### R
 
 #### Using Seurat Object
