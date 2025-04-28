@@ -282,6 +282,49 @@ result = interactive_consensus_annotation(
 print_consensus_summary(result)
 ```
 
+#### Using a Single Free OpenRouter Model
+
+Based on user feedback, the Microsoft MAI-DS-R1 free model provides excellent results while being fast and accurate:
+
+```python
+from mllmcelltype import annotate_clusters, setup_logging
+
+# Setup logging (optional)
+setup_logging()
+
+# Set your OpenRouter API key
+import os
+os.environ["OPENROUTER_API_KEY"] = "your-openrouter-api-key"
+
+# Define marker genes for each cluster
+marker_genes = {
+    "0": ["CD3D", "CD3E", "CD3G", "CD2", "IL7R", "TCF7"],           # T cells
+    "1": ["CD19", "MS4A1", "CD79A", "CD79B", "HLA-DRA", "CD74"],   # B cells
+    "2": ["CD14", "LYZ", "CSF1R", "ITGAM", "CD68", "FCGR3A"]      # Monocytes
+}
+
+# Annotate using only the Microsoft MAI-DS-R1 free model
+mai_annotations = annotate_clusters(
+    marker_genes=marker_genes,
+    species='human',
+    tissue='peripheral blood',
+    provider='openrouter',
+    model='microsoft/mai-ds-r1:free'  # Free model
+)
+
+# Print annotations
+for cluster, annotation in mai_annotations.items():
+    print(f"Cluster {cluster}: {annotation}")
+```
+
+This approach is particularly useful when:
+- You need quick results without API costs
+- You have limited API access to other providers
+- You're performing initial exploratory analysis
+- You want to validate results from other models
+
+The Microsoft MAI-DS-R1 free model has shown excellent performance in cell type annotation tasks, often comparable to larger paid models.
+
 **Note**: Free model availability may change over time. You can check the current list of available models on the OpenRouter website or through their API:
 
 ```python
