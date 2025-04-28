@@ -25,7 +25,7 @@ knitr::opts_chunk$set(
 )
 ```
 
-<img src="../man/figures/logo.png" align="right" height="139" />
+<img src="../man/figures/logo.png" align="right" height="139" alt="mLLMCelltype logo" />
 
 # Visualization Guide
 
@@ -54,40 +54,152 @@ library(ggplot2)
 library(patchwork)
 
 # Assuming you have a Seurat object named 'seurat_obj' and consensus results
+# First, check the structure of consensus_results
+# Print the structure of consensus_results to understand its format
+# str(consensus_results)
+# print(names(consensus_results))
+# print(names(consensus_results$final_annotations))
+
+# Get cluster IDs from Seurat object
+cluster_ids <- unique(as.character(Idents(seurat_obj)))
+cat("Cluster IDs in Seurat object:", paste(cluster_ids, collapse=", "), "\n")
+
+# Convert final_annotations to a vector if it's a list
+final_annotations <- unlist(consensus_results$final_annotations)
+cat("Final annotations:", paste(names(final_annotations), collapse=", "), "\n")
+
+# Create a mapping between cluster IDs and annotations
+annotation_map <- vector("character", length(cluster_ids))
+names(annotation_map) <- cluster_ids
+
+# First, try direct mapping where cluster ID matches the name in final_annotations
+for (i in seq_along(cluster_ids)) {
+  cluster_id <- cluster_ids[i]
+  # Check if this cluster ID exists in final_annotations names
+  if (cluster_id %in% names(final_annotations)) {
+    annotation_map[cluster_id] <- final_annotations[cluster_id]
+  }
+}
+
+# For any remaining unmapped clusters, try to infer the mapping
+unmapped <- is.na(annotation_map) | annotation_map == ""
+if (any(unmapped)) {
+  unmapped_ids <- names(annotation_map)[unmapped]
+  cat("Unmapped cluster IDs:", paste(unmapped_ids, collapse=", "), "\n")
+
+  # If we have the same number of unmapped clusters as remaining annotations,
+  # we can try to assign them in order
+  remaining_annotations <- final_annotations[!names(final_annotations) %in% names(annotation_map)[!unmapped]]
+
+  if (length(remaining_annotations) == length(unmapped_ids)) {
+    for (i in seq_along(unmapped_ids)) {
+      annotation_map[unmapped_ids[i]] <- remaining_annotations[i]
+    }
+  } else {
+    # If we can't map directly, assign "Unknown" to unmapped clusters
+    for (id in unmapped_ids) {
+      annotation_map[id] <- paste("Unknown", id)
+    }
+  }
+}
+
+cat("Final annotation map:\n")
+print(annotation_map)
+
 # Add consensus annotations to Seurat object
 seurat_obj$cell_type_consensus <- plyr::mapvalues(
   x = as.character(Idents(seurat_obj)),
-  from = as.character(0:(length(consensus_results$final_annotations)-1)),
-  to = consensus_results$final_annotations
+  from = names(annotation_map),
+  to = as.character(annotation_map)
 )
 
+# Verify the annotations were added correctly
+table(seurat_obj$cell_type_consensus, as.character(Idents(seurat_obj)))
+
 # Extract consensus metrics from the consensus results
-# Note: These metrics are available in the consensus_results$initial_results$consensus_results
-consensus_metrics <- lapply(names(consensus_results$initial_results$consensus_results), function(cluster_id) {
-  metrics <- consensus_results$initial_results$consensus_results[[cluster_id]]
-  return(list(
-    cluster = cluster_id,
-    consensus_proportion = metrics$consensus_proportion,
-    entropy = metrics$entropy
+# Check if consensus_results has the expected structure
+if (!is.null(consensus_results$initial_results) &&
+    !is.null(consensus_results$initial_results$consensus_results)) {
+
+  # Get consensus metrics
+  consensus_metrics <- lapply(
+    names(consensus_results$initial_results$consensus_results),
+    function(cluster_id) {
+      metrics <- consensus_results$initial_results$consensus_results[[cluster_id]]
+      return(list(
+        cluster = cluster_id,
+        consensus_proportion = metrics$consensus_proportion,
+        entropy = metrics$entropy
+      ))
+    }
+  )
+
+  # Convert to data frame for easier handling
+  metrics_df <- do.call(rbind, lapply(consensus_metrics, data.frame))
+
+  # Create a mapping for consensus proportion
+  proportion_map <- metrics_df$consensus_proportion
+  names(proportion_map) <- metrics_df$cluster
+
+  # Print the proportion map for debugging
+  cat("Consensus proportion map:\n")
+  print(proportion_map)
+
+  # Create a mapping for entropy
+  entropy_map <- metrics_df$entropy
+  names(entropy_map) <- metrics_df$cluster
+
+  # Print the entropy map for debugging
+  cat("Entropy map:\n")
+  print(entropy_map)
+
+  # Add consensus proportion to Seurat object
+  # First check if all cluster IDs are in the proportion map
+  missing_clusters <- setdiff(cluster_ids, names(proportion_map))
+  if (length(missing_clusters) > 0) {
+    cat("Warning: Some clusters are missing from proportion map:",
+        paste(missing_clusters, collapse=", "), "\n")
+    # Add default values for missing clusters
+    for (cluster in missing_clusters) {
+      proportion_map[cluster] <- 1.0  # Default to perfect consensus
+    }
+  }
+
+  seurat_obj$consensus_proportion <- as.numeric(plyr::mapvalues(
+    x = as.character(Idents(seurat_obj)),
+    from = names(proportion_map),
+    to = as.character(proportion_map)
   ))
-})
 
-# Convert to data frame for easier handling
-metrics_df <- do.call(rbind, lapply(consensus_metrics, data.frame))
+  # Add entropy to Seurat object
+  # First check if all cluster IDs are in the entropy map
+  missing_clusters <- setdiff(cluster_ids, names(entropy_map))
+  if (length(missing_clusters) > 0) {
+    cat("Warning: Some clusters are missing from entropy map:",
+        paste(missing_clusters, collapse=", "), "\n")
+    # Add default values for missing clusters
+    for (cluster in missing_clusters) {
+      entropy_map[cluster] <- 0.0  # Default to no uncertainty
+    }
+  }
 
-# Add consensus proportion to Seurat object
-seurat_obj$consensus_proportion <- as.numeric(plyr::mapvalues(
-  x = as.character(Idents(seurat_obj)),
-  from = metrics_df$cluster,
-  to = metrics_df$consensus_proportion
-))
+  seurat_obj$entropy <- as.numeric(plyr::mapvalues(
+    x = as.character(Idents(seurat_obj)),
+    from = names(entropy_map),
+    to = as.character(entropy_map)
+  ))
 
-# Add entropy to Seurat object
-seurat_obj$entropy <- as.numeric(plyr::mapvalues(
-  x = as.character(Idents(seurat_obj)),
-  from = metrics_df$cluster,
-  to = metrics_df$entropy
-))
+  # Verify metrics were added correctly
+  summary(seurat_obj$consensus_proportion)
+  summary(seurat_obj$entropy)
+} else {
+  # If the expected structure is not found, create dummy metrics
+  warning("Could not find consensus metrics in the results. Creating dummy metrics for visualization purposes.")
+
+  # Create dummy metrics
+  seurat_obj$consensus_proportion <- 1.0  # Perfect consensus
+  seurat_obj$entropy <- 0.0  # No uncertainty
+}
 ```
 
 ### Basic Visualization with Seurat
@@ -126,7 +238,7 @@ p2
 ```{r}
 # Visualize Shannon entropy
 p3 <- FeaturePlot(seurat_obj,
-                 features = "shannon_entropy",
+                 features = "entropy",  # Note: The column name is 'entropy', not 'shannon_entropy'
                  cols = c("red", "orange", "yellow"),
                  min.cutoff = 0,
                  max.cutoff = 1.5) +
@@ -157,14 +269,19 @@ if (!requireNamespace("SCpubr", quietly = TRUE)) {
 library(SCpubr)
 
 # Cell type annotations with SCpubr
+# Note: Check SCpubr documentation for the correct parameters
+# The 'title' parameter might not be supported in your version of SCpubr
 p1 <- SCpubr::do_DimPlot(seurat_obj,
                          group.by = "cell_type_consensus",
                          label = TRUE,
                          repel = TRUE,
                          legend.position = "right",
                          font.size = 14,
-                         pt.size = 0.5,
-                         title = "Cell Type Annotations")
+                         pt.size = 0.5)
+
+# Add title using ggplot2 if needed
+p1 <- p1 + ggtitle("Cell Type Annotations") +
+  theme(plot.title = element_text(hjust = 0.5))
 
 # Consensus proportion with SCpubr
 p2 <- SCpubr::do_FeaturePlot(seurat_obj,
@@ -173,18 +290,24 @@ p2 <- SCpubr::do_FeaturePlot(seurat_obj,
                             pt.size = 0.5,
                             colors.use = c("yellow", "green", "blue"),
                             legend.position = "right",
-                            font.size = 14,
-                            title = "Consensus Proportion")
+                            font.size = 14)
+
+# Add title using ggplot2
+p2 <- p2 + ggtitle("Consensus Proportion") +
+  theme(plot.title = element_text(hjust = 0.5))
 
 # Shannon entropy with SCpubr
 p3 <- SCpubr::do_FeaturePlot(seurat_obj,
-                            features = "shannon_entropy",
+                            features = "entropy",  # Note: The column name is 'entropy', not 'shannon_entropy'
                             order = TRUE,
                             pt.size = 0.5,
                             colors.use = c("red", "orange", "yellow"),
                             legend.position = "right",
-                            font.size = 14,
-                            title = "Shannon Entropy")
+                            font.size = 14)
+
+# Add title using ggplot2
+p3 <- p3 + ggtitle("Shannon Entropy") +
+  theme(plot.title = element_text(hjust = 0.5))
 
 # Combine plots with patchwork
 combined_plot <- p1 | p2 | p3
@@ -210,12 +333,18 @@ You can highlight clusters with low consensus or high uncertainty:
 seurat_obj$controversial <- ifelse(seurat_obj$consensus_proportion < 0.5, "Controversial", "Consensus")
 
 # Visualize controversial clusters
-SCpubr::do_DimPlot(seurat_obj,
+p_controversial <- SCpubr::do_DimPlot(seurat_obj,
                   group.by = "controversial",
                   colors.use = c("Controversial" = "red", "Consensus" = "blue"),
                   label = FALSE,
-                  pt.size = 0.5,
-                  title = "Controversial vs. Consensus Clusters")
+                  pt.size = 0.5)
+
+# Add title using ggplot2
+p_controversial <- p_controversial +
+  ggtitle("Controversial vs. Consensus Clusters") +
+  theme(plot.title = element_text(hjust = 0.5))
+
+p_controversial
 ```
 
 ### Visualizing Model Agreement
@@ -242,12 +371,17 @@ for (model in models) {
   column_name <- paste0("cell_type_", model)
   temp_obj <- calculate_agreement(seurat_obj, column_name, "cell_type_consensus")
 
-  plot_list[[model]] <- SCpubr::do_DimPlot(temp_obj,
-                                          group.by = "agreement",
-                                          colors.use = c("Agrees with consensus" = "darkgreen",
-                                                        "Disagrees with consensus" = "darkred"),
-                                          pt.size = 0.5,
-                                          title = paste0(model, " Agreement"))
+  # Create plot with SCpubr
+  p_temp <- SCpubr::do_DimPlot(temp_obj,
+                              group.by = "agreement",
+                              colors.use = c("Agrees with consensus" = "darkgreen",
+                                            "Disagrees with consensus" = "darkred"),
+                              pt.size = 0.5)
+
+  # Add title using ggplot2
+  plot_list[[model]] <- p_temp +
+    ggtitle(paste0(model, " Agreement")) +
+    theme(plot.title = element_text(hjust = 0.5))
 }
 
 # Combine all agreement plots
@@ -291,6 +425,8 @@ create_prediction_matrix <- function(consensus_results, models) {
 # Convert cell type names to numeric codes for visualization
 encode_cell_types <- function(prediction_matrix) {
   unique_types <- unique(as.vector(prediction_matrix))
+  # Remove NA values before creating mapping
+  unique_types <- unique_types[!is.na(unique_types)]
   type_mapping <- setNames(1:length(unique_types), unique_types)
 
   encoded_matrix <- matrix(NA, nrow = nrow(prediction_matrix), ncol = ncol(prediction_matrix))
@@ -299,7 +435,9 @@ encode_cell_types <- function(prediction_matrix) {
 
   for (i in 1:nrow(prediction_matrix)) {
     for (j in 1:ncol(prediction_matrix)) {
-      encoded_matrix[i, j] <- type_mapping[prediction_matrix[i, j]]
+      if (!is.na(prediction_matrix[i, j])) {
+        encoded_matrix[i, j] <- type_mapping[prediction_matrix[i, j]]
+      }
     }
   }
 
@@ -368,12 +506,29 @@ extract_discussion_text <- function(consensus_results, cluster_id) {
     return(NULL)
   }
 
-  discussion_text <- discussion_logs[[cluster_id]]
-  return(discussion_text)
+  # Extract text from discussion logs
+  discussion_log <- discussion_logs[[cluster_id]]
+
+  # Combine all text from all rounds
+  all_text <- ""
+  if (!is.null(discussion_log$rounds)) {
+    for (round in discussion_log$rounds) {
+      if (!is.null(round$responses)) {
+        for (model_name in names(round$responses)) {
+          response <- round$responses[[model_name]]
+          if (is.character(response)) {
+            all_text <- paste(all_text, response, sep = " ")
+          }
+        }
+      }
+    }
+  }
+
+  return(all_text)
 }
 
 # Create a word cloud from discussion text
-create_discussion_wordcloud <- function(discussion_text, title = "Discussion Word Cloud") {
+create_discussion_wordcloud <- function(discussion_text, title = "Discussion Word Cloud", output_file = NULL) {
   # Clean and tokenize text
   words <- discussion_text %>%
     str_remove_all("[[:punct:]]") %>%
@@ -391,18 +546,37 @@ create_discussion_wordcloud <- function(discussion_text, title = "Discussion Wor
   word_freq <- sort(word_freq, decreasing = TRUE)
 
   # Create word cloud
-  par(mar = c(0, 0, 2, 0))
-  wordcloud(names(word_freq), freq = word_freq, min.freq = 2, max.words = 100,
-            random.order = FALSE, colors = brewer.pal(8, "Dark2"), main = title)
-  title(main = title)
+  if (!is.null(output_file)) {
+    # If output file is specified, save to file
+    png(output_file, width = 800, height = 600, res = 100)
+    par(mar = c(0, 0, 2, 0))
+    wordcloud(names(word_freq), freq = word_freq, min.freq = 2, max.words = 100,
+              random.order = FALSE, colors = brewer.pal(8, "Dark2"), main = title)
+    title(main = title)
+    dev.off()
+  } else {
+    # Otherwise display in the current device
+    par(mar = c(0, 0, 2, 0))
+    wordcloud(names(word_freq), freq = word_freq, min.freq = 2, max.words = 100,
+              random.order = FALSE, colors = brewer.pal(8, "Dark2"), main = title)
+    title(main = title)
+  }
 }
 
 # Example usage
 cluster_id <- "0"  # Replace with the cluster you want to visualize
 discussion_text <- extract_discussion_text(consensus_results, cluster_id)
-if (!is.null(discussion_text)) {
-  create_discussion_wordcloud(discussion_text,
-                             title = paste("Cluster", cluster_id, "Discussion Keywords"))
+if (!is.null(discussion_text) && nchar(discussion_text) > 0) {
+  # Save to file
+  output_file <- paste0("wordcloud_cluster_", cluster_id, ".png")
+  create_discussion_wordcloud(
+    discussion_text,
+    title = paste("Cluster", cluster_id, "Discussion Keywords"),
+    output_file = output_file
+  )
+  cat("Word cloud saved to:", output_file, "\n")
+} else {
+  cat("No discussion text found for cluster", cluster_id, "\n")
 }
 ```
 
@@ -492,32 +666,44 @@ seurat_obj$entropy <- as.numeric(plyr::mapvalues(
 ))
 
 # Create publication-ready visualizations
+# Cell type annotations with SCpubr
 p1 <- SCpubr::do_DimPlot(seurat_obj,
                          group.by = "cell_type_consensus",
                          label = TRUE,
                          repel = TRUE,
                          legend.position = "right",
                          font.size = 14,
-                         pt.size = 0.5,
-                         title = "Cell Type Annotations")
+                         pt.size = 0.5)
 
+# Add title using ggplot2
+p1 <- p1 + ggtitle("Cell Type Annotations") +
+  theme(plot.title = element_text(hjust = 0.5))
+
+# Consensus proportion with SCpubr
 p2 <- SCpubr::do_FeaturePlot(seurat_obj,
                             features = "consensus_proportion",
                             order = TRUE,
                             pt.size = 0.5,
                             colors.use = c("yellow", "green", "blue"),
                             legend.position = "right",
-                            font.size = 14,
-                            title = "Consensus Proportion")
+                            font.size = 14)
 
+# Add title using ggplot2
+p2 <- p2 + ggtitle("Consensus Proportion") +
+  theme(plot.title = element_text(hjust = 0.5))
+
+# Shannon entropy with SCpubr
 p3 <- SCpubr::do_FeaturePlot(seurat_obj,
-                            features = "shannon_entropy",
+                            features = "entropy",  # Note: The column name is 'entropy', not 'shannon_entropy'
                             order = TRUE,
                             pt.size = 0.5,
                             colors.use = c("red", "orange", "yellow"),
                             legend.position = "right",
-                            font.size = 14,
-                            title = "Shannon Entropy")
+                            font.size = 14)
+
+# Add title using ggplot2
+p3 <- p3 + ggtitle("Shannon Entropy") +
+  theme(plot.title = element_text(hjust = 0.5))
 
 # Combine plots
 combined_plot <- p1 | p2 | p3
@@ -548,6 +734,45 @@ ggsave("mLLMCelltype_visualization.pdf",
        width = 15,
        height = 8)
 ```
+
+## Troubleshooting Common Issues
+
+### SCpubr Parameter Compatibility
+
+If you encounter errors with SCpubr functions:
+
+- The `title` parameter may not be supported in your version of SCpubr
+- Use standard ggplot2 functions to add titles instead:
+
+```r
+p <- p + ggtitle("My Title") + theme(plot.title = element_text(hjust = 0.5))
+```
+
+- Check the SCpubr documentation for your installed version
+
+### Handling NA Values
+
+When working with model predictions:
+
+- Always check for and handle NA values in matrices
+- Use `unique_types <- unique_types[!is.na(unique_types)]` to remove NA values
+- Add conditional checks like `if (!is.na(prediction_matrix[i, j]))` in loops
+
+### Discussion Log Extraction
+
+If you have trouble extracting discussion text:
+
+- The structure of discussion logs may vary
+- Use a more robust extraction approach that navigates through the nested structure
+- Check that the text is not empty with `nchar(discussion_text) > 0`
+
+### Wordcloud Dependencies
+
+If wordcloud generation fails:
+
+- Ensure all required packages are installed: `wordcloud`, `RColorBrewer`, `tm`
+- Consider saving to a file with `png()` and `dev.off()` instead of displaying directly
+- Increase memory limits if working with large text corpora
 
 ## Next Steps
 

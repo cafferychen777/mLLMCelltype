@@ -115,7 +115,7 @@
 
     
     
-<p><img src="../reference/figures/logo.png" align="right" height="139"></p>
+<p><img src="../reference/figures/logo.png" align="right" height="139" alt="mLLMCelltype logo"></p>
 <div class="section level2">
 <h2 id="visualization-guide">Visualization Guide<a class="anchor" aria-label="anchor" href="#visualization-guide"></a>
 </h2>
@@ -157,40 +157,152 @@ your Seurat object:</p>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://patchwork.data-imaginist.com" class="external-link">patchwork</a></span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Assuming you have a Seurat object named 'seurat_obj' and consensus results</span></span>
+<span><span class="co"># First, check the structure of consensus_results</span></span>
+<span><span class="co"># Print the structure of consensus_results to understand its format</span></span>
+<span><span class="co"># str(consensus_results)</span></span>
+<span><span class="co"># print(names(consensus_results))</span></span>
+<span><span class="co"># print(names(consensus_results$final_annotations))</span></span>
+<span></span>
+<span><span class="co"># Get cluster IDs from Seurat object</span></span>
+<span><span class="va">cluster_ids</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/unique.html" class="external-link">unique</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/character.html" class="external-link">as.character</a></span><span class="op">(</span><span class="fu"><a href="https://satijalab.github.io/seurat-object/reference/Idents.html" class="external-link">Idents</a></span><span class="op">(</span><span class="va">seurat_obj</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="st">"Cluster IDs in Seurat object:"</span>, <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste</a></span><span class="op">(</span><span class="va">cluster_ids</span>, collapse<span class="op">=</span><span class="st">", "</span><span class="op">)</span>, <span class="st">"\n"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Convert final_annotations to a vector if it's a list</span></span>
+<span><span class="va">final_annotations</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/unlist.html" class="external-link">unlist</a></span><span class="op">(</span><span class="va">consensus_results</span><span class="op">$</span><span class="va">final_annotations</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="st">"Final annotations:"</span>, <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">final_annotations</span><span class="op">)</span>, collapse<span class="op">=</span><span class="st">", "</span><span class="op">)</span>, <span class="st">"\n"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Create a mapping between cluster IDs and annotations</span></span>
+<span><span class="va">annotation_map</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/vector.html" class="external-link">vector</a></span><span class="op">(</span><span class="st">"character"</span>, <span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">cluster_ids</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">annotation_map</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="va">cluster_ids</span></span>
+<span></span>
+<span><span class="co"># First, try direct mapping where cluster ID matches the name in final_annotations</span></span>
+<span><span class="kw">for</span> <span class="op">(</span><span class="va">i</span> <span class="kw">in</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq_along</a></span><span class="op">(</span><span class="va">cluster_ids</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
+<span>  <span class="va">cluster_id</span> <span class="op">&lt;-</span> <span class="va">cluster_ids</span><span class="op">[</span><span class="va">i</span><span class="op">]</span></span>
+<span>  <span class="co"># Check if this cluster ID exists in final_annotations names</span></span>
+<span>  <span class="kw">if</span> <span class="op">(</span><span class="va">cluster_id</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">final_annotations</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
+<span>    <span class="va">annotation_map</span><span class="op">[</span><span class="va">cluster_id</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="va">final_annotations</span><span class="op">[</span><span class="va">cluster_id</span><span class="op">]</span></span>
+<span>  <span class="op">}</span></span>
+<span><span class="op">}</span></span>
+<span></span>
+<span><span class="co"># For any remaining unmapped clusters, try to infer the mapping</span></span>
+<span><span class="va">unmapped</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/NA.html" class="external-link">is.na</a></span><span class="op">(</span><span class="va">annotation_map</span><span class="op">)</span> <span class="op">|</span> <span class="va">annotation_map</span> <span class="op">==</span> <span class="st">""</span></span>
+<span><span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/any.html" class="external-link">any</a></span><span class="op">(</span><span class="va">unmapped</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
+<span>  <span class="va">unmapped_ids</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">annotation_map</span><span class="op">)</span><span class="op">[</span><span class="va">unmapped</span><span class="op">]</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="st">"Unmapped cluster IDs:"</span>, <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste</a></span><span class="op">(</span><span class="va">unmapped_ids</span>, collapse<span class="op">=</span><span class="st">", "</span><span class="op">)</span>, <span class="st">"\n"</span><span class="op">)</span></span>
+<span></span>
+<span>  <span class="co"># If we have the same number of unmapped clusters as remaining annotations,</span></span>
+<span>  <span class="co"># we can try to assign them in order</span></span>
+<span>  <span class="va">remaining_annotations</span> <span class="op">&lt;-</span> <span class="va">final_annotations</span><span class="op">[</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">final_annotations</span><span class="op">)</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">annotation_map</span><span class="op">)</span><span class="op">[</span><span class="op">!</span><span class="va">unmapped</span><span class="op">]</span><span class="op">]</span></span>
+<span></span>
+<span>  <span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">remaining_annotations</span><span class="op">)</span> <span class="op">==</span> <span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">unmapped_ids</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
+<span>    <span class="kw">for</span> <span class="op">(</span><span class="va">i</span> <span class="kw">in</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq_along</a></span><span class="op">(</span><span class="va">unmapped_ids</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
+<span>      <span class="va">annotation_map</span><span class="op">[</span><span class="va">unmapped_ids</span><span class="op">[</span><span class="va">i</span><span class="op">]</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="va">remaining_annotations</span><span class="op">[</span><span class="va">i</span><span class="op">]</span></span>
+<span>    <span class="op">}</span></span>
+<span>  <span class="op">}</span> <span class="kw">else</span> <span class="op">{</span></span>
+<span>    <span class="co"># If we can't map directly, assign "Unknown" to unmapped clusters</span></span>
+<span>    <span class="kw">for</span> <span class="op">(</span><span class="va">id</span> <span class="kw">in</span> <span class="va">unmapped_ids</span><span class="op">)</span> <span class="op">{</span></span>
+<span>      <span class="va">annotation_map</span><span class="op">[</span><span class="va">id</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste</a></span><span class="op">(</span><span class="st">"Unknown"</span>, <span class="va">id</span><span class="op">)</span></span>
+<span>    <span class="op">}</span></span>
+<span>  <span class="op">}</span></span>
+<span><span class="op">}</span></span>
+<span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="st">"Final annotation map:\n"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">annotation_map</span><span class="op">)</span></span>
+<span></span>
 <span><span class="co"># Add consensus annotations to Seurat object</span></span>
 <span><span class="va">seurat_obj</span><span class="op">$</span><span class="va">cell_type_consensus</span> <span class="op">&lt;-</span> <span class="fu">plyr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/plyr/man/mapvalues.html" class="external-link">mapvalues</a></span><span class="op">(</span></span>
 <span>  x <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/character.html" class="external-link">as.character</a></span><span class="op">(</span><span class="fu"><a href="https://satijalab.github.io/seurat-object/reference/Idents.html" class="external-link">Idents</a></span><span class="op">(</span><span class="va">seurat_obj</span><span class="op">)</span><span class="op">)</span>,</span>
-<span>  from <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/character.html" class="external-link">as.character</a></span><span class="op">(</span><span class="fl">0</span><span class="op">:</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">consensus_results</span><span class="op">$</span><span class="va">final_annotations</span><span class="op">)</span><span class="op">-</span><span class="fl">1</span><span class="op">)</span><span class="op">)</span>,</span>
-<span>  to <span class="op">=</span> <span class="va">consensus_results</span><span class="op">$</span><span class="va">final_annotations</span></span>
+<span>  from <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">annotation_map</span><span class="op">)</span>,</span>
+<span>  to <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/character.html" class="external-link">as.character</a></span><span class="op">(</span><span class="va">annotation_map</span><span class="op">)</span></span>
 <span><span class="op">)</span></span>
 <span></span>
+<span><span class="co"># Verify the annotations were added correctly</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/table.html" class="external-link">table</a></span><span class="op">(</span><span class="va">seurat_obj</span><span class="op">$</span><span class="va">cell_type_consensus</span>, <span class="fu"><a href="https://rdrr.io/r/base/character.html" class="external-link">as.character</a></span><span class="op">(</span><span class="fu"><a href="https://satijalab.github.io/seurat-object/reference/Idents.html" class="external-link">Idents</a></span><span class="op">(</span><span class="va">seurat_obj</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
 <span><span class="co"># Extract consensus metrics from the consensus results</span></span>
-<span><span class="co"># Note: These metrics are available in the consensus_results$initial_results$consensus_results</span></span>
-<span><span class="va">consensus_metrics</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">lapply</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">consensus_results</span><span class="op">$</span><span class="va">initial_results</span><span class="op">$</span><span class="va">consensus_results</span><span class="op">)</span>, <span class="kw">function</span><span class="op">(</span><span class="va">cluster_id</span><span class="op">)</span> <span class="op">{</span></span>
-<span>  <span class="va">metrics</span> <span class="op">&lt;-</span> <span class="va">consensus_results</span><span class="op">$</span><span class="va">initial_results</span><span class="op">$</span><span class="va">consensus_results</span><span class="op">[[</span><span class="va">cluster_id</span><span class="op">]</span><span class="op">]</span></span>
-<span>  <span class="kw"><a href="https://rdrr.io/r/base/function.html" class="external-link">return</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
-<span>    cluster <span class="op">=</span> <span class="va">cluster_id</span>,</span>
-<span>    consensus_proportion <span class="op">=</span> <span class="va">metrics</span><span class="op">$</span><span class="va">consensus_proportion</span>,</span>
-<span>    entropy <span class="op">=</span> <span class="va">metrics</span><span class="op">$</span><span class="va">entropy</span></span>
+<span><span class="co"># Check if consensus_results has the expected structure</span></span>
+<span><span class="kw">if</span> <span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NULL.html" class="external-link">is.null</a></span><span class="op">(</span><span class="va">consensus_results</span><span class="op">$</span><span class="va">initial_results</span><span class="op">)</span> <span class="op">&amp;&amp;</span></span>
+<span>    <span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NULL.html" class="external-link">is.null</a></span><span class="op">(</span><span class="va">consensus_results</span><span class="op">$</span><span class="va">initial_results</span><span class="op">$</span><span class="va">consensus_results</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
+<span></span>
+<span>  <span class="co"># Get consensus metrics</span></span>
+<span>  <span class="va">consensus_metrics</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">lapply</a></span><span class="op">(</span></span>
+<span>    <span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">consensus_results</span><span class="op">$</span><span class="va">initial_results</span><span class="op">$</span><span class="va">consensus_results</span><span class="op">)</span>,</span>
+<span>    <span class="kw">function</span><span class="op">(</span><span class="va">cluster_id</span><span class="op">)</span> <span class="op">{</span></span>
+<span>      <span class="va">metrics</span> <span class="op">&lt;-</span> <span class="va">consensus_results</span><span class="op">$</span><span class="va">initial_results</span><span class="op">$</span><span class="va">consensus_results</span><span class="op">[[</span><span class="va">cluster_id</span><span class="op">]</span><span class="op">]</span></span>
+<span>      <span class="kw"><a href="https://rdrr.io/r/base/function.html" class="external-link">return</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
+<span>        cluster <span class="op">=</span> <span class="va">cluster_id</span>,</span>
+<span>        consensus_proportion <span class="op">=</span> <span class="va">metrics</span><span class="op">$</span><span class="va">consensus_proportion</span>,</span>
+<span>        entropy <span class="op">=</span> <span class="va">metrics</span><span class="op">$</span><span class="va">entropy</span></span>
+<span>      <span class="op">)</span><span class="op">)</span></span>
+<span>    <span class="op">}</span></span>
+<span>  <span class="op">)</span></span>
+<span></span>
+<span>  <span class="co"># Convert to data frame for easier handling</span></span>
+<span>  <span class="va">metrics_df</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/do.call.html" class="external-link">do.call</a></span><span class="op">(</span><span class="va">rbind</span>, <span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">lapply</a></span><span class="op">(</span><span class="va">consensus_metrics</span>, <span class="va">data.frame</span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
+<span>  <span class="co"># Create a mapping for consensus proportion</span></span>
+<span>  <span class="va">proportion_map</span> <span class="op">&lt;-</span> <span class="va">metrics_df</span><span class="op">$</span><span class="va">consensus_proportion</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">proportion_map</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="va">metrics_df</span><span class="op">$</span><span class="va">cluster</span></span>
+<span></span>
+<span>  <span class="co"># Print the proportion map for debugging</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="st">"Consensus proportion map:\n"</span><span class="op">)</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">proportion_map</span><span class="op">)</span></span>
+<span></span>
+<span>  <span class="co"># Create a mapping for entropy</span></span>
+<span>  <span class="va">entropy_map</span> <span class="op">&lt;-</span> <span class="va">metrics_df</span><span class="op">$</span><span class="va">entropy</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">entropy_map</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="va">metrics_df</span><span class="op">$</span><span class="va">cluster</span></span>
+<span></span>
+<span>  <span class="co"># Print the entropy map for debugging</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="st">"Entropy map:\n"</span><span class="op">)</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">entropy_map</span><span class="op">)</span></span>
+<span></span>
+<span>  <span class="co"># Add consensus proportion to Seurat object</span></span>
+<span>  <span class="co"># First check if all cluster IDs are in the proportion map</span></span>
+<span>  <span class="va">missing_clusters</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sets.html" class="external-link">setdiff</a></span><span class="op">(</span><span class="va">cluster_ids</span>, <span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">proportion_map</span><span class="op">)</span><span class="op">)</span></span>
+<span>  <span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">missing_clusters</span><span class="op">)</span> <span class="op">&gt;</span> <span class="fl">0</span><span class="op">)</span> <span class="op">{</span></span>
+<span>    <span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="st">"Warning: Some clusters are missing from proportion map:"</span>,</span>
+<span>        <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste</a></span><span class="op">(</span><span class="va">missing_clusters</span>, collapse<span class="op">=</span><span class="st">", "</span><span class="op">)</span>, <span class="st">"\n"</span><span class="op">)</span></span>
+<span>    <span class="co"># Add default values for missing clusters</span></span>
+<span>    <span class="kw">for</span> <span class="op">(</span><span class="va">cluster</span> <span class="kw">in</span> <span class="va">missing_clusters</span><span class="op">)</span> <span class="op">{</span></span>
+<span>      <span class="va">proportion_map</span><span class="op">[</span><span class="va">cluster</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fl">1.0</span>  <span class="co"># Default to perfect consensus</span></span>
+<span>    <span class="op">}</span></span>
+<span>  <span class="op">}</span></span>
+<span></span>
+<span>  <span class="va">seurat_obj</span><span class="op">$</span><span class="va">consensus_proportion</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/numeric.html" class="external-link">as.numeric</a></span><span class="op">(</span><span class="fu">plyr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/plyr/man/mapvalues.html" class="external-link">mapvalues</a></span><span class="op">(</span></span>
+<span>    x <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/character.html" class="external-link">as.character</a></span><span class="op">(</span><span class="fu"><a href="https://satijalab.github.io/seurat-object/reference/Idents.html" class="external-link">Idents</a></span><span class="op">(</span><span class="va">seurat_obj</span><span class="op">)</span><span class="op">)</span>,</span>
+<span>    from <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">proportion_map</span><span class="op">)</span>,</span>
+<span>    to <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/character.html" class="external-link">as.character</a></span><span class="op">(</span><span class="va">proportion_map</span><span class="op">)</span></span>
 <span>  <span class="op">)</span><span class="op">)</span></span>
-<span><span class="op">}</span><span class="op">)</span></span>
 <span></span>
-<span><span class="co"># Convert to data frame for easier handling</span></span>
-<span><span class="va">metrics_df</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/do.call.html" class="external-link">do.call</a></span><span class="op">(</span><span class="va">rbind</span>, <span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">lapply</a></span><span class="op">(</span><span class="va">consensus_metrics</span>, <span class="va">data.frame</span><span class="op">)</span><span class="op">)</span></span>
+<span>  <span class="co"># Add entropy to Seurat object</span></span>
+<span>  <span class="co"># First check if all cluster IDs are in the entropy map</span></span>
+<span>  <span class="va">missing_clusters</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sets.html" class="external-link">setdiff</a></span><span class="op">(</span><span class="va">cluster_ids</span>, <span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">entropy_map</span><span class="op">)</span><span class="op">)</span></span>
+<span>  <span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">missing_clusters</span><span class="op">)</span> <span class="op">&gt;</span> <span class="fl">0</span><span class="op">)</span> <span class="op">{</span></span>
+<span>    <span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="st">"Warning: Some clusters are missing from entropy map:"</span>,</span>
+<span>        <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste</a></span><span class="op">(</span><span class="va">missing_clusters</span>, collapse<span class="op">=</span><span class="st">", "</span><span class="op">)</span>, <span class="st">"\n"</span><span class="op">)</span></span>
+<span>    <span class="co"># Add default values for missing clusters</span></span>
+<span>    <span class="kw">for</span> <span class="op">(</span><span class="va">cluster</span> <span class="kw">in</span> <span class="va">missing_clusters</span><span class="op">)</span> <span class="op">{</span></span>
+<span>      <span class="va">entropy_map</span><span class="op">[</span><span class="va">cluster</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fl">0.0</span>  <span class="co"># Default to no uncertainty</span></span>
+<span>    <span class="op">}</span></span>
+<span>  <span class="op">}</span></span>
 <span></span>
-<span><span class="co"># Add consensus proportion to Seurat object</span></span>
-<span><span class="va">seurat_obj</span><span class="op">$</span><span class="va">consensus_proportion</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/numeric.html" class="external-link">as.numeric</a></span><span class="op">(</span><span class="fu">plyr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/plyr/man/mapvalues.html" class="external-link">mapvalues</a></span><span class="op">(</span></span>
-<span>  x <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/character.html" class="external-link">as.character</a></span><span class="op">(</span><span class="fu"><a href="https://satijalab.github.io/seurat-object/reference/Idents.html" class="external-link">Idents</a></span><span class="op">(</span><span class="va">seurat_obj</span><span class="op">)</span><span class="op">)</span>,</span>
-<span>  from <span class="op">=</span> <span class="va">metrics_df</span><span class="op">$</span><span class="va">cluster</span>,</span>
-<span>  to <span class="op">=</span> <span class="va">metrics_df</span><span class="op">$</span><span class="va">consensus_proportion</span></span>
-<span><span class="op">)</span><span class="op">)</span></span>
+<span>  <span class="va">seurat_obj</span><span class="op">$</span><span class="va">entropy</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/numeric.html" class="external-link">as.numeric</a></span><span class="op">(</span><span class="fu">plyr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/plyr/man/mapvalues.html" class="external-link">mapvalues</a></span><span class="op">(</span></span>
+<span>    x <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/character.html" class="external-link">as.character</a></span><span class="op">(</span><span class="fu"><a href="https://satijalab.github.io/seurat-object/reference/Idents.html" class="external-link">Idents</a></span><span class="op">(</span><span class="va">seurat_obj</span><span class="op">)</span><span class="op">)</span>,</span>
+<span>    from <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">entropy_map</span><span class="op">)</span>,</span>
+<span>    to <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/character.html" class="external-link">as.character</a></span><span class="op">(</span><span class="va">entropy_map</span><span class="op">)</span></span>
+<span>  <span class="op">)</span><span class="op">)</span></span>
 <span></span>
-<span><span class="co"># Add entropy to Seurat object</span></span>
-<span><span class="va">seurat_obj</span><span class="op">$</span><span class="va">entropy</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/numeric.html" class="external-link">as.numeric</a></span><span class="op">(</span><span class="fu">plyr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/plyr/man/mapvalues.html" class="external-link">mapvalues</a></span><span class="op">(</span></span>
-<span>  x <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/character.html" class="external-link">as.character</a></span><span class="op">(</span><span class="fu"><a href="https://satijalab.github.io/seurat-object/reference/Idents.html" class="external-link">Idents</a></span><span class="op">(</span><span class="va">seurat_obj</span><span class="op">)</span><span class="op">)</span>,</span>
-<span>  from <span class="op">=</span> <span class="va">metrics_df</span><span class="op">$</span><span class="va">cluster</span>,</span>
-<span>  to <span class="op">=</span> <span class="va">metrics_df</span><span class="op">$</span><span class="va">entropy</span></span>
-<span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<span>  <span class="co"># Verify metrics were added correctly</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">seurat_obj</span><span class="op">$</span><span class="va">consensus_proportion</span><span class="op">)</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">seurat_obj</span><span class="op">$</span><span class="va">entropy</span><span class="op">)</span></span>
+<span><span class="op">}</span> <span class="kw">else</span> <span class="op">{</span></span>
+<span>  <span class="co"># If the expected structure is not found, create dummy metrics</span></span>
+<span>  <span class="kw"><a href="https://rdrr.io/r/base/warning.html" class="external-link">warning</a></span><span class="op">(</span><span class="st">"Could not find consensus metrics in the results. Creating dummy metrics for visualization purposes."</span><span class="op">)</span></span>
+<span></span>
+<span>  <span class="co"># Create dummy metrics</span></span>
+<span>  <span class="va">seurat_obj</span><span class="op">$</span><span class="va">consensus_proportion</span> <span class="op">&lt;-</span> <span class="fl">1.0</span>  <span class="co"># Perfect consensus</span></span>
+<span>  <span class="va">seurat_obj</span><span class="op">$</span><span class="va">entropy</span> <span class="op">&lt;-</span> <span class="fl">0.0</span>  <span class="co"># No uncertainty</span></span>
+<span><span class="op">}</span></span></code></pre></div>
 </div>
 <div class="section level4">
 <h4 id="basic-visualization-with-seurat">Basic Visualization with Seurat<a class="anchor" aria-label="anchor" href="#basic-visualization-with-seurat"></a>
@@ -230,7 +342,7 @@ your Seurat object:</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Visualize Shannon entropy</span></span>
 <span><span class="va">p3</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://satijalab.org/seurat/reference/FeaturePlot.html" class="external-link">FeaturePlot</a></span><span class="op">(</span><span class="va">seurat_obj</span>,</span>
-<span>                 features <span class="op">=</span> <span class="st">"shannon_entropy"</span>,</span>
+<span>                 features <span class="op">=</span> <span class="st">"entropy"</span>,  <span class="co"># Note: The column name is 'entropy', not 'shannon_entropy'</span></span>
 <span>                 cols <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"red"</span>, <span class="st">"orange"</span>, <span class="st">"yellow"</span><span class="op">)</span>,</span>
 <span>                 min.cutoff <span class="op">=</span> <span class="fl">0</span>,</span>
 <span>                 max.cutoff <span class="op">=</span> <span class="fl">1.5</span><span class="op">)</span> <span class="op">+</span></span>
@@ -264,14 +376,19 @@ visualizations:</p>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/enblacar/SCpubr/" class="external-link">SCpubr</a></span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Cell type annotations with SCpubr</span></span>
+<span><span class="co"># Note: Check SCpubr documentation for the correct parameters</span></span>
+<span><span class="co"># The 'title' parameter might not be supported in your version of SCpubr</span></span>
 <span><span class="va">p1</span> <span class="op">&lt;-</span> <span class="fu">SCpubr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/SCpubr/man/do_DimPlot.html" class="external-link">do_DimPlot</a></span><span class="op">(</span><span class="va">seurat_obj</span>,</span>
 <span>                         group.by <span class="op">=</span> <span class="st">"cell_type_consensus"</span>,</span>
 <span>                         label <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>                         repel <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>                         legend.position <span class="op">=</span> <span class="st">"right"</span>,</span>
 <span>                         font.size <span class="op">=</span> <span class="fl">14</span>,</span>
-<span>                         pt.size <span class="op">=</span> <span class="fl">0.5</span>,</span>
-<span>                         title <span class="op">=</span> <span class="st">"Cell Type Annotations"</span><span class="op">)</span></span>
+<span>                         pt.size <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Add title using ggplot2 if needed</span></span>
+<span><span class="va">p1</span> <span class="op">&lt;-</span> <span class="va">p1</span> <span class="op">+</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">ggtitle</a></span><span class="op">(</span><span class="st">"Cell Type Annotations"</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme.html" class="external-link">theme</a></span><span class="op">(</span>plot.title <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html" class="external-link">element_text</a></span><span class="op">(</span>hjust <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Consensus proportion with SCpubr</span></span>
 <span><span class="va">p2</span> <span class="op">&lt;-</span> <span class="fu">SCpubr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/SCpubr/man/do_FeaturePlot.html" class="external-link">do_FeaturePlot</a></span><span class="op">(</span><span class="va">seurat_obj</span>,</span>
@@ -280,18 +397,24 @@ visualizations:</p>
 <span>                            pt.size <span class="op">=</span> <span class="fl">0.5</span>,</span>
 <span>                            colors.use <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"yellow"</span>, <span class="st">"green"</span>, <span class="st">"blue"</span><span class="op">)</span>,</span>
 <span>                            legend.position <span class="op">=</span> <span class="st">"right"</span>,</span>
-<span>                            font.size <span class="op">=</span> <span class="fl">14</span>,</span>
-<span>                            title <span class="op">=</span> <span class="st">"Consensus Proportion"</span><span class="op">)</span></span>
+<span>                            font.size <span class="op">=</span> <span class="fl">14</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Add title using ggplot2</span></span>
+<span><span class="va">p2</span> <span class="op">&lt;-</span> <span class="va">p2</span> <span class="op">+</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">ggtitle</a></span><span class="op">(</span><span class="st">"Consensus Proportion"</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme.html" class="external-link">theme</a></span><span class="op">(</span>plot.title <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html" class="external-link">element_text</a></span><span class="op">(</span>hjust <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Shannon entropy with SCpubr</span></span>
 <span><span class="va">p3</span> <span class="op">&lt;-</span> <span class="fu">SCpubr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/SCpubr/man/do_FeaturePlot.html" class="external-link">do_FeaturePlot</a></span><span class="op">(</span><span class="va">seurat_obj</span>,</span>
-<span>                            features <span class="op">=</span> <span class="st">"shannon_entropy"</span>,</span>
+<span>                            features <span class="op">=</span> <span class="st">"entropy"</span>,  <span class="co"># Note: The column name is 'entropy', not 'shannon_entropy'</span></span>
 <span>                            order <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>                            pt.size <span class="op">=</span> <span class="fl">0.5</span>,</span>
 <span>                            colors.use <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"red"</span>, <span class="st">"orange"</span>, <span class="st">"yellow"</span><span class="op">)</span>,</span>
 <span>                            legend.position <span class="op">=</span> <span class="st">"right"</span>,</span>
-<span>                            font.size <span class="op">=</span> <span class="fl">14</span>,</span>
-<span>                            title <span class="op">=</span> <span class="st">"Shannon Entropy"</span><span class="op">)</span></span>
+<span>                            font.size <span class="op">=</span> <span class="fl">14</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Add title using ggplot2</span></span>
+<span><span class="va">p3</span> <span class="op">&lt;-</span> <span class="va">p3</span> <span class="op">+</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">ggtitle</a></span><span class="op">(</span><span class="st">"Shannon Entropy"</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme.html" class="external-link">theme</a></span><span class="op">(</span>plot.title <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html" class="external-link">element_text</a></span><span class="op">(</span>hjust <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Combine plots with patchwork</span></span>
 <span><span class="va">combined_plot</span> <span class="op">&lt;-</span> <span class="va">p1</span> <span class="op">|</span> <span class="va">p2</span> <span class="op">|</span> <span class="va">p3</span></span>
@@ -318,12 +441,18 @@ uncertainty:</p>
 <span><span class="va">seurat_obj</span><span class="op">$</span><span class="va">controversial</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/ifelse.html" class="external-link">ifelse</a></span><span class="op">(</span><span class="va">seurat_obj</span><span class="op">$</span><span class="va">consensus_proportion</span> <span class="op">&lt;</span> <span class="fl">0.5</span>, <span class="st">"Controversial"</span>, <span class="st">"Consensus"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Visualize controversial clusters</span></span>
-<span><span class="fu">SCpubr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/SCpubr/man/do_DimPlot.html" class="external-link">do_DimPlot</a></span><span class="op">(</span><span class="va">seurat_obj</span>,</span>
+<span><span class="va">p_controversial</span> <span class="op">&lt;-</span> <span class="fu">SCpubr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/SCpubr/man/do_DimPlot.html" class="external-link">do_DimPlot</a></span><span class="op">(</span><span class="va">seurat_obj</span>,</span>
 <span>                  group.by <span class="op">=</span> <span class="st">"controversial"</span>,</span>
 <span>                  colors.use <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Controversial"</span> <span class="op">=</span> <span class="st">"red"</span>, <span class="st">"Consensus"</span> <span class="op">=</span> <span class="st">"blue"</span><span class="op">)</span>,</span>
 <span>                  label <span class="op">=</span> <span class="cn">FALSE</span>,</span>
-<span>                  pt.size <span class="op">=</span> <span class="fl">0.5</span>,</span>
-<span>                  title <span class="op">=</span> <span class="st">"Controversial vs. Consensus Clusters"</span><span class="op">)</span></span></code></pre></div>
+<span>                  pt.size <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Add title using ggplot2</span></span>
+<span><span class="va">p_controversial</span> <span class="op">&lt;-</span> <span class="va">p_controversial</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">ggtitle</a></span><span class="op">(</span><span class="st">"Controversial vs. Consensus Clusters"</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme.html" class="external-link">theme</a></span><span class="op">(</span>plot.title <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html" class="external-link">element_text</a></span><span class="op">(</span>hjust <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">p_controversial</span></span></code></pre></div>
 </div>
 <div class="section level4">
 <h4 id="visualizing-model-agreement">Visualizing Model Agreement<a class="anchor" aria-label="anchor" href="#visualizing-model-agreement"></a>
@@ -349,12 +478,17 @@ uncertainty:</p>
 <span>  <span class="va">column_name</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"cell_type_"</span>, <span class="va">model</span><span class="op">)</span></span>
 <span>  <span class="va">temp_obj</span> <span class="op">&lt;-</span> <span class="fu">calculate_agreement</span><span class="op">(</span><span class="va">seurat_obj</span>, <span class="va">column_name</span>, <span class="st">"cell_type_consensus"</span><span class="op">)</span></span>
 <span></span>
-<span>  <span class="va">plot_list</span><span class="op">[[</span><span class="va">model</span><span class="op">]</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fu">SCpubr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/SCpubr/man/do_DimPlot.html" class="external-link">do_DimPlot</a></span><span class="op">(</span><span class="va">temp_obj</span>,</span>
-<span>                                          group.by <span class="op">=</span> <span class="st">"agreement"</span>,</span>
-<span>                                          colors.use <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Agrees with consensus"</span> <span class="op">=</span> <span class="st">"darkgreen"</span>,</span>
-<span>                                                        <span class="st">"Disagrees with consensus"</span> <span class="op">=</span> <span class="st">"darkred"</span><span class="op">)</span>,</span>
-<span>                                          pt.size <span class="op">=</span> <span class="fl">0.5</span>,</span>
-<span>                                          title <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="va">model</span>, <span class="st">" Agreement"</span><span class="op">)</span><span class="op">)</span></span>
+<span>  <span class="co"># Create plot with SCpubr</span></span>
+<span>  <span class="va">p_temp</span> <span class="op">&lt;-</span> <span class="fu">SCpubr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/SCpubr/man/do_DimPlot.html" class="external-link">do_DimPlot</a></span><span class="op">(</span><span class="va">temp_obj</span>,</span>
+<span>                              group.by <span class="op">=</span> <span class="st">"agreement"</span>,</span>
+<span>                              colors.use <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Agrees with consensus"</span> <span class="op">=</span> <span class="st">"darkgreen"</span>,</span>
+<span>                                            <span class="st">"Disagrees with consensus"</span> <span class="op">=</span> <span class="st">"darkred"</span><span class="op">)</span>,</span>
+<span>                              pt.size <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span></span>
+<span></span>
+<span>  <span class="co"># Add title using ggplot2</span></span>
+<span>  <span class="va">plot_list</span><span class="op">[[</span><span class="va">model</span><span class="op">]</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="va">p_temp</span> <span class="op">+</span></span>
+<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">ggtitle</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="va">model</span>, <span class="st">" Agreement"</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme.html" class="external-link">theme</a></span><span class="op">(</span>plot.title <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html" class="external-link">element_text</a></span><span class="op">(</span>hjust <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="op">}</span></span>
 <span></span>
 <span><span class="co"># Combine all agreement plots</span></span>
@@ -398,6 +532,8 @@ cluster:</p>
 <span><span class="co"># Convert cell type names to numeric codes for visualization</span></span>
 <span><span class="va">encode_cell_types</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">prediction_matrix</span><span class="op">)</span> <span class="op">{</span></span>
 <span>  <span class="va">unique_types</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/unique.html" class="external-link">unique</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/vector.html" class="external-link">as.vector</a></span><span class="op">(</span><span class="va">prediction_matrix</span><span class="op">)</span><span class="op">)</span></span>
+<span>  <span class="co"># Remove NA values before creating mapping</span></span>
+<span>  <span class="va">unique_types</span> <span class="op">&lt;-</span> <span class="va">unique_types</span><span class="op">[</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html" class="external-link">is.na</a></span><span class="op">(</span><span class="va">unique_types</span><span class="op">)</span><span class="op">]</span></span>
 <span>  <span class="va">type_mapping</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/setNames.html" class="external-link">setNames</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">unique_types</span><span class="op">)</span>, <span class="va">unique_types</span><span class="op">)</span></span>
 <span></span>
 <span>  <span class="va">encoded_matrix</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span><span class="cn">NA</span>, nrow <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">prediction_matrix</span><span class="op">)</span>, ncol <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">ncol</a></span><span class="op">(</span><span class="va">prediction_matrix</span><span class="op">)</span><span class="op">)</span></span>
@@ -406,7 +542,9 @@ cluster:</p>
 <span></span>
 <span>  <span class="kw">for</span> <span class="op">(</span><span class="va">i</span> <span class="kw">in</span> <span class="fl">1</span><span class="op">:</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">prediction_matrix</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
 <span>    <span class="kw">for</span> <span class="op">(</span><span class="va">j</span> <span class="kw">in</span> <span class="fl">1</span><span class="op">:</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">ncol</a></span><span class="op">(</span><span class="va">prediction_matrix</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
-<span>      <span class="va">encoded_matrix</span><span class="op">[</span><span class="va">i</span>, <span class="va">j</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="va">type_mapping</span><span class="op">[</span><span class="va">prediction_matrix</span><span class="op">[</span><span class="va">i</span>, <span class="va">j</span><span class="op">]</span><span class="op">]</span></span>
+<span>      <span class="kw">if</span> <span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html" class="external-link">is.na</a></span><span class="op">(</span><span class="va">prediction_matrix</span><span class="op">[</span><span class="va">i</span>, <span class="va">j</span><span class="op">]</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
+<span>        <span class="va">encoded_matrix</span><span class="op">[</span><span class="va">i</span>, <span class="va">j</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="va">type_mapping</span><span class="op">[</span><span class="va">prediction_matrix</span><span class="op">[</span><span class="va">i</span>, <span class="va">j</span><span class="op">]</span><span class="op">]</span></span>
+<span>      <span class="op">}</span></span>
 <span>    <span class="op">}</span></span>
 <span>  <span class="op">}</span></span>
 <span></span>
@@ -476,12 +614,29 @@ process. Here’s how to visualize key aspects:</p>
 <span>    <span class="kw"><a href="https://rdrr.io/r/base/function.html" class="external-link">return</a></span><span class="op">(</span><span class="cn">NULL</span><span class="op">)</span></span>
 <span>  <span class="op">}</span></span>
 <span></span>
-<span>  <span class="va">discussion_text</span> <span class="op">&lt;-</span> <span class="va">discussion_logs</span><span class="op">[[</span><span class="va">cluster_id</span><span class="op">]</span><span class="op">]</span></span>
-<span>  <span class="kw"><a href="https://rdrr.io/r/base/function.html" class="external-link">return</a></span><span class="op">(</span><span class="va">discussion_text</span><span class="op">)</span></span>
+<span>  <span class="co"># Extract text from discussion logs</span></span>
+<span>  <span class="va">discussion_log</span> <span class="op">&lt;-</span> <span class="va">discussion_logs</span><span class="op">[[</span><span class="va">cluster_id</span><span class="op">]</span><span class="op">]</span></span>
+<span></span>
+<span>  <span class="co"># Combine all text from all rounds</span></span>
+<span>  <span class="va">all_text</span> <span class="op">&lt;-</span> <span class="st">""</span></span>
+<span>  <span class="kw">if</span> <span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NULL.html" class="external-link">is.null</a></span><span class="op">(</span><span class="va">discussion_log</span><span class="op">$</span><span class="va">rounds</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
+<span>    <span class="kw">for</span> <span class="op">(</span><span class="va">round</span> <span class="kw">in</span> <span class="va">discussion_log</span><span class="op">$</span><span class="va">rounds</span><span class="op">)</span> <span class="op">{</span></span>
+<span>      <span class="kw">if</span> <span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NULL.html" class="external-link">is.null</a></span><span class="op">(</span><span class="va">round</span><span class="op">$</span><span class="va">responses</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
+<span>        <span class="kw">for</span> <span class="op">(</span><span class="va">model_name</span> <span class="kw">in</span> <span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">round</span><span class="op">$</span><span class="va">responses</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
+<span>          <span class="va">response</span> <span class="op">&lt;-</span> <span class="va">round</span><span class="op">$</span><span class="va">responses</span><span class="op">[[</span><span class="va">model_name</span><span class="op">]</span><span class="op">]</span></span>
+<span>          <span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/character.html" class="external-link">is.character</a></span><span class="op">(</span><span class="va">response</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
+<span>            <span class="va">all_text</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste</a></span><span class="op">(</span><span class="va">all_text</span>, <span class="va">response</span>, sep <span class="op">=</span> <span class="st">" "</span><span class="op">)</span></span>
+<span>          <span class="op">}</span></span>
+<span>        <span class="op">}</span></span>
+<span>      <span class="op">}</span></span>
+<span>    <span class="op">}</span></span>
+<span>  <span class="op">}</span></span>
+<span></span>
+<span>  <span class="kw"><a href="https://rdrr.io/r/base/function.html" class="external-link">return</a></span><span class="op">(</span><span class="va">all_text</span><span class="op">)</span></span>
 <span><span class="op">}</span></span>
 <span></span>
 <span><span class="co"># Create a word cloud from discussion text</span></span>
-<span><span class="va">create_discussion_wordcloud</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">discussion_text</span>, <span class="va">title</span> <span class="op">=</span> <span class="st">"Discussion Word Cloud"</span><span class="op">)</span> <span class="op">{</span></span>
+<span><span class="va">create_discussion_wordcloud</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">discussion_text</span>, <span class="va">title</span> <span class="op">=</span> <span class="st">"Discussion Word Cloud"</span>, <span class="va">output_file</span> <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span> <span class="op">{</span></span>
 <span>  <span class="co"># Clean and tokenize text</span></span>
 <span>  <span class="va">words</span> <span class="op">&lt;-</span> <span class="va">discussion_text</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
 <span>    <span class="fu"><a href="https://stringr.tidyverse.org/reference/str_remove.html" class="external-link">str_remove_all</a></span><span class="op">(</span><span class="st">"[[:punct:]]"</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
@@ -499,18 +654,37 @@ process. Here’s how to visualize key aspects:</p>
 <span>  <span class="va">word_freq</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sort.html" class="external-link">sort</a></span><span class="op">(</span><span class="va">word_freq</span>, decreasing <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span></span>
 <span>  <span class="co"># Create word cloud</span></span>
-<span>  <span class="fu"><a href="https://rdrr.io/r/graphics/par.html" class="external-link">par</a></span><span class="op">(</span>mar <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">0</span>, <span class="fl">2</span>, <span class="fl">0</span><span class="op">)</span><span class="op">)</span></span>
-<span>  <span class="fu">wordcloud</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">word_freq</span><span class="op">)</span>, freq <span class="op">=</span> <span class="va">word_freq</span>, min.freq <span class="op">=</span> <span class="fl">2</span>, max.words <span class="op">=</span> <span class="fl">100</span>,</span>
-<span>            random.order <span class="op">=</span> <span class="cn">FALSE</span>, colors <span class="op">=</span> <span class="fu">brewer.pal</span><span class="op">(</span><span class="fl">8</span>, <span class="st">"Dark2"</span><span class="op">)</span>, main <span class="op">=</span> <span class="va">title</span><span class="op">)</span></span>
-<span>  <span class="fu"><a href="https://rdrr.io/r/graphics/title.html" class="external-link">title</a></span><span class="op">(</span>main <span class="op">=</span> <span class="va">title</span><span class="op">)</span></span>
+<span>  <span class="kw">if</span> <span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NULL.html" class="external-link">is.null</a></span><span class="op">(</span><span class="va">output_file</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
+<span>    <span class="co"># If output file is specified, save to file</span></span>
+<span>    <span class="fu"><a href="https://rdrr.io/r/grDevices/png.html" class="external-link">png</a></span><span class="op">(</span><span class="va">output_file</span>, width <span class="op">=</span> <span class="fl">800</span>, height <span class="op">=</span> <span class="fl">600</span>, res <span class="op">=</span> <span class="fl">100</span><span class="op">)</span></span>
+<span>    <span class="fu"><a href="https://rdrr.io/r/graphics/par.html" class="external-link">par</a></span><span class="op">(</span>mar <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">0</span>, <span class="fl">2</span>, <span class="fl">0</span><span class="op">)</span><span class="op">)</span></span>
+<span>    <span class="fu">wordcloud</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">word_freq</span><span class="op">)</span>, freq <span class="op">=</span> <span class="va">word_freq</span>, min.freq <span class="op">=</span> <span class="fl">2</span>, max.words <span class="op">=</span> <span class="fl">100</span>,</span>
+<span>              random.order <span class="op">=</span> <span class="cn">FALSE</span>, colors <span class="op">=</span> <span class="fu">brewer.pal</span><span class="op">(</span><span class="fl">8</span>, <span class="st">"Dark2"</span><span class="op">)</span>, main <span class="op">=</span> <span class="va">title</span><span class="op">)</span></span>
+<span>    <span class="fu"><a href="https://rdrr.io/r/graphics/title.html" class="external-link">title</a></span><span class="op">(</span>main <span class="op">=</span> <span class="va">title</span><span class="op">)</span></span>
+<span>    <span class="fu"><a href="https://rdrr.io/r/grDevices/dev.html" class="external-link">dev.off</a></span><span class="op">(</span><span class="op">)</span></span>
+<span>  <span class="op">}</span> <span class="kw">else</span> <span class="op">{</span></span>
+<span>    <span class="co"># Otherwise display in the current device</span></span>
+<span>    <span class="fu"><a href="https://rdrr.io/r/graphics/par.html" class="external-link">par</a></span><span class="op">(</span>mar <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">0</span>, <span class="fl">2</span>, <span class="fl">0</span><span class="op">)</span><span class="op">)</span></span>
+<span>    <span class="fu">wordcloud</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">word_freq</span><span class="op">)</span>, freq <span class="op">=</span> <span class="va">word_freq</span>, min.freq <span class="op">=</span> <span class="fl">2</span>, max.words <span class="op">=</span> <span class="fl">100</span>,</span>
+<span>              random.order <span class="op">=</span> <span class="cn">FALSE</span>, colors <span class="op">=</span> <span class="fu">brewer.pal</span><span class="op">(</span><span class="fl">8</span>, <span class="st">"Dark2"</span><span class="op">)</span>, main <span class="op">=</span> <span class="va">title</span><span class="op">)</span></span>
+<span>    <span class="fu"><a href="https://rdrr.io/r/graphics/title.html" class="external-link">title</a></span><span class="op">(</span>main <span class="op">=</span> <span class="va">title</span><span class="op">)</span></span>
+<span>  <span class="op">}</span></span>
 <span><span class="op">}</span></span>
 <span></span>
 <span><span class="co"># Example usage</span></span>
 <span><span class="va">cluster_id</span> <span class="op">&lt;-</span> <span class="st">"0"</span>  <span class="co"># Replace with the cluster you want to visualize</span></span>
 <span><span class="va">discussion_text</span> <span class="op">&lt;-</span> <span class="fu">extract_discussion_text</span><span class="op">(</span><span class="va">consensus_results</span>, <span class="va">cluster_id</span><span class="op">)</span></span>
-<span><span class="kw">if</span> <span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NULL.html" class="external-link">is.null</a></span><span class="op">(</span><span class="va">discussion_text</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
-<span>  <span class="fu">create_discussion_wordcloud</span><span class="op">(</span><span class="va">discussion_text</span>,</span>
-<span>                             title <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste</a></span><span class="op">(</span><span class="st">"Cluster"</span>, <span class="va">cluster_id</span>, <span class="st">"Discussion Keywords"</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="kw">if</span> <span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NULL.html" class="external-link">is.null</a></span><span class="op">(</span><span class="va">discussion_text</span><span class="op">)</span> <span class="op">&amp;&amp;</span> <span class="fu"><a href="https://rdrr.io/r/base/nchar.html" class="external-link">nchar</a></span><span class="op">(</span><span class="va">discussion_text</span><span class="op">)</span> <span class="op">&gt;</span> <span class="fl">0</span><span class="op">)</span> <span class="op">{</span></span>
+<span>  <span class="co"># Save to file</span></span>
+<span>  <span class="va">output_file</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"wordcloud_cluster_"</span>, <span class="va">cluster_id</span>, <span class="st">".png"</span><span class="op">)</span></span>
+<span>  <span class="fu">create_discussion_wordcloud</span><span class="op">(</span></span>
+<span>    <span class="va">discussion_text</span>,</span>
+<span>    title <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste</a></span><span class="op">(</span><span class="st">"Cluster"</span>, <span class="va">cluster_id</span>, <span class="st">"Discussion Keywords"</span><span class="op">)</span>,</span>
+<span>    output_file <span class="op">=</span> <span class="va">output_file</span></span>
+<span>  <span class="op">)</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="st">"Word cloud saved to:"</span>, <span class="va">output_file</span>, <span class="st">"\n"</span><span class="op">)</span></span>
+<span><span class="op">}</span> <span class="kw">else</span> <span class="op">{</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="st">"No discussion text found for cluster"</span>, <span class="va">cluster_id</span>, <span class="st">"\n"</span><span class="op">)</span></span>
 <span><span class="op">}</span></span></code></pre></div>
 </div>
 <div class="section level3">
@@ -617,32 +791,44 @@ visualizations:</p>
 <span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Create publication-ready visualizations</span></span>
+<span><span class="co"># Cell type annotations with SCpubr</span></span>
 <span><span class="va">p1</span> <span class="op">&lt;-</span> <span class="fu">SCpubr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/SCpubr/man/do_DimPlot.html" class="external-link">do_DimPlot</a></span><span class="op">(</span><span class="va">seurat_obj</span>,</span>
 <span>                         group.by <span class="op">=</span> <span class="st">"cell_type_consensus"</span>,</span>
 <span>                         label <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>                         repel <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>                         legend.position <span class="op">=</span> <span class="st">"right"</span>,</span>
 <span>                         font.size <span class="op">=</span> <span class="fl">14</span>,</span>
-<span>                         pt.size <span class="op">=</span> <span class="fl">0.5</span>,</span>
-<span>                         title <span class="op">=</span> <span class="st">"Cell Type Annotations"</span><span class="op">)</span></span>
+<span>                         pt.size <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span></span>
 <span></span>
+<span><span class="co"># Add title using ggplot2</span></span>
+<span><span class="va">p1</span> <span class="op">&lt;-</span> <span class="va">p1</span> <span class="op">+</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">ggtitle</a></span><span class="op">(</span><span class="st">"Cell Type Annotations"</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme.html" class="external-link">theme</a></span><span class="op">(</span>plot.title <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html" class="external-link">element_text</a></span><span class="op">(</span>hjust <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Consensus proportion with SCpubr</span></span>
 <span><span class="va">p2</span> <span class="op">&lt;-</span> <span class="fu">SCpubr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/SCpubr/man/do_FeaturePlot.html" class="external-link">do_FeaturePlot</a></span><span class="op">(</span><span class="va">seurat_obj</span>,</span>
 <span>                            features <span class="op">=</span> <span class="st">"consensus_proportion"</span>,</span>
 <span>                            order <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>                            pt.size <span class="op">=</span> <span class="fl">0.5</span>,</span>
 <span>                            colors.use <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"yellow"</span>, <span class="st">"green"</span>, <span class="st">"blue"</span><span class="op">)</span>,</span>
 <span>                            legend.position <span class="op">=</span> <span class="st">"right"</span>,</span>
-<span>                            font.size <span class="op">=</span> <span class="fl">14</span>,</span>
-<span>                            title <span class="op">=</span> <span class="st">"Consensus Proportion"</span><span class="op">)</span></span>
+<span>                            font.size <span class="op">=</span> <span class="fl">14</span><span class="op">)</span></span>
 <span></span>
+<span><span class="co"># Add title using ggplot2</span></span>
+<span><span class="va">p2</span> <span class="op">&lt;-</span> <span class="va">p2</span> <span class="op">+</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">ggtitle</a></span><span class="op">(</span><span class="st">"Consensus Proportion"</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme.html" class="external-link">theme</a></span><span class="op">(</span>plot.title <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html" class="external-link">element_text</a></span><span class="op">(</span>hjust <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Shannon entropy with SCpubr</span></span>
 <span><span class="va">p3</span> <span class="op">&lt;-</span> <span class="fu">SCpubr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/SCpubr/man/do_FeaturePlot.html" class="external-link">do_FeaturePlot</a></span><span class="op">(</span><span class="va">seurat_obj</span>,</span>
-<span>                            features <span class="op">=</span> <span class="st">"shannon_entropy"</span>,</span>
+<span>                            features <span class="op">=</span> <span class="st">"entropy"</span>,  <span class="co"># Note: The column name is 'entropy', not 'shannon_entropy'</span></span>
 <span>                            order <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>                            pt.size <span class="op">=</span> <span class="fl">0.5</span>,</span>
 <span>                            colors.use <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"red"</span>, <span class="st">"orange"</span>, <span class="st">"yellow"</span><span class="op">)</span>,</span>
 <span>                            legend.position <span class="op">=</span> <span class="st">"right"</span>,</span>
-<span>                            font.size <span class="op">=</span> <span class="fl">14</span>,</span>
-<span>                            title <span class="op">=</span> <span class="st">"Shannon Entropy"</span><span class="op">)</span></span>
+<span>                            font.size <span class="op">=</span> <span class="fl">14</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Add title using ggplot2</span></span>
+<span><span class="va">p3</span> <span class="op">&lt;-</span> <span class="va">p3</span> <span class="op">+</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">ggtitle</a></span><span class="op">(</span><span class="st">"Shannon Entropy"</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme.html" class="external-link">theme</a></span><span class="op">(</span>plot.title <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html" class="external-link">element_text</a></span><span class="op">(</span>hjust <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Combine plots</span></span>
 <span><span class="va">combined_plot</span> <span class="op">&lt;-</span> <span class="va">p1</span> <span class="op">|</span> <span class="va">p2</span> <span class="op">|</span> <span class="va">p3</span></span>
@@ -672,6 +858,64 @@ visualizations:</p>
 <span>       plot <span class="op">=</span> <span class="va">combined_plot</span>,</span>
 <span>       width <span class="op">=</span> <span class="fl">15</span>,</span>
 <span>       height <span class="op">=</span> <span class="fl">8</span><span class="op">)</span></span></code></pre></div>
+</div>
+<div class="section level3">
+<h3 id="troubleshooting-common-issues">Troubleshooting Common Issues<a class="anchor" aria-label="anchor" href="#troubleshooting-common-issues"></a>
+</h3>
+<div class="section level4">
+<h4 id="scpubr-parameter-compatibility">SCpubr Parameter Compatibility<a class="anchor" aria-label="anchor" href="#scpubr-parameter-compatibility"></a>
+</h4>
+<p>If you encounter errors with SCpubr functions:</p>
+<ul>
+<li>The <code>title</code> parameter may not be supported in your
+version of SCpubr</li>
+<li>Use standard ggplot2 functions to add titles instead:</li>
+</ul>
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">p</span> <span class="op">&lt;-</span> <span class="va">p</span> <span class="op">+</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">ggtitle</a></span><span class="op">(</span><span class="st">"My Title"</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme.html" class="external-link">theme</a></span><span class="op">(</span>plot.title <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html" class="external-link">element_text</a></span><span class="op">(</span>hjust <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<ul>
+<li>Check the SCpubr documentation for your installed version</li>
+</ul>
+</div>
+<div class="section level4">
+<h4 id="handling-na-values">Handling NA Values<a class="anchor" aria-label="anchor" href="#handling-na-values"></a>
+</h4>
+<p>When working with model predictions:</p>
+<ul>
+<li>Always check for and handle NA values in matrices</li>
+<li>Use
+<code>unique_types &lt;- unique_types[!is.na(unique_types)]</code> to
+remove NA values</li>
+<li>Add conditional checks like
+<code>if (!is.na(prediction_matrix[i, j]))</code> in loops</li>
+</ul>
+</div>
+<div class="section level4">
+<h4 id="discussion-log-extraction">Discussion Log Extraction<a class="anchor" aria-label="anchor" href="#discussion-log-extraction"></a>
+</h4>
+<p>If you have trouble extracting discussion text:</p>
+<ul>
+<li>The structure of discussion logs may vary</li>
+<li>Use a more robust extraction approach that navigates through the
+nested structure</li>
+<li>Check that the text is not empty with
+<code>nchar(discussion_text) &gt; 0</code>
+</li>
+</ul>
+</div>
+<div class="section level4">
+<h4 id="wordcloud-dependencies">Wordcloud Dependencies<a class="anchor" aria-label="anchor" href="#wordcloud-dependencies"></a>
+</h4>
+<p>If wordcloud generation fails:</p>
+<ul>
+<li>Ensure all required packages are installed: <code>wordcloud</code>,
+<code>RColorBrewer</code>, <code>tm</code>
+</li>
+<li>Consider saving to a file with <code><a href="https://rdrr.io/r/grDevices/png.html" class="external-link">png()</a></code> and
+<code><a href="https://rdrr.io/r/grDevices/dev.html" class="external-link">dev.off()</a></code> instead of displaying directly</li>
+<li>Increase memory limits if working with large text corpora</li>
+</ul>
+</div>
 </div>
 <div class="section level3">
 <h3 id="next-steps">Next Steps<a class="anchor" aria-label="anchor" href="#next-steps"></a>

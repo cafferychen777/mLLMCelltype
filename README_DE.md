@@ -27,7 +27,7 @@ mLLMCelltype ist ein fortschrittliches iteratives Multi-LLM-Konsensus-Framework 
 
 ## Zusammenfassung
 
-mLLMCelltype stellt einen bedeutenden Fortschritt in den computergestützten Methoden für die Einzelzell-Transkriptomanalyse dar. Diese Open-Source-Software nutzt mehrere große Sprachmodelle in einem strukturierten Beratungsprozess, um Zelltypen anhand von Genexpressionsdaten präzise zu identifizieren. Im Gegensatz zu herkömmlichen Annotationsmethoden, die auf Referenzdatensätze oder einzelne KI-Modelle angewiesen sind, implementiert mLLMCelltype einen innovativen Konsensusansatz, der Halluzinationen reduziert, die Genauigkeit verbessert und transparente Unsicherheitsmetriken liefert. Das Framework ist darauf ausgelegt, sich nahtlos in beliebte Einzelzellanalyse-Plattformen wie Scanpy und Seurat zu integrieren, wodurch es für Forscher in der gesamten bioinformatischen Gemeinschaft zugänglich wird.
+mLLMCelltype ist ein Open-Source-Tool für die Einzelzell-Transkriptomanalyse, das mehrere große Sprachmodelle nutzt, um Zelltypen anhand von Genexpressionsdaten zu identifizieren. Die Software implementiert einen Konsensusansatz, bei dem mehrere Modelle dieselben Daten analysieren und ihre Vorhersagen kombiniert werden, was dazu beiträgt, Fehler zu reduzieren und Unsicherheitsmetriken bereitzustellen. mLLMCelltype integriert sich in beliebte Einzelzellanalyse-Plattformen wie Scanpy und Seurat und ermöglicht es Forschern, es in bestehende bioinformatische Arbeitsabläufe einzubinden. Im Gegensatz zu einigen herkömmlichen Methoden erfordert es keine Referenzdatensätze für die Annotation.
 
 ## Inhaltsverzeichnis
 - [Neuigkeiten](#neuigkeiten)

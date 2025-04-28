@@ -23,11 +23,11 @@
 
 # mLLMCelltype: Multi-LLM Consensus Framework for Cell Type Annotation
 
-mLLMCelltype is an advanced, iterative multi-LLM consensus framework designed for accurate and reliable cell type annotation in single-cell RNA sequencing (scRNA-seq) data. By leveraging the collective intelligence of multiple large language models including OpenAI GPT-4o/4.1, Anthropic Claude-3.7/3.5, Google Gemini-2.0, X.AI Grok-3, DeepSeek-V3, Alibaba Qwen2.5, Zhipu GLM-4, MiniMax, Stepfun, and OpenRouter, this framework significantly improves annotation accuracy while providing transparent uncertainty quantification for bioinformatics and computational biology research.
+mLLMCelltype is an iterative multi-LLM consensus framework designed for accurate and reliable cell type annotation in single-cell RNA sequencing (scRNA-seq) data. By leveraging the collective intelligence of multiple large language models including OpenAI GPT-4o/4.1, Anthropic Claude-3.7/3.5, Google Gemini-2.0, X.AI Grok-3, DeepSeek-V3, Alibaba Qwen2.5, Zhipu GLM-4, MiniMax, Stepfun, and OpenRouter, this framework significantly improves annotation accuracy while providing transparent uncertainty quantification for bioinformatics and computational biology research.
 
 ## Abstract
 
-mLLMCelltype represents a significant advancement in computational methods for single-cell transcriptomics analysis. This open-source software leverages multiple large language models in a structured deliberation process to accurately identify cell types from gene expression data. Unlike traditional annotation methods that rely on reference datasets or single AI models, mLLMCelltype implements a novel consensus approach that reduces hallucinations, improves accuracy, and provides transparent uncertainty metrics. The framework is designed for seamless integration with popular single-cell analysis platforms like Scanpy and Seurat, making it accessible to researchers across the bioinformatics community.
+mLLMCelltype is an open-source tool for single-cell transcriptomics analysis that uses multiple large language models to identify cell types from gene expression data. The software implements a consensus approach where multiple models analyze the same data and their predictions are combined, which helps reduce errors and provides uncertainty metrics. mLLMCelltype integrates with popular single-cell analysis platforms such as Scanpy and Seurat, allowing researchers to incorporate it into existing bioinformatics workflows. Unlike some traditional methods, it does not require reference datasets for annotation.
 
 ## Table of Contents
 - [News](#news)

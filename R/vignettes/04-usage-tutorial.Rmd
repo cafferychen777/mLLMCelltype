@@ -62,22 +62,10 @@ consensus_results <- interactive_consensus_annotation(
   controversy_threshold = 0.7,  # Threshold for identifying controversial clusters
   entropy_threshold = 1.0,  # Entropy threshold for controversial clusters
   max_discussion_rounds = 3,  # Maximum discussion rounds
-  consensus_check_model = NULL,  # Model to use for consensus checking
+  consensus_check_model = NULL,  # Model to use for consensus checking (see recommendations below)
   log_dir = "logs",     # Directory for logs
   cache_dir = "consensus_cache",  # Directory for cache
   use_cache = TRUE      # Whether to use cache
-)
-```
-
-### print_consensus_summary()
-
-Function for printing a summary of consensus results:
-
-```{r}
-print_consensus_summary(
-  consensus_results,    # Results from interactive_consensus_annotation()
-  show_discussion = FALSE,  # Whether to show discussion logs
-  show_initial = TRUE   # Whether to show initial predictions
 )
 ```
 
@@ -162,8 +150,8 @@ consensus_results <- interactive_consensus_annotation(
   consensus_check_model = "claude-3-7-sonnet-20250219"
 )
 
-# Print consensus summary
-print_consensus_summary(consensus_results)
+# View consensus results
+# You can access the final annotations with consensus_results$final_annotations
 
 # Add consensus annotations and metrics to Seurat object
 pbmc_small$cell_type_consensus <- plyr::mapvalues(
@@ -239,8 +227,8 @@ free_consensus_results <- interactive_consensus_annotation(
   consensus_check_model = "meta-llama/llama-4-maverick:free"  # Use a free model for consensus checking
 )
 
-# Print consensus summary
-print_consensus_summary(free_consensus_results)
+# View free model consensus results
+# You can access the final annotations with free_consensus_results$final_annotations
 
 # Add free model consensus annotations to Seurat object
 pbmc_small$free_model_consensus <- plyr::mapvalues(
@@ -332,10 +320,21 @@ For preliminary exploration or large datasets:
 
 For users with limited API credits or budget constraints:
 
-- **Meta Llama 4 Maverick** (`meta-llama/llama-4-maverick:free`): Free model with 256K context window
-- **NVIDIA Nemotron Ultra 253B** (`nvidia/llama-3.1-nemotron-ultra-253b-v1:free`): Free 253B parameter model
-- **DeepSeek Chat v3** (`deepseek/deepseek-chat-v3-0324:free`): Free model with 163K context window
-- **Microsoft MAI-DS-R1** (`microsoft/mai-ds-r1:free`): Free model with 163K context window
+- **Meta Llama 4 Maverick** (`meta-llama/llama-4-maverick:free`): Most reliable and fast, recommended for consensus checking
+- **NVIDIA Nemotron Ultra 253B** (`nvidia/llama-3.1-nemotron-ultra-253b-v1:free`): Good performance with consistent formatting
+- **Microsoft MAI-DS-R1** (`microsoft/mai-ds-r1:free`): Reliable with good response time
+- **DeepSeek Chat v3** (`deepseek/deepseek-chat-v3-0324:free`): Free model with 163K context window (may occasionally return empty results)
+
+Based on our testing, we recommend the following free models:
+
+- `meta-llama/llama-4-maverick:free`: Most reliable and fast, recommended for consensus checking
+- `nvidia/llama-3.1-nemotron-ultra-253b-v1:free`: Good performance with consistent formatting
+- `microsoft/mai-ds-r1:free`: Reliable with good response time
+
+Some models may have limitations:
+
+- `deepseek/deepseek-chat-v3-0324:free`: May occasionally return empty results
+- `thudm/glm-z1-9b:free`: May return Chinese error messages ("非字符参数") when used for consensus checking
 
 These free models are accessed through OpenRouter and don't consume credits, but may have limitations compared to paid models. Use the `:free` suffix in the model name to access them.
 
@@ -567,6 +566,31 @@ To improve performance:
 1. Use a smaller `top_gene_count` for faster execution
 2. Enable caching to reuse results
 3. Use a higher `controversy_threshold` to reduce the number of clusters that require discussion
+
+## Troubleshooting
+
+### Common Issues with OpenRouter
+
+If you encounter "No auth credentials found" errors with OpenRouter:
+
+- Verify your API key is correct and active
+- Ensure you're using the correct format for the model name (e.g., `provider/model-name:free`)
+- Try a different free model, as some models may have access restrictions
+
+### Chinese Error Messages
+
+If you see "非字符参数" (non-character parameter) errors:
+
+- This typically occurs when using Chinese models like `thudm/glm-z1-9b:free` for consensus checking
+- Switch to an English model like `meta-llama/llama-4-maverick:free` for consensus checking
+
+### Empty Results
+
+If a model returns empty results:
+
+- Try increasing the timeout or retry with the same model
+- Some models like `deepseek/deepseek-chat-v3-0324:free` may occasionally return empty results
+- Switch to a more reliable model if the problem persists
 
 ## Next Steps
 
