@@ -662,7 +662,6 @@ free_model_results <- annotate_cell_types(
   tissue_name = "human PBMC",
   model = "meta-llama/llama-4-maverick:free",  # free model with :free suffix
   api_key = "your-openrouter-key",
-  provider = "openrouter",  # specify OpenRouter as the provider
   top_gene_count = 10
 )
 
