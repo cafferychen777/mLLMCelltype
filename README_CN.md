@@ -585,6 +585,8 @@ uncertainty_metrics <- data.frame(
 )
 
 # 为每个细胞添加不确定性指标
+# 使用seurat_clusters来匹配每个细胞与其对应的聚类指标
+current_clusters <- pbmc$seurat_clusters
 pbmc$consensus_proportion <- uncertainty_metrics$consensus_proportion[match(current_clusters, uncertainty_metrics$cluster_id)]
 pbmc$entropy <- uncertainty_metrics$entropy[match(current_clusters, uncertainty_metrics$cluster_id)]
 

@@ -1,17 +1,48 @@
 <div align="center">
-  <img src="assets/mLLMCelltype_logo.png" alt="mLLMCelltype Logo" width="300"/>
+  <img src="assets/mLLMCelltype_logo.png" alt="mLLMCelltype - Multi-LLM Consensus Framework for Cell Type Annotation in scRNA-seq" width="300"/>
 </div>
 
 <div align="center">
   <a href="README_CN.md">中文</a> | <a href="README_ES.md">Español</a> | <a href="README_JP.md">日本語</a> | <a href="README_DE.md">Deutsch</a> | <a href="README_FR.md">Français</a> | <a href="README_KR.md">한국어</a>
 </div>
 
-mLLMCelltype is an iterative multi-LLM consensus framework for cell type annotation in single-cell RNA sequencing data. By leveraging the complementary strengths of multiple large language models (OpenAI GPT-4o/4.1, Anthropic Claude-3.7/3.5, Google Gemini-2.0, X.AI Grok-3, DeepSeek-V3, Alibaba Qwen2.5, Zhipu GLM-4, MiniMax, Stepfun, and OpenRouter), this framework significantly improves annotation accuracy while providing transparent uncertainty quantification.
+<div align="center">
+  <a href="https://twitter.com/intent/tweet?text=Check%20out%20mLLMCelltype%3A%20A%20multi-LLM%20consensus%20framework%20for%20cell%20type%20annotation%20in%20scRNA-seq%20data%21&url=https%3A%2F%2Fgithub.com%2Fcafferychen777%2FmLLMCelltype"><img src="https://img.shields.io/twitter/url?style=social&url=https%3A%2F%2Fgithub.com%2Fcafferychen777%2FmLLMCelltype" alt="Tweet"></a>
+  <a href="https://github.com/cafferychen777/mLLMCelltype/stargazers"><img src="https://img.shields.io/github/stars/cafferychen777/mLLMCelltype?style=social" alt="Stars"></a>
+  <a href="https://github.com/cafferychen777/mLLMCelltype/network/members"><img src="https://img.shields.io/github/forks/cafferychen777/mLLMCelltype?style=social" alt="Forks"></a>
+</div>
+
+<div align="center">
+  <img src="https://img.shields.io/github/license/cafferychen777/mLLMCelltype" alt="License">
+  <img src="https://img.shields.io/github/last-commit/cafferychen777/mLLMCelltype" alt="Last Commit">
+  <img src="https://img.shields.io/github/issues/cafferychen777/mLLMCelltype" alt="Issues">
+  <img src="https://img.shields.io/github/v/release/cafferychen777/mLLMCelltype" alt="Release">
+</div>
+
+# mLLMCelltype: Multi-LLM Consensus Framework for Cell Type Annotation
+
+mLLMCelltype is an advanced, iterative multi-LLM consensus framework designed for accurate and reliable cell type annotation in single-cell RNA sequencing (scRNA-seq) data. By leveraging the collective intelligence of multiple large language models including OpenAI GPT-4o/4.1, Anthropic Claude-3.7/3.5, Google Gemini-2.0, X.AI Grok-3, DeepSeek-V3, Alibaba Qwen2.5, Zhipu GLM-4, MiniMax, Stepfun, and OpenRouter, this framework significantly improves annotation accuracy while providing transparent uncertainty quantification for bioinformatics and computational biology research.
+
+## Abstract
+
+mLLMCelltype represents a significant advancement in computational methods for single-cell transcriptomics analysis. This open-source software leverages multiple large language models in a structured deliberation process to accurately identify cell types from gene expression data. Unlike traditional annotation methods that rely on reference datasets or single AI models, mLLMCelltype implements a novel consensus approach that reduces hallucinations, improves accuracy, and provides transparent uncertainty metrics. The framework is designed for seamless integration with popular single-cell analysis platforms like Scanpy and Seurat, making it accessible to researchers across the bioinformatics community.
+
+## Table of Contents
+- [News](#news)
+- [Key Features](#key-features)
+- [Recent Updates](#recent-updates)
+- [Directory Structure](#directory-structure)
+- [Installation](#installation)
+- [Usage Examples](#usage-examples)
+- [Visualization Example](#visualization-example)
+- [Citation](#citation)
+- [Contributing](#contributing)
 
 <div align="center">
   <a href="https://star-history.com/#cafferychen777/mLLMCelltype">
     <img src="https://api.star-history.com/svg?repos=cafferychen777/mLLMCelltype&type=Date" alt="Star History Chart" width="600"/>
   </a>
+  <p><em>Figure 1: mLLMCelltype GitHub star history showing community adoption and growth over time.</em></p>
 </div>
 
 ## News
@@ -96,87 +127,88 @@ pip install git+https://github.com/cafferychen777/mLLMCelltype.git
 ### Python
 
 ```python
+# Example of using mLLMCelltype for single-cell RNA-seq cell type annotation with Scanpy
 import scanpy as sc
 import pandas as pd
 from mllmcelltype import annotate_clusters, setup_logging, interactive_consensus_annotation
 import os
 
-# Set up logging
+# Initialize logging for mLLMCelltype framework
 setup_logging()
 
-# Load your data
-adata = sc.read_h5ad('your_data.h5ad')
+# Load your single-cell RNA-seq dataset in AnnData format
+adata = sc.read_h5ad('your_data.h5ad')  # Replace with your scRNA-seq dataset path
 
-# Check if leiden clustering is already computed, if not, compute it
+# Perform Leiden clustering for cell population identification if not already done
 if 'leiden' not in adata.obs.columns:
-    print("Computing leiden clustering...")
-    # Ensure data is preprocessed (normalize, log-transform if needed)
+    print("Computing leiden clustering for cell population identification...")
+    # Preprocess single-cell data: normalize counts and log-transform for gene expression analysis
     if 'log1p' not in adata.uns:
-        sc.pp.normalize_total(adata, target_sum=1e4)
-        sc.pp.log1p(adata)
+        sc.pp.normalize_total(adata, target_sum=1e4)  # Normalize to 10,000 counts per cell
+        sc.pp.log1p(adata)  # Log-transform normalized counts
     
-    # Calculate PCA if not already done
+    # Dimensionality reduction: calculate PCA for scRNA-seq data
     if 'X_pca' not in adata.obsm:
-        sc.pp.highly_variable_genes(adata, min_mean=0.0125, max_mean=3, min_disp=0.5)
-        sc.pp.pca(adata, use_highly_variable=True)
+        sc.pp.highly_variable_genes(adata, min_mean=0.0125, max_mean=3, min_disp=0.5)  # Select informative genes
+        sc.pp.pca(adata, use_highly_variable=True)  # Compute principal components
     
-    # Compute neighbors and leiden clustering
-    sc.pp.neighbors(adata, n_neighbors=10, n_pcs=30)
-    sc.tl.leiden(adata, resolution=0.8)
-    print(f"Leiden clustering completed, found {len(adata.obs['leiden'].cat.categories)} clusters")
+    # Cell clustering: compute neighborhood graph and perform Leiden community detection
+    sc.pp.neighbors(adata, n_neighbors=10, n_pcs=30)  # Build KNN graph for clustering
+    sc.tl.leiden(adata, resolution=0.8)  # Identify cell populations using Leiden algorithm
+    print(f"Leiden clustering completed, identified {len(adata.obs['leiden'].cat.categories)} distinct cell populations")
 
-# Run differential expression analysis to get marker genes
-sc.tl.rank_genes_groups(adata, 'leiden', method='wilcoxon')
+# Identify marker genes for each cell cluster using differential expression analysis
+sc.tl.rank_genes_groups(adata, 'leiden', method='wilcoxon')  # Wilcoxon rank-sum test for marker detection
 
-# Extract marker genes for each cluster
+# Extract top marker genes for each cell cluster to use in cell type annotation
 marker_genes = {}
 for i in range(len(adata.obs['leiden'].cat.categories)):
-    # Extract top 10 genes for each cluster
+    # Select top 10 differentially expressed genes as markers for each cluster
     genes = [adata.uns['rank_genes_groups']['names'][str(i)][j] for j in range(10)]
     marker_genes[str(i)] = genes
 
-# IMPORTANT: Ensure genes are represented as gene symbols (e.g., KCNJ8, PDGFRA) not as Ensembl IDs (e.g., ENSG00000176771)
-# If your AnnData object stores genes as Ensembl IDs, convert them to gene symbols first:
-# Example:
-# if 'Gene' in adata.var.columns:  # Check if gene symbols are available in the var dataframe
+# IMPORTANT: mLLMCelltype requires gene symbols (e.g., KCNJ8, PDGFRA) not Ensembl IDs (e.g., ENSG00000176771)
+# If your AnnData object uses Ensembl IDs, convert them to gene symbols for accurate annotation:
+# Example conversion code:
+# if 'Gene' in adata.var.columns:  # Check if gene symbols are available in the metadata
 #     gene_name_dict = dict(zip(adata.var_names, adata.var['Gene']))
 #     marker_genes = {cluster: [gene_name_dict.get(gene_id, gene_id) for gene_id in genes] 
 #                    for cluster, genes in marker_genes.items()}
 
-# Set API keys for the providers you want to use
-# You need at least one API key for the models you plan to use
-os.environ["OPENAI_API_KEY"] = "your-openai-api-key"      # Required for GPT models
-os.environ["ANTHROPIC_API_KEY"] = "your-anthropic-api-key"  # Required for Claude models
-os.environ["GEMINI_API_KEY"] = "your-gemini-api-key"      # Required for Gemini models
-os.environ["QWEN_API_KEY"] = "your-qwen-api-key"        # Required for Qwen models
-# Additional optional models
-# os.environ["DEEPSEEK_API_KEY"] = "your-deepseek-api-key"   # For DeepSeek models
-# os.environ["ZHIPU_API_KEY"] = "your-zhipu-api-key"       # For GLM models
-# os.environ["STEPFUN_API_KEY"] = "your-stepfun-api-key"    # For Step models
+# Configure API keys for the large language models used in consensus annotation
+# At least one API key is required for multi-LLM consensus annotation
+os.environ["OPENAI_API_KEY"] = "your-openai-api-key"      # For GPT-4o/4.1 models (recommended)
+os.environ["ANTHROPIC_API_KEY"] = "your-anthropic-api-key"  # For Claude-3.7/3.5 models
+os.environ["GEMINI_API_KEY"] = "your-gemini-api-key"      # For Google Gemini-2.0 models
+os.environ["QWEN_API_KEY"] = "your-qwen-api-key"        # For Alibaba Qwen2.5 models
+# Additional optional LLM providers for enhanced consensus diversity:
+# os.environ["DEEPSEEK_API_KEY"] = "your-deepseek-api-key"   # For DeepSeek-V3 models
+# os.environ["ZHIPU_API_KEY"] = "your-zhipu-api-key"       # For Zhipu GLM-4 models
+# os.environ["STEPFUN_API_KEY"] = "your-stepfun-api-key"    # For Stepfun models
 # os.environ["MINIMAX_API_KEY"] = "your-minimax-api-key"    # For MiniMax models
 
-# Run consensus annotation with multiple models
+# Execute multi-LLM consensus cell type annotation with iterative deliberation
 consensus_results = interactive_consensus_annotation(
-    marker_genes=marker_genes,
-    species="human",
-    tissue="blood",
-    models=["gpt-4o", "claude-3-7-sonnet-20250219", "gemini-1.5-pro", "qwen-max-2025-01-25"],
-    consensus_threshold=1,  # Adjust threshold for consensus agreement
-    max_discussion_rounds=3   # Maximum rounds of discussion between models
+    marker_genes=marker_genes,  # Dictionary of marker genes for each cluster
+    species="human",            # Specify organism for appropriate cell type annotation
+    tissue="blood",            # Specify tissue context for more accurate annotation
+    models=["gpt-4o", "claude-3-7-sonnet-20250219", "gemini-1.5-pro", "qwen-max-2025-01-25"],  # Multiple LLMs for consensus
+    consensus_threshold=1,     # Minimum proportion required for consensus agreement
+    max_discussion_rounds=3    # Number of deliberation rounds between models for refinement
 )
 
-# Access the final consensus annotations from the dictionary
+# Retrieve final consensus cell type annotations from the multi-LLM deliberation
 final_annotations = consensus_results["consensus"]
 
-# Add consensus annotations to your AnnData object
+# Integrate consensus cell type annotations into the original AnnData object
 adata.obs['consensus_cell_type'] = adata.obs['leiden'].astype(str).map(final_annotations)
 
-# Add uncertainty metrics to your AnnData object
-adata.obs['consensus_proportion'] = adata.obs['leiden'].astype(str).map(consensus_results["consensus_proportion"])
-adata.obs['entropy'] = adata.obs['leiden'].astype(str).map(consensus_results["entropy"])
+# Add uncertainty quantification metrics to evaluate annotation confidence
+adata.obs['consensus_proportion'] = adata.obs['leiden'].astype(str).map(consensus_results["consensus_proportion"])  # Agreement level
+adata.obs['entropy'] = adata.obs['leiden'].astype(str).map(consensus_results["entropy"])  # Annotation uncertainty
 
-# IMPORTANT: Ensure UMAP coordinates are calculated before visualization
-# If UMAP coordinates are not available in your AnnData object, compute them:
+# Prepare for visualization: compute UMAP embeddings if not already available
+# UMAP provides a 2D representation of cell populations for visualization
 if 'X_umap' not in adata.obsm:
     print("Computing UMAP coordinates...")
     # Make sure neighbors are computed first
@@ -316,6 +348,8 @@ uncertainty_metrics <- data.frame(
 )
 
 # Add uncertainty metrics for each cell
+# Use seurat_clusters to match each cell with its corresponding cluster metrics
+current_clusters <- pbmc$seurat_clusters
 pbmc$consensus_proportion <- uncertainty_metrics$consensus_proportion[match(current_clusters, uncertainty_metrics$cluster_id)]
 pbmc$entropy <- uncertainty_metrics$entropy[match(current_clusters, uncertainty_metrics$cluster_id)]
 
@@ -668,7 +702,7 @@ If you use mLLMCelltype in your research, please cite:
 
 You can also cite this in plain text format:
 
-Yang, C., Zhang, X., & Chen, J. (2025). Large Language Model Consensus Substantially Improves the Cell Type Annotation Accuracy for scRNA-seq Data. *bioRxiv*. https://doi.org/10.1101/2025.04.10.647852
+Yang, C., Zhang, X., & Chen, J. (2025). Large Language Model Consensus Substantially Improves the Cell Type Annotation Accuracy for scRNA-seq Data. *bioRxiv*. [Read our full research paper on bioRxiv](https://doi.org/10.1101/2025.04.10.647852)
 
 ## Contributing
 
