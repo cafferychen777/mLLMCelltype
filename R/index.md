@@ -57,7 +57,7 @@ for (model in models) {
                    "anthropic" = Sys.getenv("ANTHROPIC_API_KEY"),
                    "openai" = Sys.getenv("OPENAI_API_KEY"),
                    "gemini" = Sys.getenv("GEMINI_API_KEY"))
-  
+
   results[[model]] <- annotate_cell_types(
     input = pbmc_markers,
     tissue_name = "human PBMC",
@@ -66,13 +66,22 @@ for (model in models) {
   )
 }
 
-# Create consensus
-consensus_results <- create_consensus(
-  results = results,
+# Create consensus using interactive consensus annotation
+api_keys <- list(
+  anthropic = Sys.getenv("ANTHROPIC_API_KEY"),
+  openai = Sys.getenv("OPENAI_API_KEY"),
+  gemini = Sys.getenv("GEMINI_API_KEY")
+)
+
+consensus_results <- interactive_consensus_annotation(
   input = pbmc_markers,
   tissue_name = "human PBMC",
-  model = "claude-3-7-sonnet-20250219",
-  api_key = Sys.getenv("ANTHROPIC_API_KEY")
+  models = models,  # Use the models defined above
+  api_keys = api_keys,
+  controversy_threshold = 0.7,
+  entropy_threshold = 1.0,
+  max_discussion_rounds = 3,
+  consensus_check_model = "claude-3-7-sonnet-20250219"
 )
 
 # Print consensus results summary
