@@ -163,17 +163,6 @@ through interactive discussion:</p>
 <span>  use_cache <span class="op">=</span> <span class="cn">TRUE</span>      <span class="co"># Whether to use cache</span></span>
 <span><span class="op">)</span></span></code></pre></div>
 </div>
-<div class="section level4">
-<h4 id="print_consensus_summary">print_consensus_summary()<a class="anchor" aria-label="anchor" href="#print_consensus_summary"></a>
-</h4>
-<p>Function for printing a summary of consensus results:</p>
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/print_consensus_summary.html">print_consensus_summary</a></span><span class="op">(</span></span>
-<span>  <span class="va">consensus_results</span>,    <span class="co"># Results from interactive_consensus_annotation()</span></span>
-<span>  show_discussion <span class="op">=</span> <span class="cn">FALSE</span>,  <span class="co"># Whether to show discussion logs</span></span>
-<span>  show_initial <span class="op">=</span> <span class="cn">TRUE</span>   <span class="co"># Whether to show initial predictions</span></span>
-<span><span class="op">)</span></span></code></pre></div>
-</div>
 </div>
 <div class="section level3">
 <h3 id="detailed-usage-scenarios">Detailed Usage Scenarios<a class="anchor" aria-label="anchor" href="#detailed-usage-scenarios"></a>
@@ -182,7 +171,7 @@ through interactive discussion:</p>
 <h4 id="scenario-1-basic-annotation-with-a-single-model">Scenario 1: Basic Annotation with a Single Model<a class="anchor" aria-label="anchor" href="#scenario-1-basic-annotation-with-a-single-model"></a>
 </h4>
 <p>For quick exploration or when API usage is a concern:</p>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Load example data</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://satijalab.org/seurat" class="external-link">Seurat</a></span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"pbmc_small"</span><span class="op">)</span></span>
@@ -214,7 +203,7 @@ through interactive discussion:</p>
 </h4>
 <p>For publication-quality annotations with uncertainty
 quantification:</p>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Define multiple models to use</span></span>
 <span><span class="va">models</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
 <span>  <span class="st">"claude-3-7-sonnet-20250219"</span>,  <span class="co"># Anthropic</span></span>
@@ -257,8 +246,8 @@ quantification:</p>
 <span>  consensus_check_model <span class="op">=</span> <span class="st">"claude-3-7-sonnet-20250219"</span></span>
 <span><span class="op">)</span></span>
 <span></span>
-<span><span class="co"># Print consensus summary</span></span>
-<span><span class="fu"><a href="../reference/print_consensus_summary.html">print_consensus_summary</a></span><span class="op">(</span><span class="va">consensus_results</span><span class="op">)</span></span>
+<span><span class="co"># View consensus results</span></span>
+<span><span class="co"># You can access the final annotations with consensus_results$final_annotations</span></span>
 <span></span>
 <span><span class="co"># Add consensus annotations and metrics to Seurat object</span></span>
 <span><span class="va">pbmc_small</span><span class="op">$</span><span class="va">cell_type_consensus</span> <span class="op">&lt;-</span> <span class="fu">plyr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/plyr/man/mapvalues.html" class="external-link">mapvalues</a></span><span class="op">(</span></span>
@@ -298,7 +287,7 @@ quantification:</p>
 <h4 id="scenario-2b-using-free-openrouter-models">Scenario 2b: Using Free OpenRouter Models<a class="anchor" aria-label="anchor" href="#scenario-2b-using-free-openrouter-models"></a>
 </h4>
 <p>For users with limited API credits or budget constraints:</p>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Set OpenRouter API key</span></span>
 <span><span class="va">openrouter_api_key</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/Sys.getenv.html" class="external-link">Sys.getenv</a></span><span class="op">(</span><span class="st">"OPENROUTER_API_KEY"</span><span class="op">)</span></span>
 <span></span>
@@ -333,8 +322,8 @@ quantification:</p>
 <span>  consensus_check_model <span class="op">=</span> <span class="st">"meta-llama/llama-4-maverick:free"</span>  <span class="co"># Use a free model for consensus checking</span></span>
 <span><span class="op">)</span></span>
 <span></span>
-<span><span class="co"># Print consensus summary</span></span>
-<span><span class="fu"><a href="../reference/print_consensus_summary.html">print_consensus_summary</a></span><span class="op">(</span><span class="va">free_consensus_results</span><span class="op">)</span></span>
+<span><span class="co"># View free model consensus results</span></span>
+<span><span class="co"># You can access the final annotations with free_consensus_results$final_annotations</span></span>
 <span></span>
 <span><span class="co"># Add free model consensus annotations to Seurat object</span></span>
 <span><span class="va">pbmc_small</span><span class="op">$</span><span class="va">free_model_consensus</span> <span class="op">&lt;-</span> <span class="fu">plyr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/plyr/man/mapvalues.html" class="external-link">mapvalues</a></span><span class="op">(</span></span>
@@ -356,7 +345,7 @@ quantification:</p>
 <h4 id="scenario-3-working-with-csv-files">Scenario 3: Working with CSV Files<a class="anchor" aria-label="anchor" href="#scenario-3-working-with-csv-files"></a>
 </h4>
 <p>For users who prefer working with files:</p>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Save markers to CSV</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/write.table.html" class="external-link">write.csv</a></span><span class="op">(</span><span class="va">pbmc_markers</span>, <span class="st">"pbmc_markers.csv"</span>, row.names <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
 <span></span>
@@ -372,7 +361,7 @@ quantification:</p>
 <h4 id="scenario-4-custom-caching">Scenario 4: Custom Caching<a class="anchor" aria-label="anchor" href="#scenario-4-custom-caching"></a>
 </h4>
 <p>For better control over caching behavior:</p>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Note: The annotate_cell_types function does not have built-in caching.</span></span>
 <span><span class="co"># If you need caching, you can implement it separately.</span></span>
 <span></span>
@@ -473,7 +462,7 @@ window</li>
 <p>These free models are accessed through OpenRouter and don’t consume
 credits, but may have limitations compared to paid models. Use the
 <code>:free</code> suffix in the model name to access them.</p>
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Example of using a free model via OpenRouter</span></span>
 <span><span class="co"># First, set your OpenRouter API key</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/Sys.setenv.html" class="external-link">Sys.setenv</a></span><span class="op">(</span>OPENROUTER_API_KEY <span class="op">=</span> <span class="st">"your-openrouter-api-key"</span><span class="op">)</span></span>
@@ -493,7 +482,7 @@ credits, but may have limitations compared to paid models. Use the
 </h3>
 <p>Here’s a complete example of integrating mLLMCelltype with a Seurat
 workflow:</p>
-<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://satijalab.org/seurat" class="external-link">Seurat</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://cafferychen777.github.io/mLLMCelltype">mLLMCelltype</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://ggplot2.tidyverse.org" class="external-link">ggplot2</a></span><span class="op">)</span></span>
@@ -619,7 +608,7 @@ workflow:</p>
 </h4>
 <p>The <code>top_gene_count</code> parameter controls how many top
 marker genes per cluster are used for annotation:</p>
-<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Using more genes (better for well-characterized tissues)</span></span>
 <span><span class="va">results_more_genes</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/annotate_cell_types.html">annotate_cell_types</a></span><span class="op">(</span></span>
 <span>  input <span class="op">=</span> <span class="va">pbmc_markers</span>,</span>
@@ -644,7 +633,7 @@ marker genes per cluster are used for annotation:</p>
 <p>The <code>controversy_threshold</code> parameter in the
 <code>interactive_consensus_annotation</code> function controls which
 clusters are considered controversial and require discussion:</p>
-<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Example of using interactive_consensus_annotation with different controversy thresholds</span></span>
 <span><span class="co"># Lower threshold (more clusters will be discussed)</span></span>
 <span><span class="va">consensus_results_low_threshold</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/interactive_consensus_annotation.html">interactive_consensus_annotation</a></span><span class="op">(</span></span>

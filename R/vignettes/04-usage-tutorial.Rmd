@@ -69,18 +69,6 @@ consensus_results <- interactive_consensus_annotation(
 )
 ```
 
-### print_consensus_summary()
-
-Function for printing a summary of consensus results:
-
-```{r}
-print_consensus_summary(
-  consensus_results,    # Results from interactive_consensus_annotation()
-  show_discussion = FALSE,  # Whether to show discussion logs
-  show_initial = TRUE   # Whether to show initial predictions
-)
-```
-
 ## Detailed Usage Scenarios
 
 ### Scenario 1: Basic Annotation with a Single Model
@@ -162,8 +150,8 @@ consensus_results <- interactive_consensus_annotation(
   consensus_check_model = "claude-3-7-sonnet-20250219"
 )
 
-# Print consensus summary
-print_consensus_summary(consensus_results)
+# View consensus results
+# You can access the final annotations with consensus_results$final_annotations
 
 # Add consensus annotations and metrics to Seurat object
 pbmc_small$cell_type_consensus <- plyr::mapvalues(
@@ -239,8 +227,8 @@ free_consensus_results <- interactive_consensus_annotation(
   consensus_check_model = "meta-llama/llama-4-maverick:free"  # Use a free model for consensus checking
 )
 
-# Print consensus summary
-print_consensus_summary(free_consensus_results)
+# View free model consensus results
+# You can access the final annotations with free_consensus_results$final_annotations
 
 # Add free model consensus annotations to Seurat object
 pbmc_small$free_model_consensus <- plyr::mapvalues(
