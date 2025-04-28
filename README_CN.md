@@ -10,6 +10,7 @@
   <a href="https://twitter.com/intent/tweet?text=推荐使用%20mLLMCelltype%3A%20一个用于单细胞%20RNA%20测序数据细胞类型注释的多模型共识框架%21&url=https%3A%2F%2Fgithub.com%2Fcafferychen777%2FmLLMCelltype"><img src="https://img.shields.io/twitter/url?style=social&url=https%3A%2F%2Fgithub.com%2Fcafferychen777%2FmLLMCelltype" alt="分享到推特"></a>
   <a href="https://github.com/cafferychen777/mLLMCelltype/stargazers"><img src="https://img.shields.io/github/stars/cafferychen777/mLLMCelltype?style=social" alt="星标数"></a>
   <a href="https://github.com/cafferychen777/mLLMCelltype/network/members"><img src="https://img.shields.io/github/forks/cafferychen777/mLLMCelltype?style=social" alt="分支数"></a>
+  <a href="https://discord.gg/pb2aZdG4"><img src="https://img.shields.io/badge/Discord-加入聊天-7289da?logo=discord&logoColor=white" alt="Discord"></a>
 </div>
 
 <div align="center">

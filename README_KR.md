@@ -10,6 +10,7 @@
   <a href="https://twitter.com/intent/tweet?text=mLLMCelltype%3A%20단일세포%20RNA%20시퀀싱%20데이터의%20세포%20유형%20주석을%20위한%20다중%20LLM%20합의%20프레임워크%21&url=https%3A%2F%2Fgithub.com%2Fcafferychen777%2FmLLMCelltype"><img src="https://img.shields.io/twitter/url?style=social&url=https%3A%2F%2Fgithub.com%2Fcafferychen777%2FmLLMCelltype" alt="Tweet"></a>
   <a href="https://github.com/cafferychen777/mLLMCelltype/stargazers"><img src="https://img.shields.io/github/stars/cafferychen777/mLLMCelltype?style=social" alt="Stars"></a>
   <a href="https://github.com/cafferychen777/mLLMCelltype/network/members"><img src="https://img.shields.io/github/forks/cafferychen777/mLLMCelltype?style=social" alt="Forks"></a>
+  <a href="https://discord.gg/pb2aZdG4"><img src="https://img.shields.io/badge/Discord-채팅방참여-7289da?logo=discord&logoColor=white" alt="Discord"></a>
 </div>
 
 <div align="center">
