@@ -108,7 +108,7 @@
             
             <h4 data-toc-skip class="date">2025-04-28</h4>
       
-      <small class="dont-index">Source: <a href="https://github.com/cafferychen777/mLLMCelltype/blob/main/vignettes/09-contributing-guide.Rmd" class="external-link"><code>vignettes/09-contributing-guide.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/cafferychen777/mLLMCelltype/blob/dev/vignettes/09-contributing-guide.Rmd" class="external-link"><code>vignettes/09-contributing-guide.Rmd</code></a></small>
       <div class="d-none name"><code>09-contributing-guide.Rmd</code></div>
     </div>
 
@@ -223,13 +223,13 @@ guide</a> for R code:</p>
 <span><span class="va">annotate_cell_types</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">input</span>, <span class="va">tissue_name</span>, <span class="va">model</span>, <span class="va">api_key</span><span class="op">)</span> <span class="op">{</span></span>
 <span>  <span class="co"># Function implementation</span></span>
 <span>  <span class="va">results</span> <span class="op">&lt;-</span> <span class="fu">process_markers</span><span class="op">(</span><span class="va">input</span>, top_n <span class="op">=</span> <span class="fl">10</span><span class="op">)</span></span>
-<span>  </span>
+<span></span>
 <span>  <span class="kw">for</span> <span class="op">(</span><span class="va">i</span> <span class="kw">in</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq_along</a></span><span class="op">(</span><span class="va">results</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
 <span>    <span class="kw">if</span> <span class="op">(</span><span class="fu">is_valid_result</span><span class="op">(</span><span class="va">results</span><span class="op">[</span><span class="va">i</span><span class="op">]</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
 <span>      <span class="va">results</span><span class="op">[</span><span class="va">i</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fu">clean_result</span><span class="op">(</span><span class="va">results</span><span class="op">[</span><span class="va">i</span><span class="op">]</span><span class="op">)</span></span>
 <span>    <span class="op">}</span></span>
 <span>  <span class="op">}</span></span>
-<span>  </span>
+<span></span>
 <span>  <span class="kw"><a href="https://rdrr.io/r/base/function.html" class="external-link">return</a></span><span class="op">(</span><span class="va">results</span><span class="op">)</span></span>
 <span><span class="op">}</span></span></code></pre></div>
 </div>
@@ -273,14 +273,14 @@ the <code>R/tests/testthat/</code> directory.</p>
 <span>    avg_log2FC <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">2.5</span>, <span class="fl">2.3</span>, <span class="fl">3.1</span>, <span class="fl">2.8</span><span class="op">)</span>,</span>
 <span>    p_val_adj <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.001</span>, <span class="fl">0.002</span>, <span class="fl">0.001</span>, <span class="fl">0.003</span><span class="op">)</span></span>
 <span>  <span class="op">)</span></span>
-<span>  </span>
+<span></span>
 <span>  <span class="co"># Mock the API response</span></span>
 <span>  <span class="fu">mockery</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/mockery/man/stub.html" class="external-link">stub</a></span><span class="op">(</span></span>
-<span>    <span class="va">annotate_cell_types</span>, </span>
-<span>    <span class="st">"get_model_response"</span>, </span>
+<span>    <span class="va">annotate_cell_types</span>,</span>
+<span>    <span class="st">"get_model_response"</span>,</span>
 <span>    <span class="kw">function</span><span class="op">(</span><span class="va">...</span><span class="op">)</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"T cells"</span>, <span class="st">"B cells"</span><span class="op">)</span></span>
 <span>  <span class="op">)</span></span>
-<span>  </span>
+<span></span>
 <span>  <span class="co"># Run the function</span></span>
 <span>  <span class="va">result</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/annotate_cell_types.html">annotate_cell_types</a></span><span class="op">(</span></span>
 <span>    input <span class="op">=</span> <span class="va">test_markers</span>,</span>
@@ -288,7 +288,7 @@ the <code>R/tests/testthat/</code> directory.</p>
 <span>    model <span class="op">=</span> <span class="st">"test-model"</span>,</span>
 <span>    api_key <span class="op">=</span> <span class="st">"test-key"</span></span>
 <span>  <span class="op">)</span></span>
-<span>  </span>
+<span></span>
 <span>  <span class="co"># Assertions</span></span>
 <span>  <span class="fu">expect_is</span><span class="op">(</span><span class="va">result</span>, <span class="st">"character"</span><span class="op">)</span></span>
 <span>  <span class="fu">expect_length</span><span class="op">(</span><span class="va">result</span>, <span class="fl">2</span><span class="op">)</span></span>
@@ -318,28 +318,38 @@ the <code>R/tests/testthat/</code> directory.</p>
 <p>Example of adding a new model:</p>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># In process_newprovider.R</span></span>
-<span><span class="va">process_newprovider</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">prompt</span>, <span class="va">api_key</span>, <span class="va">timeout</span> <span class="op">=</span> <span class="fl">60</span>, <span class="va">max_retries</span> <span class="op">=</span> <span class="fl">3</span><span class="op">)</span> <span class="op">{</span></span>
+<span><span class="va">process_newprovider</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">prompt</span>, <span class="va">api_key</span><span class="op">)</span> <span class="op">{</span></span>
 <span>  <span class="co"># Implementation for the new provider</span></span>
 <span>  <span class="va">url</span> <span class="op">&lt;-</span> <span class="st">"https://api.newprovider.com/v1/completions"</span></span>
-<span>  </span>
+<span></span>
 <span>  <span class="va">headers</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
 <span>    <span class="st">"Content-Type"</span> <span class="op">=</span> <span class="st">"application/json"</span>,</span>
 <span>    <span class="st">"Authorization"</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste</a></span><span class="op">(</span><span class="st">"Bearer"</span>, <span class="va">api_key</span><span class="op">)</span></span>
 <span>  <span class="op">)</span></span>
-<span>  </span>
+<span></span>
 <span>  <span class="va">body</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
 <span>    model <span class="op">=</span> <span class="st">"newprovider-model"</span>,</span>
 <span>    prompt <span class="op">=</span> <span class="va">prompt</span>,</span>
 <span>    max_tokens <span class="op">=</span> <span class="fl">1000</span>,</span>
 <span>    temperature <span class="op">=</span> <span class="fl">0.1</span></span>
 <span>  <span class="op">)</span></span>
-<span>  </span>
-<span>  <span class="va">response</span> <span class="op">&lt;-</span> <span class="fu">make_api_request</span><span class="op">(</span><span class="va">url</span>, <span class="va">headers</span>, <span class="va">body</span>, <span class="va">timeout</span>, <span class="va">max_retries</span><span class="op">)</span></span>
-<span>  </span>
+<span></span>
+<span>  <span class="co"># Make API request using httr</span></span>
+<span>  <span class="va">response</span> <span class="op">&lt;-</span> <span class="fu">httr</span><span class="fu">::</span><span class="fu"><a href="https://httr.r-lib.org/reference/POST.html" class="external-link">POST</a></span><span class="op">(</span></span>
+<span>    url <span class="op">=</span> <span class="va">url</span>,</span>
+<span>    <span class="fu">httr</span><span class="fu">::</span><span class="fu"><a href="https://httr.r-lib.org/reference/add_headers.html" class="external-link">add_headers</a></span><span class="op">(</span>.headers <span class="op">=</span> <span class="va">headers</span><span class="op">)</span>,</span>
+<span>    body <span class="op">=</span> <span class="fu">jsonlite</span><span class="fu">::</span><span class="fu"><a href="https://jeroen.r-universe.dev/jsonlite/reference/fromJSON.html" class="external-link">toJSON</a></span><span class="op">(</span><span class="va">body</span>, auto_unbox <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>,</span>
+<span>    encode <span class="op">=</span> <span class="st">"json"</span></span>
+<span>  <span class="op">)</span></span>
+<span></span>
+<span>  <span class="co"># Check for HTTP errors</span></span>
+<span>  <span class="fu">httr</span><span class="fu">::</span><span class="fu"><a href="https://httr.r-lib.org/reference/stop_for_status.html" class="external-link">stop_for_status</a></span><span class="op">(</span><span class="va">response</span><span class="op">)</span></span>
+<span></span>
 <span>  <span class="co"># Parse the response</span></span>
-<span>  <span class="va">parsed_response</span> <span class="op">&lt;-</span> <span class="fu">jsonlite</span><span class="fu">::</span><span class="fu"><a href="https://jeroen.r-universe.dev/jsonlite/reference/fromJSON.html" class="external-link">fromJSON</a></span><span class="op">(</span><span class="va">response</span><span class="op">)</span></span>
+<span>  <span class="va">content</span> <span class="op">&lt;-</span> <span class="fu">httr</span><span class="fu">::</span><span class="fu"><a href="https://httr.r-lib.org/reference/content.html" class="external-link">content</a></span><span class="op">(</span><span class="va">response</span>, <span class="st">"text"</span>, encoding <span class="op">=</span> <span class="st">"UTF-8"</span><span class="op">)</span></span>
+<span>  <span class="va">parsed_response</span> <span class="op">&lt;-</span> <span class="fu">jsonlite</span><span class="fu">::</span><span class="fu"><a href="https://jeroen.r-universe.dev/jsonlite/reference/fromJSON.html" class="external-link">fromJSON</a></span><span class="op">(</span><span class="va">content</span><span class="op">)</span></span>
 <span>  <span class="va">result</span> <span class="op">&lt;-</span> <span class="va">parsed_response</span><span class="op">$</span><span class="va">choices</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span><span class="op">$</span><span class="va">text</span></span>
-<span>  </span>
+<span></span>
 <span>  <span class="kw"><a href="https://rdrr.io/r/base/function.html" class="external-link">return</a></span><span class="op">(</span><span class="va">result</span><span class="op">)</span></span>
 <span><span class="op">}</span></span>
 <span></span>
@@ -350,12 +360,12 @@ the <code>R/tests/testthat/</code> directory.</p>
 <span>    <span class="co"># Existing models...</span></span>
 <span>    <span class="st">"newprovider-model"</span> <span class="op">=</span> <span class="st">"newprovider"</span></span>
 <span>  <span class="op">)</span></span>
-<span>  </span>
+<span></span>
 <span>  <span class="va">provider</span> <span class="op">&lt;-</span> <span class="va">model_mapping</span><span class="op">[[</span><span class="va">model</span><span class="op">]</span><span class="op">]</span></span>
 <span>  <span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/NULL.html" class="external-link">is.null</a></span><span class="op">(</span><span class="va">provider</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
 <span>    <span class="kw"><a href="https://rdrr.io/r/base/stop.html" class="external-link">stop</a></span><span class="op">(</span><span class="st">"Unsupported model: "</span>, <span class="va">model</span><span class="op">)</span></span>
 <span>  <span class="op">}</span></span>
-<span>  </span>
+<span></span>
 <span>  <span class="kw"><a href="https://rdrr.io/r/base/function.html" class="external-link">return</a></span><span class="op">(</span><span class="va">provider</span><span class="op">)</span></span>
 <span><span class="op">}</span></span></code></pre></div>
 </div>

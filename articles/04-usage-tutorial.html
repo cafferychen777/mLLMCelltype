@@ -108,7 +108,7 @@
             
             <h4 data-toc-skip class="date">2025-04-28</h4>
       
-      <small class="dont-index">Source: <a href="https://github.com/cafferychen777/mLLMCelltype/blob/main/vignettes/04-usage-tutorial.Rmd" class="external-link"><code>vignettes/04-usage-tutorial.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/cafferychen777/mLLMCelltype/blob/dev/vignettes/04-usage-tutorial.Rmd" class="external-link"><code>vignettes/04-usage-tutorial.Rmd</code></a></small>
       <div class="d-none name"><code>04-usage-tutorial.Rmd</code></div>
     </div>
 
@@ -136,13 +136,9 @@ Seurat.</p>
 <span>  <span class="va">input</span>,                <span class="co"># Marker gene data (data frame, list, or file path)</span></span>
 <span>  <span class="va">tissue_name</span>,          <span class="co"># Tissue name (e.g., "human PBMC", "mouse brain")</span></span>
 <span>  <span class="va">model</span>,                <span class="co"># LLM model to use</span></span>
-<span>  api_key <span class="op">=</span> <span class="cn">NULL</span>,       <span class="co"># API key (if not set in environment)</span></span>
+<span>  api_key <span class="op">=</span> <span class="cn">NA</span>,         <span class="co"># API key (if not set in environment, NA returns prompt only)</span></span>
 <span>  top_gene_count <span class="op">=</span> <span class="fl">10</span>,  <span class="co"># Number of top genes per cluster to use</span></span>
-<span>  cache <span class="op">=</span> <span class="cn">TRUE</span>,         <span class="co"># Whether to cache results</span></span>
-<span>  cache_dir <span class="op">=</span> <span class="cn">NULL</span>,     <span class="co"># Custom cache directory</span></span>
-<span>  verbose <span class="op">=</span> <span class="cn">TRUE</span>,       <span class="co"># Whether to print progress messages</span></span>
-<span>  timeout <span class="op">=</span> <span class="fl">60</span>,         <span class="co"># Timeout for API calls in seconds</span></span>
-<span>  max_retries <span class="op">=</span> <span class="fl">3</span>       <span class="co"># Maximum number of retries for failed API calls</span></span>
+<span>  debug <span class="op">=</span> <span class="cn">FALSE</span>         <span class="co"># Whether to print debugging information</span></span>
 <span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level4">
@@ -266,20 +262,35 @@ quantification:</p>
 <span><span class="co"># Add consensus annotations and metrics to Seurat object</span></span>
 <span><span class="va">pbmc_small</span><span class="op">$</span><span class="va">cell_type_consensus</span> <span class="op">&lt;-</span> <span class="fu">plyr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/plyr/man/mapvalues.html" class="external-link">mapvalues</a></span><span class="op">(</span></span>
 <span>  x <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/character.html" class="external-link">as.character</a></span><span class="op">(</span><span class="fu"><a href="https://satijalab.github.io/seurat-object/reference/Idents.html" class="external-link">Idents</a></span><span class="op">(</span><span class="va">pbmc_small</span><span class="op">)</span><span class="op">)</span>,</span>
-<span>  from <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/character.html" class="external-link">as.character</a></span><span class="op">(</span><span class="fl">0</span><span class="op">:</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">consensus_results</span><span class="op">$</span><span class="va">final_consensus</span><span class="op">)</span><span class="op">-</span><span class="fl">1</span><span class="op">)</span><span class="op">)</span>,</span>
-<span>  to <span class="op">=</span> <span class="va">consensus_results</span><span class="op">$</span><span class="va">final_consensus</span></span>
+<span>  from <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/character.html" class="external-link">as.character</a></span><span class="op">(</span><span class="fl">0</span><span class="op">:</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">consensus_results</span><span class="op">$</span><span class="va">final_annotations</span><span class="op">)</span><span class="op">-</span><span class="fl">1</span><span class="op">)</span><span class="op">)</span>,</span>
+<span>  to <span class="op">=</span> <span class="va">consensus_results</span><span class="op">$</span><span class="va">final_annotations</span></span>
 <span><span class="op">)</span></span>
 <span></span>
+<span><span class="co"># Extract consensus metrics from the consensus results</span></span>
+<span><span class="va">consensus_metrics</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">lapply</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">consensus_results</span><span class="op">$</span><span class="va">initial_results</span><span class="op">$</span><span class="va">consensus_results</span><span class="op">)</span>, <span class="kw">function</span><span class="op">(</span><span class="va">cluster_id</span><span class="op">)</span> <span class="op">{</span></span>
+<span>  <span class="va">metrics</span> <span class="op">&lt;-</span> <span class="va">consensus_results</span><span class="op">$</span><span class="va">initial_results</span><span class="op">$</span><span class="va">consensus_results</span><span class="op">[[</span><span class="va">cluster_id</span><span class="op">]</span><span class="op">]</span></span>
+<span>  <span class="kw"><a href="https://rdrr.io/r/base/function.html" class="external-link">return</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
+<span>    cluster <span class="op">=</span> <span class="va">cluster_id</span>,</span>
+<span>    consensus_proportion <span class="op">=</span> <span class="va">metrics</span><span class="op">$</span><span class="va">consensus_proportion</span>,</span>
+<span>    entropy <span class="op">=</span> <span class="va">metrics</span><span class="op">$</span><span class="va">entropy</span></span>
+<span>  <span class="op">)</span><span class="op">)</span></span>
+<span><span class="op">}</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Convert to data frame for easier handling</span></span>
+<span><span class="va">metrics_df</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/do.call.html" class="external-link">do.call</a></span><span class="op">(</span><span class="va">rbind</span>, <span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">lapply</a></span><span class="op">(</span><span class="va">consensus_metrics</span>, <span class="va">data.frame</span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Add consensus proportion to Seurat object</span></span>
 <span><span class="va">pbmc_small</span><span class="op">$</span><span class="va">consensus_proportion</span> <span class="op">&lt;-</span> <span class="fu">plyr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/plyr/man/mapvalues.html" class="external-link">mapvalues</a></span><span class="op">(</span></span>
 <span>  x <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/character.html" class="external-link">as.character</a></span><span class="op">(</span><span class="fu"><a href="https://satijalab.github.io/seurat-object/reference/Idents.html" class="external-link">Idents</a></span><span class="op">(</span><span class="va">pbmc_small</span><span class="op">)</span><span class="op">)</span>,</span>
-<span>  from <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/character.html" class="external-link">as.character</a></span><span class="op">(</span><span class="fl">0</span><span class="op">:</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">consensus_results</span><span class="op">$</span><span class="va">consensus_proportion</span><span class="op">)</span><span class="op">-</span><span class="fl">1</span><span class="op">)</span><span class="op">)</span>,</span>
-<span>  to <span class="op">=</span> <span class="va">consensus_results</span><span class="op">$</span><span class="va">consensus_proportion</span></span>
+<span>  from <span class="op">=</span> <span class="va">metrics_df</span><span class="op">$</span><span class="va">cluster</span>,</span>
+<span>  to <span class="op">=</span> <span class="va">metrics_df</span><span class="op">$</span><span class="va">consensus_proportion</span></span>
 <span><span class="op">)</span></span>
 <span></span>
+<span><span class="co"># Add entropy to Seurat object</span></span>
 <span><span class="va">pbmc_small</span><span class="op">$</span><span class="va">shannon_entropy</span> <span class="op">&lt;-</span> <span class="fu">plyr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/plyr/man/mapvalues.html" class="external-link">mapvalues</a></span><span class="op">(</span></span>
 <span>  x <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/character.html" class="external-link">as.character</a></span><span class="op">(</span><span class="fu"><a href="https://satijalab.github.io/seurat-object/reference/Idents.html" class="external-link">Idents</a></span><span class="op">(</span><span class="va">pbmc_small</span><span class="op">)</span><span class="op">)</span>,</span>
-<span>  from <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/character.html" class="external-link">as.character</a></span><span class="op">(</span><span class="fl">0</span><span class="op">:</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">consensus_results</span><span class="op">$</span><span class="va">shannon_entropy</span><span class="op">)</span><span class="op">-</span><span class="fl">1</span><span class="op">)</span><span class="op">)</span>,</span>
-<span>  to <span class="op">=</span> <span class="va">consensus_results</span><span class="op">$</span><span class="va">shannon_entropy</span></span>
+<span>  from <span class="op">=</span> <span class="va">metrics_df</span><span class="op">$</span><span class="va">cluster</span>,</span>
+<span>  to <span class="op">=</span> <span class="va">metrics_df</span><span class="op">$</span><span class="va">entropy</span></span>
 <span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level4">
@@ -304,9 +315,8 @@ quantification:</p>
 <span>  <span class="va">free_results</span><span class="op">[[</span><span class="va">model</span><span class="op">]</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/annotate_cell_types.html">annotate_cell_types</a></span><span class="op">(</span></span>
 <span>    input <span class="op">=</span> <span class="va">pbmc_markers</span>,</span>
 <span>    tissue_name <span class="op">=</span> <span class="st">"human PBMC"</span>,</span>
-<span>    model <span class="op">=</span> <span class="va">model</span>,</span>
+<span>    model <span class="op">=</span> <span class="va">model</span>,  <span class="co"># OpenRouter models are automatically detected by format: 'provider/model-name:free'</span></span>
 <span>    api_key <span class="op">=</span> <span class="va">openrouter_api_key</span>,</span>
-<span>    provider <span class="op">=</span> <span class="st">"openrouter"</span>,  <span class="co"># Specify OpenRouter as the provider</span></span>
 <span>    top_gene_count <span class="op">=</span> <span class="fl">10</span></span>
 <span>  <span class="op">)</span></span>
 <span><span class="op">}</span></span>
@@ -328,16 +338,16 @@ quantification:</p>
 <span><span class="co"># Add free model consensus annotations to Seurat object</span></span>
 <span><span class="va">pbmc_small</span><span class="op">$</span><span class="va">free_model_consensus</span> <span class="op">&lt;-</span> <span class="fu">plyr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/plyr/man/mapvalues.html" class="external-link">mapvalues</a></span><span class="op">(</span></span>
 <span>  x <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/character.html" class="external-link">as.character</a></span><span class="op">(</span><span class="fu"><a href="https://satijalab.github.io/seurat-object/reference/Idents.html" class="external-link">Idents</a></span><span class="op">(</span><span class="va">pbmc_small</span><span class="op">)</span><span class="op">)</span>,</span>
-<span>  from <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/character.html" class="external-link">as.character</a></span><span class="op">(</span><span class="fl">0</span><span class="op">:</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">free_consensus_results</span><span class="op">$</span><span class="va">final_consensus</span><span class="op">)</span><span class="op">-</span><span class="fl">1</span><span class="op">)</span><span class="op">)</span>,</span>
-<span>  to <span class="op">=</span> <span class="va">free_consensus_results</span><span class="op">$</span><span class="va">final_consensus</span></span>
+<span>  from <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/character.html" class="external-link">as.character</a></span><span class="op">(</span><span class="fl">0</span><span class="op">:</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">free_consensus_results</span><span class="op">$</span><span class="va">final_annotations</span><span class="op">)</span><span class="op">-</span><span class="fl">1</span><span class="op">)</span><span class="op">)</span>,</span>
+<span>  to <span class="op">=</span> <span class="va">free_consensus_results</span><span class="op">$</span><span class="va">final_annotations</span></span>
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Compare paid vs. free model results</span></span>
 <span><span class="va">comparison</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
-<span>  cluster <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/character.html" class="external-link">as.character</a></span><span class="op">(</span><span class="fl">0</span><span class="op">:</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">consensus_results</span><span class="op">$</span><span class="va">final_consensus</span><span class="op">)</span><span class="op">-</span><span class="fl">1</span><span class="op">)</span><span class="op">)</span>,</span>
-<span>  paid_models <span class="op">=</span> <span class="va">consensus_results</span><span class="op">$</span><span class="va">final_consensus</span>,</span>
-<span>  free_models <span class="op">=</span> <span class="va">free_consensus_results</span><span class="op">$</span><span class="va">final_consensus</span>,</span>
-<span>  agreement <span class="op">=</span> <span class="va">consensus_results</span><span class="op">$</span><span class="va">final_consensus</span> <span class="op">==</span> <span class="va">free_consensus_results</span><span class="op">$</span><span class="va">final_consensus</span></span>
+<span>  cluster <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/character.html" class="external-link">as.character</a></span><span class="op">(</span><span class="fl">0</span><span class="op">:</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">consensus_results</span><span class="op">$</span><span class="va">final_annotations</span><span class="op">)</span><span class="op">-</span><span class="fl">1</span><span class="op">)</span><span class="op">)</span>,</span>
+<span>  paid_models <span class="op">=</span> <span class="va">consensus_results</span><span class="op">$</span><span class="va">final_annotations</span>,</span>
+<span>  free_models <span class="op">=</span> <span class="va">free_consensus_results</span><span class="op">$</span><span class="va">final_annotations</span>,</span>
+<span>  agreement <span class="op">=</span> <span class="va">consensus_results</span><span class="op">$</span><span class="va">final_annotations</span> <span class="op">==</span> <span class="va">free_consensus_results</span><span class="op">$</span><span class="va">final_annotations</span></span>
 <span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">comparison</span><span class="op">)</span></span></code></pre></div>
 </div>
@@ -362,22 +372,23 @@ quantification:</p>
 </h4>
 <p>For better control over caching behavior:</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># Set custom cache directory</span></span>
-<span><span class="va">custom_cache_dir</span> <span class="op">&lt;-</span> <span class="st">"path/to/cache"</span></span>
+<code class="sourceCode R"><span><span class="co"># Note: The annotate_cell_types function does not have built-in caching.</span></span>
+<span><span class="co"># If you need caching, you can implement it separately.</span></span>
 <span></span>
-<span><span class="co"># Run with custom caching</span></span>
+<span><span class="co"># Run annotation</span></span>
 <span><span class="va">results</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/annotate_cell_types.html">annotate_cell_types</a></span><span class="op">(</span></span>
 <span>  input <span class="op">=</span> <span class="va">pbmc_markers</span>,</span>
 <span>  tissue_name <span class="op">=</span> <span class="st">"human PBMC"</span>,</span>
 <span>  model <span class="op">=</span> <span class="st">"claude-3-7-sonnet-20250219"</span>,</span>
 <span>  api_key <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Sys.getenv.html" class="external-link">Sys.getenv</a></span><span class="op">(</span><span class="st">"ANTHROPIC_API_KEY"</span><span class="op">)</span>,</span>
-<span>  cache <span class="op">=</span> <span class="cn">TRUE</span>,</span>
-<span>  cache_dir <span class="op">=</span> <span class="va">custom_cache_dir</span></span>
+<span>  top_gene_count <span class="op">=</span> <span class="fl">10</span>,</span>
+<span>  debug <span class="op">=</span> <span class="cn">FALSE</span></span>
 <span><span class="op">)</span></span>
 <span></span>
-<span><span class="co"># Clear cache if needed</span></span>
-<span><span class="va">cache_manager</span> <span class="op">&lt;-</span> <span class="va"><a href="../reference/CacheManager.html">CacheManager</a></span><span class="op">$</span><span class="fu">new</span><span class="op">(</span>cache_dir <span class="op">=</span> <span class="va">custom_cache_dir</span><span class="op">)</span></span>
-<span><span class="va">cache_manager</span><span class="op">$</span><span class="fu">clear_cache</span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
+<span><span class="co"># If you need custom caching, you can implement it using your own cache manager</span></span>
+<span><span class="co"># This is just a conceptual example and not part of the actual package</span></span>
+<span><span class="co"># cache_manager &lt;- YourCacheManager$new(cache_dir = "path/to/cache")</span></span>
+<span><span class="co"># cache_manager$clear_cache()</span></span></code></pre></div>
 </div>
 </div>
 <div class="section level3">
@@ -471,8 +482,8 @@ credits, but may have limitations compared to paid models. Use the
 <span>  input <span class="op">=</span> <span class="va">pbmc_markers</span>,</span>
 <span>  tissue_name <span class="op">=</span> <span class="st">"human PBMC"</span>,</span>
 <span>  model <span class="op">=</span> <span class="st">"meta-llama/llama-4-maverick:free"</span>,  <span class="co"># Note the :free suffix</span></span>
-<span>  api_key <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Sys.getenv.html" class="external-link">Sys.getenv</a></span><span class="op">(</span><span class="st">"OPENROUTER_API_KEY"</span><span class="op">)</span>,</span>
-<span>  provider <span class="op">=</span> <span class="st">"openrouter"</span>  <span class="co"># Specify OpenRouter as the provider</span></span>
+<span>  api_key <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Sys.getenv.html" class="external-link">Sys.getenv</a></span><span class="op">(</span><span class="st">"OPENROUTER_API_KEY"</span><span class="op">)</span></span>
+<span>  <span class="co"># No need to specify provider - it's automatically detected from the model name format</span></span>
 <span><span class="op">)</span></span></code></pre></div>
 </div>
 </div>
@@ -552,20 +563,35 @@ workflow:</p>
 <span><span class="co"># Add consensus results to Seurat object</span></span>
 <span><span class="va">pbmc_small</span><span class="op">$</span><span class="va">cell_type_consensus</span> <span class="op">&lt;-</span> <span class="fu">plyr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/plyr/man/mapvalues.html" class="external-link">mapvalues</a></span><span class="op">(</span></span>
 <span>  x <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/character.html" class="external-link">as.character</a></span><span class="op">(</span><span class="fu"><a href="https://satijalab.github.io/seurat-object/reference/Idents.html" class="external-link">Idents</a></span><span class="op">(</span><span class="va">pbmc_small</span><span class="op">)</span><span class="op">)</span>,</span>
-<span>  from <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/character.html" class="external-link">as.character</a></span><span class="op">(</span><span class="fl">0</span><span class="op">:</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">consensus_results</span><span class="op">$</span><span class="va">final_consensus</span><span class="op">)</span><span class="op">-</span><span class="fl">1</span><span class="op">)</span><span class="op">)</span>,</span>
-<span>  to <span class="op">=</span> <span class="va">consensus_results</span><span class="op">$</span><span class="va">final_consensus</span></span>
+<span>  from <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/character.html" class="external-link">as.character</a></span><span class="op">(</span><span class="fl">0</span><span class="op">:</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">consensus_results</span><span class="op">$</span><span class="va">final_annotations</span><span class="op">)</span><span class="op">-</span><span class="fl">1</span><span class="op">)</span><span class="op">)</span>,</span>
+<span>  to <span class="op">=</span> <span class="va">consensus_results</span><span class="op">$</span><span class="va">final_annotations</span></span>
 <span><span class="op">)</span></span>
 <span></span>
+<span><span class="co"># Extract consensus metrics from the consensus results</span></span>
+<span><span class="va">consensus_metrics</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">lapply</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">consensus_results</span><span class="op">$</span><span class="va">initial_results</span><span class="op">$</span><span class="va">consensus_results</span><span class="op">)</span>, <span class="kw">function</span><span class="op">(</span><span class="va">cluster_id</span><span class="op">)</span> <span class="op">{</span></span>
+<span>  <span class="va">metrics</span> <span class="op">&lt;-</span> <span class="va">consensus_results</span><span class="op">$</span><span class="va">initial_results</span><span class="op">$</span><span class="va">consensus_results</span><span class="op">[[</span><span class="va">cluster_id</span><span class="op">]</span><span class="op">]</span></span>
+<span>  <span class="kw"><a href="https://rdrr.io/r/base/function.html" class="external-link">return</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
+<span>    cluster <span class="op">=</span> <span class="va">cluster_id</span>,</span>
+<span>    consensus_proportion <span class="op">=</span> <span class="va">metrics</span><span class="op">$</span><span class="va">consensus_proportion</span>,</span>
+<span>    entropy <span class="op">=</span> <span class="va">metrics</span><span class="op">$</span><span class="va">entropy</span></span>
+<span>  <span class="op">)</span><span class="op">)</span></span>
+<span><span class="op">}</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Convert to data frame for easier handling</span></span>
+<span><span class="va">metrics_df</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/do.call.html" class="external-link">do.call</a></span><span class="op">(</span><span class="va">rbind</span>, <span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">lapply</a></span><span class="op">(</span><span class="va">consensus_metrics</span>, <span class="va">data.frame</span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Add consensus proportion to Seurat object</span></span>
 <span><span class="va">pbmc_small</span><span class="op">$</span><span class="va">consensus_proportion</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/numeric.html" class="external-link">as.numeric</a></span><span class="op">(</span><span class="fu">plyr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/plyr/man/mapvalues.html" class="external-link">mapvalues</a></span><span class="op">(</span></span>
 <span>  x <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/character.html" class="external-link">as.character</a></span><span class="op">(</span><span class="fu"><a href="https://satijalab.github.io/seurat-object/reference/Idents.html" class="external-link">Idents</a></span><span class="op">(</span><span class="va">pbmc_small</span><span class="op">)</span><span class="op">)</span>,</span>
-<span>  from <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/character.html" class="external-link">as.character</a></span><span class="op">(</span><span class="fl">0</span><span class="op">:</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">consensus_results</span><span class="op">$</span><span class="va">consensus_proportion</span><span class="op">)</span><span class="op">-</span><span class="fl">1</span><span class="op">)</span><span class="op">)</span>,</span>
-<span>  to <span class="op">=</span> <span class="va">consensus_results</span><span class="op">$</span><span class="va">consensus_proportion</span></span>
+<span>  from <span class="op">=</span> <span class="va">metrics_df</span><span class="op">$</span><span class="va">cluster</span>,</span>
+<span>  to <span class="op">=</span> <span class="va">metrics_df</span><span class="op">$</span><span class="va">consensus_proportion</span></span>
 <span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
+<span><span class="co"># Add entropy to Seurat object</span></span>
 <span><span class="va">pbmc_small</span><span class="op">$</span><span class="va">shannon_entropy</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/numeric.html" class="external-link">as.numeric</a></span><span class="op">(</span><span class="fu">plyr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/plyr/man/mapvalues.html" class="external-link">mapvalues</a></span><span class="op">(</span></span>
 <span>  x <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/character.html" class="external-link">as.character</a></span><span class="op">(</span><span class="fu"><a href="https://satijalab.github.io/seurat-object/reference/Idents.html" class="external-link">Idents</a></span><span class="op">(</span><span class="va">pbmc_small</span><span class="op">)</span><span class="op">)</span>,</span>
-<span>  from <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/character.html" class="external-link">as.character</a></span><span class="op">(</span><span class="fl">0</span><span class="op">:</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">consensus_results</span><span class="op">$</span><span class="va">shannon_entropy</span><span class="op">)</span><span class="op">-</span><span class="fl">1</span><span class="op">)</span><span class="op">)</span>,</span>
-<span>  to <span class="op">=</span> <span class="va">consensus_results</span><span class="op">$</span><span class="va">shannon_entropy</span></span>
+<span>  from <span class="op">=</span> <span class="va">metrics_df</span><span class="op">$</span><span class="va">cluster</span>,</span>
+<span>  to <span class="op">=</span> <span class="va">metrics_df</span><span class="op">$</span><span class="va">entropy</span></span>
 <span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Visualize results</span></span>
@@ -627,7 +653,7 @@ clusters are considered controversial and require discussion:</p>
 <span>  api_keys <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
 <span>    <span class="st">"anthropic"</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Sys.getenv.html" class="external-link">Sys.getenv</a></span><span class="op">(</span><span class="st">"ANTHROPIC_API_KEY"</span><span class="op">)</span>,</span>
 <span>    <span class="st">"openai"</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Sys.getenv.html" class="external-link">Sys.getenv</a></span><span class="op">(</span><span class="st">"OPENAI_API_KEY"</span><span class="op">)</span>,</span>
-<span>    <span class="st">"google"</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Sys.getenv.html" class="external-link">Sys.getenv</a></span><span class="op">(</span><span class="st">"GOOGLE_API_KEY"</span><span class="op">)</span></span>
+<span>    <span class="st">"gemini"</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Sys.getenv.html" class="external-link">Sys.getenv</a></span><span class="op">(</span><span class="st">"GEMINI_API_KEY"</span><span class="op">)</span></span>
 <span>  <span class="op">)</span>,</span>
 <span>  controversy_threshold <span class="op">=</span> <span class="fl">0.3</span>  <span class="co"># Lower threshold - more clusters will be discussed</span></span>
 <span><span class="op">)</span></span>
@@ -640,7 +666,7 @@ clusters are considered controversial and require discussion:</p>
 <span>  api_keys <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
 <span>    <span class="st">"anthropic"</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Sys.getenv.html" class="external-link">Sys.getenv</a></span><span class="op">(</span><span class="st">"ANTHROPIC_API_KEY"</span><span class="op">)</span>,</span>
 <span>    <span class="st">"openai"</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Sys.getenv.html" class="external-link">Sys.getenv</a></span><span class="op">(</span><span class="st">"OPENAI_API_KEY"</span><span class="op">)</span>,</span>
-<span>    <span class="st">"google"</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Sys.getenv.html" class="external-link">Sys.getenv</a></span><span class="op">(</span><span class="st">"GOOGLE_API_KEY"</span><span class="op">)</span></span>
+<span>    <span class="st">"gemini"</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Sys.getenv.html" class="external-link">Sys.getenv</a></span><span class="op">(</span><span class="st">"GEMINI_API_KEY"</span><span class="op">)</span></span>
 <span>  <span class="op">)</span>,</span>
 <span>  controversy_threshold <span class="op">=</span> <span class="fl">0.7</span>  <span class="co"># Higher threshold - fewer clusters will be discussed</span></span>
 <span><span class="op">)</span></span></code></pre></div>
