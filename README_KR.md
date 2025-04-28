@@ -1,12 +1,42 @@
 <div align="center">
-  <img src="assets/mLLMCelltype_logo.png" alt="mLLMCelltype Logo" width="300"/>
+  <img src="assets/mLLMCelltype_logo.png" alt="mLLMCelltype - 단일세포 RNA 시퀀싱 데이터의 다중 대형 언어 모델 세포 유형 주석 프레임워크" width="300"/>
 </div>
 
 <div align="center">
   <a href="README.md">English</a> | <a href="README_CN.md">中文</a> | <a href="README_ES.md">Español</a> | <a href="README_JP.md">日本語</a> | <a href="README_DE.md">Deutsch</a> | <a href="README_FR.md">Français</a>
 </div>
 
-mLLMCelltype는 단일 세포 RNA 시퀀싱 데이터에서 세포 유형 주석을 위한 반복적 다중 LLM 합의 프레임워크입니다. 여러 대형 언어 모델(OpenAI GPT-4o/4.1, Anthropic Claude-3.7/3.5, Google Gemini-2.0, X.AI Grok-3, DeepSeek-V3, Alibaba Qwen2.5, Zhipu GLM-4, MiniMax, Stepfun, OpenRouter 등)의 상호 보완적인 강점을 활용함으로써, 이 프레임워크는 투명한 불확실성 정량화를 제공하면서 주석 정확도를 크게 향상시킵니다.
+<div align="center">
+  <a href="https://twitter.com/intent/tweet?text=mLLMCelltype%3A%20단일세포%20RNA%20시퀀싱%20데이터의%20세포%20유형%20주석을%20위한%20다중%20LLM%20합의%20프레임워크%21&url=https%3A%2F%2Fgithub.com%2Fcafferychen777%2FmLLMCelltype"><img src="https://img.shields.io/twitter/url?style=social&url=https%3A%2F%2Fgithub.com%2Fcafferychen777%2FmLLMCelltype" alt="Tweet"></a>
+  <a href="https://github.com/cafferychen777/mLLMCelltype/stargazers"><img src="https://img.shields.io/github/stars/cafferychen777/mLLMCelltype?style=social" alt="Stars"></a>
+  <a href="https://github.com/cafferychen777/mLLMCelltype/network/members"><img src="https://img.shields.io/github/forks/cafferychen777/mLLMCelltype?style=social" alt="Forks"></a>
+</div>
+
+<div align="center">
+  <img src="https://img.shields.io/github/license/cafferychen777/mLLMCelltype" alt="License">
+  <img src="https://img.shields.io/github/last-commit/cafferychen777/mLLMCelltype" alt="Last Commit">
+  <img src="https://img.shields.io/github/issues/cafferychen777/mLLMCelltype" alt="Issues">
+  <img src="https://img.shields.io/github/v/release/cafferychen777/mLLMCelltype" alt="Release">
+</div>
+
+# mLLMCelltype: 단일세포 RNA 시퀀싱을 위한 다중 대형 언어 모델 합의 프레임워크
+
+mLLMCelltype는 단일 세포 RNA 시퀀싱(scRNA-seq) 데이터에서 정확하고 신뢰할 수 있는 세포 유형 주석을 위한 고급 반복적 다중 LLM 합의 프레임워크입니다. 여러 대형 언어 모델(OpenAI GPT-4o/4.1, Anthropic Claude-3.7/3.5, Google Gemini-2.0, X.AI Grok-3, DeepSeek-V3, Alibaba Qwen2.5, Zhipu GLM-4, MiniMax, Stepfun, OpenRouter 등)의 집단 지능을 활용함으로써, 이 프레임워크는 주석 정확도를 크게 향상시키면서 생물정보학 및 전산 생물학 연구를 위한 투명한 불확실성 정량화를 제공합니다.
+
+## 초록
+
+mLLMCelltype는 단일세포 전사체학 분석을 위한 전산 방법의 중요한 발전을 나타냅니다. 이 오픈 소스 소프트웨어는 구조화된 토론 과정에서 여러 대형 언어 모델을 활용하여 유전자 발현 데이터에서 정확하게 세포 유형을 식별합니다. 참조 데이터셋이나 단일 AI 모델에 의존하는 전통적인 주석 방법과 달리, mLLMCelltype는 환각을 줄이고, 정확도를 향상시키며, 투명한 불확실성 지표를 제공하는 혁신적인 합의 방식을 구현합니다. 이 프레임워크는 Scanpy와 Seurat과 같은 인기 있는 단일세포 분석 플랫폼과 원활하게 통합되도록 설계되어 생물정보학 연구 커뮤니티 전반에 접근할 수 있습니다.
+
+## 목차
+- [뉴스](#뉴스)
+- [주요 기능](#주요-기능)
+- [최신 업데이트](#최신-업데이트)
+- [디렉토리 구조](#디렉토리-구조)
+- [설치](#설치)
+- [사용 예제](#사용-예제)
+- [시각화 예제](#시각화-예제)
+- [인용](#인용)
+- [기여하기](#기여하기)
 
 ## 뉴스
 
@@ -99,36 +129,37 @@ seurat_obj$cell_type <- cell_types
 ### Python 사용 예시
 
 ```python
+# 단일세포 RNA-seq 데이터에서 mLLMCelltype를 사용한 세포 유형 주석 예제
 import scanpy as sc
 import mllmcelltype as mct
 
-# AnnData 객체 로드
-adata = sc.read_h5ad("your_data.h5ad")
+# 단일세포 RNA-seq 데이터를 AnnData 형식으로 로드
+adata = sc.read_h5ad("your_data.h5ad")  # 자신의 scRNA-seq 데이터로 교체
 
-# 클러스터링 수행(이미 수행한 경우 건너뛰기)
-sc.pp.neighbors(adata)
-sc.tl.leiden(adata)
+# 세포 집단 식별을 위한 네트워크 구축 및 Leiden 클러스터링 수행
+sc.pp.neighbors(adata)  # 유사한 세포를 연결하는 KNN 그래프 구축
+sc.tl.leiden(adata)     # 커뮤니티 검출 알고리즘을 사용하여 세포 집단 식별
 
-# 마커 유전자 식별
-sc.tl.rank_genes_groups(adata, groupby="leiden", method="wilcoxon")
+# 각 클러스터의 마커 유전자 식별을 위한 차별 발현 분석 수행
+sc.tl.rank_genes_groups(adata, groupby="leiden", method="wilcoxon")  # Wilcoxon 랭크합 검정을 사용한 마커 검출
 
-# 마커 유전자를 mLLMCelltype 입력 형식으로 변환
-markers_dict = mct.utils.convert_scanpy_markers(adata)
+# Scanpy의 마커 유전자 결과를 mLLMCelltype에서 사용할 수 있는 형식으로 변환
+markers_dict = mct.utils.convert_scanpy_markers(adata)  # 마커 유전자 사전 형태로 변환
 
-# 세포 유형 주석 수행
+# 다중 대형 언어 모델을 사용한 세포 유형 주석 수행
 consensus_results = mct.annotate.interactive_consensus_annotation(
-    input=markers_dict,
-    tissue_name="human PBMC",
-    models=["gpt-4o", "claude-3-7-sonnet-20250219", "gemini-1.5-pro"],
-    api_keys={
-        "openai": "your_openai_api_key",
-        "anthropic": "your_anthropic_api_key",
-        "gemini": "your_gemini_api_key"
+    input=markers_dict,                                             # 마커 유전자 사전
+    tissue_name="human PBMC",                                      # 조직 정보 지정(주석 정확도 향상)
+    models=["gpt-4o", "claude-3-7-sonnet-20250219", "gemini-1.5-pro"],  # 다양한 대형 언어 모델 사용
+    api_keys={                                                     # 각 LLM 제공업체의 API 키 설정
+        "openai": "your_openai_api_key",                             # OpenAI GPT-4o API 키
+        "anthropic": "your_anthropic_api_key",                       # Anthropic Claude API 키
+        "gemini": "your_gemini_api_key"                              # Google Gemini API 키
     },
-    top_gene_count=10
+    top_gene_count=10                                              # 각 클러스터마다 사용할 상위 마커 유전자 수
 )
 
-# AnnData 객체에 주석 추가
+# 주석 결과를 AnnData 객체에 추가하여 후속 분석 및 시각화 준비
 adata.obs["cell_type"] = adata.obs["leiden"].map(
     lambda x: consensus_results["final_annotations"].get(x, "Unknown")
 )
