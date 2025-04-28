@@ -39,12 +39,42 @@ The mLLMCelltype workflow consists of these main steps:
 4. **Integrate results** with your Seurat or Scanpy object
 5. **Visualize results** with uncertainty metrics
 
-## Loading the Package
+## Loading the Package and Setting Up API Keys
 
 First, load the mLLMCelltype package:
 
 ```{r}
 library(mLLMCelltype)
+```
+
+### Setting Up API Keys
+
+Before using mLLMCelltype, you need to set up API keys for the LLM providers you plan to use:
+
+```{r}
+# Set API keys as environment variables
+Sys.setenv(ANTHROPIC_API_KEY = "your-anthropic-api-key")  # For Claude models
+Sys.setenv(OPENAI_API_KEY = "your-openai-api-key")        # For GPT models
+Sys.setenv(GEMINI_API_KEY = "your-gemini-api-key")        # For Gemini models
+Sys.setenv(OPENROUTER_API_KEY = "your-openrouter-api-key") # For OpenRouter models
+```
+
+You can obtain API keys from:
+- Anthropic: https://console.anthropic.com/keys
+- OpenAI: https://platform.openai.com/api-keys
+- Google (Gemini): https://ai.google.dev/
+- OpenRouter: https://openrouter.ai/keys
+
+Alternatively, you can provide API keys directly in function calls:
+
+```{r}
+results <- annotate_cell_types(
+  input = markers,
+  tissue_name = "human PBMC",
+  model = "claude-3-7-sonnet-20250219",
+  api_key = "your-anthropic-api-key",  # Direct API key
+  top_gene_count = 10
+)
 ```
 
 ## Input Data Requirements
@@ -102,6 +132,21 @@ markers_list <- list(
 )
 ```
 
+## Function Parameters
+
+The `annotate_cell_types` function has the following parameters:
+
+| Parameter | Description | Default Value |
+|-----------|-------------|---------------|
+| `input` | Marker gene data (data frame, list, or file path) | (required) |
+| `tissue_name` | Tissue name (e.g., "human PBMC", "mouse brain") | `NULL` |
+| `model` | LLM model to use | `"gpt-4o"` |
+| `api_key` | API key (if not set in environment) | `NA` |
+| `top_gene_count` | Number of top genes per cluster to use | `10` |
+| `debug` | Whether to print debugging information | `FALSE` |
+
+Note: If `api_key` is set to `NA`, the function will return the generated prompt without making an API call, which is useful for reviewing the prompt before sending it to the API.
+
 ## Basic Usage Example
 
 Here's a simple example using a single LLM model for annotation:
@@ -121,11 +166,21 @@ results <- annotate_cell_types(
   tissue_name = "human PBMC",
   model = "claude-3-7-sonnet-20250219",
   api_key = Sys.getenv("ANTHROPIC_API_KEY"),
-  top_gene_count = 10
+  top_gene_count = 10,
+  debug = FALSE  # Set to TRUE for more detailed output
 )
 
 # Print results
 print(results)
+```
+
+### Example Output
+
+When using a single model like Claude, the output will be a character vector with one annotation per cluster:
+
+```r
+> print(results)
+[1] "0: T cells"   "1: Monocytes"
 ```
 
 ## Multi-Model Consensus Example
@@ -175,6 +230,37 @@ consensus_results <- interactive_consensus_annotation(
 
 # Print consensus results
 print_consensus_summary(consensus_results)
+```
+
+### Consensus Output Example
+
+The consensus results contain more detailed information:
+
+```r
+> print_consensus_summary(consensus_results)
+Consensus Summary:
+-----------------
+Total clusters: 2
+Controversial clusters: 0
+Consensus achieved for all clusters
+
+Cluster 0:
+  Final annotation: T cells
+  Consensus proportion: 1.0
+  Entropy: 0.0
+  Model predictions:
+    - claude-3-7-sonnet-20250219: T cells
+    - gpt-4o: T cells
+    - gemini-1.5-pro: T cells
+
+Cluster 1:
+  Final annotation: Monocytes
+  Consensus proportion: 1.0
+  Entropy: 0.0
+  Model predictions:
+    - claude-3-7-sonnet-20250219: Monocytes
+    - gpt-4o: Monocytes
+    - gemini-1.5-pro: Monocytes
 ```
 
 ## Integrating with Seurat
@@ -244,6 +330,81 @@ The output of `interactive_consensus_annotation()` is a list containing:
 - `discussion_logs`: Detailed logs of the discussion process
 - `session_id`: Unique identifier for the annotation session
 
+### Understanding Uncertainty Metrics
+
+When using consensus annotation, two key metrics help evaluate the reliability of annotations:
+
+- **Consensus Proportion**: Ranges from 0 to 1, indicating the proportion of models that agree on the final annotation. Higher values indicate stronger agreement.
+- **Entropy**: Measures the uncertainty in model predictions. Lower values indicate more certainty. An entropy of 0 means all models agree perfectly.
+
+Clusters with low consensus proportion or high entropy may require manual review.
+
+## Using OpenRouter Free Models
+
+If you don't have access to paid API keys, you can use OpenRouter's free models:
+
+```{r}
+# Set OpenRouter API key
+Sys.setenv(OPENROUTER_API_KEY = "your-openrouter-api-key")
+
+# Use a free model
+free_results <- annotate_cell_types(
+  input = markers,
+  tissue_name = "human PBMC",
+  model = "meta-llama/llama-4-maverick:free",  # Note the :free suffix
+  api_key = Sys.getenv("OPENROUTER_API_KEY"),
+  top_gene_count = 10
+)
+
+# Print results
+print(free_results)
+```
+
+Available free models include:
+
+- `meta-llama/llama-4-maverick:free` - Meta Llama 4 Maverick (256K context)
+- `nvidia/llama-3.1-nemotron-ultra-253b-v1:free` - NVIDIA Nemotron Ultra 253B
+- `deepseek/deepseek-chat-v3-0324:free` - DeepSeek Chat v3
+- `microsoft/mai-ds-r1:free` - Microsoft MAI-DS-R1
+
+Free models don't consume credits but may have limitations compared to paid models.
+
+## Troubleshooting
+
+### Common Issues
+
+1. **API Key Not Found**:
+
+   ```r
+   Error: No auth credentials found
+   ```
+
+   **Solution**: Ensure you've set the correct API key environment variable or provided it directly in the function call.
+
+2. **Rate Limiting**:
+
+   ```r
+   Error: Rate limit exceeded
+   ```
+
+   **Solution**: Wait a few minutes before trying again, or reduce the number of API calls by processing fewer clusters at once.
+
+3. **Invalid Model Name**:
+
+   ```r
+   Error: Unsupported model: [model_name]
+   ```
+
+   **Solution**: Check that you're using a supported model name and that it's spelled correctly.
+
+4. **Network Issues**:
+
+   ```r
+   Error: Could not connect to API
+   ```
+
+   **Solution**: Check your internet connection and try again. If the problem persists, the API service might be down.
+
 ## Next Steps
 
 Now that you understand the basics of mLLMCelltype, you can explore:
@@ -252,5 +413,6 @@ Now that you understand the basics of mLLMCelltype, you can explore:
 - [Consensus Annotation Principles](05-consensus-principles.html): Learn about the consensus mechanism
 - [Visualization Guide](06-visualization-guide.html): Create publication-ready visualizations
 - [Advanced Features](08-advanced-features.html): Explore hierarchical annotation and other advanced features
+- [FAQ](07-faq.html): Answers to common questions
 
 If you encounter any issues, check the [FAQ](07-faq.html) or [open an issue](https://github.com/cafferychen777/mLLMCelltype/issues) on our GitHub repository.
