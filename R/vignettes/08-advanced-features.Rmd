@@ -2,7 +2,7 @@
 title: "Advanced Features & Case Studies"
 author: "Chen Yang"
 date: "`r Sys.Date()`"
-output: 
+output:
   html_document:
     toc: true
     toc_float: true
@@ -93,10 +93,10 @@ To ensure consistency between hierarchical levels:
 check_hierarchy_consistency <- function(high_level, detailed_level) {
   # Extract parent type from detailed annotation (before the colon)
   parent_from_detailed <- sapply(strsplit(detailed_level, ": "), function(x) x[1])
-  
+
   # Check if parent matches high-level annotation
   consistent <- parent_from_detailed == high_level
-  
+
   # Return consistency check results
   data.frame(
     high_level = high_level,
@@ -166,7 +166,7 @@ results <- list()
 for (model in models) {
   provider <- get_provider(model)
   api_key <- api_keys[[provider]]
-  
+
   results[[model]] <- annotate_cell_types(
     input = noisy_markers,
     tissue_name = "human PBMC",
@@ -175,13 +175,15 @@ for (model in models) {
   )
 }
 
-# Create consensus
-consensus_results <- create_consensus(
-  results = results,
+# Create consensus using interactive_consensus_annotation
+consensus_results <- interactive_consensus_annotation(
   input = noisy_markers,
   tissue_name = "human PBMC",
-  model = "claude-3-7-sonnet-20250219",
-  api_key = api_keys[["anthropic"]]
+  models = models,  # Use all the models defined above
+  api_keys = api_keys,
+  controversy_threshold = 0.7,
+  entropy_threshold = 1.0,
+  consensus_check_model = "claude-3-7-sonnet-20250219"
 )
 ```
 
@@ -194,14 +196,17 @@ This case study demonstrates how mLLMCelltype handles data with batch effects:
 # In real scenarios, this would be your actual data with batch effects
 batch_affected_markers <- read.csv("path/to/batch_affected_markers.csv")
 
-# Approach 1: Use multi-model consensus
-batch_consensus <- create_consensus(
-  results = batch_results,  # Results from multiple models
+# Approach 1: Use multi-model consensus with interactive_consensus_annotation
+batch_consensus <- interactive_consensus_annotation(
   input = batch_affected_markers,
   tissue_name = "mouse brain",
-  model = "claude-3-7-sonnet-20250219",
-  api_key = Sys.getenv("ANTHROPIC_API_KEY"),
-  discussion_threshold = 0.4  # Lower threshold to discuss more clusters
+  models = c("claude-3-7-sonnet-20250219", "gpt-4o", "gemini-1.5-pro"),
+  api_keys = list(
+    "anthropic" = Sys.getenv("ANTHROPIC_API_KEY"),
+    "openai" = Sys.getenv("OPENAI_API_KEY"),
+    "google" = Sys.getenv("GOOGLE_API_KEY")
+  ),
+  controversy_threshold = 0.4  # Lower threshold to discuss more clusters
 )
 
 # Approach 2: Include batch information in tissue context
@@ -252,36 +257,36 @@ library(jsonlite)
 # Function to query CellMarker database
 query_cellmarker <- function(cell_type, species = "Human") {
   url <- paste0(
-    "http://bio-bigdata.hrbmu.edu.cn/CellMarker/search.do?species=", 
-    URLencode(species), 
-    "&cellType=", 
+    "http://bio-bigdata.hrbmu.edu.cn/CellMarker/search.do?species=",
+    URLencode(species),
+    "&cellType=",
     URLencode(cell_type)
   )
-  
+
   response <- GET(url)
   content <- content(response, "text")
-  
+
   # Parse the response (simplified example)
   # In practice, you would need to parse the HTML response
   markers <- c("Example marker 1", "Example marker 2")
-  
+
   return(markers)
 }
 
 # Enhance annotation with CellMarker database
 enhance_annotation_with_cellmarker <- function(annotation_results) {
   enhanced_results <- list()
-  
+
   for (i in 1:length(annotation_results)) {
     cell_type <- annotation_results[i]
     database_markers <- query_cellmarker(cell_type)
-    
+
     enhanced_results[[i]] <- list(
       cell_type = cell_type,
       database_markers = database_markers
     )
   }
-  
+
   return(enhanced_results)
 }
 
@@ -326,7 +331,7 @@ results <- list()
 for (model in models) {
   provider <- get_provider(model)
   api_key <- api_keys[[provider]]
-  
+
   results[[model]] <- annotate_cell_types(
     input = pbmc_markers,
     tissue_name = "human PBMC",
@@ -335,13 +340,15 @@ for (model in models) {
   )
 }
 
-# Create consensus
-consensus_results <- create_consensus(
-  results = results,
+# Create consensus using interactive_consensus_annotation
+consensus_results <- interactive_consensus_annotation(
   input = pbmc_markers,
   tissue_name = "human PBMC",
-  model = "claude-3-7-sonnet-20250219",
-  api_key = api_keys[["anthropic"]]
+  models = models,  # Use all the models defined above
+  api_keys = api_keys,
+  controversy_threshold = 0.7,
+  entropy_threshold = 1.0,
+  consensus_check_model = "claude-3-7-sonnet-20250219"
 )
 
 # Print consensus summary
@@ -350,8 +357,8 @@ print_consensus_summary(consensus_results)
 # Add results to Seurat object
 pbmc$cell_type_consensus <- plyr::mapvalues(
   x = as.character(Idents(pbmc)),
-  from = as.character(0:(length(consensus_results$final_consensus)-1)),
-  to = consensus_results$final_consensus
+  from = as.character(0:(length(consensus_results$final_annotations)-1)),
+  to = consensus_results$final_annotations
 )
 
 # Visualize results
@@ -382,7 +389,7 @@ rare_cell_results <- list()
 for (model in models) {
   provider <- get_provider(model)
   api_key <- api_keys[[provider]]
-  
+
   rare_cell_results[[model]] <- annotate_cell_types(
     input = rare_cell_markers,
     tissue_name = "human bone marrow",
@@ -392,14 +399,15 @@ for (model in models) {
   )
 }
 
-# Create consensus with lower discussion threshold
-rare_cell_consensus <- create_consensus(
-  results = rare_cell_results,
+# Create consensus with lower controversy threshold
+rare_cell_consensus <- interactive_consensus_annotation(
   input = rare_cell_markers,
   tissue_name = "human bone marrow",
-  model = "claude-3-7-sonnet-20250219",
-  api_key = api_keys[["anthropic"]],
-  discussion_threshold = 0.4  # Lower threshold to discuss more clusters
+  models = models,  # Use all the models defined above
+  api_keys = api_keys,
+  controversy_threshold = 0.4,  # Lower threshold to discuss more clusters
+  entropy_threshold = 0.8,  # Lower entropy threshold for rare cells
+  consensus_check_model = "claude-3-7-sonnet-20250219"
 )
 
 # Analyze discussion logs for rare cell clusters
@@ -463,7 +471,7 @@ ggplot(comparison_data, aes(x = human, y = mouse, label = cell_type)) +
   geom_point() +
   geom_text_repel() +
   geom_abline(slope = 1, intercept = 0, linetype = "dashed") +
-  labs(x = "Human Brain Proportion", y = "Mouse Brain Proportion", 
+  labs(x = "Human Brain Proportion", y = "Mouse Brain Proportion",
        title = "Cross-Species Cell Type Comparison") +
   theme_minimal()
 ```
