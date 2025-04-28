@@ -240,7 +240,7 @@
 <span>                   <span class="st">"anthropic"</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Sys.getenv.html" class="external-link">Sys.getenv</a></span><span class="op">(</span><span class="st">"ANTHROPIC_API_KEY"</span><span class="op">)</span>,</span>
 <span>                   <span class="st">"openai"</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Sys.getenv.html" class="external-link">Sys.getenv</a></span><span class="op">(</span><span class="st">"OPENAI_API_KEY"</span><span class="op">)</span>,</span>
 <span>                   <span class="st">"gemini"</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Sys.getenv.html" class="external-link">Sys.getenv</a></span><span class="op">(</span><span class="st">"GEMINI_API_KEY"</span><span class="op">)</span><span class="op">)</span></span>
-<span>  </span>
+<span></span>
 <span>  <span class="va">results</span><span class="op">[[</span><span class="va">model</span><span class="op">]</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/annotate_cell_types.html">annotate_cell_types</a></span><span class="op">(</span></span>
 <span>    input <span class="op">=</span> <span class="va">pbmc_markers</span>,</span>
 <span>    tissue_name <span class="op">=</span> <span class="st">"human PBMC"</span>,</span>
@@ -249,13 +249,22 @@
 <span>  <span class="op">)</span></span>
 <span><span class="op">}</span></span>
 <span></span>
-<span><span class="co"># Create consensus</span></span>
-<span><span class="va">consensus_results</span> <span class="op">&lt;-</span> <span class="fu">create_consensus</span><span class="op">(</span></span>
-<span>  results <span class="op">=</span> <span class="va">results</span>,</span>
+<span><span class="co"># Create consensus using interactive consensus annotation</span></span>
+<span><span class="va">api_keys</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
+<span>  anthropic <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Sys.getenv.html" class="external-link">Sys.getenv</a></span><span class="op">(</span><span class="st">"ANTHROPIC_API_KEY"</span><span class="op">)</span>,</span>
+<span>  openai <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Sys.getenv.html" class="external-link">Sys.getenv</a></span><span class="op">(</span><span class="st">"OPENAI_API_KEY"</span><span class="op">)</span>,</span>
+<span>  gemini <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Sys.getenv.html" class="external-link">Sys.getenv</a></span><span class="op">(</span><span class="st">"GEMINI_API_KEY"</span><span class="op">)</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">consensus_results</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/interactive_consensus_annotation.html">interactive_consensus_annotation</a></span><span class="op">(</span></span>
 <span>  input <span class="op">=</span> <span class="va">pbmc_markers</span>,</span>
 <span>  tissue_name <span class="op">=</span> <span class="st">"human PBMC"</span>,</span>
-<span>  model <span class="op">=</span> <span class="st">"claude-3-7-sonnet-20250219"</span>,</span>
-<span>  api_key <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Sys.getenv.html" class="external-link">Sys.getenv</a></span><span class="op">(</span><span class="st">"ANTHROPIC_API_KEY"</span><span class="op">)</span></span>
+<span>  models <span class="op">=</span> <span class="va">models</span>,  <span class="co"># Use the models defined above</span></span>
+<span>  api_keys <span class="op">=</span> <span class="va">api_keys</span>,</span>
+<span>  controversy_threshold <span class="op">=</span> <span class="fl">0.7</span>,</span>
+<span>  entropy_threshold <span class="op">=</span> <span class="fl">1.0</span>,</span>
+<span>  max_discussion_rounds <span class="op">=</span> <span class="fl">3</span>,</span>
+<span>  consensus_check_model <span class="op">=</span> <span class="st">"claude-3-7-sonnet-20250219"</span></span>
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Print consensus results summary</span></span>
