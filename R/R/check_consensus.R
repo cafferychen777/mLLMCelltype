@@ -11,45 +11,59 @@ check_consensus <- function(round_responses, api_keys = NULL, controversy_thresh
   # Initialize logging
   write_log("\n=== Starting check_consensus function ===")
   write_log(sprintf("Input responses: %s", paste(round_responses, collapse = "; ")))
-  
+
   # Validate input
   if (length(round_responses) < 2) {
     write_log("WARNING: Not enough responses to check consensus")
     return(list(reached = FALSE, consensus_proportion = 0, entropy = 0, majority_prediction = "Insufficient_Responses"))
   }
-  
+
   # Get the formatted prompt from the dedicated function
   # Parameters are used in prompt template to instruct LLM on threshold values # nolint
   formatted_responses <- create_consensus_check_prompt(round_responses, controversy_threshold, entropy_threshold)
-  
+
   # Get model analysis with retry mechanism
   max_retries <- 3
   response <- "0\n0\n0\nUnknown"  # Default response in case all attempts fail
   success <- FALSE
-  
+
   # Define models to try, in order of preference
   models_to_try <- c()
-  
+
   # If consensus_check_model is specified, prioritize it
   if (!is.null(consensus_check_model)) {
     write_log(sprintf("Using specified consensus check model: %s", consensus_check_model))
-    models_to_try <- c(consensus_check_model)
+
+    # Check if this is an OpenRouter model (contains a slash)
+    if (grepl("/", consensus_check_model)) {
+      # For OpenRouter models, we need to extract the base model name
+      # Format is typically "provider/model" like "google/gemini-2.5-pro-preview-03-25"
+      parts <- strsplit(consensus_check_model, "/")[[1]]
+      if (length(parts) > 1) {
+        # Use the model part (after the slash)
+        base_model <- parts[2]
+        write_log(sprintf("Detected OpenRouter model. Using base model name: %s", base_model))
+        models_to_try <- c(consensus_check_model, base_model)
+      } else {
+        models_to_try <- c(consensus_check_model)
+      }
+    } else {
+      models_to_try <- c(consensus_check_model)
+    }
   }
-  
+
   # Add fallback models
   fallback_models <- c("qwen-max-2025-01-25", "claude-3-5-sonnet-latest", "gpt-4o", "gemini-2.0-flash")
-  # Remove the consensus_check_model from fallback_models if it's already there
-  if (!is.null(consensus_check_model)) {
-    fallback_models <- fallback_models[fallback_models != consensus_check_model]
-  }
+  # Remove any models that are already in models_to_try
+  fallback_models <- fallback_models[!fallback_models %in% models_to_try]
   models_to_try <- c(models_to_try, fallback_models)
-  
+
   # Try each model in order
   for (model_name in models_to_try) {
     if (success) break
-    
+
     write_log(sprintf("Trying model %s for consensus check", model_name))
-    
+
     # Get API key for this model
     api_key <- get_api_key(model_name, api_keys)
     if (is.null(api_key) || nchar(api_key) == 0) {
@@ -60,23 +74,23 @@ check_consensus <- function(round_responses, api_keys = NULL, controversy_thresh
         write_log(sprintf("ERROR: Could not determine provider for model %s: %s", model_name, e$message))
         return(NULL)
       })
-      
+
       if (!is.null(provider)) {
         env_var <- paste0(toupper(provider), "_API_KEY")
         api_key <- Sys.getenv(env_var)
       }
     }
-    
+
     # Skip if no API key available
     if (is.null(api_key) || nchar(api_key) == 0) {
       write_log(sprintf("No API key available for %s, skipping", model_name))
       next
     }
-    
+
     # Try with current model using retry mechanism
     for (attempt in 1:max_retries) {
       write_log(sprintf("Attempt %d of %d with model %s", attempt, max_retries, model_name))
-      
+
       tryCatch({
         # Use get_model_response which automatically selects the right processor
         temp_response <- get_model_response(
@@ -84,30 +98,30 @@ check_consensus <- function(round_responses, api_keys = NULL, controversy_thresh
           model_name,
           api_key
         )
-        
+
         # Ensure response is a single string
         if (is.character(temp_response) && length(temp_response) > 1) {
           temp_response <- paste(temp_response, collapse = "\n")
         }
-        
+
         write_log(sprintf("Successfully got response from %s", model_name))
         response <- temp_response
         success <- TRUE
         break
       }, error = function(e) {
         write_log(sprintf("ERROR on %s attempt %d: %s", model_name, attempt, e$message))
-        
+
         if (attempt < max_retries) {
           wait_time <- 5 * 2^(attempt-1)
           write_log(sprintf("Waiting for %d seconds before next attempt...", wait_time))
           Sys.sleep(wait_time)
         }
       })
-      
+
       if (success) break
     }
   }
-  
+
   # If all models failed, return default values with warning
   if (!success) {
     # Note: We don't use a local statistical method here because simple statistical methods
@@ -119,7 +133,7 @@ check_consensus <- function(round_responses, api_keys = NULL, controversy_thresh
     warning("All available models failed for consensus check. Please ensure at least one model API key is valid.")
     return(list(reached = FALSE, consensus_proportion = 0, entropy = 0, majority_prediction = "Unknown"))
   }
-  
+
   # Directly parse the response using a simpler approach
   # First, check if the response contains newlines
   if (grepl("\n", response)) {
@@ -131,12 +145,12 @@ check_consensus <- function(round_responses, api_keys = NULL, controversy_thresh
     # If no newlines, treat as a single line
     lines <- c(response)
   }
-  
+
   # Get the last 4 non-empty lines, as the model might include explanatory text before the actual results
   if (length(lines) >= 4) {
     # Extract the last 4 lines
     result_lines <- tail(lines, 4)
-    
+
     # First try to process the standard four-line format
     # Check if it's a standard four-line format
     standard_format <- FALSE
@@ -147,36 +161,36 @@ check_consensus <- function(round_responses, api_keys = NULL, controversy_thresh
       is_line2_valid <- grepl("^\\s*(0\\.\\d+|1\\.0*|1)\\s*$", result_lines[2])
       # Check if the third line is a non-negative number
       is_line3_valid <- grepl("^\\s*(\\d+\\.\\d+|\\d+)\\s*$", result_lines[3])
-      
+
       if (is_line1_valid && is_line2_valid && is_line3_valid) {
         standard_format <- TRUE
         write_log("Detected standard 4-line format")
-        
+
         # Extract consensus indicator
         consensus_value <- as.numeric(trimws(result_lines[1]))
         consensus <- consensus_value == 1
-        
+
         # Extract consensus proportion
         consensus_proportion <- as.numeric(trimws(result_lines[2]))
         proportion_found <- TRUE
         write_log(sprintf("Found proportion value %f in standard format line 2", consensus_proportion))
-        
+
         # Extract entropy value
         entropy <- as.numeric(trimws(result_lines[3]))
         entropy_found <- TRUE
         write_log(sprintf("Found entropy value %f in standard format line 3", entropy))
-        
+
         # Extract majority prediction result
         majority_prediction <- trimws(result_lines[4])
       }
     }
-    
+
     # Only execute complex parsing logic when not in standard format
     if (!standard_format) {
       # Try to find the most likely numeric values in the last 4 lines
       # Look for lines that start with a number or are just a number
       numeric_pattern <- "^\\s*([01]|0\\.[0-9]+|1\\.[0-9]+)\\s*$"
-      
+
       # Check if the first line is a valid consensus indicator (0 or 1)
       if (grepl("^\\s*[01]\\s*$", result_lines[1])) {
         consensus_value <- as.numeric(trimws(result_lines[1]))
@@ -199,11 +213,11 @@ check_consensus <- function(round_responses, api_keys = NULL, controversy_thresh
           consensus <- FALSE
         }
       }
-      
+
       # Look for a proportion value (between 0 and 1)
       if (!exists("proportion_found") || !proportion_found) {
         proportion_found <- FALSE
-        
+
         for (i in seq_along(lines)) {
           if (grepl("(C|c)onsensus (P|p)roportion", lines[i]) && grepl("=", lines[i])) {
             # Extract all content after the equals sign
@@ -226,17 +240,17 @@ check_consensus <- function(round_responses, api_keys = NULL, controversy_thresh
             }
           }
         }
-        
+
         if (!proportion_found) {
           write_log("WARNING: Invalid consensus proportion, setting to 0")
           consensus_proportion <- 0
         }
       }
-      
+
       # Look for an entropy value (a non-negative number, often with decimal places)
       if (!exists("entropy_found") || !entropy_found) {
         entropy_found <- FALSE
-        
+
         for (i in seq_along(lines)) {
           if (grepl("(E|e)ntropy", lines[i]) && grepl("=", lines[i])) {
             # Extract all content after the equals sign
@@ -259,21 +273,21 @@ check_consensus <- function(round_responses, api_keys = NULL, controversy_thresh
             }
           }
         }
-        
+
         if (!entropy_found) {
           write_log("WARNING: Invalid entropy, setting to 0")
           entropy <- 0
         }
       }
-      
+
       # Look for the majority prediction (a non-numeric line)
       numeric_pattern <- "^\\s*\\d+(\\.\\d+)?\\s*$"
       majority_prediction <- NULL
-      
+
       # First try to extract from the last four lines
       for (i in 1:4) {
-        if (!grepl(numeric_pattern, result_lines[i]) && 
-            !grepl("0\\.\\d+|1\\.0*|1", result_lines[i]) && 
+        if (!grepl(numeric_pattern, result_lines[i]) &&
+            !grepl("0\\.\\d+|1\\.0*|1", result_lines[i]) &&
             !grepl("\\d+\\.\\d+|\\d+", result_lines[i])) {
           # This line doesn't match any numeric pattern, likely the cell type
           majority_prediction <- trimws(result_lines[i])
@@ -281,23 +295,23 @@ check_consensus <- function(round_responses, api_keys = NULL, controversy_thresh
         }
       }
     }
-    
+
     # If we still don't have a majority prediction, search all lines
     if (is.null(majority_prediction)) {
       for (i in seq_along(lines)) {
-        if (!grepl(numeric_pattern, lines[i]) && 
-            !grepl("(C|c)onsensus", lines[i]) && 
-            !grepl("(E|e)ntropy", lines[i]) && 
-            !grepl("^\\s*[01]\\s*$", lines[i]) && 
-            !grepl("^\\s*(0\\.\\d+|1\\.0*|1)\\s*$", lines[i]) && 
-            !grepl("^\\s*(\\d+\\.\\d+|\\d+)\\s*$", lines[i]) && 
+        if (!grepl(numeric_pattern, lines[i]) &&
+            !grepl("(C|c)onsensus", lines[i]) &&
+            !grepl("(E|e)ntropy", lines[i]) &&
+            !grepl("^\\s*[01]\\s*$", lines[i]) &&
+            !grepl("^\\s*(0\\.\\d+|1\\.0*|1)\\s*$", lines[i]) &&
+            !grepl("^\\s*(\\d+\\.\\d+|\\d+)\\s*$", lines[i]) &&
             nchar(trimws(lines[i])) > 0) {
           majority_prediction <- trimws(lines[i])
           break
         }
       }
     }
-    
+
     if (is.null(majority_prediction)) {
       write_log("WARNING: Could not find a valid majority prediction")
       majority_prediction <- "Parsing_Failed"
@@ -309,14 +323,14 @@ check_consensus <- function(round_responses, api_keys = NULL, controversy_thresh
     entropy <- 0
     majority_prediction <- "Unknown"
   }
-  
+
   # Return the results
-  write_log(sprintf("Final results: consensus=%s, proportion=%f, entropy=%f, majority=%s", 
-                   ifelse(consensus, "TRUE", "FALSE"), 
-                   consensus_proportion, 
-                   entropy, 
+  write_log(sprintf("Final results: consensus=%s, proportion=%f, entropy=%f, majority=%s",
+                   ifelse(consensus, "TRUE", "FALSE"),
+                   consensus_proportion,
+                   entropy,
                    majority_prediction))
-  
+
   return(list(
     reached = consensus,
     consensus_proportion = consensus_proportion,
