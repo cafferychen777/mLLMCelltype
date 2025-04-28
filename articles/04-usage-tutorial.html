@@ -108,7 +108,7 @@
             
             <h4 data-toc-skip class="date">2025-04-28</h4>
       
-      <small class="dont-index">Source: <a href="https://github.com/cafferychen777/mLLMCelltype/blob/main/vignettes/04-usage-tutorial.Rmd" class="external-link"><code>vignettes/04-usage-tutorial.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/cafferychen777/mLLMCelltype/blob/dev/vignettes/04-usage-tutorial.Rmd" class="external-link"><code>vignettes/04-usage-tutorial.Rmd</code></a></small>
       <div class="d-none name"><code>04-usage-tutorial.Rmd</code></div>
     </div>
 
@@ -146,22 +146,24 @@ Seurat.</p>
 <span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level4">
-<h4 id="create_consensus">create_consensus()<a class="anchor" aria-label="anchor" href="#create_consensus"></a>
+<h4 id="interactive_consensus_annotation">interactive_consensus_annotation()<a class="anchor" aria-label="anchor" href="#interactive_consensus_annotation"></a>
 </h4>
-<p>Function for creating consensus annotations from multiple models:</p>
+<p>Function for creating consensus annotations from multiple models
+through interactive discussion:</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">consensus_results</span> <span class="op">&lt;-</span> <span class="fu">create_consensus</span><span class="op">(</span></span>
-<span>  <span class="va">results</span>,              <span class="co"># List of results from multiple models</span></span>
-<span>  <span class="va">input</span>,                <span class="co"># Original marker gene data</span></span>
-<span>  <span class="va">tissue_name</span>,          <span class="co"># Tissue name</span></span>
-<span>  <span class="va">model</span>,                <span class="co"># Model to use for discussion (usually Claude)</span></span>
-<span>  api_key <span class="op">=</span> <span class="cn">NULL</span>,       <span class="co"># API key for discussion model</span></span>
-<span>  cache <span class="op">=</span> <span class="cn">TRUE</span>,         <span class="co"># Whether to cache results</span></span>
-<span>  cache_dir <span class="op">=</span> <span class="cn">NULL</span>,     <span class="co"># Custom cache directory</span></span>
-<span>  verbose <span class="op">=</span> <span class="cn">TRUE</span>,       <span class="co"># Whether to print progress messages</span></span>
-<span>  timeout <span class="op">=</span> <span class="fl">60</span>,         <span class="co"># Timeout for API calls in seconds</span></span>
-<span>  max_retries <span class="op">=</span> <span class="fl">3</span>,      <span class="co"># Maximum number of retries</span></span>
-<span>  controversy_threshold <span class="op">=</span> <span class="fl">0.5</span>  <span class="co"># Threshold for identifying controversial clusters</span></span>
+<code class="sourceCode R"><span><span class="va">consensus_results</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/interactive_consensus_annotation.html">interactive_consensus_annotation</a></span><span class="op">(</span></span>
+<span>  <span class="va">input</span>,                <span class="co"># Original marker gene data (Seurat FindAllMarkers result or list of genes)</span></span>
+<span>  tissue_name <span class="op">=</span> <span class="cn">NULL</span>,   <span class="co"># Optional tissue name</span></span>
+<span>  models <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"claude-3-7-sonnet-20250219"</span>, <span class="st">"gpt-4o"</span>, <span class="st">"gemini-1.5-pro"</span><span class="op">)</span>,  <span class="co"># Models to use</span></span>
+<span>  <span class="va">api_keys</span>,             <span class="co"># Named list of API keys</span></span>
+<span>  top_gene_count <span class="op">=</span> <span class="fl">10</span>,  <span class="co"># Number of top genes to use</span></span>
+<span>  controversy_threshold <span class="op">=</span> <span class="fl">0.7</span>,  <span class="co"># Threshold for identifying controversial clusters</span></span>
+<span>  entropy_threshold <span class="op">=</span> <span class="fl">1.0</span>,  <span class="co"># Entropy threshold for controversial clusters</span></span>
+<span>  max_discussion_rounds <span class="op">=</span> <span class="fl">3</span>,  <span class="co"># Maximum discussion rounds</span></span>
+<span>  consensus_check_model <span class="op">=</span> <span class="cn">NULL</span>,  <span class="co"># Model to use for consensus checking</span></span>
+<span>  log_dir <span class="op">=</span> <span class="st">"logs"</span>,     <span class="co"># Directory for logs</span></span>
+<span>  cache_dir <span class="op">=</span> <span class="st">"consensus_cache"</span>,  <span class="co"># Directory for cache</span></span>
+<span>  use_cache <span class="op">=</span> <span class="cn">TRUE</span>      <span class="co"># Whether to use cache</span></span>
 <span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level4">
@@ -170,7 +172,7 @@ Seurat.</p>
 <p>Function for printing a summary of consensus results:</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/print_consensus_summary.html">print_consensus_summary</a></span><span class="op">(</span></span>
-<span>  <span class="va">consensus_results</span>,    <span class="co"># Results from create_consensus()</span></span>
+<span>  <span class="va">consensus_results</span>,    <span class="co"># Results from interactive_consensus_annotation()</span></span>
 <span>  show_discussion <span class="op">=</span> <span class="cn">FALSE</span>,  <span class="co"># Whether to show discussion logs</span></span>
 <span>  show_initial <span class="op">=</span> <span class="cn">TRUE</span>   <span class="co"># Whether to show initial predictions</span></span>
 <span><span class="op">)</span></span></code></pre></div>
@@ -248,12 +250,14 @@ quantification:</p>
 <span><span class="op">}</span></span>
 <span></span>
 <span><span class="co"># Create consensus</span></span>
-<span><span class="va">consensus_results</span> <span class="op">&lt;-</span> <span class="fu">create_consensus</span><span class="op">(</span></span>
-<span>  results <span class="op">=</span> <span class="va">results</span>,</span>
+<span><span class="va">consensus_results</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/interactive_consensus_annotation.html">interactive_consensus_annotation</a></span><span class="op">(</span></span>
 <span>  input <span class="op">=</span> <span class="va">pbmc_markers</span>,</span>
 <span>  tissue_name <span class="op">=</span> <span class="st">"human PBMC"</span>,</span>
-<span>  model <span class="op">=</span> <span class="st">"claude-3-7-sonnet-20250219"</span>,</span>
-<span>  api_key <span class="op">=</span> <span class="va">api_keys</span><span class="op">[[</span><span class="st">"anthropic"</span><span class="op">]</span><span class="op">]</span></span>
+<span>  models <span class="op">=</span> <span class="va">models</span>,  <span class="co"># Use all the models defined above</span></span>
+<span>  api_keys <span class="op">=</span> <span class="va">api_keys</span>,</span>
+<span>  controversy_threshold <span class="op">=</span> <span class="fl">0.7</span>,</span>
+<span>  entropy_threshold <span class="op">=</span> <span class="fl">1.0</span>,</span>
+<span>  consensus_check_model <span class="op">=</span> <span class="st">"claude-3-7-sonnet-20250219"</span></span>
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Print consensus summary</span></span>
@@ -308,13 +312,14 @@ quantification:</p>
 <span><span class="op">}</span></span>
 <span></span>
 <span><span class="co"># Create consensus with free models</span></span>
-<span><span class="va">free_consensus_results</span> <span class="op">&lt;-</span> <span class="fu">create_consensus</span><span class="op">(</span></span>
-<span>  results <span class="op">=</span> <span class="va">free_results</span>,</span>
+<span><span class="va">free_consensus_results</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/interactive_consensus_annotation.html">interactive_consensus_annotation</a></span><span class="op">(</span></span>
 <span>  input <span class="op">=</span> <span class="va">pbmc_markers</span>,</span>
 <span>  tissue_name <span class="op">=</span> <span class="st">"human PBMC"</span>,</span>
-<span>  model <span class="op">=</span> <span class="st">"meta-llama/llama-4-maverick:free"</span>,  <span class="co"># Use a free model for discussion</span></span>
-<span>  api_key <span class="op">=</span> <span class="va">openrouter_api_key</span>,</span>
-<span>  provider <span class="op">=</span> <span class="st">"openrouter"</span></span>
+<span>  models <span class="op">=</span> <span class="va">free_models</span>,  <span class="co"># Use all the free models defined above</span></span>
+<span>  api_keys <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="st">"openrouter"</span> <span class="op">=</span> <span class="va">openrouter_api_key</span><span class="op">)</span>,</span>
+<span>  controversy_threshold <span class="op">=</span> <span class="fl">0.7</span>,</span>
+<span>  entropy_threshold <span class="op">=</span> <span class="fl">1.0</span>,</span>
+<span>  consensus_check_model <span class="op">=</span> <span class="st">"meta-llama/llama-4-maverick:free"</span>  <span class="co"># Use a free model for consensus checking</span></span>
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Print consensus summary</span></span>
@@ -534,12 +539,14 @@ workflow:</p>
 <span><span class="op">}</span></span>
 <span></span>
 <span><span class="co"># Create consensus</span></span>
-<span><span class="va">consensus_results</span> <span class="op">&lt;-</span> <span class="fu">create_consensus</span><span class="op">(</span></span>
-<span>  results <span class="op">=</span> <span class="va">results</span>,</span>
+<span><span class="va">consensus_results</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/interactive_consensus_annotation.html">interactive_consensus_annotation</a></span><span class="op">(</span></span>
 <span>  input <span class="op">=</span> <span class="va">pbmc_markers</span>,</span>
 <span>  tissue_name <span class="op">=</span> <span class="st">"human PBMC"</span>,</span>
-<span>  model <span class="op">=</span> <span class="st">"claude-3-7-sonnet-20250219"</span>,</span>
-<span>  api_key <span class="op">=</span> <span class="va">api_keys</span><span class="op">[[</span><span class="st">"anthropic"</span><span class="op">]</span><span class="op">]</span></span>
+<span>  models <span class="op">=</span> <span class="va">models</span>,  <span class="co"># Use all the models defined above</span></span>
+<span>  api_keys <span class="op">=</span> <span class="va">api_keys</span>,</span>
+<span>  controversy_threshold <span class="op">=</span> <span class="fl">0.7</span>,</span>
+<span>  entropy_threshold <span class="op">=</span> <span class="fl">1.0</span>,</span>
+<span>  consensus_check_model <span class="op">=</span> <span class="st">"claude-3-7-sonnet-20250219"</span></span>
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Add consensus results to Seurat object</span></span>
@@ -607,27 +614,35 @@ marker genes per cluster are used for annotation:</p>
 <div class="section level4">
 <h4 id="adjusting-controversy_threshold">Adjusting controversy_threshold<a class="anchor" aria-label="anchor" href="#adjusting-controversy_threshold"></a>
 </h4>
-<p>The <code>controversy_threshold</code> parameter controls which
+<p>The <code>controversy_threshold</code> parameter in the
+<code>interactive_consensus_annotation</code> function controls which
 clusters are considered controversial and require discussion:</p>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># Lower threshold (more clusters will be discussed)</span></span>
-<span><span class="va">consensus_results_low_threshold</span> <span class="op">&lt;-</span> <span class="fu">create_consensus</span><span class="op">(</span></span>
-<span>  results <span class="op">=</span> <span class="va">results</span>,</span>
+<code class="sourceCode R"><span><span class="co"># Example of using interactive_consensus_annotation with different controversy thresholds</span></span>
+<span><span class="co"># Lower threshold (more clusters will be discussed)</span></span>
+<span><span class="va">consensus_results_low_threshold</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/interactive_consensus_annotation.html">interactive_consensus_annotation</a></span><span class="op">(</span></span>
 <span>  input <span class="op">=</span> <span class="va">pbmc_markers</span>,</span>
 <span>  tissue_name <span class="op">=</span> <span class="st">"human PBMC"</span>,</span>
-<span>  model <span class="op">=</span> <span class="st">"claude-3-7-sonnet-20250219"</span>,</span>
-<span>  api_key <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Sys.getenv.html" class="external-link">Sys.getenv</a></span><span class="op">(</span><span class="st">"ANTHROPIC_API_KEY"</span><span class="op">)</span>,</span>
-<span>  controversy_threshold <span class="op">=</span> <span class="fl">0.3</span>  <span class="co"># Lower threshold</span></span>
+<span>  models <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"claude-3-7-sonnet-20250219"</span>, <span class="st">"gpt-4o"</span>, <span class="st">"gemini-2.0-flash"</span><span class="op">)</span>,</span>
+<span>  api_keys <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
+<span>    <span class="st">"anthropic"</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Sys.getenv.html" class="external-link">Sys.getenv</a></span><span class="op">(</span><span class="st">"ANTHROPIC_API_KEY"</span><span class="op">)</span>,</span>
+<span>    <span class="st">"openai"</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Sys.getenv.html" class="external-link">Sys.getenv</a></span><span class="op">(</span><span class="st">"OPENAI_API_KEY"</span><span class="op">)</span>,</span>
+<span>    <span class="st">"google"</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Sys.getenv.html" class="external-link">Sys.getenv</a></span><span class="op">(</span><span class="st">"GOOGLE_API_KEY"</span><span class="op">)</span></span>
+<span>  <span class="op">)</span>,</span>
+<span>  controversy_threshold <span class="op">=</span> <span class="fl">0.3</span>  <span class="co"># Lower threshold - more clusters will be discussed</span></span>
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Higher threshold (fewer clusters will be discussed)</span></span>
-<span><span class="va">consensus_results_high_threshold</span> <span class="op">&lt;-</span> <span class="fu">create_consensus</span><span class="op">(</span></span>
-<span>  results <span class="op">=</span> <span class="va">results</span>,</span>
+<span><span class="va">consensus_results_high_threshold</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/interactive_consensus_annotation.html">interactive_consensus_annotation</a></span><span class="op">(</span></span>
 <span>  input <span class="op">=</span> <span class="va">pbmc_markers</span>,</span>
 <span>  tissue_name <span class="op">=</span> <span class="st">"human PBMC"</span>,</span>
-<span>  model <span class="op">=</span> <span class="st">"claude-3-7-sonnet-20250219"</span>,</span>
-<span>  api_key <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Sys.getenv.html" class="external-link">Sys.getenv</a></span><span class="op">(</span><span class="st">"ANTHROPIC_API_KEY"</span><span class="op">)</span>,</span>
-<span>  controversy_threshold <span class="op">=</span> <span class="fl">0.7</span>  <span class="co"># Higher threshold</span></span>
+<span>  models <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"claude-3-7-sonnet-20250219"</span>, <span class="st">"gpt-4o"</span>, <span class="st">"gemini-2.0-flash"</span><span class="op">)</span>,</span>
+<span>  api_keys <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
+<span>    <span class="st">"anthropic"</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Sys.getenv.html" class="external-link">Sys.getenv</a></span><span class="op">(</span><span class="st">"ANTHROPIC_API_KEY"</span><span class="op">)</span>,</span>
+<span>    <span class="st">"openai"</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Sys.getenv.html" class="external-link">Sys.getenv</a></span><span class="op">(</span><span class="st">"OPENAI_API_KEY"</span><span class="op">)</span>,</span>
+<span>    <span class="st">"google"</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Sys.getenv.html" class="external-link">Sys.getenv</a></span><span class="op">(</span><span class="st">"GOOGLE_API_KEY"</span><span class="op">)</span></span>
+<span>  <span class="op">)</span>,</span>
+<span>  controversy_threshold <span class="op">=</span> <span class="fl">0.7</span>  <span class="co"># Higher threshold - fewer clusters will be discussed</span></span>
 <span><span class="op">)</span></span></code></pre></div>
 </div>
 </div>
