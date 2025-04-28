@@ -2,7 +2,7 @@
 title: "Visualization Guide"
 author: "Chen Yang"
 date: "`r Sys.Date()`"
-output: 
+output:
   html_document:
     toc: true
     toc_float: true
@@ -57,22 +57,36 @@ library(patchwork)
 # Add consensus annotations to Seurat object
 seurat_obj$cell_type_consensus <- plyr::mapvalues(
   x = as.character(Idents(seurat_obj)),
-  from = as.character(0:(length(consensus_results$final_consensus)-1)),
-  to = consensus_results$final_consensus
+  from = as.character(0:(length(consensus_results$final_annotations)-1)),
+  to = consensus_results$final_annotations
 )
 
-# Add consensus proportion (agreement level) to Seurat object
+# Extract consensus metrics from the consensus results
+# Note: These metrics are available in the consensus_results$initial_results$consensus_results
+consensus_metrics <- lapply(names(consensus_results$initial_results$consensus_results), function(cluster_id) {
+  metrics <- consensus_results$initial_results$consensus_results[[cluster_id]]
+  return(list(
+    cluster = cluster_id,
+    consensus_proportion = metrics$consensus_proportion,
+    entropy = metrics$entropy
+  ))
+})
+
+# Convert to data frame for easier handling
+metrics_df <- do.call(rbind, lapply(consensus_metrics, data.frame))
+
+# Add consensus proportion to Seurat object
 seurat_obj$consensus_proportion <- as.numeric(plyr::mapvalues(
   x = as.character(Idents(seurat_obj)),
-  from = as.character(0:(length(consensus_results$consensus_proportion)-1)),
-  to = consensus_results$consensus_proportion
+  from = metrics_df$cluster,
+  to = metrics_df$consensus_proportion
 ))
 
-# Add Shannon entropy (uncertainty measure) to Seurat object
-seurat_obj$shannon_entropy <- as.numeric(plyr::mapvalues(
+# Add entropy to Seurat object
+seurat_obj$entropy <- as.numeric(plyr::mapvalues(
   x = as.character(Idents(seurat_obj)),
-  from = as.character(0:(length(consensus_results$shannon_entropy)-1)),
-  to = consensus_results$shannon_entropy
+  from = metrics_df$cluster,
+  to = metrics_df$entropy
 ))
 ```
 
@@ -82,9 +96,9 @@ seurat_obj$shannon_entropy <- as.numeric(plyr::mapvalues(
 
 ```{r}
 # Basic cell type visualization
-p1 <- DimPlot(seurat_obj, 
-              group.by = "cell_type_consensus", 
-              label = TRUE, 
+p1 <- DimPlot(seurat_obj,
+              group.by = "cell_type_consensus",
+              label = TRUE,
               repel = TRUE) +
   ggtitle("Cell Type Annotations") +
   theme(plot.title = element_text(hjust = 0.5))
@@ -96,8 +110,8 @@ p1
 
 ```{r}
 # Visualize consensus proportion
-p2 <- FeaturePlot(seurat_obj, 
-                 features = "consensus_proportion", 
+p2 <- FeaturePlot(seurat_obj,
+                 features = "consensus_proportion",
                  cols = c("yellow", "green", "blue"),
                  min.cutoff = 0.3,
                  max.cutoff = 1) +
@@ -111,8 +125,8 @@ p2
 
 ```{r}
 # Visualize Shannon entropy
-p3 <- FeaturePlot(seurat_obj, 
-                 features = "shannon_entropy", 
+p3 <- FeaturePlot(seurat_obj,
+                 features = "shannon_entropy",
                  cols = c("red", "orange", "yellow"),
                  min.cutoff = 0,
                  max.cutoff = 1.5) +
@@ -176,7 +190,7 @@ p3 <- SCpubr::do_FeaturePlot(seurat_obj,
 combined_plot <- p1 | p2 | p3
 
 # Add a common title
-combined_plot <- combined_plot + 
+combined_plot <- combined_plot +
   plot_annotation(
     title = "mLLMCelltype Results",
     theme = theme(plot.title = element_text(size = 16, hjust = 0.5, face = "bold"))
@@ -227,10 +241,10 @@ plot_list <- list()
 for (model in models) {
   column_name <- paste0("cell_type_", model)
   temp_obj <- calculate_agreement(seurat_obj, column_name, "cell_type_consensus")
-  
+
   plot_list[[model]] <- SCpubr::do_DimPlot(temp_obj,
                                           group.by = "agreement",
-                                          colors.use = c("Agrees with consensus" = "darkgreen", 
+                                          colors.use = c("Agrees with consensus" = "darkgreen",
                                                         "Disagrees with consensus" = "darkred"),
                                           pt.size = 0.5,
                                           title = paste0(model, " Agreement"))
@@ -249,17 +263,28 @@ library(pheatmap)
 
 # Create a matrix of model predictions for each cluster
 create_prediction_matrix <- function(consensus_results, models) {
-  n_clusters <- length(consensus_results$final_consensus)
+  n_clusters <- length(consensus_results$final_annotations)
   prediction_matrix <- matrix(NA, nrow = n_clusters, ncol = length(models))
   rownames(prediction_matrix) <- paste0("Cluster_", 0:(n_clusters-1))
   colnames(prediction_matrix) <- models
-  
+
+  # Extract individual model predictions from initial_results
+  initial_predictions <- consensus_results$initial_results$individual_predictions
+
   for (i in 1:length(models)) {
     model <- models[i]
-    predictions <- consensus_results$initial_results[[model]]
-    prediction_matrix[, i] <- predictions
+    if (model %in% names(initial_predictions)) {
+      predictions <- initial_predictions[[model]]
+      # Convert predictions to a vector if it's a list
+      if (is.list(predictions)) {
+        pred_vector <- unlist(predictions)
+        prediction_matrix[, i] <- pred_vector
+      } else {
+        prediction_matrix[, i] <- predictions
+      }
+    }
   }
-  
+
   return(prediction_matrix)
 }
 
@@ -267,17 +292,17 @@ create_prediction_matrix <- function(consensus_results, models) {
 encode_cell_types <- function(prediction_matrix) {
   unique_types <- unique(as.vector(prediction_matrix))
   type_mapping <- setNames(1:length(unique_types), unique_types)
-  
+
   encoded_matrix <- matrix(NA, nrow = nrow(prediction_matrix), ncol = ncol(prediction_matrix))
   rownames(encoded_matrix) <- rownames(prediction_matrix)
   colnames(encoded_matrix) <- colnames(prediction_matrix)
-  
+
   for (i in 1:nrow(prediction_matrix)) {
     for (j in 1:ncol(prediction_matrix)) {
       encoded_matrix[i, j] <- type_mapping[prediction_matrix[i, j]]
     }
   }
-  
+
   return(list(matrix = encoded_matrix, mapping = type_mapping))
 }
 
@@ -286,11 +311,14 @@ models <- c("claude-3-7-sonnet-20250219", "gpt-4o", "gemini-1.5-pro")
 prediction_matrix <- create_prediction_matrix(consensus_results, models)
 encoded_data <- encode_cell_types(prediction_matrix)
 
+# Extract metrics for annotation row
+metrics_df <- do.call(rbind, lapply(consensus_metrics, data.frame))
+
 # Add consensus and uncertainty metrics as annotations
 annotation_row <- data.frame(
-  Consensus = consensus_results$final_consensus,
-  Proportion = consensus_results$consensus_proportion,
-  Entropy = consensus_results$shannon_entropy
+  Consensus = consensus_results$final_annotations,
+  Proportion = metrics_df$consensus_proportion,
+  Entropy = metrics_df$entropy
 )
 rownames(annotation_row) <- rownames(prediction_matrix)
 
@@ -339,7 +367,7 @@ extract_discussion_text <- function(consensus_results, cluster_id) {
   if (is.null(discussion_logs) || !cluster_id %in% names(discussion_logs)) {
     return(NULL)
   }
-  
+
   discussion_text <- discussion_logs[[cluster_id]]
   return(discussion_text)
 }
@@ -353,18 +381,18 @@ create_discussion_wordcloud <- function(discussion_text, title = "Discussion Wor
     str_to_lower() %>%
     str_split("\\s+") %>%
     unlist()
-  
+
   # Remove stop words
   stop_words <- c("the", "and", "a", "to", "of", "is", "in", "that", "this", "it", "as", "for", "with", "be", "are", "on", "by", "an", "or", "at", "but", "not", "from", "have", "has", "was", "were")
   words <- words[!words %in% stop_words]
-  
+
   # Count word frequencies
   word_freq <- table(words)
   word_freq <- sort(word_freq, decreasing = TRUE)
-  
+
   # Create word cloud
   par(mar = c(0, 0, 2, 0))
-  wordcloud(names(word_freq), freq = word_freq, min.freq = 2, max.words = 100, 
+  wordcloud(names(word_freq), freq = word_freq, min.freq = 2, max.words = 100,
             random.order = FALSE, colors = brewer.pal(8, "Dark2"), main = title)
   title(main = title)
 }
@@ -373,7 +401,7 @@ create_discussion_wordcloud <- function(discussion_text, title = "Discussion Wor
 cluster_id <- "0"  # Replace with the cluster you want to visualize
 discussion_text <- extract_discussion_text(consensus_results, cluster_id)
 if (!is.null(discussion_text)) {
-  create_discussion_wordcloud(discussion_text, 
+  create_discussion_wordcloud(discussion_text,
                              title = paste("Cluster", cluster_id, "Discussion Keywords"))
 }
 ```
@@ -432,20 +460,35 @@ library(SCpubr)
 # Add results to Seurat object
 seurat_obj$cell_type_consensus <- plyr::mapvalues(
   x = as.character(Idents(seurat_obj)),
-  from = as.character(0:(length(consensus_results$final_consensus)-1)),
-  to = consensus_results$final_consensus
+  from = as.character(0:(length(consensus_results$final_annotations)-1)),
+  to = consensus_results$final_annotations
 )
 
+# Extract consensus metrics from the consensus results
+consensus_metrics <- lapply(names(consensus_results$initial_results$consensus_results), function(cluster_id) {
+  metrics <- consensus_results$initial_results$consensus_results[[cluster_id]]
+  return(list(
+    cluster = cluster_id,
+    consensus_proportion = metrics$consensus_proportion,
+    entropy = metrics$entropy
+  ))
+})
+
+# Convert to data frame for easier handling
+metrics_df <- do.call(rbind, lapply(consensus_metrics, data.frame))
+
+# Add consensus proportion to Seurat object
 seurat_obj$consensus_proportion <- as.numeric(plyr::mapvalues(
   x = as.character(Idents(seurat_obj)),
-  from = as.character(0:(length(consensus_results$consensus_proportion)-1)),
-  to = consensus_results$consensus_proportion
+  from = metrics_df$cluster,
+  to = metrics_df$consensus_proportion
 ))
 
-seurat_obj$shannon_entropy <- as.numeric(plyr::mapvalues(
+# Add entropy to Seurat object
+seurat_obj$entropy <- as.numeric(plyr::mapvalues(
   x = as.character(Idents(seurat_obj)),
-  from = as.character(0:(length(consensus_results$shannon_entropy)-1)),
-  to = consensus_results$shannon_entropy
+  from = metrics_df$cluster,
+  to = metrics_df$entropy
 ))
 
 # Create publication-ready visualizations
@@ -480,7 +523,7 @@ p3 <- SCpubr::do_FeaturePlot(seurat_obj,
 combined_plot <- p1 | p2 | p3
 
 # Add annotation
-combined_plot <- combined_plot + 
+combined_plot <- combined_plot +
   plot_annotation(
     title = "mLLMCelltype Results",
     subtitle = "Cell type annotations with uncertainty metrics",
@@ -493,16 +536,16 @@ combined_plot <- combined_plot +
   )
 
 # Save the visualization
-ggsave("mLLMCelltype_visualization.png", 
-       plot = combined_plot, 
-       width = 15, 
-       height = 8, 
+ggsave("mLLMCelltype_visualization.png",
+       plot = combined_plot,
+       width = 15,
+       height = 8,
        dpi = 300)
 
 # Also save as PDF for vector graphics
-ggsave("mLLMCelltype_visualization.pdf", 
-       plot = combined_plot, 
-       width = 15, 
+ggsave("mLLMCelltype_visualization.pdf",
+       plot = combined_plot,
+       width = 15,
        height = 8)
 ```
 

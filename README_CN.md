@@ -905,7 +905,6 @@ free_model_results <- annotate_cell_types(
   tissue_name = "human PBMC",
   model = "meta-llama/llama-4-maverick:free",  # 免费模型，使用:free后缀
   api_key = "your-openrouter-key",
-  provider = "openrouter",  # 指定 OpenRouter 作为提供商
   top_gene_count = 10
 )
 

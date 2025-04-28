@@ -297,8 +297,8 @@ mLLMCelltype integrates seamlessly with Seurat:
 ```r
 seurat_obj$cell_type_consensus <- plyr::mapvalues(
   x = as.character(Idents(seurat_obj)),
-  from = as.character(0:(length(consensus_results$final_consensus)-1)),
-  to = consensus_results$final_consensus
+  from = as.character(0:(length(consensus_results$final_annotations)-1)),
+  to = consensus_results$final_annotations
 )
 ```
 

@@ -2,7 +2,7 @@
 title: "Getting Started with mLLMCelltype"
 author: "Chen Yang"
 date: "`r Sys.Date()`"
-output: 
+output:
   html_document:
     toc: true
     toc_float: true
@@ -152,7 +152,7 @@ results <- list()
 for (model in models) {
   provider <- get_provider(model)
   api_key <- api_keys[[provider]]
-  
+
   results[[model]] <- annotate_cell_types(
     input = markers,
     tissue_name = "human PBMC",
@@ -163,12 +163,14 @@ for (model in models) {
 }
 
 # Create consensus
-consensus_results <- create_consensus(
-  results = results,
+consensus_results <- interactive_consensus_annotation(
   input = markers,
   tissue_name = "human PBMC",
-  model = "claude-3-7-sonnet-20250219",
-  api_key = api_keys[["anthropic"]]
+  models = models,  # Use all the models defined above
+  api_keys = api_keys,
+  controversy_threshold = 0.7,
+  entropy_threshold = 1.0,
+  consensus_check_model = "claude-3-7-sonnet-20250219"
 )
 
 # Print consensus results
@@ -186,22 +188,36 @@ library(Seurat)
 # Add consensus annotations to Seurat object
 seurat_obj$cell_type_consensus <- plyr::mapvalues(
   x = as.character(Idents(seurat_obj)),
-  from = as.character(0:(length(consensus_results$final_consensus)-1)),
-  to = consensus_results$final_consensus
+  from = as.character(0:(length(consensus_results$final_annotations)-1)),
+  to = consensus_results$final_annotations
 )
 
-# Add consensus proportion (agreement level) to Seurat object
+# Extract consensus metrics from the consensus results
+# Note: These metrics are available in the consensus_results$initial_results$consensus_results
+consensus_metrics <- lapply(names(consensus_results$initial_results$consensus_results), function(cluster_id) {
+  metrics <- consensus_results$initial_results$consensus_results[[cluster_id]]
+  return(list(
+    cluster = cluster_id,
+    consensus_proportion = metrics$consensus_proportion,
+    entropy = metrics$entropy
+  ))
+})
+
+# Convert to data frame for easier handling
+metrics_df <- do.call(rbind, lapply(consensus_metrics, data.frame))
+
+# Add consensus proportion to Seurat object
 seurat_obj$consensus_proportion <- plyr::mapvalues(
   x = as.character(Idents(seurat_obj)),
-  from = as.character(0:(length(consensus_results$consensus_proportion)-1)),
-  to = consensus_results$consensus_proportion
+  from = metrics_df$cluster,
+  to = metrics_df$consensus_proportion
 )
 
-# Add Shannon entropy (uncertainty measure) to Seurat object
-seurat_obj$shannon_entropy <- plyr::mapvalues(
+# Add entropy to Seurat object
+seurat_obj$entropy <- plyr::mapvalues(
   x = as.character(Idents(seurat_obj)),
-  from = as.character(0:(length(consensus_results$shannon_entropy)-1)),
-  to = consensus_results$shannon_entropy
+  from = metrics_df$cluster,
+  to = metrics_df$entropy
 )
 ```
 
@@ -220,13 +236,13 @@ DimPlot(seurat_obj, group.by = "cell_type_consensus", label = TRUE, repel = TRUE
 
 The output of `annotate_cell_types()` is a vector of cell type annotations, where each element corresponds to a cluster.
 
-The output of `create_consensus()` is a list containing:
+The output of `interactive_consensus_annotation()` is a list containing:
 
-- `final_consensus`: Final consensus cell type annotations
+- `final_annotations`: Final consensus cell type annotations
 - `initial_results`: Initial predictions from each model
-- `consensus_proportion`: Proportion of models agreeing with the consensus (0-1)
-- `shannon_entropy`: Shannon entropy as a measure of uncertainty (lower is better)
+- `controversial_clusters`: List of clusters that required discussion
 - `discussion_logs`: Detailed logs of the discussion process
+- `session_id`: Unique identifier for the annotation session
 
 ## Next Steps
 

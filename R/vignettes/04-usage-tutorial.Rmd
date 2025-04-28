@@ -52,23 +52,24 @@ results <- annotate_cell_types(
 )
 ```
 
-### create_consensus()
+### interactive_consensus_annotation()
 
-Function for creating consensus annotations from multiple models:
+Function for creating consensus annotations from multiple models through interactive discussion:
 
-```{r}
-consensus_results <- create_consensus(
-  results,              # List of results from multiple models
-  input,                # Original marker gene data
-  tissue_name,          # Tissue name
-  model,                # Model to use for discussion (usually Claude)
-  api_key = NULL,       # API key for discussion model
-  cache = TRUE,         # Whether to cache results
-  cache_dir = NULL,     # Custom cache directory
-  verbose = TRUE,       # Whether to print progress messages
-  timeout = 60,         # Timeout for API calls in seconds
-  max_retries = 3,      # Maximum number of retries
-  controversy_threshold = 0.5  # Threshold for identifying controversial clusters
+```{r eval=FALSE}
+consensus_results <- interactive_consensus_annotation(
+  input,                # Original marker gene data (Seurat FindAllMarkers result or list of genes)
+  tissue_name = NULL,   # Optional tissue name
+  models = c("claude-3-7-sonnet-20250219", "gpt-4o", "gemini-1.5-pro"),  # Models to use
+  api_keys,             # Named list of API keys
+  top_gene_count = 10,  # Number of top genes to use
+  controversy_threshold = 0.7,  # Threshold for identifying controversial clusters
+  entropy_threshold = 1.0,  # Entropy threshold for controversial clusters
+  max_discussion_rounds = 3,  # Maximum discussion rounds
+  consensus_check_model = NULL,  # Model to use for consensus checking
+  log_dir = "logs",     # Directory for logs
+  cache_dir = "consensus_cache",  # Directory for cache
+  use_cache = TRUE      # Whether to use cache
 )
 ```
 
@@ -78,7 +79,7 @@ Function for printing a summary of consensus results:
 
 ```{r}
 print_consensus_summary(
-  consensus_results,    # Results from create_consensus()
+  consensus_results,    # Results from interactive_consensus_annotation()
   show_discussion = FALSE,  # Whether to show discussion logs
   show_initial = TRUE   # Whether to show initial predictions
 )
@@ -155,12 +156,14 @@ for (model in models) {
 }
 
 # Create consensus
-consensus_results <- create_consensus(
-  results = results,
+consensus_results <- interactive_consensus_annotation(
   input = pbmc_markers,
   tissue_name = "human PBMC",
-  model = "claude-3-7-sonnet-20250219",
-  api_key = api_keys[["anthropic"]]
+  models = models,  # Use all the models defined above
+  api_keys = api_keys,
+  controversy_threshold = 0.7,
+  entropy_threshold = 1.0,
+  consensus_check_model = "claude-3-7-sonnet-20250219"
 )
 
 # Print consensus summary
@@ -216,13 +219,14 @@ for (model in free_models) {
 }
 
 # Create consensus with free models
-free_consensus_results <- create_consensus(
-  results = free_results,
+free_consensus_results <- interactive_consensus_annotation(
   input = pbmc_markers,
   tissue_name = "human PBMC",
-  model = "meta-llama/llama-4-maverick:free",  # Use a free model for discussion
-  api_key = openrouter_api_key,
-  provider = "openrouter"
+  models = free_models,  # Use all the free models defined above
+  api_keys = list("openrouter" = openrouter_api_key),
+  controversy_threshold = 0.7,
+  entropy_threshold = 1.0,
+  consensus_check_model = "meta-llama/llama-4-maverick:free"  # Use a free model for consensus checking
 )
 
 # Print consensus summary
@@ -401,12 +405,14 @@ for (model in models) {
 }
 
 # Create consensus
-consensus_results <- create_consensus(
-  results = results,
+consensus_results <- interactive_consensus_annotation(
   input = pbmc_markers,
   tissue_name = "human PBMC",
-  model = "claude-3-7-sonnet-20250219",
-  api_key = api_keys[["anthropic"]]
+  models = models,  # Use all the models defined above
+  api_keys = api_keys,
+  controversy_threshold = 0.7,
+  entropy_threshold = 1.0,
+  consensus_check_model = "claude-3-7-sonnet-20250219"
 )
 
 # Add consensus results to Seurat object
@@ -473,27 +479,34 @@ results_fewer_genes <- annotate_cell_types(
 
 ### Adjusting controversy_threshold
 
-The `controversy_threshold` parameter controls which clusters are considered controversial and require discussion:
+The `controversy_threshold` parameter in the `interactive_consensus_annotation` function controls which clusters are considered controversial and require discussion:
 
-```{r}
+```{r eval=FALSE}
+# Example of using interactive_consensus_annotation with different controversy thresholds
 # Lower threshold (more clusters will be discussed)
-consensus_results_low_threshold <- create_consensus(
-  results = results,
+consensus_results_low_threshold <- interactive_consensus_annotation(
   input = pbmc_markers,
   tissue_name = "human PBMC",
-  model = "claude-3-7-sonnet-20250219",
-  api_key = Sys.getenv("ANTHROPIC_API_KEY"),
-  controversy_threshold = 0.3  # Lower threshold
+  models = c("claude-3-7-sonnet-20250219", "gpt-4o", "gemini-2.0-flash"),
+  api_keys = list(
+    "anthropic" = Sys.getenv("ANTHROPIC_API_KEY"),
+    "openai" = Sys.getenv("OPENAI_API_KEY"),
+    "google" = Sys.getenv("GOOGLE_API_KEY")
+  ),
+  controversy_threshold = 0.3  # Lower threshold - more clusters will be discussed
 )
 
 # Higher threshold (fewer clusters will be discussed)
-consensus_results_high_threshold <- create_consensus(
-  results = results,
+consensus_results_high_threshold <- interactive_consensus_annotation(
   input = pbmc_markers,
   tissue_name = "human PBMC",
-  model = "claude-3-7-sonnet-20250219",
-  api_key = Sys.getenv("ANTHROPIC_API_KEY"),
-  controversy_threshold = 0.7  # Higher threshold
+  models = c("claude-3-7-sonnet-20250219", "gpt-4o", "gemini-2.0-flash"),
+  api_keys = list(
+    "anthropic" = Sys.getenv("ANTHROPIC_API_KEY"),
+    "openai" = Sys.getenv("OPENAI_API_KEY"),
+    "google" = Sys.getenv("GOOGLE_API_KEY")
+  ),
+  controversy_threshold = 0.7  # Higher threshold - fewer clusters will be discussed
 )
 ```
 
