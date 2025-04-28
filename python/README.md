@@ -212,12 +212,21 @@ meta_annotations = annotate_clusters(
     provider_config={"provider": "openrouter", "model": "meta-llama/llama-3-70b-instruct"}
 )
 
+# Annotate using a free model via OpenRouter
+free_model_annotations = annotate_clusters(
+    marker_genes=marker_genes,
+    species='human',
+    tissue='peripheral blood',
+    provider_config={"provider": "openrouter", "model": "deepseek/deepseek-chat:free"}  # Free model with :free suffix
+)
+
 # Print annotations from different models
 for cluster in marker_genes.keys():
     print(f"Cluster {cluster}:")
     print(f"  OpenAI GPT-4o: {openai_annotations[cluster]}")
     print(f"  Anthropic Claude: {anthropic_annotations[cluster]}")
     print(f"  Meta Llama: {meta_annotations[cluster]}")
+    print(f"  DeepSeek (free): {free_model_annotations[cluster]}")
 ```
 
 #### Pure OpenRouter Consensus
@@ -233,9 +242,9 @@ result = interactive_consensus_annotation(
     species='human',
     tissue='peripheral blood',
     models=[
-        {"provider": "openrouter", "model": "openai/gpt-4o"},             # OpenRouter OpenAI
-        {"provider": "openrouter", "model": "anthropic/claude-3-opus"},   # OpenRouter Anthropic
-        {"provider": "openrouter", "model": "meta-llama/llama-3-70b-instruct"}  # OpenRouter Meta
+        {"provider": "openrouter", "model": "openai/gpt-4o"},             # OpenRouter OpenAI (paid)
+        {"provider": "openrouter", "model": "anthropic/claude-3-opus"},   # OpenRouter Anthropic (paid)
+        {"provider": "openrouter", "model": "meta-llama/llama-3-70b-instruct"}  # OpenRouter Meta (paid)
     ],
     consensus_threshold=0.7,
     max_discussion_rounds=3,
@@ -244,6 +253,57 @@ result = interactive_consensus_annotation(
 
 # Print consensus summary
 print_consensus_summary(result)
+```
+
+#### Using Free OpenRouter Models
+
+OpenRouter provides access to free models with the `:free` suffix. These models don't require credits but may have limitations:
+
+```python
+from mllmcelltype import interactive_consensus_annotation, print_consensus_summary
+
+# Run consensus annotation with free OpenRouter models
+result = interactive_consensus_annotation(
+    marker_genes=marker_genes,
+    species='human',
+    tissue='peripheral blood',
+    models=[
+        {"provider": "openrouter", "model": "deepseek/deepseek-chat:free"},      # DeepSeek (free)
+        {"provider": "openrouter", "model": "microsoft/mai-ds-r1:free"},         # Microsoft (free)
+        {"provider": "openrouter", "model": "qwen/qwen-2.5-7b-instruct:free"},   # Qwen (free)
+        {"provider": "openrouter", "model": "thudm/glm-4-9b:free"}               # GLM (free)
+    ],
+    consensus_threshold=0.7,
+    max_discussion_rounds=3,
+    verbose=True
+)
+
+# Print consensus summary
+print_consensus_summary(result)
+```
+
+**Note**: Free model availability may change over time. You can check the current list of available models on the OpenRouter website or through their API:
+
+```python
+import requests
+import os
+
+# Get your OpenRouter API key
+api_key = os.environ.get("OPENROUTER_API_KEY", "your-openrouter-api-key")
+
+# Get available models
+response = requests.get(
+    "https://openrouter.ai/api/v1/models",
+    headers={"Authorization": f"Bearer {api_key}"}
+)
+
+# Print all available models
+models = response.json()["data"]
+print("Available OpenRouter models:")
+for model in models:
+    model_id = model["id"]
+    is_free = model.get("pricing", {}).get("prompt") == 0 and model.get("pricing", {}).get("completion") == 0
+    print(f"  - {model_id}{' (free)' if is_free else ''}")
 ```
 
 ### Multi-LLM Consensus Annotation
@@ -296,12 +356,28 @@ result = interactive_consensus_annotation(
     species='human',
     tissue='lymphoid tissue',
     models=[
-        'gpt-4o',                          # Direct API
-        {"provider": "openrouter", "model": "openai/gpt-4o"},             # OpenRouter
-        {"provider": "openrouter", "model": "anthropic/claude-3-opus"},   # OpenRouter
+        'gpt-4o',                                                      # Direct API (paid)
+        {"provider": "openrouter", "model": "openai/gpt-4o"},          # OpenRouter (paid)
+        {"provider": "openrouter", "model": "deepseek/deepseek-chat:free"},  # OpenRouter (free)
     ],
     consensus_threshold=0.8,                # Higher threshold to force discussion
     max_discussion_rounds=3,                # Allow multiple rounds of discussion
+    verbose=True
+)
+
+# Using only free models for budget-conscious users
+result_free = interactive_consensus_annotation(
+    marker_genes=marker_genes,
+    species='human',
+    tissue='peripheral blood',
+    models=[
+        {"provider": "openrouter", "model": "deepseek/deepseek-chat:free"},      # DeepSeek (free)
+        {"provider": "openrouter", "model": "microsoft/mai-ds-r1:free"},         # Microsoft (free)
+        {"provider": "openrouter", "model": "qwen/qwen-2.5-7b-instruct:free"},   # Qwen (free)
+        {"provider": "openrouter", "model": "thudm/glm-4-9b:free"}               # GLM (free)
+    ],
+    consensus_threshold=0.7,
+    max_discussion_rounds=2,
     verbose=True
 )
 ```

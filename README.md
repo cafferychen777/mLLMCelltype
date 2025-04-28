@@ -122,6 +122,7 @@ pip install git+https://github.com/cafferychen777/mLLMCelltype.git
 - **OpenRouter**: Access to multiple models through a single API ([API Key](https://openrouter.ai/keys))
   - Supports models from OpenAI, Anthropic, Meta, Google, Mistral, and more
   - Format: 'provider/model-name' (e.g., 'openai/gpt-4o', 'anthropic/claude-3-opus')
+  - Free models available with `:free` suffix (e.g., 'microsoft/mai-ds-r1:free', 'deepseek/deepseek-chat:free')
 
 ## Usage Examples
 
@@ -147,12 +148,12 @@ if 'leiden' not in adata.obs.columns:
     if 'log1p' not in adata.uns:
         sc.pp.normalize_total(adata, target_sum=1e4)  # Normalize to 10,000 counts per cell
         sc.pp.log1p(adata)  # Log-transform normalized counts
-    
+
     # Dimensionality reduction: calculate PCA for scRNA-seq data
     if 'X_pca' not in adata.obsm:
         sc.pp.highly_variable_genes(adata, min_mean=0.0125, max_mean=3, min_disp=0.5)  # Select informative genes
         sc.pp.pca(adata, use_highly_variable=True)  # Compute principal components
-    
+
     # Cell clustering: compute neighborhood graph and perform Leiden community detection
     sc.pp.neighbors(adata, n_neighbors=10, n_pcs=30)  # Build KNN graph for clustering
     sc.tl.leiden(adata, resolution=0.8)  # Identify cell populations using Leiden algorithm
@@ -173,7 +174,7 @@ for i in range(len(adata.obs['leiden'].cat.categories)):
 # Example conversion code:
 # if 'Gene' in adata.var.columns:  # Check if gene symbols are available in the metadata
 #     gene_name_dict = dict(zip(adata.var_names, adata.var['Gene']))
-#     marker_genes = {cluster: [gene_name_dict.get(gene_id, gene_id) for gene_id in genes] 
+#     marker_genes = {cluster: [gene_name_dict.get(gene_id, gene_id) for gene_id in genes]
 #                    for cluster, genes in marker_genes.items()}
 
 # Configure API keys for the large language models used in consensus annotation
@@ -187,6 +188,7 @@ os.environ["QWEN_API_KEY"] = "your-qwen-api-key"        # For Alibaba Qwen2.5 mo
 # os.environ["ZHIPU_API_KEY"] = "your-zhipu-api-key"       # For Zhipu GLM-4 models
 # os.environ["STEPFUN_API_KEY"] = "your-stepfun-api-key"    # For Stepfun models
 # os.environ["MINIMAX_API_KEY"] = "your-minimax-api-key"    # For MiniMax models
+# os.environ["OPENROUTER_API_KEY"] = "your-openrouter-api-key"  # For accessing multiple models via OpenRouter
 
 # Execute multi-LLM consensus cell type annotation with iterative deliberation
 consensus_results = interactive_consensus_annotation(
@@ -196,6 +198,25 @@ consensus_results = interactive_consensus_annotation(
     models=["gpt-4o", "claude-3-7-sonnet-20250219", "gemini-1.5-pro", "qwen-max-2025-01-25"],  # Multiple LLMs for consensus
     consensus_threshold=1,     # Minimum proportion required for consensus agreement
     max_discussion_rounds=3    # Number of deliberation rounds between models for refinement
+)
+
+# Alternatively, use OpenRouter for accessing multiple models through a single API
+# This is especially useful for accessing free models with the :free suffix
+os.environ["OPENROUTER_API_KEY"] = "your-openrouter-api-key"
+
+# Example using free OpenRouter models (no credits required)
+free_models_results = interactive_consensus_annotation(
+    marker_genes=marker_genes,
+    species="human",
+    tissue="blood",
+    models=[
+        {"provider": "openrouter", "model": "meta-llama/llama-4-maverick:free"},      # Meta Llama 4 Maverick (free)
+        {"provider": "openrouter", "model": "nvidia/llama-3.1-nemotron-ultra-253b-v1:free"},  # NVIDIA Nemotron Ultra 253B (free)
+        {"provider": "openrouter", "model": "deepseek/deepseek-chat-v3-0324:free"},   # DeepSeek Chat v3 (free)
+        {"provider": "openrouter", "model": "microsoft/mai-ds-r1:free"}               # Microsoft MAI-DS-R1 (free)
+    ],
+    consensus_threshold=0.7,
+    max_discussion_rounds=2
 )
 
 # Retrieve final consensus cell type annotations from the multi-LLM deliberation
@@ -231,9 +252,9 @@ plt.rcParams['font.size'] = 12
 
 # Create a more publication-ready UMAP
 fig, ax = plt.subplots(1, 1, figsize=(12, 10))
-sc.pl.umap(adata, color='consensus_cell_type', legend_loc='on data', 
+sc.pl.umap(adata, color='consensus_cell_type', legend_loc='on data',
          frameon=True, title='mLLMCelltype Consensus Annotations',
-         palette='tab20', size=50, legend_fontsize=12, 
+         palette='tab20', size=50, legend_fontsize=12,
          legend_fontoutline=2, ax=ax)
 
 # Visualize uncertainty metrics
@@ -487,19 +508,19 @@ for(line in data_lines) {
 for(i in 1:length(data_lines)) {
   line <- data_lines[i]
   parts <- strsplit(line, ",", fixed = TRUE)[[1]]
-  
+
   # First part is the cluster name
   cluster_name <- parts[1]
-  
+
   # Use index as key (0-based index, compatible with Seurat)
   cluster_id <- as.character(i - 1)
-  
+
   # Remaining parts are genes
   genes <- parts[-1]
-  
+
   # Filter out NA and empty strings
   genes <- genes[!is.na(genes) & genes != ""]
-  
+
   # Add to marker_genes_list
   marker_genes_list[[cluster_id]] <- list(genes = genes)
 }
@@ -513,21 +534,44 @@ api_keys <- list(
   anthropic = "YOUR_ANTHROPIC_API_KEY"
 )
 
-# Run consensus annotation
-consensus_results <- 
+# Run consensus annotation with paid models
+consensus_results <-
   interactive_consensus_annotation(
     input = marker_genes_list,
     tissue_name = "your tissue type", # e.g., "human heart"
-    models = c("gemini-2.0-flash", 
-              "gemini-1.5-pro", 
-              "qwen-max-2025-01-25", 
-              "grok-3-latest", 
+    models = c("gemini-2.0-flash",
+              "gemini-1.5-pro",
+              "qwen-max-2025-01-25",
+              "grok-3-latest",
               "anthropic/claude-3-7-sonnet-20250219",
               "openai/gpt-4o"),
     api_keys = api_keys,
     controversy_threshold = 0.6,
     entropy_threshold = 1.0,
     max_discussion_rounds = 3,
+    cache_dir = cache_dir,
+    log_dir = log_dir
+  )
+
+# Alternatively, use free OpenRouter models (no credits required)
+# Add OpenRouter API key to the api_keys list
+api_keys$openrouter <- "your-openrouter-api-key"
+
+# Run consensus annotation with free models
+free_consensus_results <-
+  interactive_consensus_annotation(
+    input = marker_genes_list,
+    tissue_name = "your tissue type", # e.g., "human heart"
+    models = c(
+      "meta-llama/llama-4-maverick:free",      # Meta Llama 4 Maverick (free)
+      "nvidia/llama-3.1-nemotron-ultra-253b-v1:free",  # NVIDIA Nemotron Ultra 253B (free)
+      "deepseek/deepseek-chat-v3-0324:free",   # DeepSeek Chat v3 (free)
+      "microsoft/mai-ds-r1:free"               # Microsoft MAI-DS-R1 (free)
+    ),
+    api_keys = api_keys,
+    controversy_threshold = 0.6,
+    entropy_threshold = 1.0,
+    max_discussion_rounds = 2,
     cache_dir = cache_dir,
     log_dir = log_dir
   )
@@ -612,6 +656,16 @@ single_model_results <- annotate_cell_types(
   top_gene_count = 10
 )
 
+# Using a free OpenRouter model
+free_model_results <- annotate_cell_types(
+  input = pbmc_markers,
+  tissue_name = "human PBMC",
+  model = "meta-llama/llama-4-maverick:free",  # free model with :free suffix
+  api_key = "your-openrouter-key",
+  provider = "openrouter",  # specify OpenRouter as the provider
+  top_gene_count = 10
+)
+
 # Print the results
 print(single_model_results)
 
@@ -654,7 +708,7 @@ results <- list()
 for (model in models_to_test) {
   provider <- get_provider(model)
   api_key <- api_keys[[provider]]
-  
+
   # Run annotation
   results[[model]] <- annotate_cell_types(
     input = pbmc_markers,
@@ -663,7 +717,7 @@ for (model in models_to_test) {
     api_key = api_key,
     top_gene_count = 10
   )
-  
+
   # Add to Seurat object
   column_name <- paste0("cell_type_", gsub("[^a-zA-Z0-9]", "_", model))
   pbmc[[column_name]] <- plyr::mapvalues(
