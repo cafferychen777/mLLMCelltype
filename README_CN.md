@@ -1,12 +1,42 @@
 <div align="center">
-  <img src="assets/mLLMCelltype_logo.png" alt="mLLMCelltype Logo" width="200"/>
+  <img src="assets/mLLMCelltype_logo.png" alt="mLLMCelltype - 单细胞 RNA 测序数据的多大语言模型细胞类型注释框架" width="200"/>
 </div>
 
 <div align="center">
   <a href="README.md">English</a> | <a href="README_ES.md">Español</a> | <a href="README_JP.md">日本語</a> | <a href="README_DE.md">Deutsch</a> | <a href="README_FR.md">Français</a> | <a href="README_KR.md">한국어</a>
 </div>
 
-mLLMCelltype是一个迭代式多大语言模型（Multi-LLM）共识框架，专为单细胞RNA测序数据的细胞类型注释而设计。通过利用多种大语言模型（如OpenAI GPT-4o/4.1、Anthropic Claude-3.7/3.5、Google Gemini-2.0、X.AI Grok-3、DeepSeek-V3、阿里云 Qwen2.5、智谱 GLM-4、MiniMax、Stepfun、和 OpenRouter）的互补优势，该框架显著提高了注释准确性，同时提供透明的不确定性量化。
+<div align="center">
+  <a href="https://twitter.com/intent/tweet?text=推荐使用%20mLLMCelltype%3A%20一个用于单细胞%20RNA%20测序数据细胞类型注释的多模型共识框架%21&url=https%3A%2F%2Fgithub.com%2Fcafferychen777%2FmLLMCelltype"><img src="https://img.shields.io/twitter/url?style=social&url=https%3A%2F%2Fgithub.com%2Fcafferychen777%2FmLLMCelltype" alt="分享到推特"></a>
+  <a href="https://github.com/cafferychen777/mLLMCelltype/stargazers"><img src="https://img.shields.io/github/stars/cafferychen777/mLLMCelltype?style=social" alt="星标数"></a>
+  <a href="https://github.com/cafferychen777/mLLMCelltype/network/members"><img src="https://img.shields.io/github/forks/cafferychen777/mLLMCelltype?style=social" alt="分支数"></a>
+</div>
+
+<div align="center">
+  <img src="https://img.shields.io/github/license/cafferychen777/mLLMCelltype" alt="许可证">
+  <img src="https://img.shields.io/github/last-commit/cafferychen777/mLLMCelltype" alt="最近提交">
+  <img src="https://img.shields.io/github/issues/cafferychen777/mLLMCelltype" alt="问题">
+  <img src="https://img.shields.io/github/v/release/cafferychen777/mLLMCelltype" alt="发布版本">
+</div>
+
+# mLLMCelltype: 多大语言模型共识框架用于细胞类型注释
+
+mLLMCelltype是一个先进的迭代式多大语言模型（Multi-LLM）共识框架，专为单细胞RNA测序（scRNA-seq）数据的精确可靠的细胞类型注释而设计。通过利用多种大语言模型（包括OpenAI GPT-4o/4.1、Anthropic Claude-3.7/3.5、Google Gemini-2.0、X.AI Grok-3、DeepSeek-V3、阿里云 Qwen2.5、智谱 GLM-4、MiniMax、Stepfun、和 OpenRouter）的集体智慧，该框架显著提高了注释准确性，同时为生物信息学和计算生物学研究提供透明的不确定性量化。
+
+## 摘要
+
+mLLMCelltype 利用多个大语言模型在结构化的讨论过程中准确地从基因表达数据中识别细胞类型。与依赖参考数据集或单一 AI 模型的传统注释方法不同，mLLMCelltype 实现了一种新颜的共识方法，减少幻觉、提高准确性并提供透明的不确定性指标。该框架设计为与流行的单细胞分析平台（如 Scanpy 和 Seurat）无缝集成，使其对生物信息学研究社区的研究人员广泛可用。
+
+## 目录
+- [新闻](#新闻)
+- [主要特点](#主要特点)
+- [最新更新](#最新更新)
+- [目录结构](#目录结构)
+- [安装](#安装)
+- [使用示例](#使用示例)
+- [可视化示例](#可视化示例)
+- [引用](#引用)
+- [贡献](#贡献)
 
 ## 新闻
 
@@ -102,23 +132,22 @@ pip install git+https://github.com/cafferychen777/mLLMCelltype.git
 这是最简单的解决方案，使用中国大陆可直接访问的模型进行细胞类型注释：
 
 ```python
-# Python 示例
+# Python 示例 - 使用国内大语言模型进行单细胞 RNA-seq 数据的细胞类型注释
 import os
 from mllmcelltype import interactive_consensus_annotation
 
-# 设置国内模型的 API 密钥
-os.environ["DEEPSEEK_API_KEY"] = "your-deepseek-api-key"  # DeepSeek API 密钥
-os.environ["QWEN_API_KEY"] = "your-qwen-api-key"        # 阿里云千问 API 密钥
-os.environ["ZHIPU_API_KEY"] = "your-zhipu-api-key"      # 智谱 GLM API 密钥
+# 配置国内大语言模型的 API 密钥，用于多模型共识注释
+os.environ["DEEPSEEK_API_KEY"] = "your-deepseek-api-key"  # DeepSeek-V3 模型 API 密钥，用于高精度生物信息学分析
+os.environ["QWEN_API_KEY"] = "your-qwen-api-key"        # 阿里云千问 2.5 API 密钥，提供中文生物医学专业知识
+os.environ["ZHIPU_API_KEY"] = "your-zhipu-api-key"      # 智谱 GLM-4 API 密钥，具有强大的中文生物学能力
 
-# 使用国内模型进行共识注释
+# 执行多模型共识细胞类型注释，通过国内大语言模型的协作讨论提高准确性
 consensus_results = interactive_consensus_annotation(
-    marker_genes=marker_genes,
-    species="human",
-    tissue="blood",
-    models=["deepseek-chat", "qwen-max-2025-01-25", "glm-4-plus"],
-    consensus_threshold=0.7
-)
+    marker_genes=marker_genes,      # 各细胞类群的标记基因字典，用于细胞类型识别
+    species="human",               # 指定物种信息，提高注释准确性
+    tissue="blood",               # 指定组织类型，提供重要的生物学背景
+    models=["deepseek-chat", "qwen-max-2025-01-25", "glm-4-plus"],  # 使用国内三个顶级模型进行共识
+    consensus_threshold=0.7        # 设置共识阈值，平衡准确性和覆盖率
 ```
 
 ```r
