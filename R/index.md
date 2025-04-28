@@ -1,4 +1,8 @@
+<div align="center">
+
 # mLLMCelltype <img src="man/figures/logo.png" align="right" height="139" alt="mLLMCelltype logo" />
+
+</div>
 
 <div align="center">
   <a href="https://twitter.com/intent/tweet?text=Check%20out%20mLLMCelltype%3A%20A%20multi-LLM%20consensus%20framework%20for%20cell%20type%20annotation%20in%20scRNA-seq%20data%21&url=https%3A%2F%2Fgithub.com%2Fcafferychen777%2FmLLMCelltype"><img src="https://img.shields.io/twitter/url?style=social&url=https%3A%2F%2Fgithub.com%2Fcafferychen777%2FmLLMCelltype" alt="Tweet"></a>
