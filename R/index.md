@@ -1,9 +1,19 @@
 # mLLMCelltype <img src="man/figures/logo.png" align="right" height="139" alt="mLLMCelltype logo" />
 
-[![GitHub stars](https://img.shields.io/github/stars/cafferychen777/mLLMCelltype?style=social)](https://github.com/cafferychen777/mLLMCelltype/stargazers)
-[![GitHub forks](https://img.shields.io/github/forks/cafferychen777/mLLMCelltype?style=social)](https://github.com/cafferychen777/mLLMCelltype/network/members)
-[![GitHub issues](https://img.shields.io/github/issues/cafferychen777/mLLMCelltype?style=social)](https://github.com/cafferychen777/mLLMCelltype/issues)
-[![Paper](https://img.shields.io/badge/bioRxiv-10.1101%2F2025.04.10.647852-blue)](https://www.biorxiv.org/content/10.1101/2025.04.10.647852v1)
+<div align="center">
+  <a href="https://twitter.com/intent/tweet?text=Check%20out%20mLLMCelltype%3A%20A%20multi-LLM%20consensus%20framework%20for%20cell%20type%20annotation%20in%20scRNA-seq%20data%21&url=https%3A%2F%2Fgithub.com%2Fcafferychen777%2FmLLMCelltype"><img src="https://img.shields.io/twitter/url?style=social&url=https%3A%2F%2Fgithub.com%2Fcafferychen777%2FmLLMCelltype" alt="Tweet"></a>
+  <a href="https://github.com/cafferychen777/mLLMCelltype/stargazers"><img src="https://img.shields.io/github/stars/cafferychen777/mLLMCelltype?style=social" alt="Stars"></a>
+  <a href="https://github.com/cafferychen777/mLLMCelltype/network/members"><img src="https://img.shields.io/github/forks/cafferychen777/mLLMCelltype?style=social" alt="Forks"></a>
+  <a href="https://discord.gg/pb2aZdG4"><img src="https://img.shields.io/badge/Discord-Join%20Chat-7289da?logo=discord&logoColor=white" alt="Discord"></a>
+</div>
+
+<div align="center">
+  <img src="https://img.shields.io/github/license/cafferychen777/mLLMCelltype" alt="License">
+  <img src="https://img.shields.io/github/last-commit/cafferychen777/mLLMCelltype" alt="Last Commit">
+  <img src="https://img.shields.io/github/issues/cafferychen777/mLLMCelltype" alt="Issues">
+  <img src="https://img.shields.io/github/v/release/cafferychen777/mLLMCelltype" alt="Release">
+  <a href="https://www.biorxiv.org/content/10.1101/2025.04.10.647852v1"><img src="https://img.shields.io/badge/bioRxiv-2025.04.10.647852-blue" alt="bioRxiv"></a>
+</div>
 
 ## Multi-LLM Consensus Architecture for Cell Type Annotation in scRNA-seq Data
 
@@ -57,7 +67,7 @@ for (model in models) {
                    "anthropic" = Sys.getenv("ANTHROPIC_API_KEY"),
                    "openai" = Sys.getenv("OPENAI_API_KEY"),
                    "gemini" = Sys.getenv("GEMINI_API_KEY"))
-  
+
   results[[model]] <- annotate_cell_types(
     input = pbmc_markers,
     tissue_name = "human PBMC",
@@ -66,13 +76,22 @@ for (model in models) {
   )
 }
 
-# Create consensus
-consensus_results <- create_consensus(
-  results = results,
+# Create consensus using interactive consensus annotation
+api_keys <- list(
+  anthropic = Sys.getenv("ANTHROPIC_API_KEY"),
+  openai = Sys.getenv("OPENAI_API_KEY"),
+  gemini = Sys.getenv("GEMINI_API_KEY")
+)
+
+consensus_results <- interactive_consensus_annotation(
   input = pbmc_markers,
   tissue_name = "human PBMC",
-  model = "claude-3-7-sonnet-20250219",
-  api_key = Sys.getenv("ANTHROPIC_API_KEY")
+  models = models,  # Use the models defined above
+  api_keys = api_keys,
+  controversy_threshold = 0.7,
+  entropy_threshold = 1.0,
+  max_discussion_rounds = 3,
+  consensus_check_model = "claude-3-7-sonnet-20250219"
 )
 
 # Print consensus results summary
