@@ -10,6 +10,7 @@
   <a href="https://twitter.com/intent/tweet?text=Découvrez%20mLLMCelltype%3A%20Un%20cadre%20de%20consensus%20multi-LLM%20pour%20l%27annotation%20des%20types%20cellulaires%20dans%20les%20données%20scRNA-seq%21&url=https%3A%2F%2Fgithub.com%2Fcafferychen777%2FmLLMCelltype"><img src="https://img.shields.io/twitter/url?style=social&url=https%3A%2F%2Fgithub.com%2Fcafferychen777%2FmLLMCelltype" alt="Tweet"></a>
   <a href="https://github.com/cafferychen777/mLLMCelltype/stargazers"><img src="https://img.shields.io/github/stars/cafferychen777/mLLMCelltype?style=social" alt="Stars"></a>
   <a href="https://github.com/cafferychen777/mLLMCelltype/network/members"><img src="https://img.shields.io/github/forks/cafferychen777/mLLMCelltype?style=social" alt="Forks"></a>
+  <a href="https://discord.gg/pb2aZdG4"><img src="https://img.shields.io/badge/Discord-Rejoindre%20le%20chat-7289da?logo=discord&logoColor=white" alt="Discord"></a>
 </div>
 
 <div align="center">
