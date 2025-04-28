@@ -108,7 +108,7 @@
             
             <h4 data-toc-skip class="date">2025-04-28</h4>
       
-      <small class="dont-index">Source: <a href="https://github.com/cafferychen777/mLLMCelltype/blob/main/vignettes/07-faq.Rmd" class="external-link"><code>vignettes/07-faq.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/cafferychen777/mLLMCelltype/blob/dev/vignettes/07-faq.Rmd" class="external-link"><code>vignettes/07-faq.Rmd</code></a></small>
       <div class="d-none name"><code>07-faq.Rmd</code></div>
     </div>
 
@@ -313,13 +313,63 @@ cluster for annotation</li>
 cluster for annotation</li>
 <li>
 <strong>Other models</strong>: Generally lower cost</li>
+<li>
+<strong>OpenRouter free models</strong>: $0.00 (free with
+<code>:free</code> suffix)</li>
 </ul>
 <p>For a typical dataset with 10-20 clusters: - Single model annotation:
 $0.10-1.00 total - Multi-model consensus (3 models): $0.30-3.00 total -
-With discussion process: Additional $0.10-1.00</p>
+With discussion process: Additional $0.10-1.00 - Using OpenRouter free
+models: $0.00 total</p>
 <p>To reduce costs: - Use caching to avoid redundant API calls - Start
 with more economical models - Use fewer models for initial exploration -
-Reserve multi-model consensus for final analysis</p>
+Reserve multi-model consensus for final analysis - Consider using
+OpenRouter free models (see below)</p>
+</div>
+<div class="section level4">
+<h4 id="how-can-i-use-openrouter-free-models">How can I use OpenRouter free models?<a class="anchor" aria-label="anchor" href="#how-can-i-use-openrouter-free-models"></a>
+</h4>
+<p>OpenRouter provides access to several high-quality models for
+free:</p>
+<ol style="list-style-type: decimal">
+<li><p><strong>Sign up for an OpenRouter account</strong> at <a href="https://openrouter.ai/keys" class="external-link">openrouter.ai</a></p></li>
+<li><p><strong>Get your API key</strong> from the OpenRouter
+dashboard</p></li>
+<li><p><strong>Use models with the <code>:free</code>
+suffix</strong>:</p></li>
+</ol>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Set your OpenRouter API key</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/Sys.setenv.html" class="external-link">Sys.setenv</a></span><span class="op">(</span>OPENROUTER_API_KEY <span class="op">=</span> <span class="st">"your-openrouter-api-key"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Use a free model</span></span>
+<span><span class="va">results</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/annotate_cell_types.html">annotate_cell_types</a></span><span class="op">(</span></span>
+<span>  input <span class="op">=</span> <span class="va">marker_data</span>,</span>
+<span>  tissue_name <span class="op">=</span> <span class="st">"human PBMC"</span>,</span>
+<span>  model <span class="op">=</span> <span class="st">"meta-llama/llama-4-maverick:free"</span>,  <span class="co"># Note the :free suffix</span></span>
+<span>  api_key <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Sys.getenv.html" class="external-link">Sys.getenv</a></span><span class="op">(</span><span class="st">"OPENROUTER_API_KEY"</span><span class="op">)</span>,</span>
+<span>  provider <span class="op">=</span> <span class="st">"openrouter"</span>  <span class="co"># Specify OpenRouter as the provider</span></span>
+<span><span class="op">)</span></span></code></pre></div>
+<ol start="4" style="list-style-type: decimal">
+<li>
+<strong>Recommended free models</strong>:
+<ul>
+<li>
+<code>meta-llama/llama-4-maverick:free</code> - Meta Llama 4
+Maverick (256K context)</li>
+<li>
+<code>nvidia/llama-3.1-nemotron-ultra-253b-v1:free</code> - NVIDIA
+Nemotron Ultra 253B</li>
+<li>
+<code>deepseek/deepseek-chat-v3-0324:free</code> - DeepSeek Chat
+v3</li>
+<li>
+<code>microsoft/mai-ds-r1:free</code> - Microsoft MAI-DS-R1</li>
+</ul>
+</li>
+</ol>
+<p>Free models don’t consume credits but may have limitations compared
+to paid models.</p>
 </div>
 <div class="section level4">
 <h4 id="how-can-i-improve-the-accuracy-of-annotations">How can I improve the accuracy of annotations?<a class="anchor" aria-label="anchor" href="#how-can-i-improve-the-accuracy-of-annotations"></a>
@@ -381,7 +431,7 @@ means your data is using 1-based indexing instead of the required
 0-based</li>
 <li>If your data is 1-based, convert it:</li>
 </ol>
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Convert 1-based to 0-based indexing</span></span>
 <span><span class="va">markers</span><span class="op">$</span><span class="va">cluster</span> <span class="op">&lt;-</span> <span class="va">markers</span><span class="op">$</span><span class="va">cluster</span> <span class="op">-</span> <span class="fl">1</span></span></code></pre></div>
 </div>
@@ -396,14 +446,14 @@ environment</p></li>
 <li><p><strong>Provide keys directly</strong>: Pass the API key directly
 to the function:</p></li>
 </ol>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">results</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/annotate_cell_types.html">annotate_cell_types</a></span><span class="op">(</span><span class="va">...</span>, api_key <span class="op">=</span> <span class="st">"your-api-key"</span><span class="op">)</span></span></code></pre></div>
 <ol start="3" style="list-style-type: decimal">
 <li>
 <strong>Check provider name</strong>: Make sure you’re using the
 correct provider name for your API key:</li>
 </ol>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Set API key for a specific provider</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/Sys.setenv.html" class="external-link">Sys.setenv</a></span><span class="op">(</span>ANTHROPIC_API_KEY <span class="op">=</span> <span class="st">"your-anthropic-key"</span><span class="op">)</span></span></code></pre></div>
 <ol start="4" style="list-style-type: decimal">
@@ -445,7 +495,7 @@ poorly represented in the training data of LLMs</p></li>
 <li><p><strong>Output</strong>: Annotation results can be easily added
 to your Seurat object:</p></li>
 </ol>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">seurat_obj</span><span class="op">$</span><span class="va">cell_type_consensus</span> <span class="op">&lt;-</span> <span class="fu">plyr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/plyr/man/mapvalues.html" class="external-link">mapvalues</a></span><span class="op">(</span></span>
 <span>  x <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/character.html" class="external-link">as.character</a></span><span class="op">(</span><span class="fu"><a href="https://satijalab.github.io/seurat-object/reference/Idents.html" class="external-link">Idents</a></span><span class="op">(</span><span class="va">seurat_obj</span><span class="op">)</span><span class="op">)</span>,</span>
 <span>  from <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/character.html" class="external-link">as.character</a></span><span class="op">(</span><span class="fl">0</span><span class="op">:</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">consensus_results</span><span class="op">$</span><span class="va">final_consensus</span><span class="op">)</span><span class="op">-</span><span class="fl">1</span><span class="op">)</span><span class="op">)</span>,</span>
@@ -456,7 +506,7 @@ to your Seurat object:</p></li>
 <strong>Visualization</strong>: Use Seurat’s visualization functions
 with the added annotations:</li>
 </ol>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://satijalab.org/seurat/reference/DimPlot.html" class="external-link">DimPlot</a></span><span class="op">(</span><span class="va">seurat_obj</span>, group.by <span class="op">=</span> <span class="st">"cell_type_consensus"</span>, label <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level4">
@@ -501,7 +551,7 @@ mLLMCelltype and traditional methods</p></li>
 </h4>
 <p>While mLLMCelltype uses carefully designed prompts, advanced users
 can customize them:</p>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Create a custom annotation prompt</span></span>
 <span><span class="va">custom_prompt</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/create_annotation_prompt.html">create_annotation_prompt</a></span><span class="op">(</span></span>
 <span>  marker_data <span class="op">=</span> <span class="va">your_markers</span>,</span>
@@ -521,7 +571,7 @@ can customize them:</p>
 <h4 id="can-i-add-my-own-custom-llm-models">Can I add my own custom LLM models?<a class="anchor" aria-label="anchor" href="#can-i-add-my-own-custom-llm-models"></a>
 </h4>
 <p>Yes, you can register custom models and providers:</p>
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Register a custom provider</span></span>
 <span><span class="fu"><a href="../reference/register_custom_provider.html">register_custom_provider</a></span><span class="op">(</span></span>
 <span>  provider_name <span class="op">=</span> <span class="st">"my_provider"</span>,</span>
