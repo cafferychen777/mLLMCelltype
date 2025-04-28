@@ -1,12 +1,42 @@
 <div align="center">
-  <img src="assets/mLLMCelltype_logo.png" alt="mLLMCelltype Logo" width="300"/>
+  <img src="assets/mLLMCelltype_logo.png" alt="mLLMCelltype - Cadre de consensus multi-modèles de langage pour l'annotation des types cellulaires dans les données de séquençage d'ARN unicellulaire" width="300"/>
 </div>
 
 <div align="center">
   <a href="README.md">English</a> | <a href="README_CN.md">中文</a> | <a href="README_ES.md">Español</a> | <a href="README_JP.md">日本語</a> | <a href="README_DE.md">Deutsch</a> | <a href="README_KR.md">한국어</a>
 </div>
 
-mLLMCelltype est un cadre de consensus multi-LLM itératif pour l'annotation des types cellulaires dans les données de séquençage d'ARN unicellulaire. En exploitant les forces complémentaires de plusieurs grands modèles de langage (OpenAI GPT-4o/4.1, Anthropic Claude-3.7/3.5, Google Gemini-2.0, X.AI Grok-3, DeepSeek-V3, Alibaba Qwen2.5, Zhipu GLM-4, MiniMax, Stepfun, et OpenRouter), ce cadre améliore considérablement la précision des annotations tout en fournissant une quantification transparente de l'incertitude.
+<div align="center">
+  <a href="https://twitter.com/intent/tweet?text=Découvrez%20mLLMCelltype%3A%20Un%20cadre%20de%20consensus%20multi-LLM%20pour%20l%27annotation%20des%20types%20cellulaires%20dans%20les%20données%20scRNA-seq%21&url=https%3A%2F%2Fgithub.com%2Fcafferychen777%2FmLLMCelltype"><img src="https://img.shields.io/twitter/url?style=social&url=https%3A%2F%2Fgithub.com%2Fcafferychen777%2FmLLMCelltype" alt="Tweet"></a>
+  <a href="https://github.com/cafferychen777/mLLMCelltype/stargazers"><img src="https://img.shields.io/github/stars/cafferychen777/mLLMCelltype?style=social" alt="Stars"></a>
+  <a href="https://github.com/cafferychen777/mLLMCelltype/network/members"><img src="https://img.shields.io/github/forks/cafferychen777/mLLMCelltype?style=social" alt="Forks"></a>
+</div>
+
+<div align="center">
+  <img src="https://img.shields.io/github/license/cafferychen777/mLLMCelltype" alt="License">
+  <img src="https://img.shields.io/github/last-commit/cafferychen777/mLLMCelltype" alt="Last Commit">
+  <img src="https://img.shields.io/github/issues/cafferychen777/mLLMCelltype" alt="Issues">
+  <img src="https://img.shields.io/github/v/release/cafferychen777/mLLMCelltype" alt="Release">
+</div>
+
+# mLLMCelltype: Cadre de Consensus Multi-Modèles de Langage pour l'Annotation des Types Cellulaires
+
+mLLMCelltype est un cadre avancé de consensus multi-LLM itératif pour l'annotation précise et fiable des types cellulaires dans les données de séquençage d'ARN unicellulaire (scRNA-seq). En exploitant l'intelligence collective de plusieurs grands modèles de langage (OpenAI GPT-4o/4.1, Anthropic Claude-3.7/3.5, Google Gemini-2.0, X.AI Grok-3, DeepSeek-V3, Alibaba Qwen2.5, Zhipu GLM-4, MiniMax, Stepfun, et OpenRouter), ce cadre améliore considérablement la précision des annotations tout en fournissant une quantification transparente de l'incertitude pour la recherche en bio-informatique et en biologie computationnelle.
+
+## Résumé
+
+mLLMCelltype représente une avancée significative dans les méthodes computationnelles pour l'analyse transcriptomique unicellulaire. Ce logiciel open-source utilise plusieurs grands modèles de langage dans un processus de délibération structuré pour identifier avec précision les types cellulaires à partir des données d'expression génique. Contrairement aux méthodes d'annotation traditionnelles qui s'appuient sur des jeux de données de référence ou des modèles d'IA uniques, mLLMCelltype implémente une approche de consensus innovante qui réduit les hallucinations, améliore la précision et fournit des métriques d'incertitude transparentes. Le cadre est conçu pour s'intégrer de manière transparente avec les plateformes d'analyse unicellulaire populaires comme Scanpy et Seurat, le rendant accessible aux chercheurs de toute la communauté bio-informatique.
+
+## Table des matières
+- [Actualités](#actualités)
+- [Caractéristiques principales](#caractéristiques-principales)
+- [Mises à jour récentes](#mises-à-jour-récentes)
+- [Structure du répertoire](#structure-du-répertoire)
+- [Installation](#installation)
+- [Exemples d'utilisation](#exemples-dutilisation)
+- [Exemple de visualisation](#exemple-de-visualisation)
+- [Citation](#citation)
+- [Contributions](#contributions)
 
 ## Actualités
 
@@ -65,34 +95,41 @@ pip install mllmcelltype
 ### Exemple d'utilisation en R
 
 ```r
-library(mLLMCelltype)
-library(Seurat)
+# Charger les bibliothèques nécessaires pour l'analyse unicellulaire et l'annotation des types cellulaires
+library(mLLMCelltype)  # Cadre de consensus multi-LLM pour l'annotation des types cellulaires
+library(Seurat)  # Plateforme d'analyse unicellulaire largement utilisée
 
-# Préparer la liste des gènes marqueurs
+# Identifier les gènes marqueurs différentiellement exprimés pour chaque cluster de cellules
+# only.pos = TRUE : sélectionner uniquement les gènes surexprimés dans chaque cluster
+# min.pct = 0.25 : le gène doit être exprimé dans au moins 25% des cellules du cluster
+# logfc.threshold = 0.25 : différence minimale d'expression entre les clusters (log-fold change)
 markers <- FindAllMarkers(seurat_obj, only.pos = TRUE, min.pct = 0.25, logfc.threshold = 0.25)
 
-# Effectuer l'annotation des types cellulaires
+# Lancer le processus d'annotation des types cellulaires utilisant le cadre de consensus multi-LLM
+# Cette fonction coordonne la délibération entre plusieurs LLM pour déterminer les types cellulaires
 consensus_results <- interactive_consensus_annotation(
-  input = markers,
-  tissue_name = "human PBMC",
-  models = c("gpt-4o", "claude-3-7-sonnet-20250219", "gemini-2.0-pro"),
+  input = markers,  # Tableau de gènes marqueurs identifiés par Seurat
+  tissue_name = "human PBMC",  # Spécifier le type de tissu pour fournir un contexte biologique aux LLM
+  models = c("gpt-4o", "claude-3-7-sonnet-20250219", "gemini-2.5-pro"),  # Utiliser les modèles LLM les plus récents
   api_keys = list(
     openai = "your_openai_api_key",
     anthropic = "your_anthropic_api_key",
     gemini = "your_gemini_api_key"
   ),
-  top_gene_count = 10
+  top_gene_count = 10  # Nombre de gènes marqueurs à inclure pour chaque cluster
 )
 
-# Vérifier les résultats
+# Afficher les annotations finales de types cellulaires obtenues par consensus des LLM
 print(consensus_results$final_annotations)
 
-# Ajouter les annotations à l'objet Seurat
-current_clusters <- as.character(Idents(seurat_obj))
-cell_types <- as.character(current_clusters)
+# Intégrer les annotations de types cellulaires consensus dans l'objet Seurat pour visualisation et analyse ultérieure
+current_clusters <- as.character(Idents(seurat_obj))  # Obtenir les identifiants de cluster actuels
+cell_types <- as.character(current_clusters)  # Créer une copie pour la modification
+# Remplacer les identifiants de cluster par les annotations de types cellulaires correspondantes
 for (cluster_id in names(consensus_results$final_annotations)) {
   cell_types[cell_types == cluster_id] <- consensus_results$final_annotations[[cluster_id]]
 }
+# Ajouter les annotations comme nouvelle colonne dans les métadonnées de l'objet Seurat
 seurat_obj$cell_type <- cell_types
 ```
 
@@ -219,33 +256,38 @@ system.file("extdata", "Cat_Heart_markers.csv", package = "mLLMCelltype")
 import scanpy as sc
 import mllmcelltype as mct
 
-# Charger l'objet AnnData
+# Charger l'objet AnnData contenant les données d'expression génique unicellulaire
 adata = sc.read_h5ad("your_data.h5ad")
 
-# Effectuer le clustering (ignorer si déjà fait)
+# Effectuer le clustering par graphe de voisinage pour identifier les populations cellulaires
+# Cette étape construit un graphe de connectivité entre cellules basé sur la similarité d'expression génique
 sc.pp.neighbors(adata)
+# Appliquer l'algorithme de clustering Leiden pour détecter les communautés cellulaires distinctes
 sc.tl.leiden(adata)
 
-# Identifier les gènes marqueurs
+# Identifier les gènes marqueurs différentiellement exprimés pour chaque cluster
+# Utilisation du test de Wilcoxon pour détecter les gènes spécifiques à chaque type cellulaire
 sc.tl.rank_genes_groups(adata, groupby="leiden", method="wilcoxon")
 
-# Convertir les gènes marqueurs au format d'entrée de mLLMCelltype
+# Convertir les gènes marqueurs de Scanpy au format dict requis par mLLMCelltype
+# Cette fonction extrait les gènes les plus significatifs pour chaque cluster
 markers_dict = mct.utils.convert_scanpy_markers(adata)
 
-# Effectuer l'annotation des types cellulaires
+# Effectuer l'annotation des types cellulaires en utilisant le cadre de consensus multi-LLM
+# Cette fonction coordonne le processus de délibération entre plusieurs LLM pour déterminer les types cellulaires
 consensus_results = mct.annotate.interactive_consensus_annotation(
     input=markers_dict,
-    tissue_name="human PBMC",
-    models=["gpt-4o", "claude-3-7-sonnet-20250219", "gemini-1.5-pro"],
+    tissue_name="human PBMC",  # Spécifier le type de tissu pour fournir un contexte biologique aux LLM
+    models=["gpt-4o", "claude-3-7-sonnet-20250219", "gemini-2.5-pro"],  # Utiliser les modèles LLM les plus récents
     api_keys={
         "openai": "your_openai_api_key",
         "anthropic": "your_anthropic_api_key",
         "gemini": "your_gemini_api_key"
     },
-    top_gene_count=10
+    top_gene_count=10  # Nombre de gènes marqueurs à inclure pour chaque cluster
 )
 
-# Ajouter les annotations à l'objet AnnData
+# Intégrer les annotations de types cellulaires consensus dans l'objet AnnData pour visualisation et analyse ultérieure
 adata.obs["cell_type"] = adata.obs["leiden"].map(
     lambda x: consensus_results["final_annotations"].get(x, "Unknown")
 )
