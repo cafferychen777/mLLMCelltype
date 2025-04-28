@@ -96,6 +96,7 @@ pip install git+https://github.com/cafferychen777/mLLMCelltype.git
 - **OpenRouter**: 通过单一API访问多种模型 ([API Key](https://openrouter.ai/keys))
   - 支持来自OpenAI、Anthropic、Meta、Google、Mistral等多家提供商的模型
   - 格式: 'provider/model-name'（例如：'openai/gpt-4o'、'anthropic/claude-3-opus'）
+  - 提供免费模型，使用`:free`后缀（例如：'meta-llama/llama-4-maverick:free'、'nvidia/llama-3.1-nemotron-ultra-253b-v1:free'）
 
 ## 中国大陆用户指南
 
@@ -190,9 +191,23 @@ consensus_results = interactive_consensus_annotation(
     species="human",
     tissue="blood",
     models=[
-        "openai/gpt-4o",                  # 通过 OpenRouter 访问 OpenAI
-        "anthropic/claude-3-opus",        # 通过 OpenRouter 访问 Anthropic
-        "deepseek/deepseek-chat"          # 通过 OpenRouter 访问 DeepSeek
+        "openai/gpt-4o",                  # 通过 OpenRouter 访问 OpenAI（付费）
+        "anthropic/claude-3-opus",        # 通过 OpenRouter 访问 Anthropic（付费）
+        "deepseek/deepseek-chat"          # 通过 OpenRouter 访问 DeepSeek（付费）
+    ],
+    consensus_threshold=0.7
+)
+
+# 使用 OpenRouter 免费模型（无需消耗积分）
+free_models_results = interactive_consensus_annotation(
+    marker_genes=marker_genes,
+    species="human",
+    tissue="blood",
+    models=[
+        "meta-llama/llama-4-maverick:free",                # Meta Llama 4 Maverick（免费）
+        "nvidia/llama-3.1-nemotron-ultra-253b-v1:free",    # NVIDIA Nemotron Ultra 253B（免费）
+        "deepseek/deepseek-chat-v3-0324:free",             # DeepSeek Chat v3（免费）
+        "microsoft/mai-ds-r1:free"                         # Microsoft MAI-DS-R1（免费）
     ],
     consensus_threshold=0.7
 )
@@ -202,14 +217,29 @@ consensus_results = interactive_consensus_annotation(
 # R 示例
 library(mLLMCelltype)
 
-# 使用 OpenRouter 进行共识注释
+# 使用 OpenRouter 进行共识注释（付费模型）
 consensus_results <- interactive_consensus_annotation(
   input = pbmc_markers,
   tissue_name = "human PBMC",
   models = c(
-    "openai/gpt-4o",              # 通过 OpenRouter 访问 OpenAI
-    "anthropic/claude-3-opus",    # 通过 OpenRouter 访问 Anthropic
-    "deepseek/deepseek-chat"      # 通过 OpenRouter 访问 DeepSeek
+    "openai/gpt-4o",              # 通过 OpenRouter 访问 OpenAI（付费）
+    "anthropic/claude-3-opus",    # 通过 OpenRouter 访问 Anthropic（付费）
+    "deepseek/deepseek-chat"      # 通过 OpenRouter 访问 DeepSeek（付费）
+  ),
+  api_keys = list(
+    openrouter = "your-openrouter-key"  # 单一 API 密钥访问多种模型
+  )
+)
+
+# 使用 OpenRouter 免费模型进行共识注释（无需消耗积分）
+free_consensus_results <- interactive_consensus_annotation(
+  input = pbmc_markers,
+  tissue_name = "human PBMC",
+  models = c(
+    "meta-llama/llama-4-maverick:free",                # Meta Llama 4 Maverick（免费）
+    "nvidia/llama-3.1-nemotron-ultra-253b-v1:free",    # NVIDIA Nemotron Ultra 253B（免费）
+    "deepseek/deepseek-chat-v3-0324:free",             # DeepSeek Chat v3（免费）
+    "microsoft/mai-ds-r1:free"                         # Microsoft MAI-DS-R1（免费）
   ),
   api_keys = list(
     openrouter = "your-openrouter-key"  # 单一 API 密钥访问多种模型
@@ -453,12 +483,12 @@ if 'leiden' not in adata.obs.columns:
     if 'log1p' not in adata.uns:
         sc.pp.normalize_total(adata, target_sum=1e4)
         sc.pp.log1p(adata)
-    
+
     # 如果尚未计算PCA，则计算
     if 'X_pca' not in adata.obsm:
         sc.pp.highly_variable_genes(adata, min_mean=0.0125, max_mean=3, min_disp=0.5)
         sc.pp.pca(adata, use_highly_variable=True)
-    
+
     # 计算邻居图和leiden聚类
     sc.pp.neighbors(adata, n_neighbors=10, n_pcs=30)
     sc.tl.leiden(adata, resolution=0.8)
@@ -479,7 +509,7 @@ for i in range(len(adata.obs['leiden'].cat.categories)):
 # 示例：
 # if 'Gene' in adata.var.columns:  # 检查var数据框中是否有基因符号
 #     gene_name_dict = dict(zip(adata.var_names, adata.var['Gene']))
-#     marker_genes = {cluster: [gene_name_dict.get(gene_id, gene_id) for gene_id in genes] 
+#     marker_genes = {cluster: [gene_name_dict.get(gene_id, gene_id) for gene_id in genes]
 #                    for cluster, genes in marker_genes.items()}
 
 # 设置您想要使用的提供商的API密钥
@@ -537,9 +567,9 @@ plt.rcParams['font.size'] = 12
 
 # 创建更适合发表的UMAP图
 fig, ax = plt.subplots(1, 1, figsize=(12, 10))
-sc.pl.umap(adata, color='consensus_cell_type', legend_loc='on data', 
+sc.pl.umap(adata, color='consensus_cell_type', legend_loc='on data',
          frameon=True, title='mLLMCelltype共识注释',
-         palette='tab20', size=50, legend_fontsize=12, 
+         palette='tab20', size=50, legend_fontsize=12,
          legend_fontoutline=2, ax=ax)
 
 # 可视化不确定性指标
@@ -565,7 +595,7 @@ library(cowplot) # 添加用于 plot_grid
 pbmc <- readRDS("your_seurat_object.rds")
 
 # 为每个聚类寻找标记基因
-pbmc_markers <- FindAllMarkers(pbmc, 
+pbmc_markers <- FindAllMarkers(pbmc,
                             only.pos = TRUE,
                             min.pct = 0.25,
                             logfc.threshold = 0.25)
@@ -748,19 +778,19 @@ for(line in data_lines) {
 for(i in 1:length(data_lines)) {
   line <- data_lines[i]
   parts <- strsplit(line, ",", fixed = TRUE)[[1]]
-  
+
   # 第一部分是cluster名称
   cluster_name <- parts[1]
-  
+
   # 使用索引作为键 (0-based索引，与Seurat兼容)
   cluster_id <- as.character(i - 1)
-  
+
   # 其余部分是基因
   genes <- parts[-1]
-  
+
   # 过滤掉NA和空字符串
   genes <- genes[!is.na(genes) & genes != ""]
-  
+
   # 添加到marker_genes_list
   marker_genes_list[[cluster_id]] <- list(genes = genes)
 }
@@ -775,14 +805,14 @@ api_keys <- list(
 )
 
 # 运行consensus annotation
-consensus_results <- 
+consensus_results <-
   interactive_consensus_annotation(
     input = marker_genes_list,
     tissue_name = "your tissue type", # 例如："human heart"
-    models = c("gemini-2.0-flash", 
-              "gemini-1.5-pro", 
-              "qwen-max-2025-01-25", 
-              "grok-3-latest", 
+    models = c("gemini-2.0-flash",
+              "gemini-1.5-pro",
+              "qwen-max-2025-01-25",
+              "grok-3-latest",
               "anthropic/claude-3-7-sonnet-20250219",
               "openai/gpt-4o"),
     api_keys = api_keys,
@@ -869,6 +899,16 @@ single_model_results <- annotate_cell_types(
   top_gene_count = 10
 )
 
+# 使用 OpenRouter 免费模型
+free_model_results <- annotate_cell_types(
+  input = pbmc_markers,
+  tissue_name = "human PBMC",
+  model = "meta-llama/llama-4-maverick:free",  # 免费模型，使用:free后缀
+  api_key = "your-openrouter-key",
+  provider = "openrouter",  # 指定 OpenRouter 作为提供商
+  top_gene_count = 10
+)
+
 # 打印结果
 print(single_model_results)
 
@@ -903,10 +943,10 @@ for (i in 1:length(models)) {
     api_key = api_keys[i],
     top_gene_count = 10
   )
-  
+
   # 创建基于模型的列名
   column_name <- paste0("cell_type_", gsub("[^a-zA-Z0-9]", "_", models[i]))
-  
+
   # 将注释添加到 Seurat 对象
   pbmc[[column_name]] <- plyr::mapvalues(
     x = as.character(Idents(pbmc)),
