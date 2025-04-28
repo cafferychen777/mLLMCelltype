@@ -57,33 +57,54 @@ library(patchwork)
 # First, check the structure of consensus_results
 # Print the structure of consensus_results to understand its format
 # str(consensus_results)
-
-# Convert final_annotations to a vector if it's a list
-final_annotations <- unlist(consensus_results$final_annotations)
+# print(names(consensus_results))
+# print(names(consensus_results$final_annotations))
 
 # Get cluster IDs from Seurat object
 cluster_ids <- unique(as.character(Idents(seurat_obj)))
+cat("Cluster IDs in Seurat object:", paste(cluster_ids, collapse=", "), "\n")
+
+# Convert final_annotations to a vector if it's a list
+final_annotations <- unlist(consensus_results$final_annotations)
+cat("Final annotations:", paste(names(final_annotations), collapse=", "), "\n")
 
 # Create a mapping between cluster IDs and annotations
-# This handles cases where cluster IDs don't match the indices in final_annotations
-if (length(names(final_annotations)) > 0 && all(names(final_annotations) %in% cluster_ids)) {
-  # If final_annotations has named entries matching cluster IDs
-  annotation_map <- final_annotations[cluster_ids]
-} else if (length(final_annotations) == length(cluster_ids)) {
-  # If the number of annotations matches the number of clusters
-  annotation_map <- final_annotations
-  names(annotation_map) <- cluster_ids
-} else {
-  # Create a mapping based on available annotations
-  annotation_map <- final_annotations[1:min(length(final_annotations), length(cluster_ids))]
-  names(annotation_map) <- cluster_ids[1:length(annotation_map)]
-  # Fill in missing annotations if needed
-  if (length(annotation_map) < length(cluster_ids)) {
-    for (i in (length(annotation_map)+1):length(cluster_ids)) {
-      annotation_map[cluster_ids[i]] <- paste("Unknown", i)
+annotation_map <- vector("character", length(cluster_ids))
+names(annotation_map) <- cluster_ids
+
+# First, try direct mapping where cluster ID matches the name in final_annotations
+for (i in seq_along(cluster_ids)) {
+  cluster_id <- cluster_ids[i]
+  # Check if this cluster ID exists in final_annotations names
+  if (cluster_id %in% names(final_annotations)) {
+    annotation_map[cluster_id] <- final_annotations[cluster_id]
+  }
+}
+
+# For any remaining unmapped clusters, try to infer the mapping
+unmapped <- is.na(annotation_map) | annotation_map == ""
+if (any(unmapped)) {
+  unmapped_ids <- names(annotation_map)[unmapped]
+  cat("Unmapped cluster IDs:", paste(unmapped_ids, collapse=", "), "\n")
+
+  # If we have the same number of unmapped clusters as remaining annotations,
+  # we can try to assign them in order
+  remaining_annotations <- final_annotations[!names(final_annotations) %in% names(annotation_map)[!unmapped]]
+
+  if (length(remaining_annotations) == length(unmapped_ids)) {
+    for (i in seq_along(unmapped_ids)) {
+      annotation_map[unmapped_ids[i]] <- remaining_annotations[i]
+    }
+  } else {
+    # If we can't map directly, assign "Unknown" to unmapped clusters
+    for (id in unmapped_ids) {
+      annotation_map[id] <- paste("Unknown", id)
     }
   }
 }
+
+cat("Final annotation map:\n")
+print(annotation_map)
 
 # Add consensus annotations to Seurat object
 seurat_obj$cell_type_consensus <- plyr::mapvalues(
@@ -91,6 +112,9 @@ seurat_obj$cell_type_consensus <- plyr::mapvalues(
   from = names(annotation_map),
   to = as.character(annotation_map)
 )
+
+# Verify the annotations were added correctly
+table(seurat_obj$cell_type_consensus, as.character(Idents(seurat_obj)))
 
 # Extract consensus metrics from the consensus results
 # Check if consensus_results has the expected structure
@@ -117,11 +141,30 @@ if (!is.null(consensus_results$initial_results) &&
   proportion_map <- metrics_df$consensus_proportion
   names(proportion_map) <- metrics_df$cluster
 
+  # Print the proportion map for debugging
+  cat("Consensus proportion map:\n")
+  print(proportion_map)
+
   # Create a mapping for entropy
   entropy_map <- metrics_df$entropy
   names(entropy_map) <- metrics_df$cluster
 
+  # Print the entropy map for debugging
+  cat("Entropy map:\n")
+  print(entropy_map)
+
   # Add consensus proportion to Seurat object
+  # First check if all cluster IDs are in the proportion map
+  missing_clusters <- setdiff(cluster_ids, names(proportion_map))
+  if (length(missing_clusters) > 0) {
+    cat("Warning: Some clusters are missing from proportion map:",
+        paste(missing_clusters, collapse=", "), "\n")
+    # Add default values for missing clusters
+    for (cluster in missing_clusters) {
+      proportion_map[cluster] <- 1.0  # Default to perfect consensus
+    }
+  }
+
   seurat_obj$consensus_proportion <- as.numeric(plyr::mapvalues(
     x = as.character(Idents(seurat_obj)),
     from = names(proportion_map),
@@ -129,11 +172,26 @@ if (!is.null(consensus_results$initial_results) &&
   ))
 
   # Add entropy to Seurat object
+  # First check if all cluster IDs are in the entropy map
+  missing_clusters <- setdiff(cluster_ids, names(entropy_map))
+  if (length(missing_clusters) > 0) {
+    cat("Warning: Some clusters are missing from entropy map:",
+        paste(missing_clusters, collapse=", "), "\n")
+    # Add default values for missing clusters
+    for (cluster in missing_clusters) {
+      entropy_map[cluster] <- 0.0  # Default to no uncertainty
+    }
+  }
+
   seurat_obj$entropy <- as.numeric(plyr::mapvalues(
     x = as.character(Idents(seurat_obj)),
     from = names(entropy_map),
     to = as.character(entropy_map)
   ))
+
+  # Verify metrics were added correctly
+  summary(seurat_obj$consensus_proportion)
+  summary(seurat_obj$entropy)
 } else {
   # If the expected structure is not found, create dummy metrics
   warning("Could not find consensus metrics in the results. Creating dummy metrics for visualization purposes.")
