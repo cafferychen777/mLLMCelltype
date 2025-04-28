@@ -115,31 +115,29 @@
 
     
     
-<p><img src="../reference/figures/logo.png" align="right" height="139"></p>
-<div class="section level2">
-<h2 id="advanced-features-case-studies">Advanced Features &amp; Case Studies<a class="anchor" aria-label="anchor" href="#advanced-features-case-studies"></a>
-</h2>
+<p><img src="../reference/figures/logo.png" alt="mLLMCelltype logo" align="right" height="139"></p>
 <p>This article explores advanced features of mLLMCelltype and presents
-real-world case studies demonstrating its application in various
-research contexts.</p>
+practical examples demonstrating its application in various research
+contexts.</p>
+<div class="section level2">
+<h2 id="hierarchical-cell-type-annotation">Hierarchical Cell Type Annotation<a class="anchor" aria-label="anchor" href="#hierarchical-cell-type-annotation"></a>
+</h2>
 <div class="section level3">
-<h3 id="hierarchical-cell-type-annotation">Hierarchical Cell Type Annotation<a class="anchor" aria-label="anchor" href="#hierarchical-cell-type-annotation"></a>
+<h3 id="understanding-hierarchical-annotation">Understanding Hierarchical Annotation<a class="anchor" aria-label="anchor" href="#understanding-hierarchical-annotation"></a>
 </h3>
-<div class="section level4">
-<h4 id="understanding-hierarchical-annotation">Understanding Hierarchical Annotation<a class="anchor" aria-label="anchor" href="#understanding-hierarchical-annotation"></a>
-</h4>
 <p>Cell types often exist in hierarchical relationships. For example, T
 cells can be further classified into CD4+ T cells, CD8+ T cells,
-regulatory T cells, etc. mLLMCelltype supports hierarchical annotation
-to capture these relationships.</p>
+regulatory T cells, etc. mLLMCelltype can be used in a multi-step
+workflow to capture these hierarchical relationships.</p>
 </div>
-<div class="section level4">
-<h4 id="implementing-hierarchical-annotation">Implementing Hierarchical Annotation<a class="anchor" aria-label="anchor" href="#implementing-hierarchical-annotation"></a>
-</h4>
-<p>To perform hierarchical annotation:</p>
+<div class="section level3">
+<h3 id="implementing-hierarchical-annotation">Implementing Hierarchical Annotation<a class="anchor" aria-label="anchor" href="#implementing-hierarchical-annotation"></a>
+</h3>
+<p>Here’s a practical approach to perform hierarchical annotation:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://cafferychen777.github.io/mLLMCelltype">mLLMCelltype</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://satijalab.org/seurat" class="external-link">Seurat</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a></span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Step 1: Perform initial high-level annotation</span></span>
 <span><span class="va">high_level_results</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/annotate_cell_types.html">annotate_cell_types</a></span><span class="op">(</span></span>
@@ -181,13 +179,14 @@ to capture these relationships.</p>
 <span>  to <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"T cells: "</span>, <span class="va">t_cell_subtypes</span><span class="op">)</span></span>
 <span><span class="op">)</span></span></code></pre></div>
 </div>
-<div class="section level4">
-<h4 id="ensuring-parent-child-consistency">Ensuring Parent-Child Consistency<a class="anchor" aria-label="anchor" href="#ensuring-parent-child-consistency"></a>
-</h4>
-<p>To ensure consistency between hierarchical levels:</p>
+<div class="section level3">
+<h3 id="validating-hierarchical-annotations">Validating Hierarchical Annotations<a class="anchor" aria-label="anchor" href="#validating-hierarchical-annotations"></a>
+</h3>
+<p>After creating hierarchical annotations, it’s important to validate
+the consistency between levels:</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># Function to check parent-child consistency</span></span>
-<span><span class="va">check_hierarchy_consistency</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">high_level</span>, <span class="va">detailed_level</span><span class="op">)</span> <span class="op">{</span></span>
+<code class="sourceCode R"><span><span class="co"># Create a simple function to check parent-child consistency</span></span>
+<span><span class="va">validate_hierarchy</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">high_level</span>, <span class="va">detailed_level</span><span class="op">)</span> <span class="op">{</span></span>
 <span>  <span class="co"># Extract parent type from detailed annotation (before the colon)</span></span>
 <span>  <span class="va">parent_from_detailed</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">sapply</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/strsplit.html" class="external-link">strsplit</a></span><span class="op">(</span><span class="va">detailed_level</span>, <span class="st">": "</span><span class="op">)</span>, <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="va">x</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span><span class="op">)</span></span>
 <span></span>
@@ -202,45 +201,49 @@ to capture these relationships.</p>
 <span>  <span class="op">)</span></span>
 <span><span class="op">}</span></span>
 <span></span>
-<span><span class="co"># Apply consistency check</span></span>
-<span><span class="va">hierarchy_check</span> <span class="op">&lt;-</span> <span class="fu">check_hierarchy_consistency</span><span class="op">(</span></span>
+<span><span class="co"># Apply validation</span></span>
+<span><span class="va">hierarchy_validation</span> <span class="op">&lt;-</span> <span class="fu">validate_hierarchy</span><span class="op">(</span></span>
 <span>  <span class="va">seurat_obj</span><span class="op">$</span><span class="va">high_level_celltype</span>,</span>
 <span>  <span class="va">seurat_obj</span><span class="op">$</span><span class="va">detailed_celltype</span></span>
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Identify inconsistencies</span></span>
-<span><span class="va">inconsistencies</span> <span class="op">&lt;-</span> <span class="va">hierarchy_check</span><span class="op">[</span><span class="op">!</span><span class="va">hierarchy_check</span><span class="op">$</span><span class="va">consistent</span>, <span class="op">]</span></span>
+<span><span class="va">inconsistencies</span> <span class="op">&lt;-</span> <span class="va">hierarchy_validation</span><span class="op">[</span><span class="op">!</span><span class="va">hierarchy_validation</span><span class="op">$</span><span class="va">consistent</span>, <span class="op">]</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">inconsistencies</span><span class="op">)</span></span></code></pre></div>
 </div>
 </div>
+<div class="section level2">
+<h2 id="handling-noisy-input-data">Handling Noisy Input Data<a class="anchor" aria-label="anchor" href="#handling-noisy-input-data"></a>
+</h2>
 <div class="section level3">
-<h3 id="handling-noisy-input-data">Handling Noisy Input Data<a class="anchor" aria-label="anchor" href="#handling-noisy-input-data"></a>
+<h3 id="strategies-for-noisy-marker-genes">Strategies for Noisy Marker Genes<a class="anchor" aria-label="anchor" href="#strategies-for-noisy-marker-genes"></a>
 </h3>
+<p>Real-world scRNA-seq data often contains noise. Here are practical
+strategies for handling noisy input:</p>
 <div class="section level4">
-<h4 id="strategies-for-noisy-marker-genes">Strategies for Noisy Marker Genes<a class="anchor" aria-label="anchor" href="#strategies-for-noisy-marker-genes"></a>
+<h4 id="adjust-the-top_gene_count-parameter">1. Adjust the top_gene_count parameter<a class="anchor" aria-label="anchor" href="#adjust-the-top_gene_count-parameter"></a>
 </h4>
-<p>Real-world scRNA-seq data often contains noise. Here are strategies
-for handling noisy input:</p>
-<div class="section level5">
-<h5 id="adjust-the-top_gene_count-parameter">1. Adjust the top_gene_count parameter<a class="anchor" aria-label="anchor" href="#adjust-the-top_gene_count-parameter"></a>
-</h5>
+<p>For noisy datasets, using fewer top genes can help focus on the
+strongest signals:</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># For noisy data, use fewer top genes</span></span>
 <span><span class="va">results_fewer_genes</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/annotate_cell_types.html">annotate_cell_types</a></span><span class="op">(</span></span>
-<span>  input <span class="op">=</span> <span class="va">noisy_markers</span>,</span>
+<span>  input <span class="op">=</span> <span class="va">marker_data</span>,  <span class="co"># Your marker gene data</span></span>
 <span>  tissue_name <span class="op">=</span> <span class="st">"human PBMC"</span>,</span>
 <span>  model <span class="op">=</span> <span class="st">"claude-3-7-sonnet-20250219"</span>,</span>
 <span>  api_key <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Sys.getenv.html" class="external-link">Sys.getenv</a></span><span class="op">(</span><span class="st">"ANTHROPIC_API_KEY"</span><span class="op">)</span>,</span>
 <span>  top_gene_count <span class="op">=</span> <span class="fl">5</span>  <span class="co"># Use fewer genes to focus on strongest signals</span></span>
 <span><span class="op">)</span></span></code></pre></div>
 </div>
-<div class="section level5">
-<h5 id="use-stricter-filtering-for-marker-genes">2. Use stricter filtering for marker genes<a class="anchor" aria-label="anchor" href="#use-stricter-filtering-for-marker-genes"></a>
-</h5>
+<div class="section level4">
+<h4 id="apply-stricter-filtering-for-marker-genes">2. Apply stricter filtering for marker genes<a class="anchor" aria-label="anchor" href="#apply-stricter-filtering-for-marker-genes"></a>
+</h4>
+<p>Pre-filtering marker genes with stricter thresholds can improve
+annotation quality:</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Apply stricter filtering to marker genes</span></span>
 <span><span class="va">filtered_markers</span> <span class="op">&lt;-</span> <span class="va">marker_data</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
-<span>  <span class="fu"><a href="https://rdrr.io/r/stats/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">p_val_adj</span> <span class="op">&lt;</span> <span class="fl">0.01</span>, <span class="va">avg_log2FC</span> <span class="op">&gt;</span> <span class="fl">1.0</span><span class="op">)</span>  <span class="co"># Stricter thresholds</span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">p_val_adj</span> <span class="op">&lt;</span> <span class="fl">0.01</span>, <span class="va">avg_log2FC</span> <span class="op">&gt;</span> <span class="fl">1.0</span><span class="op">)</span>  <span class="co"># Stricter thresholds</span></span>
 <span></span>
 <span><span class="co"># Annotate with filtered markers</span></span>
 <span><span class="va">results_filtered</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/annotate_cell_types.html">annotate_cell_types</a></span><span class="op">(</span></span>
@@ -250,453 +253,572 @@ for handling noisy input:</p>
 <span>  api_key <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Sys.getenv.html" class="external-link">Sys.getenv</a></span><span class="op">(</span><span class="st">"ANTHROPIC_API_KEY"</span><span class="op">)</span></span>
 <span><span class="op">)</span></span></code></pre></div>
 </div>
-<div class="section level5">
-<h5 id="use-multi-model-consensus">3. Use multi-model consensus<a class="anchor" aria-label="anchor" href="#use-multi-model-consensus"></a>
-</h5>
+<div class="section level4">
+<h4 id="use-multi-model-consensus">3. Use multi-model consensus<a class="anchor" aria-label="anchor" href="#use-multi-model-consensus"></a>
+</h4>
+<p>The consensus approach can help overcome noise by combining
+predictions from multiple models:</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># Use multiple models to overcome noise</span></span>
-<span><span class="va">models</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
-<span>  <span class="st">"claude-3-7-sonnet-20250219"</span>,</span>
-<span>  <span class="st">"gpt-4o"</span>,</span>
-<span>  <span class="st">"gemini-1.5-pro"</span></span>
-<span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># Run annotation with multiple models</span></span>
-<span><span class="va">results</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="kw">for</span> <span class="op">(</span><span class="va">model</span> <span class="kw">in</span> <span class="va">models</span><span class="op">)</span> <span class="op">{</span></span>
-<span>  <span class="va">provider</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_provider.html">get_provider</a></span><span class="op">(</span><span class="va">model</span><span class="op">)</span></span>
-<span>  <span class="va">api_key</span> <span class="op">&lt;-</span> <span class="va">api_keys</span><span class="op">[[</span><span class="va">provider</span><span class="op">]</span><span class="op">]</span></span>
-<span></span>
-<span>  <span class="va">results</span><span class="op">[[</span><span class="va">model</span><span class="op">]</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/annotate_cell_types.html">annotate_cell_types</a></span><span class="op">(</span></span>
-<span>    input <span class="op">=</span> <span class="va">noisy_markers</span>,</span>
-<span>    tissue_name <span class="op">=</span> <span class="st">"human PBMC"</span>,</span>
-<span>    model <span class="op">=</span> <span class="va">model</span>,</span>
-<span>    api_key <span class="op">=</span> <span class="va">api_key</span></span>
-<span>  <span class="op">)</span></span>
-<span><span class="op">}</span></span>
-<span></span>
-<span><span class="co"># Create consensus using interactive_consensus_annotation</span></span>
-<span><span class="va">consensus_results</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/interactive_consensus_annotation.html">interactive_consensus_annotation</a></span><span class="op">(</span></span>
-<span>  input <span class="op">=</span> <span class="va">noisy_markers</span>,</span>
-<span>  tissue_name <span class="op">=</span> <span class="st">"human PBMC"</span>,</span>
-<span>  models <span class="op">=</span> <span class="va">models</span>,  <span class="co"># Use all the models defined above</span></span>
-<span>  api_keys <span class="op">=</span> <span class="va">api_keys</span>,</span>
-<span>  controversy_threshold <span class="op">=</span> <span class="fl">0.7</span>,</span>
-<span>  entropy_threshold <span class="op">=</span> <span class="fl">1.0</span>,</span>
-<span>  consensus_check_model <span class="op">=</span> <span class="st">"claude-3-7-sonnet-20250219"</span></span>
-<span><span class="op">)</span></span></code></pre></div>
-</div>
-</div>
-<div class="section level4">
-<h4 id="case-study-annotation-with-batch-effects">Case Study: Annotation with Batch Effects<a class="anchor" aria-label="anchor" href="#case-study-annotation-with-batch-effects"></a>
-</h4>
-<p>This case study demonstrates how mLLMCelltype handles data with batch
-effects:</p>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># Simulated data with batch effects</span></span>
-<span><span class="co"># In real scenarios, this would be your actual data with batch effects</span></span>
-<span><span class="va">batch_affected_markers</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/utils/read.table.html" class="external-link">read.csv</a></span><span class="op">(</span><span class="st">"path/to/batch_affected_markers.csv"</span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># Approach 1: Use multi-model consensus with interactive_consensus_annotation</span></span>
-<span><span class="va">batch_consensus</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/interactive_consensus_annotation.html">interactive_consensus_annotation</a></span><span class="op">(</span></span>
-<span>  input <span class="op">=</span> <span class="va">batch_affected_markers</span>,</span>
-<span>  tissue_name <span class="op">=</span> <span class="st">"mouse brain"</span>,</span>
-<span>  models <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"claude-3-7-sonnet-20250219"</span>, <span class="st">"gpt-4o"</span>, <span class="st">"gemini-1.5-pro"</span><span class="op">)</span>,</span>
-<span>  api_keys <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
-<span>    <span class="st">"anthropic"</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Sys.getenv.html" class="external-link">Sys.getenv</a></span><span class="op">(</span><span class="st">"ANTHROPIC_API_KEY"</span><span class="op">)</span>,</span>
-<span>    <span class="st">"openai"</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Sys.getenv.html" class="external-link">Sys.getenv</a></span><span class="op">(</span><span class="st">"OPENAI_API_KEY"</span><span class="op">)</span>,</span>
-<span>    <span class="st">"gemini"</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Sys.getenv.html" class="external-link">Sys.getenv</a></span><span class="op">(</span><span class="st">"GEMINI_API_KEY"</span><span class="op">)</span></span>
-<span>  <span class="op">)</span>,</span>
-<span>  controversy_threshold <span class="op">=</span> <span class="fl">0.4</span>  <span class="co"># Lower threshold to discuss more clusters</span></span>
-<span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># Approach 2: Include batch information in tissue context</span></span>
-<span><span class="va">batch_aware_results</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/annotate_cell_types.html">annotate_cell_types</a></span><span class="op">(</span></span>
-<span>  input <span class="op">=</span> <span class="va">batch_affected_markers</span>,</span>
-<span>  tissue_name <span class="op">=</span> <span class="st">"mouse brain with technical batch effects"</span>,  <span class="co"># Include batch context</span></span>
-<span>  model <span class="op">=</span> <span class="st">"claude-3-7-sonnet-20250219"</span>,</span>
-<span>  api_key <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Sys.getenv.html" class="external-link">Sys.getenv</a></span><span class="op">(</span><span class="st">"ANTHROPIC_API_KEY"</span><span class="op">)</span></span>
-<span><span class="op">)</span></span></code></pre></div>
-</div>
-</div>
-<div class="section level3">
-<h3 id="integration-with-external-knowledge">Integration with External Knowledge<a class="anchor" aria-label="anchor" href="#integration-with-external-knowledge"></a>
-</h3>
-<div class="section level4">
-<h4 id="incorporating-prior-knowledge">Incorporating Prior Knowledge<a class="anchor" aria-label="anchor" href="#incorporating-prior-knowledge"></a>
-</h4>
-<p>You can incorporate prior biological knowledge to improve
-annotations:</p>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># Create a custom annotation prompt with prior knowledge</span></span>
-<span><span class="va">custom_prompt</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/create_annotation_prompt.html">create_annotation_prompt</a></span><span class="op">(</span></span>
-<span>  marker_data <span class="op">=</span> <span class="va">marker_data</span>,</span>
-<span>  tissue_name <span class="op">=</span> <span class="st">"human PBMC"</span>,</span>
-<span>  top_gene_count <span class="op">=</span> <span class="fl">10</span>,</span>
-<span>  custom_instructions <span class="op">=</span> <span class="st">"</span></span>
-<span><span class="st">    Consider the following prior knowledge:</span></span>
-<span><span class="st">    1. This sample is from a patient with rheumatoid arthritis</span></span>
-<span><span class="st">    2. We expect to see activated T cells and B cells</span></span>
-<span><span class="st">    3. Previous studies have identified CXCR4-high monocytes in this condition</span></span>
-<span><span class="st">    Please take this information into account when making annotations.</span></span>
-<span><span class="st">  "</span></span>
-<span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># Use the custom prompt</span></span>
-<span><span class="va">custom_results</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_model_response.html">get_model_response</a></span><span class="op">(</span></span>
-<span>  prompt <span class="op">=</span> <span class="va">custom_prompt</span>,</span>
-<span>  model <span class="op">=</span> <span class="st">"claude-3-7-sonnet-20250219"</span>,</span>
-<span>  api_key <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Sys.getenv.html" class="external-link">Sys.getenv</a></span><span class="op">(</span><span class="st">"ANTHROPIC_API_KEY"</span><span class="op">)</span></span>
-<span><span class="op">)</span></span></code></pre></div>
-</div>
-<div class="section level4">
-<h4 id="integrating-with-external-databases">Integrating with External Databases<a class="anchor" aria-label="anchor" href="#integrating-with-external-databases"></a>
-</h4>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># Example of integrating with CellMarker database</span></span>
-<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://httr.r-lib.org/" class="external-link">httr</a></span><span class="op">)</span></span>
-<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://jeroen.r-universe.dev/jsonlite" class="external-link">jsonlite</a></span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># Function to query CellMarker database</span></span>
-<span><span class="va">query_cellmarker</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">cell_type</span>, <span class="va">species</span> <span class="op">=</span> <span class="st">"Human"</span><span class="op">)</span> <span class="op">{</span></span>
-<span>  <span class="va">url</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span></span>
-<span>    <span class="st">"http://bio-bigdata.hrbmu.edu.cn/CellMarker/search.do?species="</span>,</span>
-<span>    <span class="fu"><a href="https://rdrr.io/r/utils/URLencode.html" class="external-link">URLencode</a></span><span class="op">(</span><span class="va">species</span><span class="op">)</span>,</span>
-<span>    <span class="st">"&amp;cellType="</span>,</span>
-<span>    <span class="fu"><a href="https://rdrr.io/r/utils/URLencode.html" class="external-link">URLencode</a></span><span class="op">(</span><span class="va">cell_type</span><span class="op">)</span></span>
-<span>  <span class="op">)</span></span>
-<span></span>
-<span>  <span class="va">response</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://httr.r-lib.org/reference/GET.html" class="external-link">GET</a></span><span class="op">(</span><span class="va">url</span><span class="op">)</span></span>
-<span>  <span class="va">content</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://httr.r-lib.org/reference/content.html" class="external-link">content</a></span><span class="op">(</span><span class="va">response</span>, <span class="st">"text"</span><span class="op">)</span></span>
-<span></span>
-<span>  <span class="co"># Parse the response (simplified example)</span></span>
-<span>  <span class="co"># In practice, you would need to parse the HTML response</span></span>
-<span>  <span class="va">markers</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Example marker 1"</span>, <span class="st">"Example marker 2"</span><span class="op">)</span></span>
-<span></span>
-<span>  <span class="kw"><a href="https://rdrr.io/r/base/function.html" class="external-link">return</a></span><span class="op">(</span><span class="va">markers</span><span class="op">)</span></span>
-<span><span class="op">}</span></span>
-<span></span>
-<span><span class="co"># Enhance annotation with CellMarker database</span></span>
-<span><span class="va">enhance_annotation_with_cellmarker</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">annotation_results</span><span class="op">)</span> <span class="op">{</span></span>
-<span>  <span class="va">enhanced_results</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="op">)</span></span>
-<span></span>
-<span>  <span class="kw">for</span> <span class="op">(</span><span class="va">i</span> <span class="kw">in</span> <span class="fl">1</span><span class="op">:</span><span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">annotation_results</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
-<span>    <span class="va">cell_type</span> <span class="op">&lt;-</span> <span class="va">annotation_results</span><span class="op">[</span><span class="va">i</span><span class="op">]</span></span>
-<span>    <span class="va">database_markers</span> <span class="op">&lt;-</span> <span class="fu">query_cellmarker</span><span class="op">(</span><span class="va">cell_type</span><span class="op">)</span></span>
-<span></span>
-<span>    <span class="va">enhanced_results</span><span class="op">[[</span><span class="va">i</span><span class="op">]</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
-<span>      cell_type <span class="op">=</span> <span class="va">cell_type</span>,</span>
-<span>      database_markers <span class="op">=</span> <span class="va">database_markers</span></span>
-<span>    <span class="op">)</span></span>
-<span>  <span class="op">}</span></span>
-<span></span>
-<span>  <span class="kw"><a href="https://rdrr.io/r/base/function.html" class="external-link">return</a></span><span class="op">(</span><span class="va">enhanced_results</span><span class="op">)</span></span>
-<span><span class="op">}</span></span>
-<span></span>
-<span><span class="co"># Apply enhancement</span></span>
-<span><span class="va">enhanced_annotations</span> <span class="op">&lt;-</span> <span class="fu">enhance_annotation_with_cellmarker</span><span class="op">(</span><span class="va">results</span><span class="op">)</span></span></code></pre></div>
-</div>
-</div>
-<div class="section level3">
-<h3 id="case-studies">Case Studies<a class="anchor" aria-label="anchor" href="#case-studies"></a>
-</h3>
-<div class="section level4">
-<h4 id="case-study-1-pbmc-dataset">Case Study 1: PBMC Dataset<a class="anchor" aria-label="anchor" href="#case-study-1-pbmc-dataset"></a>
-</h4>
-<p>This case study demonstrates the application of mLLMCelltype to a
-standard PBMC dataset:</p>
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://satijalab.org/seurat" class="external-link">Seurat</a></span><span class="op">)</span></span>
-<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://cafferychen777.github.io/mLLMCelltype">mLLMCelltype</a></span><span class="op">)</span></span>
-<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://ggplot2.tidyverse.org" class="external-link">ggplot2</a></span><span class="op">)</span></span>
-<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://patchwork.data-imaginist.com" class="external-link">patchwork</a></span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># Load PBMC data</span></span>
-<span><span class="va">pbmc</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/readRDS.html" class="external-link">readRDS</a></span><span class="op">(</span><span class="st">"path/to/pbmc_data.rds"</span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># Find marker genes</span></span>
-<span><span class="va">pbmc_markers</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://satijalab.org/seurat/reference/FindAllMarkers.html" class="external-link">FindAllMarkers</a></span><span class="op">(</span><span class="va">pbmc</span>, only.pos <span class="op">=</span> <span class="cn">TRUE</span>, min.pct <span class="op">=</span> <span class="fl">0.25</span>, logfc.threshold <span class="op">=</span> <span class="fl">0.25</span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># Define models to use</span></span>
-<span><span class="va">models</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
-<span>  <span class="st">"claude-3-7-sonnet-20250219"</span>,</span>
-<span>  <span class="st">"gpt-4o"</span>,</span>
-<span>  <span class="st">"gemini-1.5-pro"</span></span>
-<span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># API keys</span></span>
+<code class="sourceCode R"><span><span class="co"># Set up API keys</span></span>
 <span><span class="va">api_keys</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
 <span>  anthropic <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Sys.getenv.html" class="external-link">Sys.getenv</a></span><span class="op">(</span><span class="st">"ANTHROPIC_API_KEY"</span><span class="op">)</span>,</span>
 <span>  openai <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Sys.getenv.html" class="external-link">Sys.getenv</a></span><span class="op">(</span><span class="st">"OPENAI_API_KEY"</span><span class="op">)</span>,</span>
 <span>  gemini <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Sys.getenv.html" class="external-link">Sys.getenv</a></span><span class="op">(</span><span class="st">"GEMINI_API_KEY"</span><span class="op">)</span></span>
 <span><span class="op">)</span></span>
 <span></span>
-<span><span class="co"># Run annotation with multiple models</span></span>
-<span><span class="va">results</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="kw">for</span> <span class="op">(</span><span class="va">model</span> <span class="kw">in</span> <span class="va">models</span><span class="op">)</span> <span class="op">{</span></span>
-<span>  <span class="va">provider</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_provider.html">get_provider</a></span><span class="op">(</span><span class="va">model</span><span class="op">)</span></span>
-<span>  <span class="va">api_key</span> <span class="op">&lt;-</span> <span class="va">api_keys</span><span class="op">[[</span><span class="va">provider</span><span class="op">]</span><span class="op">]</span></span>
-<span></span>
-<span>  <span class="va">results</span><span class="op">[[</span><span class="va">model</span><span class="op">]</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/annotate_cell_types.html">annotate_cell_types</a></span><span class="op">(</span></span>
-<span>    input <span class="op">=</span> <span class="va">pbmc_markers</span>,</span>
-<span>    tissue_name <span class="op">=</span> <span class="st">"human PBMC"</span>,</span>
-<span>    model <span class="op">=</span> <span class="va">model</span>,</span>
-<span>    api_key <span class="op">=</span> <span class="va">api_key</span></span>
-<span>  <span class="op">)</span></span>
-<span><span class="op">}</span></span>
-<span></span>
-<span><span class="co"># Create consensus using interactive_consensus_annotation</span></span>
-<span><span class="va">consensus_results</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/interactive_consensus_annotation.html">interactive_consensus_annotation</a></span><span class="op">(</span></span>
-<span>  input <span class="op">=</span> <span class="va">pbmc_markers</span>,</span>
-<span>  tissue_name <span class="op">=</span> <span class="st">"human PBMC"</span>,</span>
-<span>  models <span class="op">=</span> <span class="va">models</span>,  <span class="co"># Use all the models defined above</span></span>
-<span>  api_keys <span class="op">=</span> <span class="va">api_keys</span>,</span>
-<span>  controversy_threshold <span class="op">=</span> <span class="fl">0.7</span>,</span>
-<span>  entropy_threshold <span class="op">=</span> <span class="fl">1.0</span>,</span>
-<span>  consensus_check_model <span class="op">=</span> <span class="st">"claude-3-7-sonnet-20250219"</span></span>
-<span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># Print consensus summary</span></span>
-<span><span class="fu"><a href="../reference/print_consensus_summary.html">print_consensus_summary</a></span><span class="op">(</span><span class="va">consensus_results</span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># Add results to Seurat object</span></span>
-<span><span class="va">pbmc</span><span class="op">$</span><span class="va">cell_type_consensus</span> <span class="op">&lt;-</span> <span class="fu">plyr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/plyr/man/mapvalues.html" class="external-link">mapvalues</a></span><span class="op">(</span></span>
-<span>  x <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/character.html" class="external-link">as.character</a></span><span class="op">(</span><span class="fu"><a href="https://satijalab.github.io/seurat-object/reference/Idents.html" class="external-link">Idents</a></span><span class="op">(</span><span class="va">pbmc</span><span class="op">)</span><span class="op">)</span>,</span>
-<span>  from <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/character.html" class="external-link">as.character</a></span><span class="op">(</span><span class="fl">0</span><span class="op">:</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">consensus_results</span><span class="op">$</span><span class="va">final_annotations</span><span class="op">)</span><span class="op">-</span><span class="fl">1</span><span class="op">)</span><span class="op">)</span>,</span>
-<span>  to <span class="op">=</span> <span class="va">consensus_results</span><span class="op">$</span><span class="va">final_annotations</span></span>
-<span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># Visualize results</span></span>
-<span><span class="fu"><a href="https://satijalab.org/seurat/reference/DimPlot.html" class="external-link">DimPlot</a></span><span class="op">(</span><span class="va">pbmc</span>, group.by <span class="op">=</span> <span class="st">"cell_type_consensus"</span>, label <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">ggtitle</a></span><span class="op">(</span><span class="st">"PBMC Cell Types"</span><span class="op">)</span></span></code></pre></div>
-</div>
-<div class="section level4">
-<h4 id="case-study-2-rare-cell-type-identification">Case Study 2: Rare Cell Type Identification<a class="anchor" aria-label="anchor" href="#case-study-2-rare-cell-type-identification"></a>
-</h4>
-<p>This case study demonstrates how mLLMCelltype can identify rare cell
-types:</p>
-<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># Load dataset with rare cell types</span></span>
-<span><span class="va">rare_cell_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/readRDS.html" class="external-link">readRDS</a></span><span class="op">(</span><span class="st">"path/to/rare_cell_data.rds"</span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># Find markers</span></span>
-<span><span class="va">rare_cell_markers</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://satijalab.org/seurat/reference/FindAllMarkers.html" class="external-link">FindAllMarkers</a></span><span class="op">(</span><span class="va">rare_cell_data</span>, only.pos <span class="op">=</span> <span class="cn">TRUE</span>, min.pct <span class="op">=</span> <span class="fl">0.25</span>, logfc.threshold <span class="op">=</span> <span class="fl">0.25</span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># Use multiple models with higher top_gene_count for rare cells</span></span>
+<span><span class="co"># Define multiple models to use</span></span>
 <span><span class="va">models</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
 <span>  <span class="st">"claude-3-7-sonnet-20250219"</span>,</span>
 <span>  <span class="st">"gpt-4o"</span>,</span>
 <span>  <span class="st">"gemini-1.5-pro"</span></span>
 <span><span class="op">)</span></span>
 <span></span>
-<span><span class="co"># Run annotation with multiple models</span></span>
-<span><span class="va">rare_cell_results</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="kw">for</span> <span class="op">(</span><span class="va">model</span> <span class="kw">in</span> <span class="va">models</span><span class="op">)</span> <span class="op">{</span></span>
-<span>  <span class="va">provider</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_provider.html">get_provider</a></span><span class="op">(</span><span class="va">model</span><span class="op">)</span></span>
-<span>  <span class="va">api_key</span> <span class="op">&lt;-</span> <span class="va">api_keys</span><span class="op">[[</span><span class="va">provider</span><span class="op">]</span><span class="op">]</span></span>
-<span></span>
-<span>  <span class="va">rare_cell_results</span><span class="op">[[</span><span class="va">model</span><span class="op">]</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/annotate_cell_types.html">annotate_cell_types</a></span><span class="op">(</span></span>
-<span>    input <span class="op">=</span> <span class="va">rare_cell_markers</span>,</span>
-<span>    tissue_name <span class="op">=</span> <span class="st">"human bone marrow"</span>,</span>
-<span>    model <span class="op">=</span> <span class="va">model</span>,</span>
-<span>    api_key <span class="op">=</span> <span class="va">api_key</span>,</span>
-<span>    top_gene_count <span class="op">=</span> <span class="fl">15</span>  <span class="co"># Use more genes for rare cell types</span></span>
-<span>  <span class="op">)</span></span>
-<span><span class="op">}</span></span>
-<span></span>
-<span><span class="co"># Create consensus with lower controversy threshold</span></span>
-<span><span class="va">rare_cell_consensus</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/interactive_consensus_annotation.html">interactive_consensus_annotation</a></span><span class="op">(</span></span>
-<span>  input <span class="op">=</span> <span class="va">rare_cell_markers</span>,</span>
-<span>  tissue_name <span class="op">=</span> <span class="st">"human bone marrow"</span>,</span>
-<span>  models <span class="op">=</span> <span class="va">models</span>,  <span class="co"># Use all the models defined above</span></span>
+<span><span class="co"># Create consensus using interactive_consensus_annotation</span></span>
+<span><span class="va">consensus_results</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/interactive_consensus_annotation.html">interactive_consensus_annotation</a></span><span class="op">(</span></span>
+<span>  input <span class="op">=</span> <span class="va">marker_data</span>,  <span class="co"># Your marker gene data</span></span>
+<span>  tissue_name <span class="op">=</span> <span class="st">"human PBMC"</span>,</span>
+<span>  models <span class="op">=</span> <span class="va">models</span>,</span>
+<span>  api_keys <span class="op">=</span> <span class="va">api_keys</span>,</span>
+<span>  controversy_threshold <span class="op">=</span> <span class="fl">0.7</span>,</span>
+<span>  entropy_threshold <span class="op">=</span> <span class="fl">1.0</span>,</span>
+<span>  consensus_check_model <span class="op">=</span> <span class="st">"claude-3-7-sonnet-20250219"</span></span>
+<span><span class="op">)</span></span></code></pre></div>
+</div>
+</div>
+<div class="section level3">
+<h3 id="handling-data-with-batch-effects">Handling Data with Batch Effects<a class="anchor" aria-label="anchor" href="#handling-data-with-batch-effects"></a>
+</h3>
+<p>When working with data affected by batch effects, you can:</p>
+<div class="section level4">
+<h4 id="use-the-consensus-approach-with-a-lower-controversy-threshold">1. Use the consensus approach with a lower controversy
+threshold<a class="anchor" aria-label="anchor" href="#use-the-consensus-approach-with-a-lower-controversy-threshold"></a>
+</h4>
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># For data with batch effects, use consensus with lower threshold</span></span>
+<span><span class="va">batch_consensus</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/interactive_consensus_annotation.html">interactive_consensus_annotation</a></span><span class="op">(</span></span>
+<span>  input <span class="op">=</span> <span class="va">marker_data</span>,  <span class="co"># Your marker gene data with batch effects</span></span>
+<span>  tissue_name <span class="op">=</span> <span class="st">"mouse brain"</span>,</span>
+<span>  models <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"claude-3-7-sonnet-20250219"</span>, <span class="st">"gpt-4o"</span>, <span class="st">"gemini-1.5-pro"</span><span class="op">)</span>,</span>
 <span>  api_keys <span class="op">=</span> <span class="va">api_keys</span>,</span>
 <span>  controversy_threshold <span class="op">=</span> <span class="fl">0.4</span>,  <span class="co"># Lower threshold to discuss more clusters</span></span>
-<span>  entropy_threshold <span class="op">=</span> <span class="fl">0.8</span>,  <span class="co"># Lower entropy threshold for rare cells</span></span>
+<span>  entropy_threshold <span class="op">=</span> <span class="fl">0.8</span>  <span class="co"># Lower entropy threshold</span></span>
+<span><span class="op">)</span></span></code></pre></div>
+</div>
+<div class="section level4">
+<h4 id="include-batch-information-in-the-tissue-context">2. Include batch information in the tissue context<a class="anchor" aria-label="anchor" href="#include-batch-information-in-the-tissue-context"></a>
+</h4>
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Include batch information in the tissue context</span></span>
+<span><span class="va">batch_aware_results</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/annotate_cell_types.html">annotate_cell_types</a></span><span class="op">(</span></span>
+<span>  input <span class="op">=</span> <span class="va">marker_data</span>,  <span class="co"># Your marker gene data with batch effects</span></span>
+<span>  tissue_name <span class="op">=</span> <span class="st">"mouse brain with technical batch effects"</span>,  <span class="co"># Include batch context</span></span>
+<span>  model <span class="op">=</span> <span class="st">"claude-3-7-sonnet-20250219"</span>,</span>
+<span>  api_key <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Sys.getenv.html" class="external-link">Sys.getenv</a></span><span class="op">(</span><span class="st">"ANTHROPIC_API_KEY"</span><span class="op">)</span></span>
+<span><span class="op">)</span></span></code></pre></div>
+</div>
+</div>
+</div>
+<div class="section level2">
+<h2 id="incorporating-domain-knowledge">Incorporating Domain Knowledge<a class="anchor" aria-label="anchor" href="#incorporating-domain-knowledge"></a>
+</h2>
+<div class="section level3">
+<h3 id="using-tissue-context">Using Tissue Context<a class="anchor" aria-label="anchor" href="#using-tissue-context"></a>
+</h3>
+<p>One of the key features of mLLMCelltype is the ability to incorporate
+domain knowledge through the <code>tissue_name</code> parameter. This
+provides important context to the LLM:</p>
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Basic annotation without specific tissue context</span></span>
+<span><span class="va">basic_results</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/annotate_cell_types.html">annotate_cell_types</a></span><span class="op">(</span></span>
+<span>  input <span class="op">=</span> <span class="va">marker_data</span>,</span>
+<span>  tissue_name <span class="op">=</span> <span class="st">"human sample"</span>,  <span class="co"># Generic context</span></span>
+<span>  model <span class="op">=</span> <span class="st">"claude-3-7-sonnet-20250219"</span>,</span>
+<span>  api_key <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Sys.getenv.html" class="external-link">Sys.getenv</a></span><span class="op">(</span><span class="st">"ANTHROPIC_API_KEY"</span><span class="op">)</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Annotation with specific tissue context</span></span>
+<span><span class="va">specific_results</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/annotate_cell_types.html">annotate_cell_types</a></span><span class="op">(</span></span>
+<span>  input <span class="op">=</span> <span class="va">marker_data</span>,</span>
+<span>  tissue_name <span class="op">=</span> <span class="st">"human fetal liver at 20 weeks gestation"</span>,  <span class="co"># Detailed context</span></span>
+<span>  model <span class="op">=</span> <span class="st">"claude-3-7-sonnet-20250219"</span>,</span>
+<span>  api_key <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Sys.getenv.html" class="external-link">Sys.getenv</a></span><span class="op">(</span><span class="st">"ANTHROPIC_API_KEY"</span><span class="op">)</span></span>
+<span><span class="op">)</span></span></code></pre></div>
+</div>
+<div class="section level3">
+<h3 id="creating-custom-prompts">Creating Custom Prompts<a class="anchor" aria-label="anchor" href="#creating-custom-prompts"></a>
+</h3>
+<p>For advanced use cases, you can create and modify the annotation
+prompt directly:</p>
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Create a custom annotation prompt</span></span>
+<span><span class="va">custom_prompt</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/create_annotation_prompt.html">create_annotation_prompt</a></span><span class="op">(</span></span>
+<span>  input <span class="op">=</span> <span class="va">marker_data</span>,</span>
+<span>  tissue_name <span class="op">=</span> <span class="st">"human PBMC"</span>,</span>
+<span>  top_gene_count <span class="op">=</span> <span class="fl">10</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Modify the prompt to include additional context</span></span>
+<span><span class="va">modified_prompt</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span></span>
+<span>  <span class="va">custom_prompt</span><span class="op">$</span><span class="va">prompt</span>,</span>
+<span>  <span class="st">"\n\nAdditional context: This sample is from a patient with rheumatoid arthritis. "</span>,</span>
+<span>  <span class="st">"Previous studies have identified activated T cells, B cells, and CXCR4-high monocytes in this condition."</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Use the modified prompt directly</span></span>
+<span><span class="va">custom_results</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_model_response.html">get_model_response</a></span><span class="op">(</span></span>
+<span>  prompt <span class="op">=</span> <span class="va">modified_prompt</span>,</span>
+<span>  model <span class="op">=</span> <span class="st">"claude-3-7-sonnet-20250219"</span>,</span>
+<span>  api_key <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Sys.getenv.html" class="external-link">Sys.getenv</a></span><span class="op">(</span><span class="st">"ANTHROPIC_API_KEY"</span><span class="op">)</span></span>
+<span><span class="op">)</span></span></code></pre></div>
+</div>
+<div class="section level3">
+<h3 id="combining-with-external-resources">Combining with External Resources<a class="anchor" aria-label="anchor" href="#combining-with-external-resources"></a>
+</h3>
+<p>You can enhance your annotation workflow by combining mLLMCelltype
+with other R packages and resources:</p>
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://satijalab.org/seurat" class="external-link">Seurat</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a></span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Example: Using CellMarker database information to validate annotations</span></span>
+<span><span class="co"># This is a conceptual example - implementation would depend on your specific needs</span></span>
+<span></span>
+<span><span class="co"># 1. Get annotations with mLLMCelltype</span></span>
+<span><span class="va">annotations</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/annotate_cell_types.html">annotate_cell_types</a></span><span class="op">(</span></span>
+<span>  input <span class="op">=</span> <span class="va">marker_data</span>,</span>
+<span>  tissue_name <span class="op">=</span> <span class="st">"human PBMC"</span>,</span>
+<span>  model <span class="op">=</span> <span class="st">"claude-3-7-sonnet-20250219"</span>,</span>
+<span>  api_key <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Sys.getenv.html" class="external-link">Sys.getenv</a></span><span class="op">(</span><span class="st">"ANTHROPIC_API_KEY"</span><span class="op">)</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># 2. Compare with known marker genes (conceptual)</span></span>
+<span><span class="co"># In a real workflow, you would query a database or use a reference dataset</span></span>
+<span><span class="va">known_markers</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
+<span>  <span class="st">"T cells"</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"CD3D"</span>, <span class="st">"CD3E"</span>, <span class="st">"CD3G"</span><span class="op">)</span>,</span>
+<span>  <span class="st">"B cells"</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"CD19"</span>, <span class="st">"MS4A1"</span>, <span class="st">"CD79A"</span><span class="op">)</span>,</span>
+<span>  <span class="st">"Monocytes"</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"CD14"</span>, <span class="st">"LYZ"</span>, <span class="st">"CSF1R"</span><span class="op">)</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># 3. Validate annotations against known markers</span></span>
+<span><span class="co"># This is a simplified example of how you might validate annotations</span></span>
+<span><span class="va">validate_annotations</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">annotations</span>, <span class="va">marker_data</span>, <span class="va">known_markers</span><span class="op">)</span> <span class="op">{</span></span>
+<span>  <span class="va">validation_results</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="op">)</span></span>
+<span></span>
+<span>  <span class="kw">for</span> <span class="op">(</span><span class="va">i</span> <span class="kw">in</span> <span class="fl">1</span><span class="op">:</span><span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">annotations</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
+<span>    <span class="va">cluster_id</span> <span class="op">&lt;-</span> <span class="va">i</span> <span class="op">-</span> <span class="fl">1</span>  <span class="co"># 0-based indexing</span></span>
+<span>    <span class="va">predicted_type</span> <span class="op">&lt;-</span> <span class="va">annotations</span><span class="op">[</span><span class="va">i</span><span class="op">]</span></span>
+<span></span>
+<span>    <span class="co"># Get markers for this cluster</span></span>
+<span>    <span class="va">cluster_markers</span> <span class="op">&lt;-</span> <span class="va">marker_data</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>      <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">cluster</span> <span class="op">==</span> <span class="va">cluster_id</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>      <span class="fu"><a href="https://dplyr.tidyverse.org/reference/arrange.html" class="external-link">arrange</a></span><span class="op">(</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/desc.html" class="external-link">desc</a></span><span class="op">(</span><span class="va">avg_log2FC</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>      <span class="fu"><a href="https://dplyr.tidyverse.org/reference/pull.html" class="external-link">pull</a></span><span class="op">(</span><span class="va">gene</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>      <span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="fl">20</span><span class="op">)</span></span>
+<span></span>
+<span>    <span class="co"># Check overlap with known markers for this cell type</span></span>
+<span>    <span class="kw">if</span> <span class="op">(</span><span class="va">predicted_type</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">known_markers</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
+<span>      <span class="va">expected_markers</span> <span class="op">&lt;-</span> <span class="va">known_markers</span><span class="op">[[</span><span class="va">predicted_type</span><span class="op">]</span><span class="op">]</span></span>
+<span>      <span class="va">overlap</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://generics.r-lib.org/reference/setops.html" class="external-link">intersect</a></span><span class="op">(</span><span class="va">cluster_markers</span>, <span class="va">expected_markers</span><span class="op">)</span></span>
+<span></span>
+<span>      <span class="va">validation_results</span><span class="op">[[</span><span class="va">i</span><span class="op">]</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
+<span>        cluster <span class="op">=</span> <span class="va">cluster_id</span>,</span>
+<span>        predicted_type <span class="op">=</span> <span class="va">predicted_type</span>,</span>
+<span>        overlap_count <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">overlap</span><span class="op">)</span>,</span>
+<span>        overlap_genes <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste</a></span><span class="op">(</span><span class="va">overlap</span>, collapse <span class="op">=</span> <span class="st">", "</span><span class="op">)</span>,</span>
+<span>        confidence <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">overlap</span><span class="op">)</span> <span class="op">/</span> <span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">expected_markers</span><span class="op">)</span></span>
+<span>      <span class="op">)</span></span>
+<span>    <span class="op">}</span> <span class="kw">else</span> <span class="op">{</span></span>
+<span>      <span class="va">validation_results</span><span class="op">[[</span><span class="va">i</span><span class="op">]</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
+<span>        cluster <span class="op">=</span> <span class="va">cluster_id</span>,</span>
+<span>        predicted_type <span class="op">=</span> <span class="va">predicted_type</span>,</span>
+<span>        overlap_count <span class="op">=</span> <span class="fl">0</span>,</span>
+<span>        overlap_genes <span class="op">=</span> <span class="st">""</span>,</span>
+<span>        confidence <span class="op">=</span> <span class="fl">0</span></span>
+<span>      <span class="op">)</span></span>
+<span>    <span class="op">}</span></span>
+<span>  <span class="op">}</span></span>
+<span></span>
+<span>  <span class="kw"><a href="https://rdrr.io/r/base/function.html" class="external-link">return</a></span><span class="op">(</span><span class="va">validation_results</span><span class="op">)</span></span>
+<span><span class="op">}</span></span>
+<span></span>
+<span><span class="co"># This is a conceptual example of how you might validate annotations</span></span>
+<span><span class="co"># validation_results &lt;- validate_annotations(annotations, marker_data, known_markers)</span></span></code></pre></div>
+</div>
+</div>
+<div class="section level2">
+<h2 id="practical-case-studies">Practical Case Studies<a class="anchor" aria-label="anchor" href="#practical-case-studies"></a>
+</h2>
+<div class="section level3">
+<h3 id="case-study-1-pbmc-dataset-analysis">Case Study 1: PBMC Dataset Analysis<a class="anchor" aria-label="anchor" href="#case-study-1-pbmc-dataset-analysis"></a>
+</h3>
+<p>This example demonstrates a complete workflow for analyzing a PBMC
+dataset:</p>
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://satijalab.org/seurat" class="external-link">Seurat</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://cafferychen777.github.io/mLLMCelltype">mLLMCelltype</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://ggplot2.tidyverse.org" class="external-link">ggplot2</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a></span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Load example PBMC data</span></span>
+<span><span class="co"># In a real workflow, you would use your own data</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"pbmc_small"</span><span class="op">)</span>  <span class="co"># Example dataset from Seurat</span></span>
+<span></span>
+<span><span class="co"># Find marker genes</span></span>
+<span><span class="va">pbmc_markers</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://satijalab.org/seurat/reference/FindAllMarkers.html" class="external-link">FindAllMarkers</a></span><span class="op">(</span><span class="va">pbmc_small</span>,</span>
+<span>                              only.pos <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>                              min.pct <span class="op">=</span> <span class="fl">0.25</span>,</span>
+<span>                              logfc.threshold <span class="op">=</span> <span class="fl">0.25</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Set up API keys</span></span>
+<span><span class="va">api_keys</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
+<span>  anthropic <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Sys.getenv.html" class="external-link">Sys.getenv</a></span><span class="op">(</span><span class="st">"ANTHROPIC_API_KEY"</span><span class="op">)</span>,</span>
+<span>  openai <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Sys.getenv.html" class="external-link">Sys.getenv</a></span><span class="op">(</span><span class="st">"OPENAI_API_KEY"</span><span class="op">)</span>,</span>
+<span>  gemini <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Sys.getenv.html" class="external-link">Sys.getenv</a></span><span class="op">(</span><span class="st">"GEMINI_API_KEY"</span><span class="op">)</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Use consensus annotation</span></span>
+<span><span class="va">consensus_results</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/interactive_consensus_annotation.html">interactive_consensus_annotation</a></span><span class="op">(</span></span>
+<span>  input <span class="op">=</span> <span class="va">pbmc_markers</span>,</span>
+<span>  tissue_name <span class="op">=</span> <span class="st">"human PBMC"</span>,</span>
+<span>  models <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"claude-3-7-sonnet-20250219"</span>, <span class="st">"gpt-4o"</span>, <span class="st">"gemini-1.5-pro"</span><span class="op">)</span>,</span>
+<span>  api_keys <span class="op">=</span> <span class="va">api_keys</span>,</span>
+<span>  controversy_threshold <span class="op">=</span> <span class="fl">0.7</span>,</span>
+<span>  entropy_threshold <span class="op">=</span> <span class="fl">1.0</span>,</span>
 <span>  consensus_check_model <span class="op">=</span> <span class="st">"claude-3-7-sonnet-20250219"</span></span>
 <span><span class="op">)</span></span>
 <span></span>
-<span><span class="co"># Analyze discussion logs for rare cell clusters</span></span>
-<span><span class="va">rare_cell_discussions</span> <span class="op">&lt;-</span> <span class="va">rare_cell_consensus</span><span class="op">$</span><span class="va">discussion_logs</span></span></code></pre></div>
+<span><span class="co"># Add results to Seurat object</span></span>
+<span><span class="va">pbmc_small</span><span class="op">$</span><span class="va">cell_type</span> <span class="op">&lt;-</span> <span class="fu">plyr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/plyr/man/mapvalues.html" class="external-link">mapvalues</a></span><span class="op">(</span></span>
+<span>  x <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/character.html" class="external-link">as.character</a></span><span class="op">(</span><span class="fu"><a href="https://satijalab.github.io/seurat-object/reference/Idents.html" class="external-link">Idents</a></span><span class="op">(</span><span class="va">pbmc_small</span><span class="op">)</span><span class="op">)</span>,</span>
+<span>  from <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/character.html" class="external-link">as.character</a></span><span class="op">(</span><span class="fl">0</span><span class="op">:</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">consensus_results</span><span class="op">$</span><span class="va">final_annotations</span><span class="op">)</span><span class="op">-</span><span class="fl">1</span><span class="op">)</span><span class="op">)</span>,</span>
+<span>  to <span class="op">=</span> <span class="va">consensus_results</span><span class="op">$</span><span class="va">final_annotations</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Visualize results</span></span>
+<span><span class="co"># In a real workflow, you would create a UMAP or t-SNE plot</span></span>
+<span><span class="co"># DimPlot(pbmc_small, group.by = "cell_type", label = TRUE) +</span></span>
+<span><span class="co">#   ggtitle("PBMC Cell Types")</span></span></code></pre></div>
 </div>
-<div class="section level4">
-<h4 id="case-study-3-cross-species-comparison">Case Study 3: Cross-Species Comparison<a class="anchor" aria-label="anchor" href="#case-study-3-cross-species-comparison"></a>
-</h4>
-<p>This case study demonstrates how mLLMCelltype can be used for
-cross-species comparison:</p>
-<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># Load human and mouse brain data</span></span>
-<span><span class="va">human_brain</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/readRDS.html" class="external-link">readRDS</a></span><span class="op">(</span><span class="st">"path/to/human_brain.rds"</span><span class="op">)</span></span>
-<span><span class="va">mouse_brain</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/readRDS.html" class="external-link">readRDS</a></span><span class="op">(</span><span class="st">"path/to/mouse_brain.rds"</span><span class="op">)</span></span>
+<div class="section level3">
+<h3 id="case-study-2-identifying-rare-cell-types">Case Study 2: Identifying Rare Cell Types<a class="anchor" aria-label="anchor" href="#case-study-2-identifying-rare-cell-types"></a>
+</h3>
+<p>When working with datasets containing rare cell populations, you can
+adjust parameters to improve detection:</p>
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># For rare cell types, use these strategies:</span></span>
 <span></span>
-<span><span class="co"># Find markers for both datasets</span></span>
-<span><span class="va">human_markers</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://satijalab.org/seurat/reference/FindAllMarkers.html" class="external-link">FindAllMarkers</a></span><span class="op">(</span><span class="va">human_brain</span>, only.pos <span class="op">=</span> <span class="cn">TRUE</span>, min.pct <span class="op">=</span> <span class="fl">0.25</span>, logfc.threshold <span class="op">=</span> <span class="fl">0.25</span><span class="op">)</span></span>
-<span><span class="va">mouse_markers</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://satijalab.org/seurat/reference/FindAllMarkers.html" class="external-link">FindAllMarkers</a></span><span class="op">(</span><span class="va">mouse_brain</span>, only.pos <span class="op">=</span> <span class="cn">TRUE</span>, min.pct <span class="op">=</span> <span class="fl">0.25</span>, logfc.threshold <span class="op">=</span> <span class="fl">0.25</span><span class="op">)</span></span>
+<span><span class="co"># 1. Increase the number of marker genes considered</span></span>
+<span><span class="va">rare_cell_annotation</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/annotate_cell_types.html">annotate_cell_types</a></span><span class="op">(</span></span>
+<span>  input <span class="op">=</span> <span class="va">marker_data</span>,  <span class="co"># Your marker gene data</span></span>
+<span>  tissue_name <span class="op">=</span> <span class="st">"human bone marrow"</span>,</span>
+<span>  model <span class="op">=</span> <span class="st">"claude-3-7-sonnet-20250219"</span>,</span>
+<span>  api_key <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Sys.getenv.html" class="external-link">Sys.getenv</a></span><span class="op">(</span><span class="st">"ANTHROPIC_API_KEY"</span><span class="op">)</span>,</span>
+<span>  top_gene_count <span class="op">=</span> <span class="fl">20</span>  <span class="co"># Use more genes for rare cell types</span></span>
+<span><span class="op">)</span></span>
 <span></span>
-<span><span class="co"># Annotate human brain</span></span>
-<span><span class="va">human_results</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/annotate_cell_types.html">annotate_cell_types</a></span><span class="op">(</span></span>
-<span>  input <span class="op">=</span> <span class="va">human_markers</span>,</span>
+<span><span class="co"># 2. Use consensus with lower thresholds to discuss more clusters</span></span>
+<span><span class="va">rare_cell_consensus</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/interactive_consensus_annotation.html">interactive_consensus_annotation</a></span><span class="op">(</span></span>
+<span>  input <span class="op">=</span> <span class="va">marker_data</span>,  <span class="co"># Your marker gene data</span></span>
+<span>  tissue_name <span class="op">=</span> <span class="st">"human bone marrow"</span>,</span>
+<span>  models <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"claude-3-7-sonnet-20250219"</span>, <span class="st">"gpt-4o"</span>, <span class="st">"gemini-1.5-pro"</span><span class="op">)</span>,</span>
+<span>  api_keys <span class="op">=</span> <span class="va">api_keys</span>,</span>
+<span>  controversy_threshold <span class="op">=</span> <span class="fl">0.4</span>,  <span class="co"># Lower threshold to discuss more clusters</span></span>
+<span>  entropy_threshold <span class="op">=</span> <span class="fl">0.8</span>,  <span class="co"># Lower entropy threshold</span></span>
+<span>  consensus_check_model <span class="op">=</span> <span class="st">"claude-3-7-sonnet-20250219"</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># 3. Provide more specific tissue context</span></span>
+<span><span class="va">specific_annotation</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/annotate_cell_types.html">annotate_cell_types</a></span><span class="op">(</span></span>
+<span>  input <span class="op">=</span> <span class="va">marker_data</span>,  <span class="co"># Your marker gene data</span></span>
+<span>  tissue_name <span class="op">=</span> <span class="st">"human bone marrow with expected rare plasma cells and basophils"</span>,</span>
+<span>  model <span class="op">=</span> <span class="st">"claude-3-7-sonnet-20250219"</span>,</span>
+<span>  api_key <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Sys.getenv.html" class="external-link">Sys.getenv</a></span><span class="op">(</span><span class="st">"ANTHROPIC_API_KEY"</span><span class="op">)</span></span>
+<span><span class="op">)</span></span></code></pre></div>
+</div>
+<div class="section level3">
+<h3 id="case-study-3-cross-species-comparison">Case Study 3: Cross-Species Comparison<a class="anchor" aria-label="anchor" href="#case-study-3-cross-species-comparison"></a>
+</h3>
+<p>mLLMCelltype can be used to compare cell types across different
+species:</p>
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Example workflow for cross-species comparison</span></span>
+<span></span>
+<span><span class="co"># 1. Annotate human and mouse datasets separately</span></span>
+<span><span class="co"># (Assuming you have marker data for both species)</span></span>
+<span><span class="va">human_annotations</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/annotate_cell_types.html">annotate_cell_types</a></span><span class="op">(</span></span>
+<span>  input <span class="op">=</span> <span class="va">human_marker_data</span>,  <span class="co"># Your human marker data</span></span>
 <span>  tissue_name <span class="op">=</span> <span class="st">"human brain cortex"</span>,</span>
 <span>  model <span class="op">=</span> <span class="st">"claude-3-7-sonnet-20250219"</span>,</span>
 <span>  api_key <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Sys.getenv.html" class="external-link">Sys.getenv</a></span><span class="op">(</span><span class="st">"ANTHROPIC_API_KEY"</span><span class="op">)</span></span>
 <span><span class="op">)</span></span>
 <span></span>
-<span><span class="co"># Annotate mouse brain</span></span>
-<span><span class="va">mouse_results</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/annotate_cell_types.html">annotate_cell_types</a></span><span class="op">(</span></span>
-<span>  input <span class="op">=</span> <span class="va">mouse_markers</span>,</span>
+<span><span class="va">mouse_annotations</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/annotate_cell_types.html">annotate_cell_types</a></span><span class="op">(</span></span>
+<span>  input <span class="op">=</span> <span class="va">mouse_marker_data</span>,  <span class="co"># Your mouse marker data</span></span>
 <span>  tissue_name <span class="op">=</span> <span class="st">"mouse brain cortex"</span>,</span>
 <span>  model <span class="op">=</span> <span class="st">"claude-3-7-sonnet-20250219"</span>,</span>
 <span>  api_key <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Sys.getenv.html" class="external-link">Sys.getenv</a></span><span class="op">(</span><span class="st">"ANTHROPIC_API_KEY"</span><span class="op">)</span></span>
 <span><span class="op">)</span></span>
 <span></span>
-<span><span class="co"># Add annotations to Seurat objects</span></span>
-<span><span class="va">human_brain</span><span class="op">$</span><span class="va">cell_type</span> <span class="op">&lt;-</span> <span class="fu">plyr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/plyr/man/mapvalues.html" class="external-link">mapvalues</a></span><span class="op">(</span></span>
-<span>  x <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/character.html" class="external-link">as.character</a></span><span class="op">(</span><span class="fu"><a href="https://satijalab.github.io/seurat-object/reference/Idents.html" class="external-link">Idents</a></span><span class="op">(</span><span class="va">human_brain</span><span class="op">)</span><span class="op">)</span>,</span>
-<span>  from <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/character.html" class="external-link">as.character</a></span><span class="op">(</span><span class="fl">0</span><span class="op">:</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">human_results</span><span class="op">)</span><span class="op">-</span><span class="fl">1</span><span class="op">)</span><span class="op">)</span>,</span>
-<span>  to <span class="op">=</span> <span class="va">human_results</span></span>
-<span><span class="op">)</span></span>
+<span><span class="co"># 2. Compare annotations</span></span>
+<span><span class="co"># This is a conceptual example - in a real workflow, you would:</span></span>
+<span><span class="co"># - Map annotations to Seurat objects</span></span>
+<span><span class="co"># - Calculate proportions</span></span>
+<span><span class="co"># - Create comparison visualizations</span></span>
+<span><span class="co"># - Identify conserved and species-specific cell types</span></span>
 <span></span>
-<span><span class="va">mouse_brain</span><span class="op">$</span><span class="va">cell_type</span> <span class="op">&lt;-</span> <span class="fu">plyr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/plyr/man/mapvalues.html" class="external-link">mapvalues</a></span><span class="op">(</span></span>
-<span>  x <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/character.html" class="external-link">as.character</a></span><span class="op">(</span><span class="fu"><a href="https://satijalab.github.io/seurat-object/reference/Idents.html" class="external-link">Idents</a></span><span class="op">(</span><span class="va">mouse_brain</span><span class="op">)</span><span class="op">)</span>,</span>
-<span>  from <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/character.html" class="external-link">as.character</a></span><span class="op">(</span><span class="fl">0</span><span class="op">:</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">mouse_results</span><span class="op">)</span><span class="op">-</span><span class="fl">1</span><span class="op">)</span><span class="op">)</span>,</span>
-<span>  to <span class="op">=</span> <span class="va">mouse_results</span></span>
-<span><span class="op">)</span></span>
+<span><span class="co"># Example comparison function (conceptual)</span></span>
+<span><span class="va">compare_species_annotations</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">human_annotations</span>, <span class="va">mouse_annotations</span><span class="op">)</span> <span class="op">{</span></span>
+<span>  <span class="co"># Get unique cell types from both species</span></span>
+<span>  <span class="va">human_types</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/unique.html" class="external-link">unique</a></span><span class="op">(</span><span class="va">human_annotations</span><span class="op">)</span></span>
+<span>  <span class="va">mouse_types</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/unique.html" class="external-link">unique</a></span><span class="op">(</span><span class="va">mouse_annotations</span><span class="op">)</span></span>
 <span></span>
-<span><span class="co"># Compare cell type proportions</span></span>
-<span><span class="va">human_proportions</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/table.html" class="external-link">table</a></span><span class="op">(</span><span class="va">human_brain</span><span class="op">$</span><span class="va">cell_type</span><span class="op">)</span> <span class="op">/</span> <span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">human_brain</span><span class="op">$</span><span class="va">cell_type</span><span class="op">)</span></span>
-<span><span class="va">mouse_proportions</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/table.html" class="external-link">table</a></span><span class="op">(</span><span class="va">mouse_brain</span><span class="op">$</span><span class="va">cell_type</span><span class="op">)</span> <span class="op">/</span> <span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">mouse_brain</span><span class="op">$</span><span class="va">cell_type</span><span class="op">)</span></span>
+<span>  <span class="co"># Find common cell types</span></span>
+<span>  <span class="va">common_types</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://generics.r-lib.org/reference/setops.html" class="external-link">intersect</a></span><span class="op">(</span><span class="va">human_types</span>, <span class="va">mouse_types</span><span class="op">)</span></span>
 <span></span>
-<span><span class="co"># Create comparison plot</span></span>
-<span><span class="va">comparison_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
-<span>  cell_type <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">human_proportions</span><span class="op">)</span>,</span>
-<span>  human <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/numeric.html" class="external-link">as.numeric</a></span><span class="op">(</span><span class="va">human_proportions</span><span class="op">)</span>,</span>
-<span>  mouse <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/numeric.html" class="external-link">as.numeric</a></span><span class="op">(</span><span class="va">mouse_proportions</span><span class="op">)</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/match.html" class="external-link">match</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">human_proportions</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">mouse_proportions</span><span class="op">)</span><span class="op">)</span><span class="op">]</span></span>
-<span><span class="op">)</span></span>
+<span>  <span class="co"># Find species-specific cell types</span></span>
+<span>  <span class="va">human_specific</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://generics.r-lib.org/reference/setops.html" class="external-link">setdiff</a></span><span class="op">(</span><span class="va">human_types</span>, <span class="va">mouse_types</span><span class="op">)</span></span>
+<span>  <span class="va">mouse_specific</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://generics.r-lib.org/reference/setops.html" class="external-link">setdiff</a></span><span class="op">(</span><span class="va">mouse_types</span>, <span class="va">human_types</span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="va">comparison_data</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">human</span>, y <span class="op">=</span> <span class="va">mouse</span>, label <span class="op">=</span> <span class="va">cell_type</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_point.html" class="external-link">geom_point</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu">geom_text_repel</span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_abline.html" class="external-link">geom_abline</a></span><span class="op">(</span>slope <span class="op">=</span> <span class="fl">1</span>, intercept <span class="op">=</span> <span class="fl">0</span>, linetype <span class="op">=</span> <span class="st">"dashed"</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span>x <span class="op">=</span> <span class="st">"Human Brain Proportion"</span>, y <span class="op">=</span> <span class="st">"Mouse Brain Proportion"</span>,</span>
-<span>       title <span class="op">=</span> <span class="st">"Cross-Species Cell Type Comparison"</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html" class="external-link">theme_minimal</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
-</div>
-</div>
-<div class="section level3">
-<h3 id="performance-benchmarking">Performance Benchmarking<a class="anchor" aria-label="anchor" href="#performance-benchmarking"></a>
-</h3>
-<div class="section level4">
-<h4 id="accuracy-benchmarking">Accuracy Benchmarking<a class="anchor" aria-label="anchor" href="#accuracy-benchmarking"></a>
-</h4>
-<p>This section presents benchmarking results comparing mLLMCelltype to
-other annotation methods:</p>
-<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># Load benchmark results</span></span>
-<span><span class="va">benchmark_results</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/utils/read.table.html" class="external-link">read.csv</a></span><span class="op">(</span><span class="st">"path/to/benchmark_results.csv"</span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># Plot accuracy comparison</span></span>
-<span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="va">benchmark_results</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">Method</span>, y <span class="op">=</span> <span class="va">Accuracy</span>, fill <span class="op">=</span> <span class="va">Method</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_bar.html" class="external-link">geom_bar</a></span><span class="op">(</span>stat <span class="op">=</span> <span class="st">"identity"</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_linerange.html" class="external-link">geom_errorbar</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>ymin <span class="op">=</span> <span class="va">Accuracy</span> <span class="op">-</span> <span class="va">SE</span>, ymax <span class="op">=</span> <span class="va">Accuracy</span> <span class="op">+</span> <span class="va">SE</span><span class="op">)</span>, width <span class="op">=</span> <span class="fl">0.2</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span>title <span class="op">=</span> <span class="st">"Cell Type Annotation Accuracy Comparison"</span>,</span>
-<span>       x <span class="op">=</span> <span class="st">"Method"</span>, y <span class="op">=</span> <span class="st">"Accuracy (%)"</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html" class="external-link">theme_minimal</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme.html" class="external-link">theme</a></span><span class="op">(</span>axis.text.x <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html" class="external-link">element_text</a></span><span class="op">(</span>angle <span class="op">=</span> <span class="fl">45</span>, hjust <span class="op">=</span> <span class="fl">1</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
-</div>
-<div class="section level4">
-<h4 id="runtime-and-cost-comparison">Runtime and Cost Comparison<a class="anchor" aria-label="anchor" href="#runtime-and-cost-comparison"></a>
-</h4>
-<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># Load runtime and cost data</span></span>
-<span><span class="va">performance_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/utils/read.table.html" class="external-link">read.csv</a></span><span class="op">(</span><span class="st">"path/to/performance_data.csv"</span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># Plot runtime comparison</span></span>
-<span><span class="va">p1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="va">performance_data</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">Method</span>, y <span class="op">=</span> <span class="va">Runtime_seconds</span>, fill <span class="op">=</span> <span class="va">Method</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_bar.html" class="external-link">geom_bar</a></span><span class="op">(</span>stat <span class="op">=</span> <span class="st">"identity"</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span>title <span class="op">=</span> <span class="st">"Runtime Comparison"</span>,</span>
-<span>       x <span class="op">=</span> <span class="st">"Method"</span>, y <span class="op">=</span> <span class="st">"Runtime (seconds)"</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html" class="external-link">theme_minimal</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme.html" class="external-link">theme</a></span><span class="op">(</span>axis.text.x <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html" class="external-link">element_text</a></span><span class="op">(</span>angle <span class="op">=</span> <span class="fl">45</span>, hjust <span class="op">=</span> <span class="fl">1</span><span class="op">)</span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># Plot cost comparison</span></span>
-<span><span class="va">p2</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="va">performance_data</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">Method</span>, y <span class="op">=</span> <span class="va">Cost_USD</span>, fill <span class="op">=</span> <span class="va">Method</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_bar.html" class="external-link">geom_bar</a></span><span class="op">(</span>stat <span class="op">=</span> <span class="st">"identity"</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span>title <span class="op">=</span> <span class="st">"Cost Comparison"</span>,</span>
-<span>       x <span class="op">=</span> <span class="st">"Method"</span>, y <span class="op">=</span> <span class="st">"Cost (USD)"</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html" class="external-link">theme_minimal</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme.html" class="external-link">theme</a></span><span class="op">(</span>axis.text.x <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html" class="external-link">element_text</a></span><span class="op">(</span>angle <span class="op">=</span> <span class="fl">45</span>, hjust <span class="op">=</span> <span class="fl">1</span><span class="op">)</span><span class="op">)</span></span>
-<span></span>
-<span><span class="va">p1</span> <span class="op">/</span> <span class="va">p2</span></span></code></pre></div>
-</div>
-</div>
-<div class="section level3">
-<h3 id="advanced-customization">Advanced Customization<a class="anchor" aria-label="anchor" href="#advanced-customization"></a>
-</h3>
-<div class="section level4">
-<h4 id="custom-processing-functions">Custom Processing Functions<a class="anchor" aria-label="anchor" href="#custom-processing-functions"></a>
-</h4>
-<p>For advanced users, mLLMCelltype allows custom processing
-functions:</p>
-<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># Define a custom processing function</span></span>
-<span><span class="va">custom_process</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">prompt</span>, <span class="va">api_key</span><span class="op">)</span> <span class="op">{</span></span>
-<span>  <span class="co"># Custom implementation to process prompts and get responses</span></span>
-<span>  <span class="co"># This is a simplified example</span></span>
-<span>  <span class="va">response</span> <span class="op">&lt;-</span> <span class="st">"Custom cell type: T cells"</span></span>
-<span>  <span class="kw"><a href="https://rdrr.io/r/base/function.html" class="external-link">return</a></span><span class="op">(</span><span class="va">response</span><span class="op">)</span></span>
+<span>  <span class="co"># Return comparison results</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
+<span>    common_types <span class="op">=</span> <span class="va">common_types</span>,</span>
+<span>    human_specific <span class="op">=</span> <span class="va">human_specific</span>,</span>
+<span>    mouse_specific <span class="op">=</span> <span class="va">mouse_specific</span></span>
+<span>  <span class="op">)</span></span>
 <span><span class="op">}</span></span>
 <span></span>
-<span><span class="co"># Register the custom processing function</span></span>
+<span><span class="co"># This is a conceptual example</span></span>
+<span><span class="co"># comparison &lt;- compare_species_annotations(human_annotations, mouse_annotations)</span></span></code></pre></div>
+</div>
+</div>
+<div class="section level2">
+<h2 id="performance-considerations">Performance Considerations<a class="anchor" aria-label="anchor" href="#performance-considerations"></a>
+</h2>
+<div class="section level3">
+<h3 id="api-cost-management">API Cost Management<a class="anchor" aria-label="anchor" href="#api-cost-management"></a>
+</h3>
+<p>When using mLLMCelltype, it’s important to consider the costs
+associated with API calls to different LLM providers:</p>
+<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Example of cost-efficient model selection</span></span>
+<span><span class="co"># Choose models based on your specific needs and budget</span></span>
+<span></span>
+<span><span class="co"># For initial exploration or smaller datasets</span></span>
+<span><span class="co"># Use more affordable models</span></span>
+<span><span class="va">affordable_annotation</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/annotate_cell_types.html">annotate_cell_types</a></span><span class="op">(</span></span>
+<span>  input <span class="op">=</span> <span class="va">marker_data</span>,  <span class="co"># Your marker gene data</span></span>
+<span>  tissue_name <span class="op">=</span> <span class="st">"human PBMC"</span>,</span>
+<span>  model <span class="op">=</span> <span class="st">"claude-3-5-haiku-latest"</span>,  <span class="co"># More affordable model</span></span>
+<span>  api_key <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Sys.getenv.html" class="external-link">Sys.getenv</a></span><span class="op">(</span><span class="st">"ANTHROPIC_API_KEY"</span><span class="op">)</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># For final analysis or challenging datasets</span></span>
+<span><span class="co"># Use more powerful models</span></span>
+<span><span class="va">premium_annotation</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/annotate_cell_types.html">annotate_cell_types</a></span><span class="op">(</span></span>
+<span>  input <span class="op">=</span> <span class="va">marker_data</span>,  <span class="co"># Your marker gene data</span></span>
+<span>  tissue_name <span class="op">=</span> <span class="st">"human PBMC"</span>,</span>
+<span>  model <span class="op">=</span> <span class="st">"claude-3-7-sonnet-20250219"</span>,  <span class="co"># More powerful model</span></span>
+<span>  api_key <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Sys.getenv.html" class="external-link">Sys.getenv</a></span><span class="op">(</span><span class="st">"ANTHROPIC_API_KEY"</span><span class="op">)</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Use OpenRouter for access to free models</span></span>
+<span><span class="va">openrouter_annotation</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/annotate_cell_types.html">annotate_cell_types</a></span><span class="op">(</span></span>
+<span>  input <span class="op">=</span> <span class="va">marker_data</span>,  <span class="co"># Your marker gene data</span></span>
+<span>  tissue_name <span class="op">=</span> <span class="st">"human PBMC"</span>,</span>
+<span>  model <span class="op">=</span> <span class="st">"meta-llama/llama-3.1-8b-instruct:free"</span>,  <span class="co"># Free model via OpenRouter</span></span>
+<span>  api_key <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Sys.getenv.html" class="external-link">Sys.getenv</a></span><span class="op">(</span><span class="st">"OPENROUTER_API_KEY"</span><span class="op">)</span></span>
+<span><span class="op">)</span></span></code></pre></div>
+</div>
+<div class="section level3">
+<h3 id="optimizing-runtime">Optimizing Runtime<a class="anchor" aria-label="anchor" href="#optimizing-runtime"></a>
+</h3>
+<p>To optimize runtime when working with large datasets:</p>
+<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># 1. Use caching with interactive_consensus_annotation</span></span>
+<span><span class="va">consensus_with_cache</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/interactive_consensus_annotation.html">interactive_consensus_annotation</a></span><span class="op">(</span></span>
+<span>  input <span class="op">=</span> <span class="va">marker_data</span>,  <span class="co"># Your marker gene data</span></span>
+<span>  tissue_name <span class="op">=</span> <span class="st">"human PBMC"</span>,</span>
+<span>  models <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"claude-3-7-sonnet-20250219"</span>, <span class="st">"gpt-4o"</span><span class="op">)</span>,</span>
+<span>  api_keys <span class="op">=</span> <span class="va">api_keys</span>,</span>
+<span>  use_cache <span class="op">=</span> <span class="cn">TRUE</span>,  <span class="co"># Enable caching</span></span>
+<span>  cache_dir <span class="op">=</span> <span class="st">"my_cache_directory"</span>  <span class="co"># Specify cache directory</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># 2. Process clusters in batches</span></span>
+<span><span class="co"># This is a conceptual example - implementation would depend on your workflow</span></span>
+<span><span class="va">process_in_batches</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">marker_data</span>, <span class="va">batch_size</span> <span class="op">=</span> <span class="fl">5</span><span class="op">)</span> <span class="op">{</span></span>
+<span>  <span class="co"># Get unique clusters</span></span>
+<span>  <span class="va">clusters</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/unique.html" class="external-link">unique</a></span><span class="op">(</span><span class="va">marker_data</span><span class="op">$</span><span class="va">cluster</span><span class="op">)</span></span>
+<span></span>
+<span>  <span class="co"># Process in batches</span></span>
+<span>  <span class="va">results</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="op">)</span></span>
+<span>  <span class="kw">for</span> <span class="op">(</span><span class="va">i</span> <span class="kw">in</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">clusters</span><span class="op">)</span>, by <span class="op">=</span> <span class="va">batch_size</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
+<span>    <span class="co"># Get current batch of clusters</span></span>
+<span>    <span class="va">batch_clusters</span> <span class="op">&lt;-</span> <span class="va">clusters</span><span class="op">[</span><span class="va">i</span><span class="op">:</span><span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">min</a></span><span class="op">(</span><span class="va">i</span> <span class="op">+</span> <span class="va">batch_size</span> <span class="op">-</span> <span class="fl">1</span>, <span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">clusters</span><span class="op">)</span><span class="op">)</span><span class="op">]</span></span>
+<span></span>
+<span>    <span class="co"># Filter marker data for current batch</span></span>
+<span>    <span class="va">batch_data</span> <span class="op">&lt;-</span> <span class="va">marker_data</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">cluster</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="va">batch_clusters</span><span class="op">)</span></span>
+<span></span>
+<span>    <span class="co"># Process batch</span></span>
+<span>    <span class="va">batch_results</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/annotate_cell_types.html">annotate_cell_types</a></span><span class="op">(</span></span>
+<span>      input <span class="op">=</span> <span class="va">batch_data</span>,</span>
+<span>      tissue_name <span class="op">=</span> <span class="st">"human PBMC"</span>,</span>
+<span>      model <span class="op">=</span> <span class="st">"claude-3-7-sonnet-20250219"</span>,</span>
+<span>      api_key <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Sys.getenv.html" class="external-link">Sys.getenv</a></span><span class="op">(</span><span class="st">"ANTHROPIC_API_KEY"</span><span class="op">)</span></span>
+<span>    <span class="op">)</span></span>
+<span></span>
+<span>    <span class="co"># Store results</span></span>
+<span>    <span class="va">results</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">results</span>, <span class="va">batch_results</span><span class="op">)</span></span>
+<span>  <span class="op">}</span></span>
+<span></span>
+<span>  <span class="kw"><a href="https://rdrr.io/r/base/function.html" class="external-link">return</a></span><span class="op">(</span><span class="va">results</span><span class="op">)</span></span>
+<span><span class="op">}</span></span>
+<span></span>
+<span><span class="co"># 3. Use faster models for initial exploration</span></span>
+<span><span class="va">fast_annotation</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/annotate_cell_types.html">annotate_cell_types</a></span><span class="op">(</span></span>
+<span>  input <span class="op">=</span> <span class="va">marker_data</span>,  <span class="co"># Your marker gene data</span></span>
+<span>  tissue_name <span class="op">=</span> <span class="st">"human PBMC"</span>,</span>
+<span>  model <span class="op">=</span> <span class="st">"claude-3-5-haiku-latest"</span>,  <span class="co"># Faster model</span></span>
+<span>  api_key <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Sys.getenv.html" class="external-link">Sys.getenv</a></span><span class="op">(</span><span class="st">"ANTHROPIC_API_KEY"</span><span class="op">)</span></span>
+<span><span class="op">)</span></span></code></pre></div>
+</div>
+</div>
+<div class="section level2">
+<h2 id="advanced-customization">Advanced Customization<a class="anchor" aria-label="anchor" href="#advanced-customization"></a>
+</h2>
+<div class="section level3">
+<h3 id="custom-processing-functions">Custom Processing Functions<a class="anchor" aria-label="anchor" href="#custom-processing-functions"></a>
+</h3>
+<p>For advanced users, mLLMCelltype allows you to register custom
+providers and models:</p>
+<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Define a custom processing function</span></span>
+<span><span class="co"># This function must accept prompt, model, and api_key parameters</span></span>
+<span><span class="va">custom_process_fn</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">prompt</span>, <span class="va">model</span>, <span class="va">api_key</span><span class="op">)</span> <span class="op">{</span></span>
+<span>  <span class="co"># Custom implementation to process prompts and get responses</span></span>
+<span>  <span class="co"># This is a simplified example</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="st">"Processing prompt with custom provider\n"</span><span class="op">)</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="st">"Model:"</span>, <span class="va">model</span>, <span class="st">"\n"</span><span class="op">)</span></span>
+<span></span>
+<span>  <span class="co"># In a real implementation, you would make API calls here</span></span>
+<span>  <span class="co"># For example:</span></span>
+<span>  <span class="co"># response &lt;- httr::POST(</span></span>
+<span>  <span class="co">#   url = "https://api.custom-provider.com/v1/chat/completions",</span></span>
+<span>  <span class="co">#   body = list(prompt = prompt, model = model),</span></span>
+<span>  <span class="co">#   httr::add_headers(Authorization = paste("Bearer", api_key)),</span></span>
+<span>  <span class="co">#   encode = "json"</span></span>
+<span>  <span class="co"># )</span></span>
+<span>  <span class="co"># result &lt;- httr::content(response)$choices[[1]]$text</span></span>
+<span></span>
+<span>  <span class="co"># For this example, just return a fixed response</span></span>
+<span>  <span class="va">result</span> <span class="op">&lt;-</span> <span class="st">"T cells"</span></span>
+<span>  <span class="kw"><a href="https://rdrr.io/r/base/function.html" class="external-link">return</a></span><span class="op">(</span><span class="va">result</span><span class="op">)</span></span>
+<span><span class="op">}</span></span>
+<span></span>
+<span><span class="co"># Register the custom provider</span></span>
 <span><span class="fu"><a href="../reference/register_custom_provider.html">register_custom_provider</a></span><span class="op">(</span></span>
 <span>  provider_name <span class="op">=</span> <span class="st">"custom_provider"</span>,</span>
-<span>  api_url <span class="op">=</span> <span class="st">"https://api.custom-provider.com/v1/chat/completions"</span>,</span>
-<span>  api_key_env_var <span class="op">=</span> <span class="st">"CUSTOM_API_KEY"</span>,</span>
-<span>  process_function <span class="op">=</span> <span class="va">custom_process</span></span>
+<span>  process_fn <span class="op">=</span> <span class="va">custom_process_fn</span>,</span>
+<span>  description <span class="op">=</span> <span class="st">"My custom LLM provider"</span></span>
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Register a custom model</span></span>
 <span><span class="fu"><a href="../reference/register_custom_model.html">register_custom_model</a></span><span class="op">(</span></span>
 <span>  model_name <span class="op">=</span> <span class="st">"custom-model"</span>,</span>
-<span>  provider <span class="op">=</span> <span class="st">"custom_provider"</span></span>
+<span>  provider_name <span class="op">=</span> <span class="st">"custom_provider"</span>,</span>
+<span>  model_config <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
+<span>    temperature <span class="op">=</span> <span class="fl">0.7</span>,</span>
+<span>    max_tokens <span class="op">=</span> <span class="fl">2000</span></span>
+<span>  <span class="op">)</span></span>
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Use the custom model</span></span>
-<span><span class="va">custom_results</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/annotate_cell_types.html">annotate_cell_types</a></span><span class="op">(</span></span>
-<span>  input <span class="op">=</span> <span class="va">marker_data</span>,</span>
-<span>  tissue_name <span class="op">=</span> <span class="st">"human PBMC"</span>,</span>
-<span>  model <span class="op">=</span> <span class="st">"custom-model"</span>,</span>
-<span>  api_key <span class="op">=</span> <span class="st">"your-custom-api-key"</span></span>
-<span><span class="op">)</span></span></code></pre></div>
-</div>
-<div class="section level4">
-<h4 id="advanced-logging">Advanced Logging<a class="anchor" aria-label="anchor" href="#advanced-logging"></a>
-</h4>
-<p>mLLMCelltype provides advanced logging capabilities:</p>
-<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># Create a custom logger</span></span>
-<span><span class="va">logger</span> <span class="op">&lt;-</span> <span class="va"><a href="../reference/DiscussionLogger.html">DiscussionLogger</a></span><span class="op">$</span><span class="fu">new</span><span class="op">(</span>log_file <span class="op">=</span> <span class="st">"path/to/log_file.txt"</span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># Log a message</span></span>
-<span><span class="va">logger</span><span class="op">$</span><span class="fu">log</span><span class="op">(</span><span class="st">"Starting annotation process"</span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># Log with a specific level</span></span>
-<span><span class="va">logger</span><span class="op">$</span><span class="fu">log</span><span class="op">(</span><span class="st">"Detailed information"</span>, level <span class="op">=</span> <span class="st">"DEBUG"</span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># Log an error</span></span>
-<span><span class="va">logger</span><span class="op">$</span><span class="fu">log</span><span class="op">(</span><span class="st">"An error occurred"</span>, level <span class="op">=</span> <span class="st">"ERROR"</span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># Use the logger in annotation</span></span>
-<span><span class="va">results</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/annotate_cell_types.html">annotate_cell_types</a></span><span class="op">(</span></span>
-<span>  input <span class="op">=</span> <span class="va">marker_data</span>,</span>
-<span>  tissue_name <span class="op">=</span> <span class="st">"human PBMC"</span>,</span>
-<span>  model <span class="op">=</span> <span class="st">"claude-3-7-sonnet-20250219"</span>,</span>
-<span>  api_key <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Sys.getenv.html" class="external-link">Sys.getenv</a></span><span class="op">(</span><span class="st">"ANTHROPIC_API_KEY"</span><span class="op">)</span>,</span>
-<span>  debug <span class="op">=</span> <span class="cn">TRUE</span>  <span class="co"># Enable detailed logging</span></span>
-<span><span class="op">)</span></span></code></pre></div>
-</div>
+<span><span class="co"># custom_results &lt;- annotate_cell_types(</span></span>
+<span><span class="co">#   input = marker_data,</span></span>
+<span><span class="co">#   tissue_name = "human PBMC",</span></span>
+<span><span class="co">#   model = "custom-model",</span></span>
+<span><span class="co">#   api_key = "your-custom-api-key"</span></span>
+<span><span class="co"># )</span></span></code></pre></div>
 </div>
 <div class="section level3">
-<h3 id="next-steps">Next Steps<a class="anchor" aria-label="anchor" href="#next-steps"></a>
+<h3 id="using-the-discussionlogger">Using the DiscussionLogger<a class="anchor" aria-label="anchor" href="#using-the-discussionlogger"></a>
 </h3>
+<p>mLLMCelltype provides a <code>DiscussionLogger</code> class for
+detailed logging of the consensus process:</p>
+<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Create a custom logger</span></span>
+<span><span class="va">logger</span> <span class="op">&lt;-</span> <span class="va"><a href="../reference/DiscussionLogger.html">DiscussionLogger</a></span><span class="op">$</span><span class="fu">new</span><span class="op">(</span>base_dir <span class="op">=</span> <span class="st">"logs"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Start logging a cluster discussion</span></span>
+<span><span class="va">logger</span><span class="op">$</span><span class="fu">start_cluster_discussion</span><span class="op">(</span></span>
+<span>  cluster_id <span class="op">=</span> <span class="st">"0"</span>,</span>
+<span>  tissue_name <span class="op">=</span> <span class="st">"human PBMC"</span>,</span>
+<span>  marker_genes <span class="op">=</span> <span class="st">"CD3D, CD3E, CD2, IL7R, LTB"</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Log a discussion entry</span></span>
+<span><span class="va">logger</span><span class="op">$</span><span class="fu">log_entry</span><span class="op">(</span><span class="st">"INFO"</span>, <span class="st">"Starting analysis of cluster 0"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Log a model's prediction</span></span>
+<span><span class="va">logger</span><span class="op">$</span><span class="fu">log_prediction</span><span class="op">(</span></span>
+<span>  model_name <span class="op">=</span> <span class="st">"claude-3-7-sonnet-20250219"</span>,</span>
+<span>  round_number <span class="op">=</span> <span class="fl">1</span>,</span>
+<span>  prediction <span class="op">=</span> <span class="st">"T cells"</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Log consensus check results</span></span>
+<span><span class="va">logger</span><span class="op">$</span><span class="fu">log_consensus_check</span><span class="op">(</span></span>
+<span>  round_number <span class="op">=</span> <span class="fl">1</span>,</span>
+<span>  reached_consensus <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  consensus_proportion <span class="op">=</span> <span class="fl">0.8</span>,</span>
+<span>  entropy <span class="op">=</span> <span class="fl">0.3</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Log final consensus</span></span>
+<span><span class="va">logger</span><span class="op">$</span><span class="fu">log_final_consensus</span><span class="op">(</span></span>
+<span>  final_cell_type <span class="op">=</span> <span class="st">"T cells"</span>,</span>
+<span>  summary <span class="op">=</span> <span class="st">"All models agreed on T cells based on CD3 markers"</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># End the cluster discussion</span></span>
+<span><span class="va">logger</span><span class="op">$</span><span class="fu">end_cluster_discussion</span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
+</div>
+<div class="section level3">
+<h3 id="using-the-cachemanager">Using the CacheManager<a class="anchor" aria-label="anchor" href="#using-the-cachemanager"></a>
+</h3>
+<p>The <code>CacheManager</code> class helps optimize performance by
+caching consensus results:</p>
+<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Create a cache manager</span></span>
+<span><span class="va">cache_manager</span> <span class="op">&lt;-</span> <span class="va"><a href="../reference/CacheManager.html">CacheManager</a></span><span class="op">$</span><span class="fu">new</span><span class="op">(</span>cache_dir <span class="op">=</span> <span class="st">"consensus_cache"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Generate a cache key</span></span>
+<span><span class="va">cache_key</span> <span class="op">&lt;-</span> <span class="va">cache_manager</span><span class="op">$</span><span class="fu">generate_key</span><span class="op">(</span></span>
+<span>  input <span class="op">=</span> <span class="va">marker_data</span>,</span>
+<span>  models <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"claude-3-7-sonnet-20250219"</span>, <span class="st">"gpt-4o"</span><span class="op">)</span>,</span>
+<span>  cluster_id <span class="op">=</span> <span class="st">"0"</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Check if results exist in cache</span></span>
+<span><span class="kw">if</span> <span class="op">(</span><span class="va">cache_manager</span><span class="op">$</span><span class="fu">has_cache</span><span class="op">(</span><span class="va">cache_key</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
+<span>  <span class="co"># Load from cache</span></span>
+<span>  <span class="va">cached_results</span> <span class="op">&lt;-</span> <span class="va">cache_manager</span><span class="op">$</span><span class="fu">load_from_cache</span><span class="op">(</span><span class="va">cache_key</span><span class="op">)</span></span>
+<span><span class="op">}</span> <span class="kw">else</span> <span class="op">{</span></span>
+<span>  <span class="co"># Process and save to cache</span></span>
+<span>  <span class="co"># results &lt;- process_cluster(...)</span></span>
+<span>  <span class="co"># cache_manager$save_to_cache(cache_key, results)</span></span>
+<span><span class="op">}</span></span>
+<span></span>
+<span><span class="co"># Get cache statistics</span></span>
+<span><span class="va">cache_stats</span> <span class="op">&lt;-</span> <span class="va">cache_manager</span><span class="op">$</span><span class="fu">get_cache_stats</span><span class="op">(</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Clear cache (with confirmation)</span></span>
+<span><span class="co"># cache_manager$clear_cache(confirm = TRUE)</span></span></code></pre></div>
+</div>
+</div>
+<div class="section level2">
+<h2 id="next-steps">Next Steps<a class="anchor" aria-label="anchor" href="#next-steps"></a>
+</h2>
 <p>Now that you’ve explored the advanced features of mLLMCelltype, you
 can:</p>
 <ul>
@@ -704,13 +826,12 @@ can:</p>
 <a href="09-contributing-guide.html">Contribute to the project</a>:
 Learn how to contribute to mLLMCelltype</li>
 <li>
-<a href="10-version-history.html">Review the version history</a>:
-Explore the development history of the package</li>
+<a href="news/index.html">Review the version history</a>: Explore
+the development history of the package</li>
 <li>
 <a href="01-introduction.html">Return to the introduction</a>:
 Review the basic concepts</li>
 </ul>
-</div>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside>
