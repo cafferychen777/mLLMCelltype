@@ -204,7 +204,7 @@ batch_consensus <- interactive_consensus_annotation(
   api_keys = list(
     "anthropic" = Sys.getenv("ANTHROPIC_API_KEY"),
     "openai" = Sys.getenv("OPENAI_API_KEY"),
-    "google" = Sys.getenv("GOOGLE_API_KEY")
+    "gemini" = Sys.getenv("GEMINI_API_KEY")
   ),
   controversy_threshold = 0.4  # Lower threshold to discuss more clusters
 )
@@ -529,7 +529,7 @@ For advanced users, mLLMCelltype allows custom processing functions:
 
 ```{r}
 # Define a custom processing function
-custom_process <- function(prompt, api_key, timeout = 60, max_retries = 3) {
+custom_process <- function(prompt, api_key) {
   # Custom implementation to process prompts and get responses
   # This is a simplified example
   response <- "Custom cell type: T cells"
@@ -582,7 +582,7 @@ results <- annotate_cell_types(
   tissue_name = "human PBMC",
   model = "claude-3-7-sonnet-20250219",
   api_key = Sys.getenv("ANTHROPIC_API_KEY"),
-  verbose = TRUE  # Enable detailed logging
+  debug = TRUE  # Enable detailed logging
 )
 ```
 

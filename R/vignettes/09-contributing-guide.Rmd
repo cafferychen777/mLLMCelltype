@@ -2,7 +2,7 @@
 title: "Contributing Guide"
 author: "Chen Yang"
 date: "`r Sys.Date()`"
-output: 
+output:
   html_document:
     toc: true
     toc_float: true
@@ -133,13 +133,13 @@ Example of properly formatted R code:
 annotate_cell_types <- function(input, tissue_name, model, api_key) {
   # Function implementation
   results <- process_markers(input, top_n = 10)
-  
+
   for (i in seq_along(results)) {
     if (is_valid_result(results[i])) {
       results[i] <- clean_result(results[i])
     }
   }
-  
+
   return(results)
 }
 ```
@@ -178,14 +178,14 @@ test_that("annotate_cell_types returns expected format", {
     avg_log2FC = c(2.5, 2.3, 3.1, 2.8),
     p_val_adj = c(0.001, 0.002, 0.001, 0.003)
   )
-  
+
   # Mock the API response
   mockery::stub(
-    annotate_cell_types, 
-    "get_model_response", 
+    annotate_cell_types,
+    "get_model_response",
     function(...) c("T cells", "B cells")
   )
-  
+
   # Run the function
   result <- annotate_cell_types(
     input = test_markers,
@@ -193,7 +193,7 @@ test_that("annotate_cell_types returns expected format", {
     model = "test-model",
     api_key = "test-key"
   )
-  
+
   # Assertions
   expect_is(result, "character")
   expect_length(result, 2)
@@ -218,28 +218,38 @@ Example of adding a new model:
 
 ```r
 # In process_newprovider.R
-process_newprovider <- function(prompt, api_key, timeout = 60, max_retries = 3) {
+process_newprovider <- function(prompt, api_key) {
   # Implementation for the new provider
   url <- "https://api.newprovider.com/v1/completions"
-  
+
   headers <- c(
     "Content-Type" = "application/json",
     "Authorization" = paste("Bearer", api_key)
   )
-  
+
   body <- list(
     model = "newprovider-model",
     prompt = prompt,
     max_tokens = 1000,
     temperature = 0.1
   )
-  
-  response <- make_api_request(url, headers, body, timeout, max_retries)
-  
+
+  # Make API request using httr
+  response <- httr::POST(
+    url = url,
+    httr::add_headers(.headers = headers),
+    body = jsonlite::toJSON(body, auto_unbox = TRUE),
+    encode = "json"
+  )
+
+  # Check for HTTP errors
+  httr::stop_for_status(response)
+
   # Parse the response
-  parsed_response <- jsonlite::fromJSON(response)
+  content <- httr::content(response, "text", encoding = "UTF-8")
+  parsed_response <- jsonlite::fromJSON(content)
   result <- parsed_response$choices[[1]]$text
-  
+
   return(result)
 }
 
@@ -250,12 +260,12 @@ get_provider <- function(model) {
     # Existing models...
     "newprovider-model" = "newprovider"
   )
-  
+
   provider <- model_mapping[[model]]
   if (is.null(provider)) {
     stop("Unsupported model: ", model)
   }
-  
+
   return(provider)
 }
 ```

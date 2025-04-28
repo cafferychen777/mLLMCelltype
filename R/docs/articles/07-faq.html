@@ -238,30 +238,25 @@ directory)</li>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">cache_manager</span> <span class="op">&lt;-</span> <span class="va"><a href="../reference/CacheManager.html">CacheManager</a></span><span class="op">$</span><span class="fu">new</span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="va">cache_manager</span><span class="op">$</span><span class="fu">clear_cache</span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
-<p>To disable caching for a specific run:</p>
-<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">results</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/annotate_cell_types.html">annotate_cell_types</a></span><span class="op">(</span><span class="va">...</span>, cache <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
+<p>Note: The <code>annotate_cell_types</code> function does not have
+built-in caching. If you need caching, you’ll need to implement it
+separately.</p>
 </div>
 <div class="section level4">
 <h4 id="how-does-mllmcelltype-handle-rate-limits-and-api-errors">How does mLLMCelltype handle rate limits and API errors?<a class="anchor" aria-label="anchor" href="#how-does-mllmcelltype-handle-rate-limits-and-api-errors"></a>
 </h4>
-<p>The package includes robust error handling for API calls:</p>
+<p>The package includes error handling for API calls:</p>
 <ul>
-<li>Automatic retries: Failed API calls are automatically retried up to
-<code>max_retries</code> times (default: 3)</li>
-<li>Exponential backoff: Each retry waits longer to accommodate rate
-limits</li>
-<li>Detailed error messages: When an API call fails permanently, the
-error message includes details to help diagnose the issue</li>
+<li>Detailed error messages: When an API call fails, the error message
+includes details to help diagnose the issue</li>
 </ul>
 <p>If you’re processing many clusters, you might encounter rate limits.
 In this case:</p>
 <ol style="list-style-type: decimal">
-<li>Increase the <code>timeout</code> parameter (default: 60
-seconds)</li>
 <li>Reduce the number of models used for initial annotation</li>
 <li>Process batches of clusters separately with pauses between
 batches</li>
+<li>Consider implementing your own retry mechanism if needed</li>
 </ol>
 </div>
 </div>
@@ -292,9 +287,9 @@ affect performance</li>
 <p>Typical runtimes: - Single model, 10 clusters: 1-2 minutes -
 Multi-model consensus (3 models), 10 clusters: 3-5 minutes - Multi-model
 consensus with discussion, 10 clusters: 5-10 minutes</p>
-<p>To optimize runtime: - Enable caching to reuse results - Start with
-fewer models for initial exploration - Use a higher
-<code>discussion_threshold</code> to reduce the number of controversial
+<p>To optimize runtime: - Implement your own caching mechanism if needed
+- Start with fewer models for initial exploration - Use a higher
+<code>controversy_threshold</code> to reduce the number of controversial
 clusters - Process large datasets in batches</p>
 </div>
 <div class="section level4">
@@ -322,10 +317,10 @@ cluster for annotation</li>
 $0.10-1.00 total - Multi-model consensus (3 models): $0.30-3.00 total -
 With discussion process: Additional $0.10-1.00 - Using OpenRouter free
 models: $0.00 total</p>
-<p>To reduce costs: - Use caching to avoid redundant API calls - Start
-with more economical models - Use fewer models for initial exploration -
-Reserve multi-model consensus for final analysis - Consider using
-OpenRouter free models (see below)</p>
+<p>To reduce costs: - Implement your own caching mechanism to avoid
+redundant API calls - Start with more economical models - Use fewer
+models for initial exploration - Reserve multi-model consensus for final
+analysis - Consider using OpenRouter free models (see below)</p>
 </div>
 <div class="section level4">
 <h4 id="how-can-i-use-openrouter-free-models">How can I use OpenRouter free models?<a class="anchor" aria-label="anchor" href="#how-can-i-use-openrouter-free-models"></a>
@@ -339,7 +334,7 @@ dashboard</p></li>
 <li><p><strong>Use models with the <code>:free</code>
 suffix</strong>:</p></li>
 </ol>
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Set your OpenRouter API key</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/Sys.setenv.html" class="external-link">Sys.setenv</a></span><span class="op">(</span>OPENROUTER_API_KEY <span class="op">=</span> <span class="st">"your-openrouter-api-key"</span><span class="op">)</span></span>
 <span></span>
@@ -348,8 +343,8 @@ suffix</strong>:</p></li>
 <span>  input <span class="op">=</span> <span class="va">marker_data</span>,</span>
 <span>  tissue_name <span class="op">=</span> <span class="st">"human PBMC"</span>,</span>
 <span>  model <span class="op">=</span> <span class="st">"meta-llama/llama-4-maverick:free"</span>,  <span class="co"># Note the :free suffix</span></span>
-<span>  api_key <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Sys.getenv.html" class="external-link">Sys.getenv</a></span><span class="op">(</span><span class="st">"OPENROUTER_API_KEY"</span><span class="op">)</span>,</span>
-<span>  provider <span class="op">=</span> <span class="st">"openrouter"</span>  <span class="co"># Specify OpenRouter as the provider</span></span>
+<span>  api_key <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Sys.getenv.html" class="external-link">Sys.getenv</a></span><span class="op">(</span><span class="st">"OPENROUTER_API_KEY"</span><span class="op">)</span></span>
+<span>  <span class="co"># No need to specify provider - it's automatically detected from the model name format</span></span>
 <span><span class="op">)</span></span></code></pre></div>
 <ol start="4" style="list-style-type: decimal">
 <li>
@@ -415,9 +410,10 @@ include slightly different context</p></li>
 <li><p><strong>API changes</strong>: Providers may change how their APIs
 work</p></li>
 </ol>
-<p>To ensure reproducibility: - Use caching to reuse results - Specify
-model versions explicitly when available - Set a random seed if the API
-supports it - Save and document your results</p>
+<p>To ensure reproducibility: - Implement your own caching mechanism to
+reuse results - Specify model versions explicitly when available - Save
+and document your results - Consider saving the raw API responses for
+future reference</p>
 </div>
 <div class="section level4">
 <h4 id="im-getting-an-error-about-invalid-cluster-indices--what-should-i-do">I’m getting an error about invalid cluster indices. What should I
@@ -432,7 +428,7 @@ means your data is using 1-based indexing instead of the required
 0-based</li>
 <li>If your data is 1-based, convert it:</li>
 </ol>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Convert 1-based to 0-based indexing</span></span>
 <span><span class="va">markers</span><span class="op">$</span><span class="va">cluster</span> <span class="op">&lt;-</span> <span class="va">markers</span><span class="op">$</span><span class="va">cluster</span> <span class="op">-</span> <span class="fl">1</span></span></code></pre></div>
 </div>
@@ -447,14 +443,14 @@ environment</p></li>
 <li><p><strong>Provide keys directly</strong>: Pass the API key directly
 to the function:</p></li>
 </ol>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">results</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/annotate_cell_types.html">annotate_cell_types</a></span><span class="op">(</span><span class="va">...</span>, api_key <span class="op">=</span> <span class="st">"your-api-key"</span><span class="op">)</span></span></code></pre></div>
 <ol start="3" style="list-style-type: decimal">
 <li>
 <strong>Check provider name</strong>: Make sure you’re using the
 correct provider name for your API key:</li>
 </ol>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Set API key for a specific provider</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/Sys.setenv.html" class="external-link">Sys.setenv</a></span><span class="op">(</span>ANTHROPIC_API_KEY <span class="op">=</span> <span class="st">"your-anthropic-key"</span><span class="op">)</span></span></code></pre></div>
 <ol start="4" style="list-style-type: decimal">
@@ -496,7 +492,7 @@ poorly represented in the training data of LLMs</p></li>
 <li><p><strong>Output</strong>: Annotation results can be easily added
 to your Seurat object:</p></li>
 </ol>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">seurat_obj</span><span class="op">$</span><span class="va">cell_type_consensus</span> <span class="op">&lt;-</span> <span class="fu">plyr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/plyr/man/mapvalues.html" class="external-link">mapvalues</a></span><span class="op">(</span></span>
 <span>  x <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/character.html" class="external-link">as.character</a></span><span class="op">(</span><span class="fu"><a href="https://satijalab.github.io/seurat-object/reference/Idents.html" class="external-link">Idents</a></span><span class="op">(</span><span class="va">seurat_obj</span><span class="op">)</span><span class="op">)</span>,</span>
 <span>  from <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/character.html" class="external-link">as.character</a></span><span class="op">(</span><span class="fl">0</span><span class="op">:</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">consensus_results</span><span class="op">$</span><span class="va">final_annotations</span><span class="op">)</span><span class="op">-</span><span class="fl">1</span><span class="op">)</span><span class="op">)</span>,</span>
@@ -507,7 +503,7 @@ to your Seurat object:</p></li>
 <strong>Visualization</strong>: Use Seurat’s visualization functions
 with the added annotations:</li>
 </ol>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://satijalab.org/seurat/reference/DimPlot.html" class="external-link">DimPlot</a></span><span class="op">(</span><span class="va">seurat_obj</span>, group.by <span class="op">=</span> <span class="st">"cell_type_consensus"</span>, label <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level4">
@@ -552,7 +548,7 @@ mLLMCelltype and traditional methods</p></li>
 </h4>
 <p>While mLLMCelltype uses carefully designed prompts, advanced users
 can customize them:</p>
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Create a custom annotation prompt</span></span>
 <span><span class="va">custom_prompt</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/create_annotation_prompt.html">create_annotation_prompt</a></span><span class="op">(</span></span>
 <span>  marker_data <span class="op">=</span> <span class="va">your_markers</span>,</span>
@@ -572,13 +568,13 @@ can customize them:</p>
 <h4 id="can-i-add-my-own-custom-llm-models">Can I add my own custom LLM models?<a class="anchor" aria-label="anchor" href="#can-i-add-my-own-custom-llm-models"></a>
 </h4>
 <p>Yes, you can register custom models and providers:</p>
-<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Register a custom provider</span></span>
 <span><span class="fu"><a href="../reference/register_custom_provider.html">register_custom_provider</a></span><span class="op">(</span></span>
 <span>  provider_name <span class="op">=</span> <span class="st">"my_provider"</span>,</span>
 <span>  api_url <span class="op">=</span> <span class="st">"https://api.my-provider.com/v1/chat/completions"</span>,</span>
 <span>  api_key_env_var <span class="op">=</span> <span class="st">"MY_PROVIDER_API_KEY"</span>,</span>
-<span>  process_function <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">prompt</span>, <span class="va">api_key</span>, <span class="va">...</span><span class="op">)</span> <span class="op">{</span></span>
+<span>  process_function <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">prompt</span>, <span class="va">api_key</span><span class="op">)</span> <span class="op">{</span></span>
 <span>    <span class="co"># Custom implementation</span></span>
 <span>  <span class="op">}</span></span>
 <span><span class="op">)</span></span>

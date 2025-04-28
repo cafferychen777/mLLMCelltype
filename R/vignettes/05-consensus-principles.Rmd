@@ -2,7 +2,7 @@
 title: "Consensus Annotation Principles"
 author: "Chen Yang"
 date: "`r Sys.Date()`"
-output: 
+output:
   html_document:
     toc: true
     toc_float: true
@@ -122,7 +122,7 @@ After discussion, the system forms a final consensus for all clusters:
 
 ```{r}
 # Conceptual representation of consensus formation
-final_consensus <- combine_results(
+final_annotations <- combine_results(
   initial_results,
   discussion_results,
   controversial_clusters

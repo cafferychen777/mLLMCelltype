@@ -42,13 +42,9 @@ results <- annotate_cell_types(
   input,                # Marker gene data (data frame, list, or file path)
   tissue_name,          # Tissue name (e.g., "human PBMC", "mouse brain")
   model,                # LLM model to use
-  api_key = NULL,       # API key (if not set in environment)
+  api_key = NA,         # API key (if not set in environment, NA returns prompt only)
   top_gene_count = 10,  # Number of top genes per cluster to use
-  cache = TRUE,         # Whether to cache results
-  cache_dir = NULL,     # Custom cache directory
-  verbose = TRUE,       # Whether to print progress messages
-  timeout = 60,         # Timeout for API calls in seconds
-  max_retries = 3       # Maximum number of retries for failed API calls
+  debug = FALSE         # Whether to print debugging information
 )
 ```
 
@@ -172,20 +168,35 @@ print_consensus_summary(consensus_results)
 # Add consensus annotations and metrics to Seurat object
 pbmc_small$cell_type_consensus <- plyr::mapvalues(
   x = as.character(Idents(pbmc_small)),
-  from = as.character(0:(length(consensus_results$final_consensus)-1)),
-  to = consensus_results$final_consensus
+  from = as.character(0:(length(consensus_results$final_annotations)-1)),
+  to = consensus_results$final_annotations
 )
 
+# Extract consensus metrics from the consensus results
+consensus_metrics <- lapply(names(consensus_results$initial_results$consensus_results), function(cluster_id) {
+  metrics <- consensus_results$initial_results$consensus_results[[cluster_id]]
+  return(list(
+    cluster = cluster_id,
+    consensus_proportion = metrics$consensus_proportion,
+    entropy = metrics$entropy
+  ))
+})
+
+# Convert to data frame for easier handling
+metrics_df <- do.call(rbind, lapply(consensus_metrics, data.frame))
+
+# Add consensus proportion to Seurat object
 pbmc_small$consensus_proportion <- plyr::mapvalues(
   x = as.character(Idents(pbmc_small)),
-  from = as.character(0:(length(consensus_results$consensus_proportion)-1)),
-  to = consensus_results$consensus_proportion
+  from = metrics_df$cluster,
+  to = metrics_df$consensus_proportion
 )
 
+# Add entropy to Seurat object
 pbmc_small$shannon_entropy <- plyr::mapvalues(
   x = as.character(Idents(pbmc_small)),
-  from = as.character(0:(length(consensus_results$shannon_entropy)-1)),
-  to = consensus_results$shannon_entropy
+  from = metrics_df$cluster,
+  to = metrics_df$entropy
 )
 ```
 
@@ -211,9 +222,8 @@ for (model in free_models) {
   free_results[[model]] <- annotate_cell_types(
     input = pbmc_markers,
     tissue_name = "human PBMC",
-    model = model,
+    model = model,  # OpenRouter models are automatically detected by format: 'provider/model-name:free'
     api_key = openrouter_api_key,
-    provider = "openrouter",  # Specify OpenRouter as the provider
     top_gene_count = 10
   )
 }
@@ -235,16 +245,16 @@ print_consensus_summary(free_consensus_results)
 # Add free model consensus annotations to Seurat object
 pbmc_small$free_model_consensus <- plyr::mapvalues(
   x = as.character(Idents(pbmc_small)),
-  from = as.character(0:(length(free_consensus_results$final_consensus)-1)),
-  to = free_consensus_results$final_consensus
+  from = as.character(0:(length(free_consensus_results$final_annotations)-1)),
+  to = free_consensus_results$final_annotations
 )
 
 # Compare paid vs. free model results
 comparison <- data.frame(
-  cluster = as.character(0:(length(consensus_results$final_consensus)-1)),
-  paid_models = consensus_results$final_consensus,
-  free_models = free_consensus_results$final_consensus,
-  agreement = consensus_results$final_consensus == free_consensus_results$final_consensus
+  cluster = as.character(0:(length(consensus_results$final_annotations)-1)),
+  paid_models = consensus_results$final_annotations,
+  free_models = free_consensus_results$final_annotations,
+  agreement = consensus_results$final_annotations == free_consensus_results$final_annotations
 )
 print(comparison)
 ```
@@ -271,22 +281,23 @@ results <- annotate_cell_types(
 For better control over caching behavior:
 
 ```{r}
-# Set custom cache directory
-custom_cache_dir <- "path/to/cache"
+# Note: The annotate_cell_types function does not have built-in caching.
+# If you need caching, you can implement it separately.
 
-# Run with custom caching
+# Run annotation
 results <- annotate_cell_types(
   input = pbmc_markers,
   tissue_name = "human PBMC",
   model = "claude-3-7-sonnet-20250219",
   api_key = Sys.getenv("ANTHROPIC_API_KEY"),
-  cache = TRUE,
-  cache_dir = custom_cache_dir
+  top_gene_count = 10,
+  debug = FALSE
 )
 
-# Clear cache if needed
-cache_manager <- CacheManager$new(cache_dir = custom_cache_dir)
-cache_manager$clear_cache()
+# If you need custom caching, you can implement it using your own cache manager
+# This is just a conceptual example and not part of the actual package
+# cache_manager <- YourCacheManager$new(cache_dir = "path/to/cache")
+# cache_manager$clear_cache()
 ```
 
 ## Model Selection Guide
@@ -338,8 +349,8 @@ free_model_results <- annotate_cell_types(
   input = pbmc_markers,
   tissue_name = "human PBMC",
   model = "meta-llama/llama-4-maverick:free",  # Note the :free suffix
-  api_key = Sys.getenv("OPENROUTER_API_KEY"),
-  provider = "openrouter"  # Specify OpenRouter as the provider
+  api_key = Sys.getenv("OPENROUTER_API_KEY")
+  # No need to specify provider - it's automatically detected from the model name format
 )
 ```
 
@@ -418,20 +429,35 @@ consensus_results <- interactive_consensus_annotation(
 # Add consensus results to Seurat object
 pbmc_small$cell_type_consensus <- plyr::mapvalues(
   x = as.character(Idents(pbmc_small)),
-  from = as.character(0:(length(consensus_results$final_consensus)-1)),
-  to = consensus_results$final_consensus
+  from = as.character(0:(length(consensus_results$final_annotations)-1)),
+  to = consensus_results$final_annotations
 )
 
+# Extract consensus metrics from the consensus results
+consensus_metrics <- lapply(names(consensus_results$initial_results$consensus_results), function(cluster_id) {
+  metrics <- consensus_results$initial_results$consensus_results[[cluster_id]]
+  return(list(
+    cluster = cluster_id,
+    consensus_proportion = metrics$consensus_proportion,
+    entropy = metrics$entropy
+  ))
+})
+
+# Convert to data frame for easier handling
+metrics_df <- do.call(rbind, lapply(consensus_metrics, data.frame))
+
+# Add consensus proportion to Seurat object
 pbmc_small$consensus_proportion <- as.numeric(plyr::mapvalues(
   x = as.character(Idents(pbmc_small)),
-  from = as.character(0:(length(consensus_results$consensus_proportion)-1)),
-  to = consensus_results$consensus_proportion
+  from = metrics_df$cluster,
+  to = metrics_df$consensus_proportion
 ))
 
+# Add entropy to Seurat object
 pbmc_small$shannon_entropy <- as.numeric(plyr::mapvalues(
   x = as.character(Idents(pbmc_small)),
-  from = as.character(0:(length(consensus_results$shannon_entropy)-1)),
-  to = consensus_results$shannon_entropy
+  from = metrics_df$cluster,
+  to = metrics_df$entropy
 ))
 
 # Visualize results
@@ -491,7 +517,7 @@ consensus_results_low_threshold <- interactive_consensus_annotation(
   api_keys = list(
     "anthropic" = Sys.getenv("ANTHROPIC_API_KEY"),
     "openai" = Sys.getenv("OPENAI_API_KEY"),
-    "google" = Sys.getenv("GOOGLE_API_KEY")
+    "gemini" = Sys.getenv("GEMINI_API_KEY")
   ),
   controversy_threshold = 0.3  # Lower threshold - more clusters will be discussed
 )
@@ -504,7 +530,7 @@ consensus_results_high_threshold <- interactive_consensus_annotation(
   api_keys = list(
     "anthropic" = Sys.getenv("ANTHROPIC_API_KEY"),
     "openai" = Sys.getenv("OPENAI_API_KEY"),
-    "google" = Sys.getenv("GOOGLE_API_KEY")
+    "gemini" = Sys.getenv("GEMINI_API_KEY")
   ),
   controversy_threshold = 0.7  # Higher threshold - fewer clusters will be discussed
 )
