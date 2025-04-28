@@ -9,7 +9,7 @@ process_openrouter(prompt, model, api_key)
 \arguments{
 \item{prompt}{Character string containing the prompt to send to the API}
 
-\item{model}{Character string specifying the model to use (e.g., 'openai/gpt-4o')}
+\item{model}{Character string specifying the model to use (e.g., 'openai/gpt-4o' or 'meta-llama/llama-4-maverick:free')}
 
 \item{api_key}{Character string containing the OpenRouter API key}
 }
@@ -19,5 +19,16 @@ Character vector containing the model's response
 \description{
 This function processes annotation requests using the OpenRouter API, which provides
 access to various LLM models including OpenAI, Anthropic, Meta, and Google models.
+OpenRouter also offers free models with the \verb{:free} suffix (e.g., 'meta-llama/llama-4-maverick:free').
+}
+\details{
+For free models, use the \verb{:free} suffix in the model name. For example:
+\itemize{
+\item 'meta-llama/llama-4-maverick:free' - Meta Llama 4 Maverick (free)
+\item 'nvidia/llama-3.1-nemotron-ultra-253b-v1:free' - NVIDIA Nemotron Ultra 253B (free)
+\item 'deepseek/deepseek-chat-v3-0324:free' - DeepSeek Chat v3 (free)
+\item 'microsoft/mai-ds-r1:free' - Microsoft MAI-DS-R1 (free)
+}
+Free models don't consume credits but may have limitations compared to paid models.
 }
 \keyword{internal}

@@ -162,7 +162,7 @@ Seurat.</p>
 <span>  verbose <span class="op">=</span> <span class="cn">TRUE</span>,       <span class="co"># Whether to print progress messages</span></span>
 <span>  timeout <span class="op">=</span> <span class="fl">60</span>,         <span class="co"># Timeout for API calls in seconds</span></span>
 <span>  max_retries <span class="op">=</span> <span class="fl">3</span>,      <span class="co"># Maximum number of retries</span></span>
-<span>  discussion_threshold <span class="op">=</span> <span class="fl">0.5</span>  <span class="co"># Threshold for identifying controversial clusters</span></span>
+<span>  controversy_threshold <span class="op">=</span> <span class="fl">0.5</span>  <span class="co"># Threshold for identifying controversial clusters</span></span>
 <span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level4">
@@ -457,6 +457,19 @@ window</li>
 <p>These free models are accessed through OpenRouter and don’t consume
 credits, but may have limitations compared to paid models. Use the
 <code>:free</code> suffix in the model name to access them.</p>
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Example of using a free model via OpenRouter</span></span>
+<span><span class="co"># First, set your OpenRouter API key</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/Sys.setenv.html" class="external-link">Sys.setenv</a></span><span class="op">(</span>OPENROUTER_API_KEY <span class="op">=</span> <span class="st">"your-openrouter-api-key"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Then use a free model with the :free suffix</span></span>
+<span><span class="va">free_model_results</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/annotate_cell_types.html">annotate_cell_types</a></span><span class="op">(</span></span>
+<span>  input <span class="op">=</span> <span class="va">pbmc_markers</span>,</span>
+<span>  tissue_name <span class="op">=</span> <span class="st">"human PBMC"</span>,</span>
+<span>  model <span class="op">=</span> <span class="st">"meta-llama/llama-4-maverick:free"</span>,  <span class="co"># Note the :free suffix</span></span>
+<span>  api_key <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Sys.getenv.html" class="external-link">Sys.getenv</a></span><span class="op">(</span><span class="st">"OPENROUTER_API_KEY"</span><span class="op">)</span>,</span>
+<span>  provider <span class="op">=</span> <span class="st">"openrouter"</span>  <span class="co"># Specify OpenRouter as the provider</span></span>
+<span><span class="op">)</span></span></code></pre></div>
 </div>
 </div>
 <div class="section level3">
@@ -464,7 +477,7 @@ credits, but may have limitations compared to paid models. Use the
 </h3>
 <p>Here’s a complete example of integrating mLLMCelltype with a Seurat
 workflow:</p>
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://satijalab.org/seurat" class="external-link">Seurat</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://cafferychen777.github.io/mLLMCelltype">mLLMCelltype</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://ggplot2.tidyverse.org" class="external-link">ggplot2</a></span><span class="op">)</span></span>
@@ -573,7 +586,7 @@ workflow:</p>
 </h4>
 <p>The <code>top_gene_count</code> parameter controls how many top
 marker genes per cluster are used for annotation:</p>
-<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Using more genes (better for well-characterized tissues)</span></span>
 <span><span class="va">results_more_genes</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/annotate_cell_types.html">annotate_cell_types</a></span><span class="op">(</span></span>
 <span>  input <span class="op">=</span> <span class="va">pbmc_markers</span>,</span>
@@ -593,11 +606,11 @@ marker genes per cluster are used for annotation:</p>
 <span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level4">
-<h4 id="adjusting-discussion_threshold">Adjusting discussion_threshold<a class="anchor" aria-label="anchor" href="#adjusting-discussion_threshold"></a>
+<h4 id="adjusting-controversy_threshold">Adjusting controversy_threshold<a class="anchor" aria-label="anchor" href="#adjusting-controversy_threshold"></a>
 </h4>
-<p>The <code>discussion_threshold</code> parameter controls which
+<p>The <code>controversy_threshold</code> parameter controls which
 clusters are considered controversial and require discussion:</p>
-<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Lower threshold (more clusters will be discussed)</span></span>
 <span><span class="va">consensus_results_low_threshold</span> <span class="op">&lt;-</span> <span class="fu">create_consensus</span><span class="op">(</span></span>
 <span>  results <span class="op">=</span> <span class="va">results</span>,</span>
@@ -605,7 +618,7 @@ clusters are considered controversial and require discussion:</p>
 <span>  tissue_name <span class="op">=</span> <span class="st">"human PBMC"</span>,</span>
 <span>  model <span class="op">=</span> <span class="st">"claude-3-7-sonnet-20250219"</span>,</span>
 <span>  api_key <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Sys.getenv.html" class="external-link">Sys.getenv</a></span><span class="op">(</span><span class="st">"ANTHROPIC_API_KEY"</span><span class="op">)</span>,</span>
-<span>  discussion_threshold <span class="op">=</span> <span class="fl">0.3</span>  <span class="co"># Lower threshold</span></span>
+<span>  controversy_threshold <span class="op">=</span> <span class="fl">0.3</span>  <span class="co"># Lower threshold</span></span>
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Higher threshold (fewer clusters will be discussed)</span></span>
@@ -615,7 +628,7 @@ clusters are considered controversial and require discussion:</p>
 <span>  tissue_name <span class="op">=</span> <span class="st">"human PBMC"</span>,</span>
 <span>  model <span class="op">=</span> <span class="st">"claude-3-7-sonnet-20250219"</span>,</span>
 <span>  api_key <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Sys.getenv.html" class="external-link">Sys.getenv</a></span><span class="op">(</span><span class="st">"ANTHROPIC_API_KEY"</span><span class="op">)</span>,</span>
-<span>  discussion_threshold <span class="op">=</span> <span class="fl">0.7</span>  <span class="co"># Higher threshold</span></span>
+<span>  controversy_threshold <span class="op">=</span> <span class="fl">0.7</span>  <span class="co"># Higher threshold</span></span>
 <span><span class="op">)</span></span></code></pre></div>
 </div>
 </div>
@@ -662,7 +675,7 @@ cluster</li>
 <ol style="list-style-type: decimal">
 <li>Use a smaller <code>top_gene_count</code> for faster execution</li>
 <li>Enable caching to reuse results</li>
-<li>Use a higher <code>discussion_threshold</code> to reduce the number
+<li>Use a higher <code>controversy_threshold</code> to reduce the number
 of clusters that require discussion</li>
 </ol>
 </div>
