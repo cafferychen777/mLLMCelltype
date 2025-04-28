@@ -1,12 +1,42 @@
 <div align="center">
-  <img src="assets/mLLMCelltype_logo.png" alt="mLLMCelltype Logo" width="300"/>
+  <img src="assets/mLLMCelltype_logo.png" alt="mLLMCelltype - Marco de consenso multi-modelos de lenguaje para la anotación de tipos celulares en datos de secuenciación de ARN unicelular" width="300"/>
 </div>
 
 <div align="center">
   <a href="README.md">English</a> | <a href="README_CN.md">中文</a> | <a href="README_JP.md">日本語</a> | <a href="README_DE.md">Deutsch</a> | <a href="README_FR.md">Français</a> | <a href="README_KR.md">한국어</a>
 </div>
 
-mLLMCelltype es un marco de consenso iterativo multi-LLM para la anotación de tipos celulares en datos de secuenciación de ARN unicelular. Al aprovechar las fortalezas complementarias de múltiples modelos de lenguaje grande (OpenAI GPT-4o/4.1, Anthropic Claude-3.7/3.5, Google Gemini-2.0, X.AI Grok-3, DeepSeek-V3, Alibaba Qwen2.5, Zhipu GLM-4, MiniMax, Stepfun, y OpenRouter), este marco mejora significativamente la precisión de anotación mientras proporciona una cuantificación transparente de la incertidumbre.
+<div align="center">
+  <a href="https://twitter.com/intent/tweet?text=Descubre%20mLLMCelltype%3A%20Un%20marco%20de%20consenso%20multi-LLM%20para%20la%20anotaci%C3%B3n%20de%20tipos%20celulares%20en%20datos%20scRNA-seq%21&url=https%3A%2F%2Fgithub.com%2Fcafferychen777%2FmLLMCelltype"><img src="https://img.shields.io/twitter/url?style=social&url=https%3A%2F%2Fgithub.com%2Fcafferychen777%2FmLLMCelltype" alt="Tweet"></a>
+  <a href="https://github.com/cafferychen777/mLLMCelltype/stargazers"><img src="https://img.shields.io/github/stars/cafferychen777/mLLMCelltype?style=social" alt="Stars"></a>
+  <a href="https://github.com/cafferychen777/mLLMCelltype/network/members"><img src="https://img.shields.io/github/forks/cafferychen777/mLLMCelltype?style=social" alt="Forks"></a>
+</div>
+
+<div align="center">
+  <img src="https://img.shields.io/github/license/cafferychen777/mLLMCelltype" alt="License">
+  <img src="https://img.shields.io/github/last-commit/cafferychen777/mLLMCelltype" alt="Last Commit">
+  <img src="https://img.shields.io/github/issues/cafferychen777/mLLMCelltype" alt="Issues">
+  <img src="https://img.shields.io/github/v/release/cafferychen777/mLLMCelltype" alt="Release">
+</div>
+
+# mLLMCelltype: Marco de Consenso Multi-Modelos de Lenguaje para la Anotación de Tipos Celulares
+
+mLLMCelltype es un marco avanzado de consenso iterativo multi-LLM para la anotación precisa y confiable de tipos celulares en datos de secuenciación de ARN unicelular (scRNA-seq). Al aprovechar la inteligencia colectiva de múltiples modelos de lenguaje grande (OpenAI GPT-4o/4.1, Anthropic Claude-3.7/3.5, Google Gemini-2.0, X.AI Grok-3, DeepSeek-V3, Alibaba Qwen2.5, Zhipu GLM-4, MiniMax, Stepfun, y OpenRouter), este marco mejora significativamente la precisión de anotación mientras proporciona una cuantificación transparente de la incertidumbre para la investigación en bioinformática y biología computacional.
+
+## Resumen
+
+mLLMCelltype representa un avance significativo en los métodos computacionales para el análisis transcriptómico unicelular. Este software de código abierto utiliza múltiples modelos de lenguaje grande en un proceso de deliberación estructurado para identificar con precisión los tipos celulares a partir de datos de expresión génica. A diferencia de los métodos de anotación tradicionales que dependen de conjuntos de datos de referencia o modelos de IA únicos, mLLMCelltype implementa un enfoque de consenso innovador que reduce las alucinaciones, mejora la precisión y proporciona métricas de incertidumbre transparentes. El marco está diseñado para integrarse perfectamente con plataformas populares de análisis unicelular como Scanpy y Seurat, haciéndolo accesible para investigadores de toda la comunidad bioinformática.
+
+## Tabla de Contenidos
+- [Noticias](#noticias)
+- [Características Principales](#características-principales)
+- [Actualizaciones Recientes](#actualizaciones-recientes)
+- [Estructura del Directorio](#estructura-del-directorio)
+- [Instalación](#instalación)
+- [Ejemplos de Uso](#ejemplos-de-uso)
+- [Ejemplo de Visualización](#ejemplo-de-visualización)
+- [Citación](#citación)
+- [Contribuciones](#contribuciones)
 
 ## Noticias
 
@@ -71,33 +101,36 @@ pip install git+https://github.com/cafferychen777/mLLMCelltype.git
 ```python
 from mllmcelltype import annotate_cell_types
 
-# Ejemplo básico con un diccionario de genes marcadores
+# Definir un diccionario de genes marcadores para cada cluster celular
+# Cada cluster contiene genes específicos que caracterizan diferentes tipos de células inmunes en PBMC
 marker_dict = {
-    "cluster_0": ["CD3D", "CD3E", "CD3G", "CD8A", "CD8B"],
-    "cluster_1": ["CD3D", "CD3E", "CD3G", "CD4", "IL7R"],
-    "cluster_2": ["CD19", "MS4A1", "CD79A", "CD79B"],
-    "cluster_3": ["CD14", "LYZ", "CST3", "FCGR3A", "MS4A7"]
+    "cluster_0": ["CD3D", "CD3E", "CD3G", "CD8A", "CD8B"],  # Marcadores de linfocitos T CD8+
+    "cluster_1": ["CD3D", "CD3E", "CD3G", "CD4", "IL7R"],  # Marcadores de linfocitos T CD4+
+    "cluster_2": ["CD19", "MS4A1", "CD79A", "CD79B"],      # Marcadores de linfocitos B
+    "cluster_3": ["CD14", "LYZ", "CST3", "FCGR3A", "MS4A7"]  # Marcadores de monocitos/macrófagos
 }
 
-# Configurar claves API (solo se necesita una, pero se pueden proporcionar múltiples)
+# Configurar las claves API necesarias para acceder a los diferentes servicios de LLM
+# Se pueden proporcionar múltiples claves para utilizar diversos modelos en el proceso de consenso
 api_keys = {
-    "openai": "sk-...",  # Opcional: Clave API de OpenAI
-    "anthropic": "sk-ant-...",  # Opcional: Clave API de Anthropic
-    "google": "...",  # Opcional: Clave API de Google
-    "qwen": "..."  # Opcional: Clave API de Qwen
+    "openai": "sk-...",        # Clave API de OpenAI para acceder a modelos como GPT-4o y GPT-4.1
+    "anthropic": "sk-ant-...", # Clave API de Anthropic para acceder a modelos como Claude-3.7 y Claude-3.5
+    "google": "...",          # Clave API de Google para acceder a modelos como Gemini-2.5-pro
+    "qwen": "..."             # Clave API de Qwen para acceder a modelos como Qwen2.5
 }
 
-# Obtener anotaciones
+# Iniciar el proceso de anotación de tipos celulares utilizando el marco de consenso multi-LLM
+# Esta función coordina la deliberación entre múltiples LLMs para determinar los tipos celulares
 results = annotate_cell_types(
-    marker_dict=marker_dict,
-    api_keys=api_keys,
-    num_llms=3,  # Número de LLMs a utilizar (seleccionados automáticamente según las claves disponibles)
-    consensus_method="discussion",  # Método de consenso: "discussion" o "voting"
-    rounds=2,  # Número de rondas para el método de discusión
-    return_discussion=True  # Devolver el historial completo de discusión
+    marker_dict=marker_dict,  # Diccionario con genes marcadores específicos para cada cluster
+    api_keys=api_keys,        # Claves API para los diferentes servicios de LLM
+    num_llms=3,               # Utilizar 3 modelos LLM diferentes para generar anotaciones independientes
+    consensus_method="discussion",  # Utilizar el método de discusión para resolver discrepancias entre LLMs
+    rounds=2,                 # Realizar 2 rondas de discusión para refinar las anotaciones y resolver conflictos
+    return_discussion=True    # Incluir el historial completo de discusión en los resultados para transparencia
 )
 
-# Imprimir resultados
+# Mostrar las anotaciones finales de tipos celulares obtenidas por consenso de los LLMs
 print("\nAnotaciones finales:")
 for cluster, annotation in results["annotations"].items():
     print(f"{cluster}: {annotation}")
@@ -110,36 +143,40 @@ for cluster, metrics in results["uncertainty_metrics"].items():
 ### R
 
 ```r
+# Cargar la biblioteca mLLMCelltype para la anotación de tipos celulares basada en consenso multi-LLM
 library(mLLMCelltype)
 
-# Ejemplo básico con una lista de genes marcadores
+# Definir una lista de genes marcadores para cada cluster celular en formato R
+# Cada cluster contiene genes específicos que caracterizan diferentes tipos de células inmunes en PBMC
 marker_list <- list(
-  cluster_0 = c("CD3D", "CD3E", "CD3G", "CD8A", "CD8B"),
-  cluster_1 = c("CD3D", "CD3E", "CD3G", "CD4", "IL7R"),
-  cluster_2 = c("CD19", "MS4A1", "CD79A", "CD79B"),
-  cluster_3 = c("CD14", "LYZ", "CST3", "FCGR3A", "MS4A7")
+  cluster_0 = c("CD3D", "CD3E", "CD3G", "CD8A", "CD8B"),  # Marcadores de linfocitos T CD8+
+  cluster_1 = c("CD3D", "CD3E", "CD3G", "CD4", "IL7R"),  # Marcadores de linfocitos T CD4+
+  cluster_2 = c("CD19", "MS4A1", "CD79A", "CD79B"),      # Marcadores de linfocitos B
+  cluster_3 = c("CD14", "LYZ", "CST3", "FCGR3A", "MS4A7")  # Marcadores de monocitos/macrófagos
 )
 
-# Configurar claves API (solo se necesita una, pero se pueden proporcionar múltiples)
+# Configurar las claves API necesarias para acceder a los diferentes servicios de LLM
+# La función set_api_keys almacena las claves de forma segura para su uso en la sesión actual
 set_api_keys(
-  openai = "sk-...",  # Opcional: Clave API de OpenAI
-  anthropic = "sk-ant-...",  # Opcional: Clave API de Anthropic
-  google = "...",  # Opcional: Clave API de Google
-  qwen = "..."  # Opcional: Clave API de Qwen
+  openai = "sk-...",        # Clave API de OpenAI para acceder a modelos como GPT-4o y GPT-4.1
+  anthropic = "sk-ant-...", # Clave API de Anthropic para acceder a modelos como Claude-3.7 y Claude-3.5
+  google = "...",          # Clave API de Google para acceder a modelos como Gemini-2.5-pro
+  qwen = "..."             # Clave API de Qwen para acceder a modelos como Qwen2.5
 )
 
-# Obtener anotaciones
+# Iniciar el proceso de anotación de tipos celulares utilizando el marco de consenso multi-LLM
+# Esta función coordina la deliberación entre múltiples LLMs para determinar los tipos celulares
 results <- annotate_cell_types(
-  marker_list = marker_list,
-  num_llms = 3,  # Número de LLMs a utilizar (seleccionados automáticamente según las claves disponibles)
-  consensus_method = "discussion",  # Método de consenso: "discussion" o "voting"
-  rounds = 2,  # Número de rondas para el método de discusión
-  return_discussion = TRUE  # Devolver el historial completo de discusión
+  marker_list = marker_list,  # Lista con genes marcadores específicos para cada cluster
+  num_llms = 3,               # Utilizar 3 modelos LLM diferentes para generar anotaciones independientes
+  consensus_method = "discussion",  # Utilizar el método de discusión para resolver discrepancias entre LLMs
+  rounds = 2,                 # Realizar 2 rondas de discusión para refinar las anotaciones y resolver conflictos
+  return_discussion = TRUE    # Incluir el historial completo de discusión en los resultados para transparencia
 )
 
-# Ver resultados
+# Mostrar las anotaciones finales de tipos celulares obtenidas por consenso de los LLMs
 print("Anotaciones finales:")
-print(results$annotations)
+print(results$annotations)  # Imprimir el diccionario de anotaciones finales para cada cluster
 
 print("Métricas de incertidumbre:")
 print(results$uncertainty_metrics)
@@ -268,35 +305,43 @@ system.file("extdata", "Cat_Heart_markers.csv", package = "mLLMCelltype")
 import scanpy as sc
 from mllmcelltype import annotate_from_anndata
 
-# Cargar datos
+# Cargar el conjunto de datos PBMC3K de ejemplo que contiene perfiles de expresión génica de células mononucleares de sangre periférica
 adata = sc.datasets.pbmc3k()
 
-# Preprocesamiento estándar
+# Realizar el preprocesamiento estándar del conjunto de datos de scRNA-seq
+# Normalizar los recuentos por célula para corregir las diferencias en la profundidad de secuenciación
 sc.pp.normalize_per_cell(adata)
+# Transformación logarítmica para estabilizar la varianza y hacer que los datos sean más adecuados para análisis posteriores
 sc.pp.log1p(adata)
+# Seleccionar los 2000 genes más variables para reducir dimensionalidad y enfocarse en genes informativos
 sc.pp.highly_variable_genes(adata, n_top_genes=2000)
+# Análisis de componentes principales para reducir dimensionalidad mientras se conserva la variación biológica significativa
 sc.pp.pca(adata)
+# Construir un grafo de vecindad para identificar células similares basado en perfiles de expresión
 sc.pp.neighbors(adata)
+# Aplicar el algoritmo de clustering Leiden para identificar grupos de células con perfiles de expresión similares
 sc.tl.leiden(adata, resolution=0.8)
+# Identificar genes marcadores diferencialmente expresados para cada cluster usando el test de Wilcoxon
 sc.tl.rank_genes_groups(adata, groupby='leiden', method='wilcoxon')
 
-# Configurar claves API
+# Configurar las claves API necesarias para acceder a los servicios de LLM
 api_keys = {
-    "openai": "sk-...",  # Clave API de OpenAI
-    "anthropic": "sk-ant-..."  # Clave API de Anthropic
+    "openai": "sk-...",  # Clave API de OpenAI para acceder a modelos como GPT-4o
+    "anthropic": "sk-ant-..."  # Clave API de Anthropic para acceder a modelos como Claude-3.7
 }
 
-# Anotar tipos celulares directamente desde AnnData
+# Ejecutar el proceso de anotación de tipos celulares utilizando el marco de consenso multi-LLM
+# Esta función integra directamente con objetos AnnData de Scanpy para una experiencia fluida
 adata = annotate_from_anndata(
-    adata=adata,
-    cluster_key='leiden',  # Columna que contiene las etiquetas de cluster
-    api_keys=api_keys,
-    num_llms=2,  # Usar 2 LLMs
-    top_n_genes=20,  # Número de genes marcadores principales a considerar
-    consensus_method="discussion",
-    rounds=2,
-    add_to_obs=True,  # Agregar anotaciones a adata.obs
-    add_uncertainty_metrics=True  # Agregar métricas de incertidumbre a adata.obs
+    adata=adata,  # Objeto AnnData que contiene datos de expresión génica y resultados de clustering
+    cluster_key='leiden',  # Especificar la columna en adata.obs que contiene las etiquetas de cluster
+    api_keys=api_keys,  # Proporcionar las claves API para los servicios LLM
+    num_llms=2,  # Utilizar 2 modelos LLM diferentes para generar anotaciones independientes
+    top_n_genes=20,  # Considerar los 20 genes marcadores más significativos para cada cluster
+    consensus_method="discussion",  # Utilizar el método de discusión para resolver discrepancias entre LLMs
+    rounds=2,  # Número de rondas de discusión para refinar las anotaciones
+    add_to_obs=True,  # Guardar las anotaciones finales en adata.obs para fácil acceso y visualización
+    add_uncertainty_metrics=True  # Incluir métricas de incertidumbre para evaluar la confianza de las anotaciones
 )
 
 # Visualizar resultados

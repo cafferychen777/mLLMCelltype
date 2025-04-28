@@ -1,12 +1,42 @@
 <div align="center">
-  <img src="assets/mLLMCelltype_logo.png" alt="mLLMCelltype Logo" width="300"/>
+  <img src="assets/mLLMCelltype_logo.png" alt="mLLMCelltype - 単一細胞 RNA シーケンシングデータのマルチ大規模言語モデル細胞タイプアノテーションフレームワーク" width="300"/>
 </div>
 
 <div align="center">
   <a href="README.md">English</a> | <a href="README_CN.md">中文</a> | <a href="README_ES.md">Español</a> | <a href="README_DE.md">Deutsch</a> | <a href="README_FR.md">Français</a> | <a href="README_KR.md">한국어</a>
 </div>
 
-mLLMCelltypeは、単一細胞RNAシーケンシングデータにおける細胞タイプアノテーションのための反復型マルチLLMコンセンサスフレームワークです。複数の大規模言語モデル（OpenAI GPT-4o/4.1、Anthropic Claude-3.7/3.5、Google Gemini-2.0、X.AI Grok-3、DeepSeek-V3、Alibaba Qwen2.5、Zhipu GLM-4、MiniMax、Stepfun、OpenRouterなど）の相補的な強みを活用することで、このフレームワークはアノテーションの精度を大幅に向上させながら、透明性のある不確実性の定量化を提供します。
+<div align="center">
+  <a href="https://twitter.com/intent/tweet?text=mLLMCelltype%3A%20単一細胞%20RNA%20シーケンシングデータの細胞タイプアノテーションのためのマルチLLMコンセンサスフレームワーク%21&url=https%3A%2F%2Fgithub.com%2Fcafferychen777%2FmLLMCelltype"><img src="https://img.shields.io/twitter/url?style=social&url=https%3A%2F%2Fgithub.com%2Fcafferychen777%2FmLLMCelltype" alt="Tweet"></a>
+  <a href="https://github.com/cafferychen777/mLLMCelltype/stargazers"><img src="https://img.shields.io/github/stars/cafferychen777/mLLMCelltype?style=social" alt="Stars"></a>
+  <a href="https://github.com/cafferychen777/mLLMCelltype/network/members"><img src="https://img.shields.io/github/forks/cafferychen777/mLLMCelltype?style=social" alt="Forks"></a>
+</div>
+
+<div align="center">
+  <img src="https://img.shields.io/github/license/cafferychen777/mLLMCelltype" alt="License">
+  <img src="https://img.shields.io/github/last-commit/cafferychen777/mLLMCelltype" alt="Last Commit">
+  <img src="https://img.shields.io/github/issues/cafferychen777/mLLMCelltype" alt="Issues">
+  <img src="https://img.shields.io/github/v/release/cafferychen777/mLLMCelltype" alt="Release">
+</div>
+
+# mLLMCelltype: 単一細胞 RNA シーケンシングのためのマルチ大規模言語モデルコンセンサスフレームワーク
+
+mLLMCelltypeは、単一細胞RNAシーケンシング(scRNA-seq)データにおける正確で信頼性の高い細胞タイプアノテーションのための高度な反復型マルチLLMコンセンサスフレームワークです。複数の大規模言語モデル（OpenAI GPT-4o/4.1、Anthropic Claude-3.7/3.5、Google Gemini-2.0、X.AI Grok-3、DeepSeek-V3、Alibaba Qwen2.5、Zhipu GLM-4、MiniMax、Stepfun、OpenRouterなど）の集合知能を活用することで、このフレームワークはアノテーションの精度を大幅に向上させながら、バイオインフォマティクスおよび計算生物学研究のための透明性のある不確実性の定量化を提供します。
+
+## 概要
+
+mLLMCelltypeは、単一細胞トランスクリプトーム解析の計算手法における重要な進歩を表しています。このオープンソースソフトウェアは、構造化された討論プロセスにおいて複数の大規模言語モデルを活用し、適切に選択された違いに発現する選別的マーカー選択から細胞タイプを正確に同定します。参照データセットや単一AIモデルに依存する従来のアノテーション方法とは異なり、mLLMCelltypeは幻視を減らし、精度を向上させ、透明性のある不確実性指標を提供する革新的なコンセンサスアプローチを実装しています。このフレームワークは、ScanpyやSeuratなどの人気のある単一細胞解析プラットフォームとシームレスに統合するように設計されており、バイオインフォマティクス研究コミュニティ全体にアクセス可能です。
+
+## 目次
+- [ニュース](#ニュース)
+- [主な特徴](#主な特徴)
+- [最新の更新](#最新の更新)
+- [ディレクトリ構造](#ディレクトリ構造)
+- [インストール](#インストール)
+- [使用例](#使用例)
+- [可視化例](#可視化例)
+- [引用](#引用)
+- [コントリビューション](#コントリビューション)
 
 ## ニュース
 
@@ -216,36 +246,37 @@ system.file("extdata", "Cat_Heart_markers.csv", package = "mLLMCelltype")
 ### Pythonでの使用例
 
 ```python
+# 単一細胞 RNA-seq データにおける mLLMCelltype を用いた細胞タイプアノテーションの例
 import scanpy as sc
 import mllmcelltype as mct
 
-# AnnDataオブジェクトを読み込み
-adata = sc.read_h5ad("your_data.h5ad")
+# 単一細胞 RNA-seq データを AnnData 形式で読み込み
+adata = sc.read_h5ad("your_data.h5ad")  # あなたの scRNA-seq データに置き換えてください
 
-# クラスタリングを実行（既に実行済みの場合はスキップ）
-sc.pp.neighbors(adata)
-sc.tl.leiden(adata)
+# 細胞集団の特定のためのネットワーク構築とLeidenクラスタリングの実行
+sc.pp.neighbors(adata)  # 類似細胞を接続するKNNグラフの構築
+sc.tl.leiden(adata)     # コミュニティ検出アルゴリズムを使用した細胞集団の特定
 
-# マーカー遺伝子を特定
-sc.tl.rank_genes_groups(adata, groupby="leiden", method="wilcoxon")
+# 各クラスターのマーカー遺伝子を特定するための差別発現分析の実行
+sc.tl.rank_genes_groups(adata, groupby="leiden", method="wilcoxon")  # Wilcoxon順位和検定を用いたマーカー検出
 
-# マーカー遺伝子をmLLMCelltypeの入力形式に変換
-markers_dict = mct.utils.convert_scanpy_markers(adata)
+# Scanpyのマーカー遺伝子結果をmLLMCelltypeで使用可能な形式に変換
+markers_dict = mct.utils.convert_scanpy_markers(adata)  # マーカー遺伝子辞書形式に変換
 
-# 細胞タイプアノテーションを実行
+# 複数の大規模言語モデルを使用した細胞タイプアノテーションの実行
 consensus_results = mct.annotate.interactive_consensus_annotation(
-    input=markers_dict,
-    tissue_name="human PBMC",
-    models=["gpt-4o", "claude-3-7-sonnet-20250219", "gemini-1.5-pro"],
-    api_keys={
-        "openai": "your_openai_api_key",
-        "anthropic": "your_anthropic_api_key",
-        "gemini": "your_gemini_api_key"
+    input=markers_dict,                                             # マーカー遺伝子辞書
+    tissue_name="human PBMC",                                      # 組織情報の指定（アノテーション精度向上）
+    models=["gpt-4o", "claude-3-7-sonnet-20250219", "gemini-1.5-pro"],  # 複数の大規模言語モデルの使用
+    api_keys={                                                     # 各LLMプロバイダーのAPIキー設定
+        "openai": "your_openai_api_key",                             # OpenAI GPT-4o APIキー
+        "anthropic": "your_anthropic_api_key",                       # Anthropic Claude APIキー
+        "gemini": "your_gemini_api_key"                              # Google Gemini APIキー
     },
-    top_gene_count=10
+    top_gene_count=10                                              # 各クラスターごとに使用する上位マーカー遺伝子数
 )
 
-# AnnDataオブジェクトにアノテーションを追加
+# アノテーション結果をAnnDataオブジェクトに追加し、後続の分析と可視化の準備
 adata.obs["cell_type"] = adata.obs["leiden"].map(
     lambda x: consensus_results["final_annotations"].get(x, "Unknown")
 )
