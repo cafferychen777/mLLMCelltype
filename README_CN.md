@@ -18,6 +18,7 @@
   <img src="https://img.shields.io/github/last-commit/cafferychen777/mLLMCelltype" alt="最近提交">
   <img src="https://img.shields.io/github/issues/cafferychen777/mLLMCelltype" alt="问题">
   <img src="https://img.shields.io/github/v/release/cafferychen777/mLLMCelltype" alt="发布版本">
+  <a href="https://www.biorxiv.org/content/10.1101/2025.04.10.647852v1"><img src="https://img.shields.io/badge/bioRxiv-2025.04.10.647852-blue" alt="bioRxiv"></a>
 </div>
 
 # mLLMCelltype: 多大语言模型共识框架用于细胞类型注释

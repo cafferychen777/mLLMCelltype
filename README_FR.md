@@ -18,6 +18,7 @@
   <img src="https://img.shields.io/github/last-commit/cafferychen777/mLLMCelltype" alt="Last Commit">
   <img src="https://img.shields.io/github/issues/cafferychen777/mLLMCelltype" alt="Issues">
   <img src="https://img.shields.io/github/v/release/cafferychen777/mLLMCelltype" alt="Release">
+  <a href="https://www.biorxiv.org/content/10.1101/2025.04.10.647852v1"><img src="https://img.shields.io/badge/bioRxiv-2025.04.10.647852-blue" alt="bioRxiv"></a>
 </div>
 
 # mLLMCelltype: Cadre de Consensus Multi-Modèles de Langage pour l'Annotation des Types Cellulaires
