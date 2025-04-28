@@ -55,16 +55,49 @@ get_provider <- function(model) {
   openrouter_models <- c(
     # OpenAI models
     "openai/gpt-4o", "openai/gpt-4o-mini", "openai/gpt-4-turbo", "openai/gpt-4", "openai/gpt-3.5-turbo",
+    "openai/gpt-4.1", "openai/gpt-4.1-mini", "openai/gpt-4.1-nano", "openai/o1", "openai/o1-mini", "openai/o1-preview", "openai/o1-pro",
+    "openai/o4-mini",
+
     # Anthropic models
     "anthropic/claude-3-7-sonnet-20250219", "anthropic/claude-3-5-sonnet-latest", "anthropic/claude-3-5-haiku-latest", "anthropic/claude-3-opus",
+    "anthropic/claude-3.5-sonnet", "anthropic/claude-3.5-haiku", "anthropic/claude-3.7-sonnet",
+
     # Meta models
     "meta-llama/llama-3-70b-instruct", "meta-llama/llama-3-8b-instruct", "meta-llama/llama-2-70b-chat",
+    "meta-llama/llama-3.1-70b-instruct", "meta-llama/llama-3.1-8b-instruct", "meta-llama/llama-3.1-8b-instruct:free",
+    "meta-llama/llama-3.2-11b-vision-instruct:free", "meta-llama/llama-3.2-1b-instruct:free", "meta-llama/llama-3.2-3b-instruct:free",
+    "meta-llama/llama-3.3-70b-instruct", "meta-llama/llama-3.3-70b-instruct:free",
+    "meta-llama/llama-4-maverick:free", "meta-llama/llama-4-scout:free",
+
     # Google models
     "google/gemini-2.5-pro-preview-03-25", "google/gemini-1.5-pro-latest", "google/gemini-1.5-flash",
+    "google/gemini-2.0-flash-001", "google/gemini-2.0-flash-exp:free", "google/gemini-2.5-flash-preview",
+    "google/gemma-2-9b-it:free", "google/gemma-3-12b-it:free", "google/gemma-3-1b-it:free", "google/gemma-3-27b-it:free", "google/gemma-3-4b-it:free",
+    "google/learnlm-1.5-pro-experimental:free",
+
     # Mistral models
     "mistralai/mistral-large", "mistralai/mistral-medium", "mistralai/mistral-small",
+    "mistralai/mistral-7b-instruct:free", "mistralai/mistral-small-24b-instruct-2501:free", "mistralai/mistral-small-3.1-24b-instruct:free",
+    "mistralai/mistral-nemo:free",
+
+    # DeepSeek models
+    "deepseek/deepseek-chat", "deepseek/deepseek-chat-v3-0324", "deepseek/deepseek-chat-v3-0324:free", "deepseek/deepseek-chat:free",
+    "deepseek/deepseek-r1:free", "deepseek/deepseek-r1-zero:free", "deepseek/deepseek-r1-distill-llama-70b:free",
+    "deepseek/deepseek-r1-distill-qwen-14b:free", "deepseek/deepseek-r1-distill-qwen-32b:free", "deepseek/deepseek-v3-base:free",
+
+    # Qwen models
+    "qwen/qwen-2.5-72b-instruct:free", "qwen/qwen-2.5-7b-instruct:free", "qwen/qwen-2.5-coder-32b-instruct:free",
+    "qwen/qwen-2.5-vl-7b-instruct:free", "qwen/qwen2.5-vl-32b-instruct:free", "qwen/qwen2.5-vl-3b-instruct:free",
+    "qwen/qwen2.5-vl-72b-instruct:free", "qwen/qwq-32b:free", "qwen/qwq-32b-preview:free",
+
+    # GLM models
+    "thudm/glm-4-32b:free", "thudm/glm-4-9b:free", "thudm/glm-z1-32b", "thudm/glm-z1-32b:free", "thudm/glm-z1-9b:free",
+
     # Other models
-    "microsoft/mai-ds-r1", "perplexity/sonar-small-chat", "cohere/command-r", "deepseek/deepseek-chat", "thudm/glm-z1-32b")
+    "microsoft/mai-ds-r1:free", "perplexity/sonar-small-chat", "cohere/command-r",
+    "huggingfaceh4/zephyr-7b-beta:free", "microsoft/phi-3-mini-128k-instruct", "nousresearch/deephermes-3-llama-3-8b-preview:free",
+    "agentica-org/deepcoder-14b-preview:free", "moonshotai/moonlight-16b-a3b-instruct:free", "shisa-ai/shisa-v2-llama3.3-70b:free",
+    "sophosympatheia/rogue-rose-103b-v0.2:free", "tngtech/deepseek-r1t-chimera:free")
 
   # Check for custom models first
   if (exists(model, envir = custom_models)) {
