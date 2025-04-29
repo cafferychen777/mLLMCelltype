@@ -49,7 +49,7 @@ mLLMCelltype is an open-source tool for single-cell transcriptomics analysis tha
 
 ## News
 
-🎉 **April 2025**: We're thrilled to announce that less than a week after our preprint release, mLLMCelltype has surpassed 100 GitHub stars! We've also seen tremendous coverage from various media outlets and content creators. We extend our heartfelt gratitude to everyone who has supported this project through stars, shares, and contributions. Your enthusiasm drives our continued development and improvement of mLLMCelltype.
+🎉 **April 2025**: We're thrilled to announce that just two weeks after our preprint release, mLLMCelltype has surpassed 200 GitHub stars! We've also seen tremendous coverage from various media outlets and content creators. We extend our heartfelt gratitude to everyone who has supported this project through stars, shares, and contributions. Your enthusiasm drives our continued development and improvement of mLLMCelltype.
 
 ## Key Features
 
