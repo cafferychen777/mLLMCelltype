@@ -8,13 +8,11 @@ try:
     with open(os.path.join(this_directory, "README.md"), encoding="utf-8") as f:
         long_description = f.read()
 except FileNotFoundError:
-    long_description = (
-        "mLLMCelltype: A Python module for cell type annotation using various LLMs."
-    )
+    long_description = "mLLMCelltype: A Python module for cell type annotation using various LLMs."
 
 setup(
     name="mllmcelltype",
-    version="1.1.0",
+    version="1.2.1",
     packages=find_packages(),
     description="A Python module for cell type annotation using various LLMs.",
     long_description=long_description,
@@ -47,12 +45,12 @@ setup(
         "openai": ["openai>=1.0.0"],
         "anthropic": ["anthropic>=0.5.0"],
         "gemini": ["google-genai>=1.0.0"],
+        "grok": ["x-ai>=0.1.0"],
         "dev": [
             "pytest>=6.0.0",
             "pytest-cov>=2.12.0",
-            "black>=21.5b2",
-            "isort>=5.9.1",
-            "flake8>=3.9.2",
+            "pre-commit>=2.16.0",
+            "ruff>=0.11.0",
         ],
     },
     classifiers=[
