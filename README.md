@@ -304,6 +304,60 @@ for cluster, annotation in annotations.items():
 
 This approach is fast, accurate, and doesn't require any API credits, making it ideal for quick analyses or when you have limited API access.
 
+#### Extracting Marker Genes from AnnData Objects
+
+If you're using Scanpy with AnnData objects, you can easily extract marker genes directly from the `rank_genes_groups` results:
+
+```python
+import os
+import scanpy as sc
+from mllmcelltype import annotate_clusters, setup_logging
+
+# Setup logging
+setup_logging()
+
+# Set your OpenRouter API key
+os.environ["OPENROUTER_API_KEY"] = "your-openrouter-api-key"
+
+# Load and preprocess your data
+adata = sc.read_h5ad('your_data.h5ad')
+
+# Perform preprocessing and clustering if not already done
+# sc.pp.normalize_total(adata, target_sum=1e4)
+# sc.pp.log1p(adata)
+# sc.pp.highly_variable_genes(adata)
+# sc.pp.pca(adata)
+# sc.pp.neighbors(adata)
+# sc.tl.leiden(adata)
+
+# Find marker genes for each cluster
+sc.tl.rank_genes_groups(adata, 'leiden', method='wilcoxon')
+
+# Extract top marker genes for each cluster
+marker_genes = {
+    cluster: adata.uns['rank_genes_groups']['names'][cluster][:10].tolist()
+    for cluster in adata.obs['leiden'].cat.categories
+}
+
+# Annotate using Microsoft MAI-DS-R1 free model
+annotations = annotate_clusters(
+    marker_genes=marker_genes,
+    species='human',
+    tissue='peripheral blood',  # adjust based on your tissue type
+    provider='openrouter',
+    model='microsoft/mai-ds-r1:free'  # Free model
+)
+
+# Add annotations to AnnData object
+adata.obs['cell_type'] = adata.obs['leiden'].astype(str).map(annotations)
+
+# Visualize results
+sc.pl.umap(adata, color='cell_type', legend_loc='on data',
+           frameon=True, title='Cell Types Annotated by MAI-DS-R1')
+```
+
+This method automatically extracts the top differentially expressed genes for each cluster from the `rank_genes_groups` results, making it easy to integrate mLLMCelltype into your Scanpy workflow.
+
 ### R
 
 > **Note**: For more detailed R tutorials and documentation, please visit the [mLLMCelltype documentation website](https://cafferyang.com/mLLMCelltype/).
