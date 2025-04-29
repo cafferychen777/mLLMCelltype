@@ -96,6 +96,8 @@ pip install mllmcelltype
 
 ### Rでの使用例
 
+> **注意**: より詳細なRチュートリアルとドキュメントについては、[mLLMCelltype ドキュメントサイト](https://cafferyang.com/mLLMCelltype/)をご覧ください。
+
 ```r
 library(mLLMCelltype)
 library(Seurat)
@@ -166,19 +168,19 @@ for(line in data_lines) {
 for(i in seq_along(data_lines)) {
   line <- data_lines[i]
   parts <- strsplit(line, ",", fixed = TRUE)[[1]]
-  
+
   # 最初の部分はクラスター名
   cluster_name <- parts[1]
-  
+
   # インデックスをキーとして使用（0ベースインデックス、Seuratと互換性あり）
   cluster_id <- as.character(i - 1)
-  
+
   # 残りは遣伝子
   genes <- parts[-1]
-  
+
   # NAと空の文字列をフィルタリング
   genes <- genes[!is.na(genes) & genes != ""]
-  
+
   # marker_genes_listに追加
   marker_genes_list[[cluster_id]] <- list(genes = genes)
 }
@@ -193,14 +195,14 @@ api_keys <- list(
 )
 
 # コンセンサスアノテーションを実行
-consensus_results <- 
+consensus_results <-
   interactive_consensus_annotation(
     input = marker_genes_list,
     tissue_name = "your tissue type", # 例："human heart"
-    models = c("gemini-2.0-flash", 
-              "gemini-1.5-pro", 
-              "qwen-max-2025-01-25", 
-              "grok-3-latest", 
+    models = c("gemini-2.0-flash",
+              "gemini-1.5-pro",
+              "qwen-max-2025-01-25",
+              "grok-3-latest",
               "anthropic/claude-3-7-sonnet-20250219",
               "openai/gpt-4o"),
     api_keys = api_keys,
@@ -308,9 +310,9 @@ pbmc$consensus_proportion <- uncertainty_metrics$consensus_proportion[match(curr
 pbmc$entropy <- uncertainty_metrics$entropy[match(current_clusters, uncertainty_metrics$cluster_id)]
 
 # 細胞タイプアノテーションを可視化
-p1 <- SCpubr::do_DimPlot(sample = pbmc, 
+p1 <- SCpubr::do_DimPlot(sample = pbmc,
                        group.by = "cell_type",
-                       label = TRUE, 
+                       label = TRUE,
                        repel = TRUE,
                        pt.size = 0.1) +
       ggtitle("Cell Type Annotations") +
@@ -423,10 +425,10 @@ for (i in 1:length(models)) {
     api_key = api_keys[i],
     top_gene_count = 10
   )
-  
+
   # モデルに基づいた列名を作成
   column_name <- paste0("cell_type_", gsub("[^a-zA-Z0-9]", "_", models[i]))
-  
+
   # Seuratオブジェクトにアノテーションを追加
   pbmc[[column_name]] <- plyr::mapvalues(
     x = as.character(Idents(pbmc)),

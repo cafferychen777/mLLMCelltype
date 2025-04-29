@@ -306,6 +306,8 @@ This approach is fast, accurate, and doesn't require any API credits, making it 
 
 ### R
 
+> **Note**: For more detailed R tutorials and documentation, please visit the [mLLMCelltype documentation website](https://cafferyang.com/mLLMCelltype/).
+
 #### Using Seurat Object
 
 ```r
