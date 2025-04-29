@@ -42,7 +42,7 @@ mLLMCelltype est un outil open-source pour l'analyse transcriptomique unicellula
 
 ## Actualités
 
-🎉 **Avril 2025** : Nous sommes ravis d'annoncer que moins d'une semaine après la publication de notre préimpression, mLLMCelltype a dépassé les 100 étoiles sur GitHub ! Nous avons également constaté une couverture médiatique importante de la part de divers médias et créateurs de contenu. Nous exprimons notre profonde gratitude à tous ceux qui ont soutenu ce projet par des étoiles, des partages et des contributions. Votre enthousiasme stimule notre développement continu et l'amélioration de mLLMCelltype.
+🎉 **Avril 2025** : Nous sommes ravis d'annoncer que seulement deux semaines après la publication de notre préimpression, mLLMCelltype a dépassé les 200 étoiles sur GitHub ! Nous avons également constaté une couverture médiatique importante de la part de divers médias et créateurs de contenu. Nous exprimons notre profonde gratitude à tous ceux qui ont soutenu ce projet par des étoiles, des partages et des contributions. Votre enthousiasme stimule notre développement continu et l'amélioration de mLLMCelltype.
 
 ## Caractéristiques principales
 
