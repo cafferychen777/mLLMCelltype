@@ -2,7 +2,7 @@
 title: "Introduction to mLLMCelltype"
 author: "Chen Yang"
 date: "`r Sys.Date()`"
-output: 
+output:
   html_document:
     toc: true
     toc_float: true
@@ -19,7 +19,7 @@ knitr::opts_chunk$set(
   echo = TRUE,
   message = FALSE,
   warning = FALSE,
-  fig.width = 8, 
+  fig.width = 8,
   fig.height = 6
 )
 ```
@@ -53,7 +53,7 @@ mLLMCelltype harnesses collective intelligence from diverse LLMs to overcome sin
 - Google Gemini-2.0/2.5
 - X.AI Grok-3
 - DeepSeek-V3
-- Alibaba Qwen2.5
+- Alibaba Qwen2.5/Qwen3
 - Zhipu GLM-4
 - MiniMax
 - Stepfun
@@ -126,8 +126,8 @@ To get started with mLLMCelltype, please refer to the [Installation Guide](02-in
 If you use mLLMCelltype in your research, please cite:
 
 ```
-Yang, C., Zhang, X., & Chen, J. (2025). Large Language Model Consensus Substantially 
-Improves the Cell Type Annotation Accuracy for scRNA-seq Data. bioRxiv. 
+Yang, C., Zhang, X., & Chen, J. (2025). Large Language Model Consensus Substantially
+Improves the Cell Type Annotation Accuracy for scRNA-seq Data. bioRxiv.
 https://doi.org/10.1101/2025.04.10.647852
 ```
 

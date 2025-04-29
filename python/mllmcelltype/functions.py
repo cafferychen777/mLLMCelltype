@@ -37,6 +37,7 @@ ModelType = Literal[
     "gemini-1.5-flash",
     # Qwen models
     "qwen-max-2025-01-25",
+    "qwen3-72b",
     "qwen-plus",
     # StepFun models
     "step-2-16k",
