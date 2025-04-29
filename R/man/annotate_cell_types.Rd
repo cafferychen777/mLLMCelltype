@@ -39,7 +39,7 @@ converted to 0-based indexing (e.g., cluster 1 becomes cluster 0) for consistenc
 \item Anthropic: 'claude-3-7-sonnet-20250219', 'claude-3-5-sonnet-latest', 'claude-3-5-haiku-latest', 'claude-3-opus'
 \item DeepSeek: 'deepseek-chat', 'deepseek-reasoner'
 \item Google: 'gemini-2.0-flash', 'gemini-2.0-flash-exp', 'gemini-1.5-pro', 'gemini-1.5-flash'
-\item Alibaba: 'qwen-max-2025-01-25'
+\item Alibaba: 'qwen-max-2025-01-25', 'qwen3-72b'
 \item Stepfun: 'step-2-16k', 'step-2-mini', 'step-1-8k'
 \item Zhipu: 'glm-4-plus', 'glm-3-turbo'
 \item MiniMax: 'minimax-text-01'
@@ -74,8 +74,8 @@ OpenRouter provides access to multiple models through a single API key
 The API key can be provided directly or stored in environment variables:
 
 \if{html}{\out{<div class="sourceCode r">}}\preformatted{# Direct API key
-result <- annotate_cell_types(input, tissue_name, model="gpt-4o", 
-                             api_key="sk-...") 
+result <- annotate_cell_types(input, tissue_name, model="gpt-4o",
+                             api_key="sk-...")
 
 # Using environment variables
 Sys.setenv(OPENAI_API_KEY="sk-...")
@@ -83,7 +83,7 @@ Sys.setenv(ANTHROPIC_API_KEY="sk-ant-...")
 Sys.setenv(OPENROUTER_API_KEY="sk-or-...")
 
 # Then use with environment variables
-result <- annotate_cell_types(input, tissue_name, model="claude-3-opus", 
+result <- annotate_cell_types(input, tissue_name, model="claude-3-opus",
                              api_key=Sys.getenv("ANTHROPIC_API_KEY"))
 }\if{html}{\out{</div>}}
 

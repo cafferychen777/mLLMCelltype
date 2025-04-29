@@ -14,7 +14,7 @@ utils::globalVariables(c("custom_models"))
 #'   \item Anthropic: 'claude-3-7-sonnet-20250219', 'claude-3-5-sonnet-latest', 'claude-3-5-haiku-latest', 'claude-3-opus'
 #'   \item DeepSeek: 'deepseek-chat', 'deepseek-reasoner'
 #'   \item Google: 'gemini-2.5-pro', 'gemini-2.0-flash', 'gemini-2.0-flash-exp', 'gemini-1.5-pro', 'gemini-1.5-flash'
-#'   \item Qwen: 'qwen-max-2025-01-25'
+#'   \item Qwen: 'qwen-max-2025-01-25', 'qwen3-72b'
 #'   \item Stepfun: 'step-2-mini', 'step-2-16k', 'step-1-8k'
 #'   \item Zhipu: 'glm-4-plus', 'glm-3-turbo'
 #'   \item MiniMax: 'minimax-text-01'
@@ -47,7 +47,7 @@ get_provider <- function(model) {
   anthropic_models <- c("claude-3-7-sonnet-20250219", "claude-3-5-sonnet-latest", "claude-3-5-haiku-latest", "claude-3-opus")
   deepseek_models <- c("deepseek-chat", "deepseek-reasoner")
   gemini_models <- c("gemini-2.5-pro", "gemini-2.0-flash", "gemini-2.0-flash-exp", "gemini-1.5-pro", "gemini-1.5-flash")
-  qwen_models <- c("qwen-max-2025-01-25")
+  qwen_models <- c("qwen-max-2025-01-25", "qwen3-72b")
   stepfun_models <- c("step-2-mini", "step-2-16k", "step-1-8k")
   zhipu_models <- c("glm-4-plus", "glm-3-turbo")
   minimax_models <- c("minimax-text-01")

@@ -25,7 +25,7 @@
 #'   - Anthropic: 'claude-3-7-sonnet-20250219', 'claude-3-5-sonnet-latest', 'claude-3-5-haiku-latest', 'claude-3-opus'
 #'   - DeepSeek: 'deepseek-chat', 'deepseek-reasoner', 'deepseek-v3'
 #'   - Google: 'gemini-2.5-pro', 'gemini-2.5-pro-preview-03-25', 'gemini-2.0-flash', 'gemini-2.0-flash-exp', 'gemini-1.5-pro', 'gemini-1.5-flash'
-#'   - Alibaba: 'qwen-max-2025-01-25'
+#'   - Alibaba: 'qwen-max-2025-01-25', 'qwen3-72b'
 #'   - Stepfun: 'step-2-16k', 'step-2-mini', 'step-1-8k', 'step-1-flash', 'step-1-32k', 'step-1-128k', 'step-1-256k'
 #'   - Zhipu: 'glm-4-plus', 'glm-3-turbo', 'glm-4'
 #'   - MiniMax: 'minimax-text-01'
