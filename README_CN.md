@@ -192,9 +192,9 @@ consensus_results = interactive_consensus_annotation(
     species="human",
     tissue="blood",
     models=[
-        "openai/gpt-4o",                  # 通过 OpenRouter 访问 OpenAI（付费）
-        "anthropic/claude-3-opus",        # 通过 OpenRouter 访问 Anthropic（付费）
-        "deepseek/deepseek-chat"          # 通过 OpenRouter 访问 DeepSeek（付费）
+        "deepseek/deepseek-chat",                # 通过 OpenRouter 访问 DeepSeek（付费）
+        "anthropic/claude-3-7-sonnet-20250219",  # 通过 OpenRouter 访问 Anthropic（付费）
+        "google/gemini-2.5-pro-preview-03-25"    # 通过 OpenRouter 访问 Google（付费）
     ],
     consensus_threshold=0.7
 )
@@ -223,9 +223,9 @@ consensus_results <- interactive_consensus_annotation(
   input = pbmc_markers,
   tissue_name = "human PBMC",
   models = c(
-    "openai/gpt-4o",              # 通过 OpenRouter 访问 OpenAI（付费）
-    "anthropic/claude-3-opus",    # 通过 OpenRouter 访问 Anthropic（付费）
-    "deepseek/deepseek-chat"      # 通过 OpenRouter 访问 DeepSeek（付费）
+    "deepseek/deepseek-chat",                # 通过 OpenRouter 访问 DeepSeek（付费）
+    "anthropic/claude-3-7-sonnet-20250219",  # 通过 OpenRouter 访问 Anthropic（付费）
+    "google/gemini-2.5-pro-preview-03-25"    # 通过 OpenRouter 访问 Google（付费）
   ),
   api_keys = list(
     openrouter = "your-openrouter-key"  # 单一 API 密钥访问多种模型
@@ -250,51 +250,7 @@ free_consensus_results <- interactive_consensus_annotation(
 
 您可以在 [OpenRouter 官网](https://openrouter.ai/keys) 申请 API 密钥。
 
-#### 方案三：使用 Azure OpenAI 服务
-
-Microsoft 的 Azure OpenAI 服务在中国大陆有数据中心，可以提供更稳定的访问体验：
-
-```python
-# Python 示例
-import os
-from mllmcelltype import annotate_cell_types
-
-# 设置 Azure OpenAI 的凭证
-# 方式一：使用环境变量
-os.environ["AZURE_OPENAI_API_KEY"] = "your-azure-openai-key"
-os.environ["AZURE_OPENAI_ENDPOINT"] = "https://your-resource.openai.azure.com/"
-
-# 方式二：直接在函数中提供密钥和端点
-results = annotate_cell_types(
-    marker_genes=marker_genes,
-    species="human",
-    tissue="blood",
-    model="azure-gpt-4o",  # 注意模型名称前缀为 'azure-'
-    api_key="your-azure-openai-key|https://your-resource.openai.azure.com/"
-)
-```
-
-```r
-# R 示例
-library(mLLMCelltype)
-
-# 方式一：使用环境变量
-Sys.setenv(AZURE_OPENAI_API_KEY = "your-azure-openai-key")
-Sys.setenv(AZURE_OPENAI_ENDPOINT = "https://your-resource.openai.azure.com/")
-
-# 方式二：直接在函数中提供密钥和端点
-results <- annotate_cell_types(
-  input = pbmc_markers,
-  tissue_name = "human PBMC",
-  model = "azure-gpt-4o",  # 注意模型名称前缀为 'azure-'
-  api_key = "your-azure-openai-key|https://your-resource.openai.azure.com/"
-)
-```
-
-要使用 Azure OpenAI，您需要：
-1. 创建 Azure 账户并申请 Azure OpenAI 服务
-2. 创建部署，选择您需要的模型（如 gpt-4o）
-3. 获取 API 密钥和端点 URL
+> **注意：** 即使通过 OpenRouter 访问，OpenAI 的模型（如 gpt-4o、gpt-4-turbo 等）仍可能受到 IP 限制。如果您在中国大陆访问，建议使用上述示例中的 Anthropic、Google 或其他模型。
 
 ### 网络配置建议
 
