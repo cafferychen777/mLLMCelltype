@@ -96,6 +96,8 @@ pip install mllmcelltype
 
 ### R 사용 예시
 
+> **참고**: 더 자세한 R 튜토리얼 및 문서는 [mLLMCelltype 문서 웹사이트](https://cafferyang.com/mLLMCelltype/)를 방문하세요.
+
 ```r
 library(mLLMCelltype)
 library(Seurat)
@@ -191,9 +193,9 @@ pbmc$consensus_proportion <- uncertainty_metrics$consensus_proportion[match(curr
 pbmc$entropy <- uncertainty_metrics$entropy[match(current_clusters, uncertainty_metrics$cluster_id)]
 
 # 세포 유형 주석 시각화
-p1 <- SCpubr::do_DimPlot(sample = pbmc, 
+p1 <- SCpubr::do_DimPlot(sample = pbmc,
                        group.by = "cell_type",
-                       label = TRUE, 
+                       label = TRUE,
                        repel = TRUE,
                        pt.size = 0.1) +
       ggtitle("Cell Type Annotations") +
@@ -268,19 +270,19 @@ for(line in data_lines) {
 for(i in 1:length(data_lines)) {
   line <- data_lines[i]
   parts <- strsplit(line, ",", fixed = TRUE)[[1]]
-  
+
   # 첫 부분은 클러스터 이름
   cluster_name <- parts[1]
-  
+
   # 인덱스를 키로 사용 (0-based 인덱스, Seurat과 호환)
   cluster_id <- as.character(i - 1)
-  
+
   # 나머지 부분은 유전자
   genes <- parts[-1]
-  
+
   # NA와 빈 문자열 필터링
   genes <- genes[!is.na(genes) & genes != ""]
-  
+
   # marker_genes_list에 추가
   marker_genes_list[[cluster_id]] <- list(genes = genes)
 }
@@ -295,14 +297,14 @@ api_keys <- list(
 )
 
 # 콘센서스 주석 실행
-consensus_results <- 
+consensus_results <-
   interactive_consensus_annotation(
     input = marker_genes_list,
     tissue_name = "your tissue type", # 예: "human heart"
-    models = c("gemini-2.0-flash", 
-              "gemini-1.5-pro", 
-              "qwen-max-2025-01-25", 
-              "grok-3-latest", 
+    models = c("gemini-2.0-flash",
+              "gemini-1.5-pro",
+              "qwen-max-2025-01-25",
+              "grok-3-latest",
               "anthropic/claude-3-7-sonnet-20250219",
               "openai/gpt-4o"),
     api_keys = api_keys,
@@ -423,10 +425,10 @@ for (i in 1:length(models)) {
     api_key = api_keys[i],
     top_gene_count = 10
   )
-  
+
   # 모델에 기반한 열 이름 생성
   column_name <- paste0("cell_type_", gsub("[^a-zA-Z0-9]", "_", models[i]))
-  
+
   # Seurat 객체에 주석 추가
   pbmc[[column_name]] <- plyr::mapvalues(
     x = as.character(Idents(pbmc)),

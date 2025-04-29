@@ -540,6 +540,8 @@ plt.tight_layout()
 
 ### R
 
+> **注意**：有关更详细的R教程和文档，请访问[mLLMCelltype文档网站](https://cafferyang.com/mLLMCelltype/)。
+
 ```r
 # 加载所需包
 library(mLLMCelltype)

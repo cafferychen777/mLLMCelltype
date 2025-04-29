@@ -96,6 +96,8 @@ pip install mllmcelltype
 
 ### Verwendungsbeispiel in R
 
+> **Hinweis**: Für ausführlichere R-Tutorials und Dokumentation besuchen Sie bitte die [mLLMCelltype Dokumentationswebsite](https://cafferyang.com/mLLMCelltype/).
+
 ```r
 # Erforderliche Bibliotheken für Einzelzellanalyse und Zelltyp-Annotation laden
 library(mLLMCelltype)  # Multi-LLM-Konsensus-Framework für Zelltyp-Annotation
@@ -173,19 +175,19 @@ for(line in data_lines) {
 for(i in seq_along(data_lines)) {
   line <- data_lines[i]
   parts <- strsplit(line, ",", fixed = TRUE)[[1]]
-  
+
   # Erster Teil ist der Clustername
   cluster_name <- parts[1]
-  
+
   # Index als Schlüssel verwenden (0-basierter Index, kompatibel mit Seurat)
   cluster_id <- as.character(i - 1)
-  
+
   # Rest sind Gene
   genes <- parts[-1]
-  
+
   # NA und leere Strings filtern
   genes <- genes[!is.na(genes) & genes != ""]
-  
+
   # Zu marker_genes_list hinzufügen
   marker_genes_list[[cluster_id]] <- list(genes = genes)
 }
@@ -200,14 +202,14 @@ api_keys <- list(
 )
 
 # Konsensus-Annotation ausführen
-consensus_results <- 
+consensus_results <-
   interactive_consensus_annotation(
     input = marker_genes_list,
     tissue_name = "your tissue type", # z.B.: "human heart"
-    models = c("gemini-2.0-flash", 
-              "gemini-1.5-pro", 
-              "qwen-max-2025-01-25", 
-              "grok-3-latest", 
+    models = c("gemini-2.0-flash",
+              "gemini-1.5-pro",
+              "qwen-max-2025-01-25",
+              "grok-3-latest",
               "anthropic/claude-3-7-sonnet-20250219",
               "openai/gpt-4o"),
     api_keys = api_keys,
@@ -319,9 +321,9 @@ pbmc$consensus_proportion <- uncertainty_metrics$consensus_proportion[match(curr
 pbmc$entropy <- uncertainty_metrics$entropy[match(current_clusters, uncertainty_metrics$cluster_id)]
 
 # Zelltyp-Annotationen visualisieren
-p1 <- SCpubr::do_DimPlot(sample = pbmc, 
+p1 <- SCpubr::do_DimPlot(sample = pbmc,
                        group.by = "cell_type",
-                       label = TRUE, 
+                       label = TRUE,
                        repel = TRUE,
                        pt.size = 0.1) +
       ggtitle("Cell Type Annotations") +
@@ -434,10 +436,10 @@ for (i in 1:length(models)) {
     api_key = api_keys[i],
     top_gene_count = 10
   )
-  
+
   # Spaltennamen basierend auf dem Modell erstellen
   column_name <- paste0("cell_type_", gsub("[^a-zA-Z0-9]", "_", models[i]))
-  
+
   # Annotationen zum Seurat-Objekt hinzufügen
   pbmc[[column_name]] <- plyr::mapvalues(
     x = as.character(Idents(pbmc)),

@@ -144,6 +144,8 @@ for cluster, metrics in results["uncertainty_metrics"].items():
 
 ### R
 
+> **Nota**: Para tutoriales y documentación más detallados en R, visite el [sitio web de documentación de mLLMCelltype](https://cafferyang.com/mLLMCelltype/).
+
 ```r
 # Cargar la biblioteca mLLMCelltype para la anotación de tipos celulares basada en consenso multi-LLM
 library(mLLMCelltype)
@@ -222,19 +224,19 @@ for(line in data_lines) {
 for(i in seq_along(data_lines)) {
   line <- data_lines[i]
   parts <- strsplit(line, ",", fixed = TRUE)[[1]]
-  
+
   # La primera parte es el nombre del clúster
   cluster_name <- parts[1]
-  
+
   # Usar índice como clave (base 0, compatible con Seurat)
   cluster_id <- as.character(i - 1)
-  
+
   # El resto son genes
   genes <- parts[-1]
-  
+
   # Filtrar NA y cadenas vacías
   genes <- genes[!is.na(genes) & genes != ""]
-  
+
   # Agregar a marker_genes_list
   marker_genes_list[[cluster_id]] <- list(genes = genes)
 }
@@ -249,14 +251,14 @@ api_keys <- list(
 )
 
 # Ejecutar anotación de consenso
-consensus_results <- 
+consensus_results <-
   interactive_consensus_annotation(
     input = marker_genes_list,
     tissue_name = "your tissue type", # Ejemplo: "human heart"
-    models = c("gemini-2.0-flash", 
-              "gemini-1.5-pro", 
-              "qwen-max-2025-01-25", 
-              "grok-3-latest", 
+    models = c("gemini-2.0-flash",
+              "gemini-1.5-pro",
+              "qwen-max-2025-01-25",
+              "grok-3-latest",
               "anthropic/claude-3-7-sonnet-20250219",
               "openai/gpt-4o"),
     api_keys = api_keys,
@@ -391,13 +393,13 @@ library(ggplot2)
 library(cowplot)
 
 # Crear gráficos para cada métrica
-p1 <- DimPlot(pbmc, group.by = "cell_type", label = TRUE) + 
-      NoLegend() + 
+p1 <- DimPlot(pbmc, group.by = "cell_type", label = TRUE) +
+      NoLegend() +
       ggtitle("Anotaciones de Tipos Celulares") +
       theme(plot.title = element_text(hjust = 0.5, margin = margin(b = 15, t = 10)),
             plot.margin = unit(c(0.8, 0.8, 0.8, 0.8), "cm"))
 
-p2 <- FeaturePlot(pbmc, features = "consensus_proportion", 
+p2 <- FeaturePlot(pbmc, features = "consensus_proportion",
                   pt.size = 1.5,
                   cols = c("yellow", "green", "blue"),  # Gradiente amarillo-verde-azul
                   order = TRUE) +  # Ordenar células por valor
@@ -409,7 +411,7 @@ p2 <- FeaturePlot(pbmc, features = "consensus_proportion",
       theme(plot.title = element_text(hjust = 0.5, margin = margin(b = 15, t = 10)),
             plot.margin = unit(c(0.8, 0.8, 0.8, 0.8), "cm"))
 
-p3 <- FeaturePlot(pbmc, features = "entropy", 
+p3 <- FeaturePlot(pbmc, features = "entropy",
                   pt.size = 1.5,
                   cols = c("darkred", "red", "orange"),  # Gradiente rojo oscuro-rojo-naranja
                   order = TRUE) +  # Ordenar células por valor
@@ -505,10 +507,10 @@ for (i in 1:length(models)) {
     api_key = api_keys[i],
     top_gene_count = 10
   )
-  
+
   # Crear nombre de columna basado en el modelo
   column_name <- paste0("cell_type_", gsub("[^a-zA-Z0-9]", "_", models[i]))
-  
+
   # Añadir anotaciones al objeto Seurat
   pbmc[[column_name]] <- plyr::mapvalues(
     x = as.character(Idents(pbmc)),
