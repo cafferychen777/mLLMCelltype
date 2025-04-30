@@ -14,8 +14,7 @@
 #'     based on avg_log2FC for each cluster.
 #'   - A list where each element has a 'genes' field containing marker genes for a cluster.
 #'     This can be in one of these formats:
-#'     * Named with cluster IDs: list("0" = list(genes = c(...)), "1" = list(genes = c(...)))
-#'     * Named with cell type names: list(t_cells = list(genes = c(...)), b_cells = list(genes = c(...)))
+#'     * Named with numeric cluster IDs: list("0" = list(genes = c(...)), "1" = list(genes = c(...)))
 #'     * Unnamed list: list(list(genes = c(...)), list(genes = c(...)))
 #'   - For both input types, if cluster IDs are numeric and start from 1, they will be automatically
 #'     converted to 0-based indexing (e.g., cluster 1 becomes cluster 0) for consistency.
@@ -32,7 +31,8 @@
 #'   - X.AI: 'grok-3-latest', 'grok-3', 'grok-3-fast', 'grok-3-fast-latest', 'grok-3-mini', 'grok-3-mini-latest', 'grok-3-mini-fast', 'grok-3-mini-fast-latest'
 #'   - OpenRouter: Provides access to models from multiple providers through a single API. Format: 'provider/model-name'
 #'     - OpenAI models: 'openai/gpt-4o', 'openai/gpt-4o-mini', 'openai/gpt-4-turbo', 'openai/gpt-4', 'openai/gpt-3.5-turbo'
-#'     - Anthropic models: 'anthropic/claude-3-7-sonnet-20250219', 'anthropic/claude-3-5-sonnet-latest', 'anthropic/claude-3-5-haiku-latest', 'anthropic/claude-3-opus'
+#'     - Anthropic models: 'anthropic/claude-3.7-sonnet', 'anthropic/claude-3.5-sonnet',
+#'       'anthropic/claude-3.5-haiku', 'anthropic/claude-3-opus'
 #'     - Meta models: 'meta-llama/llama-3-70b-instruct', 'meta-llama/llama-3-8b-instruct', 'meta-llama/llama-2-70b-chat', 'meta-llama/llama-4-maverick'
 #'     - Google models: 'google/gemini-2.5-pro-preview-03-25', 'google/gemini-1.5-pro-latest', 'google/gemini-1.5-flash'
 #'     - Mistral models: 'mistralai/mistral-large', 'mistralai/mistral-medium', 'mistralai/mistral-small'
@@ -701,13 +701,40 @@ interactive_consensus_annotation <- function(input,
 
   # Check if input is a list with named elements (clusters)
   if (is.list(input) && !is.data.frame(input) && !is.null(names(input))) {
+    # Check for non-standard cluster IDs that might cause issues
+    cluster_names <- names(input)
+
+    # 检查是否所有的 cluster ID 都是数字
+    numeric_names <- suppressWarnings(as.numeric(cluster_names))
+    non_numeric_clusters <- cluster_names[is.na(numeric_names)]
+
+    if (length(non_numeric_clusters) > 0) {
+      # 有非数字的 cluster ID
+      display_clusters <- non_numeric_clusters[
+        seq_len(min(3, length(non_numeric_clusters)))
+      ]
+
+      stop(
+        "Detected non-numeric cluster IDs: ",
+        paste(display_clusters, collapse = ", "),
+        if (length(non_numeric_clusters) > 3) " ... (and others)" else "",
+        ". \nCluster IDs must be numeric values starting from 0 ",
+        "(e.g., '0', '1', '2').\n",
+        "Please rename your clusters to use numeric IDs."
+      )
+    }
+
     # Try to convert named numeric indices to check if they start from 0
     numeric_names <- suppressWarnings(as.numeric(names(input)))
     if (!all(is.na(numeric_names))) {
       # Has numeric indices, check if they start from 0
       min_index <- min(numeric_names[!is.na(numeric_names)])
       if (min_index > 0) {
-        stop("Cluster indices must start from 0 (0-based indexing). Found minimum index: ", min_index, ". Please convert your indices to start from 0.")
+        stop(
+          "Cluster indices must start from 0 (0-based indexing). ",
+          "Found minimum index: ", min_index,
+          ". Please convert your indices to start from 0."
+        )
       }
     }
   }
@@ -718,8 +745,9 @@ interactive_consensus_annotation <- function(input,
 
   # Log cache settings
   if (use_cache) {
-    logger$log_entry("INFO", sprintf("Cache enabled. Using cache directory: %s", cache_dir))
-    message(sprintf("Cache enabled. Using cache directory: %s", cache_dir))
+    cache_msg <- sprintf("Cache enabled. Using cache directory: %s", cache_dir)
+    logger$log_entry("INFO", cache_msg)
+    message(cache_msg)
   } else {
     logger$log_entry("INFO", "Cache disabled.")
     message("Cache disabled.")
@@ -736,10 +764,13 @@ interactive_consensus_annotation <- function(input,
   )
 
   # Phase 2: Identify controversial clusters
-  # If consensus_check_model is NULL, use the first available model from the models list
+  # If consensus_check_model is NULL, use the first available model from the
+  # models list
   if (is.null(consensus_check_model) && length(models) > 0) {
     consensus_check_model <- models[1]
-    logger$log_entry("INFO", sprintf("No consensus_check_model specified, using %s", consensus_check_model))
+    log_msg <- sprintf("No consensus_check_model specified, using %s",
+                       consensus_check_model)
+    logger$log_entry("INFO", log_msg)
   }
 
   controversy_results <- identify_controversial_clusters(

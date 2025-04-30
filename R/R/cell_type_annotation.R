@@ -30,7 +30,8 @@ utils::globalVariables(c("cluster", "avg_log2FC", "gene"))
 #'   'mouse brain'). This helps provide context for more accurate annotations.
 #' @param model Character string specifying the LLM model to use. Supported models:
 #'   - OpenAI: 'gpt-4o', 'o1'
-#'   - Anthropic: 'claude-3-7-sonnet-20250219', 'claude-3-5-sonnet-latest', 'claude-3-5-haiku-latest', 'claude-3-opus'
+#'   - Anthropic: 'claude-3-7-sonnet-20250219', 'claude-3-5-sonnet-20241022',
+#'     'claude-3-5-haiku-20241022', 'claude-3-opus-20240229'
 #'   - DeepSeek: 'deepseek-chat', 'deepseek-reasoner'
 #'   - Google: 'gemini-2.0-flash', 'gemini-2.0-flash-exp', 'gemini-1.5-pro', 'gemini-1.5-flash'
 #'   - Alibaba: 'qwen-max-2025-01-25', 'qwen3-72b'
@@ -40,7 +41,8 @@ utils::globalVariables(c("cluster", "avg_log2FC", "gene"))
 #'   - X.AI: 'grok-3-latest', 'grok-3', 'grok-3-fast', 'grok-3-fast-latest', 'grok-3-mini', 'grok-3-mini-latest', 'grok-3-mini-fast', 'grok-3-mini-fast-latest'
 #'   - OpenRouter: Provides access to models from multiple providers through a single API. Format: 'provider/model-name'
 #'     - OpenAI models: 'openai/gpt-4o', 'openai/gpt-4o-mini', 'openai/gpt-4-turbo', 'openai/gpt-4', 'openai/gpt-3.5-turbo'
-#'     - Anthropic models: 'anthropic/claude-3-7-sonnet-20250219', 'anthropic/claude-3-5-sonnet-latest', 'anthropic/claude-3-5-haiku-latest', 'anthropic/claude-3-opus'
+#'     - Anthropic models: 'anthropic/claude-3.7-sonnet', 'anthropic/claude-3.5-sonnet',
+#'       'anthropic/claude-3.5-haiku', 'anthropic/claude-3-opus'
 #'     - Meta models: 'meta-llama/llama-3-70b-instruct', 'meta-llama/llama-3-8b-instruct', 'meta-llama/llama-2-70b-chat'
 #'     - Google models: 'google/gemini-2.5-pro-preview-03-25', 'google/gemini-1.5-pro-latest', 'google/gemini-1.5-flash'
 #'     - Mistral models: 'mistralai/mistral-large', 'mistralai/mistral-medium', 'mistralai/mistral-small'
