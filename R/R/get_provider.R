@@ -22,7 +22,8 @@ utils::globalVariables(c("custom_models"))
 #'   \item OpenRouter: Provides access to models from multiple providers through a single API. Format: 'provider/model-name'
 #'     \itemize{
 #'       \item OpenAI models: 'openai/gpt-4o', 'openai/gpt-4o-mini', 'openai/gpt-4-turbo', 'openai/gpt-4', 'openai/gpt-3.5-turbo'
-#'       \item Anthropic models: 'anthropic/claude-3-7-sonnet-20250219', 'anthropic/claude-3-5-sonnet-latest', 'anthropic/claude-3-5-haiku-latest', 'anthropic/claude-3-opus'
+#'       \item Anthropic models: 'anthropic/claude-3.7-sonnet', 'anthropic/claude-3.5-sonnet',
+#'         'anthropic/claude-3.5-haiku', 'anthropic/claude-3-opus'
 #'       \item Meta models: 'meta-llama/llama-3-70b-instruct', 'meta-llama/llama-3-8b-instruct', 'meta-llama/llama-2-70b-chat'
 #'       \item Google models: 'google/gemini-2.5-pro-preview-03-25', 'google/gemini-1.5-pro-latest', 'google/gemini-1.5-flash'
 #'       \item Mistral models: 'mistralai/mistral-large', 'mistralai/mistral-medium', 'mistralai/mistral-small'
@@ -44,7 +45,12 @@ get_provider <- function(model) {
 
   # List of supported models for each provider (all in lowercase)
   openai_models <- c("gpt-4o", "gpt-4o-mini", "gpt-4.1", "gpt-4.1-mini", "gpt-4.1-nano", "gpt-4-turbo", "gpt-3.5-turbo", "o1", "o1-mini", "o1-preview", "o1-pro")
-  anthropic_models <- c("claude-3-7-sonnet-20250219", "claude-3-5-sonnet-latest", "claude-3-5-haiku-latest", "claude-3-opus")
+  anthropic_models <- c(
+    "claude-3-7-sonnet-20250219",
+    "claude-3-5-sonnet-20241022",
+    "claude-3-5-haiku-20241022",
+    "claude-3-opus-20240229"
+  )
   deepseek_models <- c("deepseek-chat", "deepseek-reasoner")
   gemini_models <- c("gemini-2.5-pro", "gemini-2.0-flash", "gemini-2.0-flash-exp", "gemini-1.5-pro", "gemini-1.5-flash")
   qwen_models <- c("qwen-max-2025-01-25", "qwen3-72b")
@@ -59,8 +65,7 @@ get_provider <- function(model) {
     "openai/o4-mini",
 
     # Anthropic models
-    "anthropic/claude-3-7-sonnet-20250219", "anthropic/claude-3-5-sonnet-latest", "anthropic/claude-3-5-haiku-latest", "anthropic/claude-3-opus",
-    "anthropic/claude-3.5-sonnet", "anthropic/claude-3.5-haiku", "anthropic/claude-3.7-sonnet",
+    "anthropic/claude-3.7-sonnet", "anthropic/claude-3.5-sonnet", "anthropic/claude-3.5-haiku", "anthropic/claude-3-opus",
 
     # Meta models
     "meta-llama/llama-3-70b-instruct", "meta-llama/llama-3-8b-instruct", "meta-llama/llama-2-70b-chat",
