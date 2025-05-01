@@ -29,18 +29,24 @@ jobs:
       - name: Install system dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install -y libglpk-dev libcurl4-openssl-dev libssl-dev libxml2-dev
-          
+          sudo apt-get install -y libglpk-dev libcurl4-openssl-dev libssl-dev libxml2-dev libfontconfig1-dev libfreetype6-dev libfribidi-dev libharfbuzz-dev libpng-dev libtiff5-dev libcairo2-dev libxt-dev
+
       - name: Install required packages
         run: |
-          install.packages(c("pkgdown", "knitr", "rmarkdown", "devtools"))
+          install.packages(c("pkgdown", "knitr", "rmarkdown", "devtools", "systemfonts", "ragg", "textshaping", "svglite", "ggplot2", "patchwork", "viridis", "ggExtra"))
         shell: Rscript {0}
-      
+
       - name: Install package dependencies
         run: |
           setwd("R")
           devtools::install_deps(dependencies = TRUE)
         shell: Rscript {0}
+
+      - name: Verify systemfonts installation
+        run: |
+          Rscript -e "packageVersion('systemfonts')"
+          Rscript -e "packageVersion('ragg')"
+          Rscript -e "packageVersion('textshaping')"
 
       - name: Build site
         run: |
