@@ -106,7 +106,7 @@
       <img src="../logo.png" class="logo" alt=""><h1>Visualization Guide</h1>
                         <h4 data-toc-skip class="author">Chen Yang</h4>
             
-            <h4 data-toc-skip class="date">2025-04-30</h4>
+            <h4 data-toc-skip class="date">2025-05-01</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/cafferychen777/mLLMCelltype/blob/main/vignettes/06-visualization-guide.Rmd" class="external-link"><code>vignettes/06-visualization-guide.Rmd</code></a></small>
       <div class="d-none name"><code>06-visualization-guide.Rmd</code></div>
@@ -423,7 +423,7 @@ your visualizations:</p>
 <code class="sourceCode R"><span><span class="co"># Create a custom color palette that enhances cluster separation</span></span>
 <span><span class="co"># Using a colorblind-friendly palette from viridis</span></span>
 <span><span class="va">n_cell_types</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/unique.html" class="external-link">unique</a></span><span class="op">(</span><span class="va">seurat_obj</span><span class="op">$</span><span class="va">cell_type_consensus</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="va">custom_colors</span> <span class="op">&lt;-</span> <span class="fu">viridis</span><span class="fu">::</span><span class="fu">viridis</span><span class="op">(</span><span class="va">n_cell_types</span>, option <span class="op">=</span> <span class="st">"turbo"</span><span class="op">)</span></span>
+<span><span class="va">custom_colors</span> <span class="op">&lt;-</span> <span class="fu">viridis</span><span class="fu">::</span><span class="fu"><a href="https://sjmgarnier.github.io/viridisLite/reference/viridis.html" class="external-link">viridis</a></span><span class="op">(</span><span class="va">n_cell_types</span>, option <span class="op">=</span> <span class="st">"turbo"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">custom_colors</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/unique.html" class="external-link">unique</a></span><span class="op">(</span><span class="va">seurat_obj</span><span class="op">$</span><span class="va">cell_type_consensus</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level4">
@@ -533,7 +533,7 @@ distribution of cells:</p>
 <span>        legend.position <span class="op">=</span> <span class="st">"right"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Add marginal distributions, controlling the size</span></span>
-<span><span class="va">p4</span> <span class="op">&lt;-</span> <span class="fu">ggExtra</span><span class="fu">::</span><span class="fu">ggMarginal</span><span class="op">(</span><span class="va">p4_base</span>, type <span class="op">=</span> <span class="st">"density"</span>,</span>
+<span><span class="va">p4</span> <span class="op">&lt;-</span> <span class="fu">ggExtra</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/ggExtra/man/ggMarginal.html" class="external-link">ggMarginal</a></span><span class="op">(</span><span class="va">p4_base</span>, type <span class="op">=</span> <span class="st">"density"</span>,</span>
 <span>                         groupColour <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>                         groupFill <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>                         size <span class="op">=</span> <span class="fl">8</span><span class="op">)</span>  <span class="co"># Control the size of marginal plots</span></span>
