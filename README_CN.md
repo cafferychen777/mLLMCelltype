@@ -250,7 +250,14 @@ free_consensus_results <- interactive_consensus_annotation(
 
 您可以在 [OpenRouter 官网](https://openrouter.ai/keys) 申请 API 密钥。
 
-> **注意：** 即使通过 OpenRouter 访问，OpenAI 的模型（如 gpt-4o、gpt-4-turbo 等）仍可能受到 IP 限制。如果您在中国大陆访问，建议使用上述示例中的 Anthropic、Google 或其他模型。
+> ⚠️ **重要警告** ⚠️
+>
+> **即使通过 OpenRouter 访问，OpenAI 的模型（如 gpt-4o、gpt-4-turbo 等）和 X.AI 的 Grok 模型仍可能受到 IP 限制。**
+>
+> **如果您在中国大陆访问，这些模型可能无法正常工作。建议使用以下替代方案：**
+> - 国内模型：DeepSeek、Qwen、GLM-4、MiniMax、Stepfun
+> - 通过 OpenRouter 访问的其他国际模型：Anthropic Claude、Google Gemini、Meta Llama 4
+> - OpenRouter 免费模型：`meta-llama/llama-4-maverick:free`、`nvidia/llama-3.1-nemotron-ultra-253b-v1:free`、`microsoft/mai-ds-r1:free`
 
 ### 网络配置建议
 
