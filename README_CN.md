@@ -265,6 +265,11 @@ free_consensus_results <- interactive_consensus_annotation(
 > - 根据用户反馈，使用具有"干净 IP"（未被 OpenAI 或 X.AI 封禁的 IP 地址）的 VPN 服务可能解决访问限制
 > - 如果您尝试使用 VPN 但仍无法访问，可能需要尝试更换不同的 VPN 服务商或节点
 > - 请注意，IP 地址的状态可能随时变化，某些之前可用的 IP 可能会被封禁
+>
+> **方案3：使用 Google Colab**
+> - Google Colab 提供了干净的 IP 地址，可以成功访问 OpenAI 和 Grok 模型
+> - 我们将在本周内发布专门为 Colab 环境优化的 Jupyter Notebook，您可以直接在 Colab 中运行
+> - 这是一种免费且便捷的解决方案，特别适合没有可靠 VPN 的用户
 
 ### 网络配置建议
 
