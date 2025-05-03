@@ -106,7 +106,7 @@
       <img src="../logo.png" class="logo" alt=""><h1>Visualization Guide</h1>
                         <h4 data-toc-skip class="author">Chen Yang</h4>
             
-            <h4 data-toc-skip class="date">2025-05-01</h4>
+            <h4 data-toc-skip class="date">2025-05-03</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/cafferychen777/mLLMCelltype/blob/main/vignettes/06-visualization-guide.Rmd" class="external-link"><code>vignettes/06-visualization-guide.Rmd</code></a></small>
       <div class="d-none name"><code>06-visualization-guide.Rmd</code></div>
@@ -750,18 +750,106 @@ type clusters and labels.</p>
 <span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggsave.html" class="external-link">ggsave</a></span><span class="op">(</span><span class="st">"mLLMCelltype_visualizations/7_cell_type_with_consensus.pdf"</span>, plot <span class="op">=</span> <span class="va">p7</span>, width <span class="op">=</span> <span class="fl">12</span>, height <span class="op">=</span> <span class="fl">10</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggsave.html" class="external-link">ggsave</a></span><span class="op">(</span><span class="st">"mLLMCelltype_visualizations/8_uncertainty_violins.pdf"</span>, plot <span class="op">=</span> <span class="va">p8</span>, width <span class="op">=</span> <span class="fl">16</span>, height <span class="op">=</span> <span class="fl">14</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggsave.html" class="external-link">ggsave</a></span><span class="op">(</span><span class="st">"mLLMCelltype_visualizations/9_combined_dashboard.pdf"</span>, plot <span class="op">=</span> <span class="va">simplified_dashboard</span>, width <span class="op">=</span> <span class="fl">24</span>, height <span class="op">=</span> <span class="fl">12</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggsave.html" class="external-link">ggsave</a></span><span class="op">(</span><span class="st">"mLLMCelltype_visualizations/10_publication_figure.pdf"</span>, plot <span class="op">=</span> <span class="va">p1_pub</span>, width <span class="op">=</span> <span class="fl">18</span>, height <span class="op">=</span> <span class="fl">16</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggsave.html" class="external-link">ggsave</a></span><span class="op">(</span><span class="st">"mLLMCelltype_visualizations/10_publication_figure.pdf"</span>, plot <span class="op">=</span> <span class="va">p1_pub</span>, width <span class="op">=</span> <span class="fl">18</span>, height <span class="op">=</span> <span class="fl">16</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Save circlize plot (requires additional packages)</span></span>
+<span><span class="co"># Note: Circlize plots are saved directly in the plot_circlize function using pdf()</span></span>
+<span><span class="co"># If you want to save it manually, you can use:</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/grDevices/pdf.html" class="external-link">pdf</a></span><span class="op">(</span><span class="st">"mLLMCelltype_visualizations/11_circlize_plot.pdf"</span>, width <span class="op">=</span> <span class="fl">10</span>, height <span class="op">=</span> <span class="fl">10</span><span class="op">)</span></span>
+<span><span class="fu">plot_circlize</span><span class="op">(</span></span>
+<span>  <span class="va">circ_data</span>,</span>
+<span>  do.label <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  pt.size <span class="op">=</span> <span class="fl">0.5</span>,</span>
+<span>  col.use <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  bg.color <span class="op">=</span> <span class="st">'#F5F5F5'</span>,</span>
+<span>  kde2d.n <span class="op">=</span> <span class="fl">200</span>,</span>
+<span>  repel <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  label.cex <span class="op">=</span> <span class="fl">0.8</span>,</span>
+<span>  color_scheme <span class="op">=</span> <span class="st">"set1"</span></span>
+<span><span class="op">)</span></span>
+<span><span class="fu">add_track</span><span class="op">(</span><span class="va">circ_data</span>, group <span class="op">=</span> <span class="st">"controversial"</span>, colors <span class="op">=</span> <span class="va">controversy_colors</span>, track_num <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span>
+<span><span class="fu">add_track_continuous</span><span class="op">(</span><span class="va">circ_data</span>, feature_value <span class="op">=</span> <span class="st">"consensus_proportion"</span>, track_num <span class="op">=</span> <span class="fl">3</span>,</span>
+<span>                    point_size <span class="op">=</span> <span class="fl">0.5</span>, gradient_color <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"blue"</span>, <span class="st">"yellow"</span>, <span class="st">"red"</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/grDevices/dev.html" class="external-link">dev.off</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 </div>
 </div>
 <div class="section level3">
 <h3 id="additional-advanced-visualization-techniques">Additional Advanced Visualization Techniques<a class="anchor" aria-label="anchor" href="#additional-advanced-visualization-techniques"></a>
 </h3>
 <div class="section level4">
+<h4 id="circlize-plot-visualization">Circlize Plot Visualization<a class="anchor" aria-label="anchor" href="#circlize-plot-visualization"></a>
+</h4>
+<p>Circlize plots provide a unique circular representation of your data,
+combining cell type information with metadata in concentric rings:</p>
+<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Install required packages if not already installed</span></span>
+<span><span class="kw">if</span> <span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/ns-load.html" class="external-link">requireNamespace</a></span><span class="op">(</span><span class="st">"circlize"</span>, quietly <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"circlize"</span><span class="op">)</span></span>
+<span><span class="op">}</span></span>
+<span><span class="kw">if</span> <span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/ns-load.html" class="external-link">requireNamespace</a></span><span class="op">(</span><span class="st">"plot1cell"</span>, quietly <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
+<span>  <span class="fu">remotes</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html" class="external-link">install_github</a></span><span class="op">(</span><span class="st">"HaojiaWu/plot1cell"</span>, upgrade <span class="op">=</span> <span class="st">"never"</span>, dependencies <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
+<span><span class="op">}</span></span>
+<span></span>
+<span><span class="co"># Load required packages</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/jokergoo/circlize" class="external-link">circlize</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">plot1cell</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Prepare circlize data</span></span>
+<span><span class="co"># This function transforms UMAP coordinates to a circular layout</span></span>
+<span><span class="va">circ_data</span> <span class="op">&lt;-</span> <span class="fu">prepare_circlize_data</span><span class="op">(</span><span class="va">seurat_obj</span>, scale <span class="op">=</span> <span class="fl">0.8</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Generate color mapping for cell types</span></span>
+<span><span class="va">celltypes</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/levels.html" class="external-link">levels</a></span><span class="op">(</span><span class="va">seurat_obj</span><span class="op">)</span></span>
+<span><span class="va">cell_colors</span> <span class="op">&lt;-</span> <span class="fu">viridis</span><span class="fu">::</span><span class="fu"><a href="https://sjmgarnier.github.io/viridisLite/reference/viridis.html" class="external-link">viridis</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">celltypes</span><span class="op">)</span>, option <span class="op">=</span> <span class="st">"turbo"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">cell_colors</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="va">celltypes</span></span>
+<span></span>
+<span><span class="co"># Define colors for controversial clusters</span></span>
+<span><span class="va">controversy_colors</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Controversial"</span> <span class="op">=</span> <span class="st">"#E41A1C"</span>, <span class="st">"Consensus"</span> <span class="op">=</span> <span class="st">"#4DAF4A"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Create the main circlize plot</span></span>
+<span><span class="fu">plot_circlize</span><span class="op">(</span></span>
+<span>  <span class="va">circ_data</span>,</span>
+<span>  do.label <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  pt.size <span class="op">=</span> <span class="fl">0.5</span>, <span class="co"># Increase point size for better visibility</span></span>
+<span>  col.use <span class="op">=</span> <span class="cn">NULL</span>,  <span class="co"># Use automatically generated color scheme</span></span>
+<span>  bg.color <span class="op">=</span> <span class="st">'#F5F5F5'</span>,</span>
+<span>  kde2d.n <span class="op">=</span> <span class="fl">200</span>,</span>
+<span>  repel <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  label.cex <span class="op">=</span> <span class="fl">0.8</span>,</span>
+<span>  color_scheme <span class="op">=</span> <span class="st">"set1"</span>  <span class="co"># Use RColorBrewer's Set1 scheme</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Add a track for controversial clusters</span></span>
+<span><span class="fu">add_track</span><span class="op">(</span></span>
+<span>  <span class="va">circ_data</span>,</span>
+<span>  group <span class="op">=</span> <span class="st">"controversial"</span>,</span>
+<span>  colors <span class="op">=</span> <span class="va">controversy_colors</span>,</span>
+<span>  track_num <span class="op">=</span> <span class="fl">2</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Add a track for consensus proportion</span></span>
+<span><span class="fu">add_track_continuous</span><span class="op">(</span></span>
+<span>  <span class="va">circ_data</span>,</span>
+<span>  feature_value <span class="op">=</span> <span class="st">"consensus_proportion"</span>,</span>
+<span>  track_num <span class="op">=</span> <span class="fl">3</span>,</span>
+<span>  point_size <span class="op">=</span> <span class="fl">0.5</span>,</span>
+<span>  gradient_color <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"blue"</span>, <span class="st">"yellow"</span>, <span class="st">"red"</span><span class="op">)</span></span>
+<span><span class="op">)</span></span></code></pre></div>
+<p><strong>Example Output:</strong></p>
+<p><img src="figures/png/fig11_circlize_plot.png" alt="Circlize Plot" width="90%"></p>
+<p>This visualization presents cell types in a circular layout with
+additional tracks showing metadata. The outer ring shows cell types, the
+middle ring indicates controversial vs. consensus clusters, and the
+inner ring displays consensus proportion values. This compact
+representation is particularly useful for visualizing multiple aspects
+of your data simultaneously.</p>
+</div>
+<div class="section level4">
 <h4 id="model-agreement-visualization">Model Agreement Visualization<a class="anchor" aria-label="anchor" href="#model-agreement-visualization"></a>
 </h4>
 <p>You can visualize how different models agree or disagree with the
 consensus:</p>
-<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Assuming you have individual model results in the Seurat object</span></span>
 <span><span class="co"># Create a function to calculate agreement with consensus</span></span>
 <span><span class="va">calculate_agreement</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">seurat_obj</span>, <span class="va">model_column</span>, <span class="va">consensus_column</span><span class="op">)</span> <span class="op">{</span></span>
@@ -802,7 +890,7 @@ consensus:</p>
 </h4>
 <p>Create a heatmap to visualize all model predictions for each
 cluster:</p>
-<div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">pheatmap</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Create a matrix of model predictions for each cluster</span></span>
@@ -905,7 +993,7 @@ cluster:</p>
 </h3>
 <p>The discussion logs contain valuable information about the reasoning
 process. Here’s how to visualize key aspects:</p>
-<div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://juliasilge.github.io/tidytext/" class="external-link">tidytext</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="http://blog.fellstat.com/?cat=11" class="external-link">wordcloud</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://stringr.tidyverse.org" class="external-link">stringr</a></span><span class="op">)</span></span>
@@ -994,7 +1082,7 @@ process. Here’s how to visualize key aspects:</p>
 <h3 id="additional-saving-options">Additional Saving Options<a class="anchor" aria-label="anchor" href="#additional-saving-options"></a>
 </h3>
 <p>For more flexibility in saving your visualizations:</p>
-<div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Save a single plot with high resolution</span></span>
 <span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggsave.html" class="external-link">ggsave</a></span><span class="op">(</span><span class="st">"cell_type_annotations.png"</span>, plot <span class="op">=</span> <span class="va">p1</span>, width <span class="op">=</span> <span class="fl">10</span>, height <span class="op">=</span> <span class="fl">8</span>, dpi <span class="op">=</span> <span class="fl">600</span><span class="op">)</span></span>
 <span></span>
@@ -1049,7 +1137,7 @@ entropy)</li>
 </h3>
 <p>Here’s a complete example workflow for creating publication-ready
 visualizations:</p>
-<div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://satijalab.org/seurat" class="external-link">Seurat</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://cafferyang.com/mLLMCelltype/" class="external-link">mLLMCelltype</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://ggplot2.tidyverse.org" class="external-link">ggplot2</a></span><span class="op">)</span></span>
@@ -1174,7 +1262,7 @@ visualizations:</p>
 version of SCpubr</li>
 <li>Use standard ggplot2 functions to add titles instead:</li>
 </ul>
-<div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">p</span> <span class="op">&lt;-</span> <span class="va">p</span> <span class="op">+</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">ggtitle</a></span><span class="op">(</span><span class="st">"My Title"</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme.html" class="external-link">theme</a></span><span class="op">(</span>plot.title <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html" class="external-link">element_text</a></span><span class="op">(</span>hjust <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <ul>
 <li>Check the SCpubr documentation for your installed version</li>
