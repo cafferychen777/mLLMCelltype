@@ -649,9 +649,95 @@ ggsave("mLLMCelltype_visualizations/7_cell_type_with_consensus.pdf", plot = p7, 
 ggsave("mLLMCelltype_visualizations/8_uncertainty_violins.pdf", plot = p8, width = 16, height = 14)
 ggsave("mLLMCelltype_visualizations/9_combined_dashboard.pdf", plot = simplified_dashboard, width = 24, height = 12)
 ggsave("mLLMCelltype_visualizations/10_publication_figure.pdf", plot = p1_pub, width = 18, height = 16)
+
+# Save circlize plot (requires additional packages)
+# Note: Circlize plots are saved directly in the plot_circlize function using pdf()
+# If you want to save it manually, you can use:
+pdf("mLLMCelltype_visualizations/11_circlize_plot.pdf", width = 10, height = 10)
+plot_circlize(
+  circ_data,
+  do.label = TRUE,
+  pt.size = 0.5,
+  col.use = NULL,
+  bg.color = '#F5F5F5',
+  kde2d.n = 200,
+  repel = TRUE,
+  label.cex = 0.8,
+  color_scheme = "set1"
+)
+add_track(circ_data, group = "controversial", colors = controversy_colors, track_num = 2)
+add_track_continuous(circ_data, feature_value = "consensus_proportion", track_num = 3,
+                    point_size = 0.5, gradient_color = c("blue", "yellow", "red"))
+dev.off()
 ```
 
 ## Additional Advanced Visualization Techniques
+
+### Circlize Plot Visualization
+
+Circlize plots provide a unique circular representation of your data, combining cell type information with metadata in concentric rings:
+
+```{r}
+# Install required packages if not already installed
+if (!requireNamespace("circlize", quietly = TRUE)) {
+  install.packages("circlize")
+}
+if (!requireNamespace("plot1cell", quietly = TRUE)) {
+  remotes::install_github("HaojiaWu/plot1cell", upgrade = "never", dependencies = FALSE)
+}
+
+# Load required packages
+library(circlize)
+library(plot1cell)
+
+# Prepare circlize data
+# This function transforms UMAP coordinates to a circular layout
+circ_data <- prepare_circlize_data(seurat_obj, scale = 0.8)
+
+# Generate color mapping for cell types
+celltypes <- levels(seurat_obj)
+cell_colors <- viridis::viridis(length(celltypes), option = "turbo")
+names(cell_colors) <- celltypes
+
+# Define colors for controversial clusters
+controversy_colors <- c("Controversial" = "#E41A1C", "Consensus" = "#4DAF4A")
+
+# Create the main circlize plot
+plot_circlize(
+  circ_data,
+  do.label = TRUE,
+  pt.size = 0.5, # Increase point size for better visibility
+  col.use = NULL,  # Use automatically generated color scheme
+  bg.color = '#F5F5F5',
+  kde2d.n = 200,
+  repel = TRUE,
+  label.cex = 0.8,
+  color_scheme = "set1"  # Use RColorBrewer's Set1 scheme
+)
+
+# Add a track for controversial clusters
+add_track(
+  circ_data,
+  group = "controversial",
+  colors = controversy_colors,
+  track_num = 2
+)
+
+# Add a track for consensus proportion
+add_track_continuous(
+  circ_data,
+  feature_value = "consensus_proportion",
+  track_num = 3,
+  point_size = 0.5,
+  gradient_color = c("blue", "yellow", "red")
+)
+```
+
+**Example Output:**
+
+<img src="figures/png/fig11_circlize_plot.png" alt="Circlize Plot" width="90%"/>
+
+This visualization presents cell types in a circular layout with additional tracks showing metadata. The outer ring shows cell types, the middle ring indicates controversial vs. consensus clusters, and the inner ring displays consensus proportion values. This compact representation is particularly useful for visualizing multiple aspects of your data simultaneously.
 
 ### Model Agreement Visualization
 
