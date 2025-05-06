@@ -464,8 +464,11 @@ uncertainty_metrics <- data.frame(
 )
 
 # Add uncertainty metrics for each cell
-# Use seurat_clusters to match each cell with its corresponding cluster metrics
-current_clusters <- pbmc$seurat_clusters
+# Note: seurat_clusters is a metadata column automatically created by FindClusters() function
+# It contains the cluster ID assigned to each cell during clustering
+# Here we use it to map cluster-level metrics (consensus_proportion and entropy) to individual cells
+current_clusters <- pbmc$seurat_clusters  # Get cluster ID for each cell
+# Match each cell's cluster ID with the corresponding metrics in uncertainty_metrics
 pbmc$consensus_proportion <- uncertainty_metrics$consensus_proportion[match(current_clusters, uncertainty_metrics$cluster_id)]
 pbmc$entropy <- uncertainty_metrics$entropy[match(current_clusters, uncertainty_metrics$cluster_id)]
 
