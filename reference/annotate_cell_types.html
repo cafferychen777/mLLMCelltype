@@ -114,7 +114,20 @@ This can be in one of these formats:</p><ul><li><p>Named with cluster IDs: list(
 </ul></li>
 <li><p>For both input types, if cluster IDs are numeric and start from 1, they will be automatically
 converted to 0-based indexing (e.g., cluster 1 becomes cluster 0) for consistency.</p></li>
-</ul></dd>
+</ul><p>IMPORTANT NOTE ON CLUSTER IDs:
+The 'cluster' column must contain numeric values or values that can be converted to numeric.
+Non-numeric cluster IDs (e.g., "cluster_1", "T_cells", "7_0") may cause errors or unexpected
+behavior. Before using this function, it is recommended to:</p><ol><li><p>Ensure all cluster IDs are numeric or can be cleanly converted to numeric values</p></li>
+<li><p>If your data contains non-numeric cluster IDs, consider creating a mapping between
+original IDs and numeric IDs:</p>
+<p></p><div class="sourceCode r"><pre><code><span><span class="co"># Example of standardizing cluster IDs</span></span>
+<span><span class="va">original_ids</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/unique.html" class="external-link">unique</a></span><span class="op">(</span><span class="va">markers</span><span class="op">$</span><span class="va">cluster</span><span class="op">)</span></span>
+<span><span class="va">id_mapping</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
+<span>  original <span class="op">=</span> <span class="va">original_ids</span>,</span>
+<span>  numeric <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">original_ids</span><span class="op">)</span> <span class="op">-</span> <span class="fl">1</span><span class="op">)</span></span>
+<span><span class="op">)</span></span>
+<span><span class="va">markers</span><span class="op">$</span><span class="va">cluster</span> <span class="op">&lt;-</span> <span class="va">id_mapping</span><span class="op">$</span><span class="va">numeric</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/match.html" class="external-link">match</a></span><span class="op">(</span><span class="va">markers</span><span class="op">$</span><span class="va">cluster</span>, <span class="va">id_mapping</span><span class="op">$</span><span class="va">original</span><span class="op">)</span><span class="op">]</span></span></code></pre><p></p></div></li>
+</ol></dd>
 
 
 <dt id="arg-tissue-name">tissue_name<a class="anchor" aria-label="anchor" href="#arg-tissue-name"></a></dt>
@@ -210,16 +223,16 @@ when input is from Seurat's FindAllMarkers(). Default: 10</p></dd>
 <span class="r-in"><span>  model <span class="op">=</span> <span class="st">'gpt-4o'</span>,</span></span>
 <span class="r-in"><span>  api_key <span class="op">=</span> <span class="cn">NA</span>  <span class="co"># Returns prompt only without making API call</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [2025-05-03 18:10:58] Processing input with Model: gpt-4o (Provider: openai)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [2025-05-07 22:29:27] Processing input with Model: gpt-4o (Provider: openai)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> DEBUG: Formatted lines for prompt:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [2025-05-03 18:10:58] </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [2025-05-07 22:29:27] </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Gene lists for each cluster:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [2025-05-03 18:10:58] Cluster t_cells: CD3D, CD3E, CD3G, CD28</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [2025-05-03 18:10:58] Cluster b_cells: CD19, CD79A, CD79B, MS4A1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [2025-05-03 18:10:58] Cluster monocytes: CD14, CD68, CSF1R, FCGR3A</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [2025-05-03 18:10:58] </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [2025-05-07 22:29:27] Cluster t_cells: CD3D, CD3E, CD3G, CD28</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [2025-05-07 22:29:27] Cluster b_cells: CD19, CD79A, CD79B, MS4A1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [2025-05-07 22:29:27] Cluster monocytes: CD14, CD68, CSF1R, FCGR3A</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [2025-05-07 22:29:27] </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Generated prompt:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [2025-05-03 18:10:58] You are a cell type annotation expert. Below are marker genes for different cell clusters in human PBMC.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [2025-05-07 22:29:27] You are a cell type annotation expert. Below are marker genes for different cell clusters in human PBMC.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
