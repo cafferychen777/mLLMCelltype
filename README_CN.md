@@ -488,6 +488,15 @@ for i in range(len(adata.obs['leiden'].cat.categories)):
 #     marker_genes = {cluster: [gene_name_dict.get(gene_id, gene_id) for gene_id in genes]
 #                    for cluster, genes in marker_genes.items()}
 
+# 重要提示：mLLMCelltype 要求使用数值型的聚类ID
+# 'cluster' 列必须包含数值或可以转换为数值的值。
+# 非数值型的聚类ID（如 "cluster_1"、"T_cells"、"7_0"）可能会导致错误或意外行为。
+# 如果您的数据包含非数值型的聚类ID，请创建一个从原始ID到数值ID的映射：
+# 示例标准化代码：
+# original_ids = list(marker_genes.keys())
+# id_mapping = {original: idx for idx, original in enumerate(original_ids)}
+# marker_genes = {str(id_mapping[cluster]): genes for cluster, genes in marker_genes.items()}
+
 # 设置您想要使用的提供商的API密钥
 # 您至少需要一个与计划使用的模型相对应的API密钥
 os.environ["OPENAI_API_KEY"] = "your-openai-api-key"      # GPT模型所需
