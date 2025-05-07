@@ -28,6 +28,25 @@ This can be in one of these formats:
 }
 \item For both input types, if cluster IDs are numeric and start from 1, they will be automatically
 converted to 0-based indexing (e.g., cluster 1 becomes cluster 0) for consistency.
+}
+
+IMPORTANT NOTE ON CLUSTER IDs:
+The 'cluster' column must contain numeric values or values that can be converted to numeric.
+Non-numeric cluster IDs (e.g., "cluster_1", "T_cells", "7_0") may cause errors or unexpected
+behavior. Before using this function, it is recommended to:
+\enumerate{
+\item Ensure all cluster IDs are numeric or can be cleanly converted to numeric values
+\item If your data contains non-numeric cluster IDs, consider creating a mapping between
+original IDs and numeric IDs:
+
+\if{html}{\out{<div class="sourceCode r">}}\preformatted{# Example of standardizing cluster IDs
+original_ids <- unique(markers$cluster)
+id_mapping <- data.frame(
+  original = original_ids,
+  numeric = seq(0, length(original_ids) - 1)
+)
+markers$cluster <- id_mapping$numeric[match(markers$cluster, id_mapping$original)]
+}\if{html}{\out{</div>}}
 }}
 
 \item{tissue_name}{Character string specifying the tissue type or cell source (e.g., 'human PBMC',
