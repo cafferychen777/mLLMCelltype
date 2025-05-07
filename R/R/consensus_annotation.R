@@ -18,6 +18,24 @@
 #'     * Unnamed list: list(list(genes = c(...)), list(genes = c(...)))
 #'   - For both input types, if cluster IDs are numeric and start from 1, they will be automatically
 #'     converted to 0-based indexing (e.g., cluster 1 becomes cluster 0) for consistency.
+#'
+#'   IMPORTANT NOTE ON CLUSTER IDs:
+#'   The 'cluster' column must contain numeric values or values that can be converted to numeric.
+#'   Non-numeric cluster IDs (e.g., "cluster_1", "T_cells", "7_0") may cause errors or unexpected
+#'   behavior. Before using this function, it is recommended to:
+#'
+#'   1. Ensure all cluster IDs are numeric or can be cleanly converted to numeric values
+#'   2. If your data contains non-numeric cluster IDs, consider creating a mapping between
+#'      original IDs and numeric IDs:
+#'      ```r
+#'      # Example of standardizing cluster IDs
+#'      original_ids <- unique(markers$cluster)
+#'      id_mapping <- data.frame(
+#'        original = original_ids,
+#'        numeric = seq(0, length(original_ids) - 1)
+#'      )
+#'      markers$cluster <- id_mapping$numeric[match(markers$cluster, id_mapping$original)]
+#'      ```
 #' @param tissue_name Optional input of tissue name
 #' @param models Vector of model names to participate in the discussion. Supported models:
 #'   - OpenAI: 'gpt-4o', 'gpt-4o-mini', 'gpt-4.1', 'gpt-4.1-mini', 'gpt-4.1-nano', 'gpt-4-turbo', 'gpt-3.5-turbo', 'o1', 'o1-mini', 'o1-preview', 'o1-pro'
