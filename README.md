@@ -178,6 +178,15 @@ for i in range(len(adata.obs['leiden'].cat.categories)):
 #     marker_genes = {cluster: [gene_name_dict.get(gene_id, gene_id) for gene_id in genes]
 #                    for cluster, genes in marker_genes.items()}
 
+# IMPORTANT: mLLMCelltype requires numeric cluster IDs
+# The 'cluster' column must contain numeric values or values that can be converted to numeric.
+# Non-numeric cluster IDs (e.g., "cluster_1", "T_cells", "7_0") may cause errors or unexpected behavior.
+# If your data contains non-numeric cluster IDs, create a mapping between original IDs and numeric IDs:
+# Example standardization code:
+# original_ids = list(marker_genes.keys())
+# id_mapping = {original: idx for idx, original in enumerate(original_ids)}
+# marker_genes = {str(id_mapping[cluster]): genes for cluster, genes in marker_genes.items()}
+
 # Configure API keys for the large language models used in consensus annotation
 # At least one API key is required for multi-LLM consensus annotation
 os.environ["OPENAI_API_KEY"] = "your-openai-api-key"      # For GPT-4o/4.1 models (recommended)
