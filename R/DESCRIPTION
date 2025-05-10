@@ -1,7 +1,7 @@
 Package: mLLMCelltype
 Type: Package
 Title: Cell Type Annotation Using Large Language Models
-Version: 1.2.2
+Version: 1.2.3
 Author: Chen Yang [aut, cre]
 Maintainer: Chen Yang <cafferychen777@tamu.edu>
 Authors@R:
