@@ -90,9 +90,32 @@ process_openrouter <- function(prompt, model, api_key) {
         is.null(content$choices[[1]]$message) || is.null(content$choices[[1]]$message$content)) {
       write_log("ERROR: Unexpected response format from OpenRouter API")
       write_log(sprintf("Content structure: %s", paste(names(content), collapse = ", ")))
+
+      # Check if there's an error message in the response
+      if (!is.null(content$error)) {
+        error_msg <- if (is.character(content$error)) content$error else
+                     if (!is.null(content$error$message)) content$error$message else
+                     "Unknown error"
+        write_log(sprintf("OpenRouter API error: %s", error_msg))
+
+        # If there's an error code, log it too
+        if (!is.null(content$error$code)) {
+          write_log(sprintf("Error code: %s", content$error$code))
+        }
+
+        # If there's a type, log it too
+        if (!is.null(content$error$type)) {
+          write_log(sprintf("Error type: %s", content$error$type))
+        }
+      }
+
       if (!is.null(content$choices)) {
         write_log(sprintf("Choices structure: %s", jsonlite::toJSON(content$choices, auto_unbox = TRUE, pretty = TRUE)))
       }
+
+      # Log the full response for debugging
+      write_log(sprintf("Full response structure: %s", jsonlite::toJSON(content, auto_unbox = TRUE, pretty = TRUE)))
+
       return(NULL)
     }
 

@@ -1,5 +1,17 @@
 # mLLMCelltype Changelog
 
+## 1.2.3 (2025-05-10)
+
+### Bug Fixes
+* Fixed error handling in consensus checking when API responses are NULL or invalid
+* Improved error logging for OpenRouter API error responses
+* Added robust NULL and type checking in check_consensus function
+
+### Improvements
+* Enhanced error diagnostics for OpenRouter API errors
+* Added detailed logging of API error messages and response structures
+* Improved robustness when handling unexpected API response formats
+
 ## 1.2.2 (2025-05-09)
 
 ### Bug Fixes
