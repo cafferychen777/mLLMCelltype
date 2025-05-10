@@ -1,5 +1,31 @@
 # mLLMCelltype Changelog
 
+## 1.2.2 (2025-05-09)
+
+### Bug Fixes
+* Fixed the 'non-character argument' error that occurred when processing API responses
+* Added robust type checking for API responses across all model providers
+* Improved error handling for unexpected API response formats
+
+### Improvements
+* Added detailed error logging for API response issues
+* Implemented consistent error handling patterns across all API processing functions
+* Enhanced response validation to ensure proper structure before processing
+
+## 1.2.1 (2025-05-01)
+
+### Improvements
+* Added support for OpenRouter API
+* Added support for free models through OpenRouter
+* Updated documentation with examples for using OpenRouter models
+
+## 1.2.0 (2025-04-30)
+
+### Features
+* Added visualization functions for cell type annotation results
+* Added support for uncertainty metrics visualization
+* Implemented improved consensus building algorithm
+
 ## 1.1.5 (2025-04-27)
 
 ### Bug Fixes
