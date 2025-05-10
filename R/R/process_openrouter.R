@@ -85,8 +85,28 @@ process_openrouter <- function(prompt, model, api_key) {
     # Parse the response
     content <- httr::content(response, "parsed")
 
+    # Check if response has the expected structure
+    if (is.null(content) || is.null(content$choices) || length(content$choices) == 0 ||
+        is.null(content$choices[[1]]$message) || is.null(content$choices[[1]]$message$content)) {
+      write_log("ERROR: Unexpected response format from OpenRouter API")
+      write_log(sprintf("Content structure: %s", paste(names(content), collapse = ", ")))
+      if (!is.null(content$choices)) {
+        write_log(sprintf("Choices structure: %s", jsonlite::toJSON(content$choices, auto_unbox = TRUE, pretty = TRUE)))
+      }
+      return(NULL)
+    }
+
+    # OpenRouter's response should be in content$choices[[1]]$message$content
+    response_content <- content$choices[[1]]$message$content
+    if (!is.character(response_content)) {
+      write_log("ERROR: Response content is not a character string")
+      write_log(sprintf("Response content type: %s", typeof(response_content)))
+      write_log(sprintf("Response content structure: %s", jsonlite::toJSON(content$choices[[1]]$message, auto_unbox = TRUE, pretty = TRUE)))
+      return(NULL)
+    }
+
     # OpenRouter follows OpenAI's response format
-    res <- strsplit(content$choices[[1]]$message$content, '\n')[[1]]
+    res <- strsplit(response_content, '\n')[[1]]
     write_log(sprintf("Got response with %d lines", length(res)))
     write_log(sprintf("Raw response from OpenRouter:\n%s", paste(res, collapse = "\n")))
 
