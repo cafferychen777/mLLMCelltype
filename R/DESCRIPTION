@@ -1,16 +1,16 @@
 Package: mLLMCelltype
 Type: Package
 Title: Cell Type Annotation Using Large Language Models
-Version: 1.2.1
+Version: 1.2.2
 Author: Chen Yang [aut, cre]
 Maintainer: Chen Yang <cafferychen777@tamu.edu>
-Authors@R: 
+Authors@R:
     person("Chen", "Yang", email = "cafferychen777@tamu.edu",
            role = c("aut", "cre"))
-Description: An R package that leverages various large language models (LLMs) 
-    for automated cell type annotation in single-cell RNA sequencing data. 
-    Implements a consensus-based approach where multiple LLMs collaborate 
-    to provide more reliable annotations. For more details, please refer to 
+Description: An R package that leverages various large language models (LLMs)
+    for automated cell type annotation in single-cell RNA sequencing data.
+    Implements a consensus-based approach where multiple LLMs collaborate
+    to provide more reliable annotations. For more details, please refer to
     our paper: <doi:10.1101/2025.04.10.647852>.
 License: MIT + file LICENSE
 BugReports: https://github.com/cafferychen777/mLLMCelltype/issues
