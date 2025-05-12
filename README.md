@@ -141,6 +141,31 @@ pip install mllmcelltype
 pip install git+https://github.com/cafferychen777/mLLMCelltype.git
 ```
 
+#### Important Note on Dependencies
+
+mLLMCelltype uses a modular design where different LLM provider libraries are optional dependencies. Depending on which models you plan to use, you'll need to install the corresponding packages:
+
+```bash
+# For using OpenAI models (GPT-4o, etc.)
+pip install "mllmcelltype[openai]"
+
+# For using Anthropic models (Claude)
+pip install "mllmcelltype[anthropic]"
+
+# For using Google models (Gemini)
+pip install "mllmcelltype[gemini]"
+
+# To install all optional dependencies at once
+pip install "mllmcelltype[all]"
+```
+
+If you encounter errors like `ImportError: cannot import name 'genai' from 'google'`, it means you need to install the corresponding provider package. For example:
+
+```bash
+# For Google Gemini models
+pip install google-genai
+```
+
 ### Supported Models
 
 - **OpenAI**: GPT-4.1/GPT-4.5/GPT-4o ([API Key](https://platform.openai.com/settings/organization/billing/overview))

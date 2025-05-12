@@ -83,6 +83,31 @@ pip install mllmcelltype
 pip install git+https://github.com/cafferychen777/mLLMCelltype.git
 ```
 
+#### 关于依赖包的重要说明
+
+mLLMCelltype采用模块化设计，不同的LLM提供商库作为可选依赖。根据您计划使用的模型，您需要安装相应的包：
+
+```bash
+# 使用OpenAI模型(GPT-4o等)
+pip install "mllmcelltype[openai]"
+
+# 使用Anthropic模型(Claude)
+pip install "mllmcelltype[anthropic]"
+
+# 使用Google模型(Gemini)
+pip install "mllmcelltype[gemini]"
+
+# 一次性安装所有可选依赖
+pip install "mllmcelltype[all]"
+```
+
+如果您遇到类似`ImportError: cannot import name 'genai' from 'google'`的错误，这意味着您需要安装相应的提供商包。例如：
+
+```bash
+# 对于Google Gemini模型
+pip install google-genai
+```
+
 ### 支持的模型
 
 - **OpenAI**: GPT-4.1/GPT-4.5/GPT-4o ([API Key](https://platform.openai.com/settings/organization/billing/overview))
