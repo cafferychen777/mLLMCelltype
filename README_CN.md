@@ -79,8 +79,8 @@ devtools::install_github("cafferychen777/mLLMCelltype", subdir = "R")
 # 从PyPI安装
 pip install mllmcelltype
 
-# 或从GitHub安装
-pip install git+https://github.com/cafferychen777/mLLMCelltype.git
+# 或从GitHub安装（注意子目录参数）
+pip install git+https://github.com/cafferychen777/mLLMCelltype.git#subdirectory=python
 ```
 
 #### 关于依赖包的重要说明

@@ -77,8 +77,8 @@ devtools::install_github("cafferychen777/mLLMCelltype", subdir = "R")
 # Instalar desde PyPI
 pip install mllmcelltype
 
-# O instalar desde GitHub
-pip install git+https://github.com/cafferychen777/mLLMCelltype.git
+# O instalar desde GitHub (note el parámetro subdirectory)
+pip install git+https://github.com/cafferychen777/mLLMCelltype.git#subdirectory=python
 ```
 
 ### Modelos Soportados
