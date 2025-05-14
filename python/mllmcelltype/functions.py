@@ -533,6 +533,10 @@ def process_deepseek_legacy(prompt: str, model: str, api_key: str) -> list[str]:
     write_log(f"Using DeepSeek API with model: {model}")
 
     try:
+        # Import necessary modules for improved request handling
+        from requests.adapters import HTTPAdapter
+        from urllib3.util.retry import Retry
+
         # URL for DeepSeek API
         url = "https://api.deepseek.com/v1/chat/completions"
 
@@ -549,9 +553,23 @@ def process_deepseek_legacy(prompt: str, model: str, api_key: str) -> list[str]:
             "max_tokens": 4000,
         }
 
-        # Make the API call
-        write_log("Sending request to DeepSeek API")
-        response = requests.post(url, headers=headers, json=payload, timeout=30)
+        # Configure retry strategy
+        retry_strategy = Retry(
+            total=5,  # Increased from default
+            backoff_factor=1,
+            status_forcelist=[429, 500, 502, 503, 504],
+            allowed_methods=["POST"],
+        )
+
+        # Create a session with the retry strategy
+        session = requests.Session()
+        adapter = HTTPAdapter(max_retries=retry_strategy)
+        session.mount("https://", adapter)
+        session.mount("http://", adapter)
+
+        # Make the API call with increased timeout
+        write_log("Sending request to DeepSeek API with enhanced retry strategy and 90s timeout")
+        response = session.post(url, headers=headers, json=payload, timeout=90)
 
         # Check for errors
         if response.status_code != 200:

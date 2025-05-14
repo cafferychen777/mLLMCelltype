@@ -4,6 +4,8 @@ import json
 import time
 
 import requests
+from requests.adapters import HTTPAdapter
+from urllib3.util.retry import Retry
 
 from ..logger import write_log
 
@@ -67,14 +69,35 @@ def process_deepseek(prompt: str, model: str, api_key: str) -> list[str]:
             "Authorization": f"Bearer {api_key}",
         }
 
-        max_retries = 3
-        retry_delay = 2
+        # Increase retry parameters
+        max_retries = 5  # Increased from 3 to 5
+        retry_delay = 3  # Increased from 2 to 3
+        timeout = 90  # Increased from 60 to 90 seconds
+
+        # Create a session with retry strategy
+        session = requests.Session()
+
+        # Configure retry strategy for the session
+        retry_strategy = Retry(
+            total=max_retries,
+            backoff_factor=retry_delay,
+            status_forcelist=[429, 500, 502, 503, 504],
+            allowed_methods=["POST"],
+        )
+
+        # Mount the adapter to the session
+        adapter = HTTPAdapter(max_retries=retry_strategy)
+        session.mount("https://", adapter)
+        session.mount("http://", adapter)
+
+        write_log(
+            f"Configured session with {max_retries} retries, {retry_delay}s backoff factor, and {timeout}s timeout"
+        )
 
         for attempt in range(max_retries):
             try:
-                response = requests.post(
-                    url=url, headers=headers, data=json.dumps(body), timeout=30
-                )
+                write_log(f"Sending request (attempt {attempt + 1}/{max_retries})...")
+                response = session.post(url=url, headers=headers, json=body, timeout=timeout)
 
                 # Check for errors
                 if response.status_code != 200:
@@ -101,13 +124,45 @@ def process_deepseek(prompt: str, model: str, api_key: str) -> list[str]:
                 all_results.extend(res)
                 break  # Success, exit retry loop
 
+            except requests.exceptions.Timeout as e:
+                # Handle timeout specifically
+                write_log(
+                    f"Timeout during API call (attempt {attempt + 1}/{max_retries}): {str(e)}"
+                )
+                if attempt < max_retries - 1:
+                    wait_time = retry_delay * (2**attempt)
+                    write_log(f"Waiting {wait_time} seconds before retrying...")
+                    time.sleep(wait_time)
+                else:
+                    write_log(
+                        f"ERROR: All retry attempts failed with timeout. Last error: {str(e)}"
+                    )
+                    raise
+
+            except requests.exceptions.ConnectionError as e:
+                # Handle connection errors specifically
+                write_log(
+                    f"Connection error during API call (attempt {attempt + 1}/{max_retries}): {str(e)}"
+                )
+                if attempt < max_retries - 1:
+                    wait_time = retry_delay * (2**attempt)
+                    write_log(f"Waiting {wait_time} seconds before retrying...")
+                    time.sleep(wait_time)
+                else:
+                    write_log(
+                        f"ERROR: All retry attempts failed with connection error. Last error: {str(e)}"
+                    )
+                    raise
+
             except Exception as e:
+                # Handle other exceptions
                 write_log(f"Error during API call (attempt {attempt + 1}/{max_retries}): {str(e)}")
                 if attempt < max_retries - 1:
                     wait_time = retry_delay * (2**attempt)
                     write_log(f"Waiting {wait_time} seconds before retrying...")
                     time.sleep(wait_time)
                 else:
+                    write_log(f"ERROR: All retry attempts failed. Last error: {str(e)}")
                     raise
 
     write_log("All chunks processed successfully")
