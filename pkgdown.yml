@@ -1,5 +1,5 @@
 pandoc: 3.1.11
-pkgdown: 2.1.2
+pkgdown: 2.1.3
 pkgdown_sha: ~
 articles:
   01-introduction: 01-introduction.html
@@ -13,7 +13,7 @@ articles:
   09-contributing-guide: 09-contributing-guide.html
   10-version-history: 10-version-history.html
   mLLMCelltype: mLLMCelltype.html
-last_built: 2025-05-14T08:40Z
+last_built: 2025-05-25T21:02Z
 urls:
   reference: https://cafferychen777.github.io/mLLMCelltype/reference
   article: https://cafferychen777.github.io/mLLMCelltype/articles
