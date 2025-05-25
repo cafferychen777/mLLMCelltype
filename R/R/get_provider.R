@@ -87,7 +87,22 @@ get_provider <- function(model) {
     "qwq-32b-preview"
   )
   stepfun_models <- c("step-2-mini", "step-2-16k", "step-1-8k")
-  zhipu_models <- c("glm-4-plus", "glm-3-turbo")
+  zhipu_models <- c(
+    "glm-4-plus",
+    "glm-4",
+    "glm-4-0520",
+    "glm-4-air",
+    "glm-4-airx",
+    "glm-4-flash",
+    "glm-4-flashx",
+    "glm-4v",
+    "glm-4v-plus",
+    "glm-3-turbo",
+    "chatglm3-6b",
+    "chatglm2-6b",
+    "chatglm-6b",
+    "glm-edge"
+  )
   minimax_models <- c("minimax-text-01")
   grok_models <- c("grok-3", "grok-3-latest", "grok-3-fast", "grok-3-fast-latest", "grok-3-mini", "grok-3-mini-latest", "grok-3-mini-fast", "grok-3-mini-fast-latest")
   openrouter_models <- c(
