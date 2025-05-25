@@ -46,10 +46,14 @@ get_provider <- function(model) {
   # List of supported models for each provider (all in lowercase)
   openai_models <- c("gpt-4o", "gpt-4o-mini", "gpt-4.1", "gpt-4.1-mini", "gpt-4.1-nano", "gpt-4-turbo", "gpt-3.5-turbo", "o1", "o1-mini", "o1-preview", "o1-pro")
   anthropic_models <- c(
-    "claude-3-7-sonnet-20250219",
-    "claude-3-5-sonnet-20241022",
     "claude-3-5-haiku-20241022",
-    "claude-3-opus-20240229"
+    "claude-3-5-sonnet-20240620",
+    "claude-3-5-sonnet-20241022",
+    "claude-3-7-sonnet-20250219",
+    "claude-3-haiku-20240307",
+    "claude-3-opus-20240229",
+    "claude-opus-4-20250514",
+    "claude-sonnet-4-20250514"
   )
   deepseek_models <- c("deepseek-chat", "deepseek-reasoner")
   gemini_models <- c("gemini-2.5-pro", "gemini-2.0-flash", "gemini-2.0-flash-exp", "gemini-1.5-pro", "gemini-1.5-flash")
