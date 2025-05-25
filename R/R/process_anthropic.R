@@ -83,16 +83,28 @@ process_anthropic <- function(prompt, model, api_key) {
       write_log("ERROR: Response content is not a character string")
       write_log(sprintf("Response content type: %s", typeof(response_content)))
       write_log(sprintf("Response content structure: %s", jsonlite::toJSON(content$content[[1]], auto_unbox = TRUE, pretty = TRUE)))
-      return(NULL)
+      return(c("Error: Invalid response format"))
     }
 
-    res <- strsplit(response_content, '\n')[[1]]
-    write_log(sprintf("Got response with %d lines", length(res)))
-    write_log(sprintf("Raw response from Claude:\n%s", paste(res, collapse = "\n")))
-
-    res
+    tryCatch({
+      res <- strsplit(response_content, '\n')[[1]]
+      write_log(sprintf("Got response with %d lines", length(res)))
+      write_log(sprintf("Raw response from Claude:\n%s", paste(res, collapse = "\n")))
+      res
+    }, error = function(e) {
+      write_log(sprintf("ERROR: Failed to split response content: %s", e$message))
+      return(c("Error: Failed to parse response"))
+    })
   }, simplify = FALSE)
 
   write_log("All chunks processed successfully")
-  return(gsub(',$', '', unlist(allres)))
+
+  # Filter out NULL values and handle errors more gracefully
+  valid_results <- allres[!sapply(allres, is.null)]
+  if (length(valid_results) == 0) {
+    write_log("ERROR: No valid responses received from Anthropic")
+    return(c("Error: No valid responses"))
+  }
+
+  return(gsub(',$', '', unlist(valid_results)))
 }

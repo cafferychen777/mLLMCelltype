@@ -136,19 +136,42 @@ check_consensus <- function(round_responses, api_keys = NULL, controversy_thresh
 
   # Directly parse the response using a simpler approach
   # First, check if response is NULL or empty
-  if (is.null(response) || length(response) == 0 || nchar(response) == 0) {
-    write_log("WARNING: Response is NULL, empty, or has zero length")
+  if (is.null(response) || length(response) == 0) {
+    write_log("WARNING: Response is NULL or has zero length")
     lines <- c("0", "0", "0", "Unknown")
   } else if (!is.character(response)) {
     # If response is not a character, convert it to string
     write_log(sprintf("WARNING: Response is not a character but %s, converting to string", typeof(response)))
-    response <- as.character(response)
+    # Handle different types more carefully
+    if (is.function(response)) {
+      write_log("ERROR: Response is a function (closure), this indicates a serious error in the API response processing")
+      lines <- c("0", "0", "0", "Unknown")
+    } else {
+      tryCatch({
+        response <- as.character(response)
+        if (nchar(response) == 0) {
+          lines <- c("0", "0", "0", "Unknown")
+        } else {
+          lines <- c(response)
+        }
+      }, error = function(e) {
+        write_log(sprintf("ERROR: Failed to convert response to character: %s", e$message))
+        lines <- c("0", "0", "0", "Unknown")
+      })
+    }
+  } else if (nchar(response) == 0) {
+    write_log("WARNING: Response is empty string")
     lines <- c("0", "0", "0", "Unknown")
   } else if (grepl("\n", response)) {
     # Split by newlines and clean up
-    lines <- strsplit(response, "\n")[[1]]
-    lines <- trimws(lines)
-    lines <- lines[nchar(lines) > 0]
+    tryCatch({
+      lines <- strsplit(response, "\n")[[1]]
+      lines <- trimws(lines)
+      lines <- lines[nchar(lines) > 0]
+    }, error = function(e) {
+      write_log(sprintf("ERROR: Failed to split response by newlines: %s", e$message))
+      lines <- c("0", "0", "0", "Unknown")
+    })
   } else {
     # If no newlines, treat as a single line
     lines <- c(response)

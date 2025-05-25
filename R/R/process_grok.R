@@ -109,21 +109,28 @@ process_grok <- function(prompt, model, api_key) {
       write_log("ERROR: Response content is not a character string")
       write_log(sprintf("Response content type: %s", typeof(response_content)))
       write_log(sprintf("Response content structure: %s", jsonlite::toJSON(content$choices[[1]]$message, auto_unbox = TRUE, pretty = TRUE)))
-      return(NULL)
+      return(c("Error: Invalid response format"))
     }
 
-    res <- strsplit(response_content, '\n')[[1]]
+    res <- tryCatch({
+      split_result <- strsplit(response_content, '\n')[[1]]
 
-    # Log usage information if available
-    if (!is.null(content$usage)) {
-      write_log(sprintf("Tokens used - Prompt: %d, Completion: %d, Total: %d",
-                      content$usage$prompt_tokens,
-                      content$usage$completion_tokens,
-                      content$usage$total_tokens))
-    }
+      # Log usage information if available
+      if (!is.null(content$usage)) {
+        write_log(sprintf("Tokens used - Prompt: %d, Completion: %d, Total: %d",
+                        content$usage$prompt_tokens,
+                        content$usage$completion_tokens,
+                        content$usage$total_tokens))
+      }
 
-    write_log(sprintf("Got response with %d lines", length(res)))
-    write_log(sprintf("Raw response from Grok:\n%s", paste(res, collapse = "\n")))
+      write_log(sprintf("Got response with %d lines", length(split_result)))
+      write_log(sprintf("Raw response from Grok:\n%s", paste(split_result, collapse = "\n")))
+
+      split_result
+    }, error = function(e) {
+      write_log(sprintf("ERROR: Failed to split response content: %s", e$message))
+      return(c("Error: Failed to parse response"))
+    })
 
     res
   }, simplify = FALSE)

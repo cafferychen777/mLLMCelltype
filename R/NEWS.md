@@ -1,5 +1,23 @@
 # mLLMCelltype Changelog
 
+## 1.2.4 (2025-05-25)
+
+### Critical Bug Fixes
+* **Fixed major `as.logical(from)` error**: Resolved critical error that occurred when processing large numbers of clusters (60+ clusters), which was caused by non-character data being passed to `strsplit()` functions
+* **Enhanced error handling for API responses**: Added comprehensive `tryCatch()` blocks around all `strsplit()` operations in API processing functions
+* **Improved response validation**: Added robust type checking for API responses to prevent function/closure types from being processed as character strings
+
+### Improvements
+* **Enhanced API processing robustness**: All API processing functions (`process_openrouter.R`, `process_anthropic.R`, `process_openai.R`, `process_deepseek.R`, `process_qwen.R`, `process_stepfun.R`, `process_minimax.R`, `process_zhipu.R`, `process_gemini.R`, `process_grok.R`) now include improved error handling
+* **Better NULL value handling**: Improved `unlist()` operations to filter out NULL values and handle errors gracefully
+* **Enhanced logging**: Added more detailed error logging for debugging API response issues
+* **Improved consensus checking**: Enhanced `check_consensus.R` to handle edge cases with malformed responses
+
+### Technical Details
+* Fixed issue where large cluster datasets could cause type coercion errors in response parsing
+* Added validation for function/closure types in API responses to prevent downstream errors
+* Improved error messages to provide better diagnostics for API response issues
+
 ## 1.2.3 (2025-05-10)
 
 ### Bug Fixes
