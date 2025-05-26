@@ -269,7 +269,8 @@ free_consensus_results <- interactive_consensus_annotation(
   ),
   api_keys = list(
     openrouter = "your-openrouter-key"  # 单一 API 密钥访问多种模型
-  )
+  ),
+  consensus_check_model = "deepseek/deepseek-chat-v3-0324:free"  # 免费模型用于共识检查
 )
 ```
 

@@ -742,6 +742,7 @@ free_consensus_results <-
       "microsoft/mai-ds-r1:free"               # Microsoft MAI-DS-R1 (free)
     ),
     api_keys = api_keys,
+    consensus_check_model = "deepseek/deepseek-chat-v3-0324:free",  # Free model for consensus checking
     controversy_threshold = 0.6,
     entropy_threshold = 1.0,
     max_discussion_rounds = 2,
