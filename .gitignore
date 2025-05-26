@@ -10,6 +10,30 @@ logs/
 test_logs/
 .DS_Store
 
+# R package build files
+R/Meta/
+R/doc/
+R/inst/doc/
+R/vignettes/*.html
+R/vignettes/*.pdf
+
+# R cache and temporary files
+R/consensus_cache/
+R/cache/
+R/*_cache/
+R/*.rds
+R/*.pdf
+R/*.png
+R/*.jpg
+R/*.jpeg
+
+# API keys and sensitive files
+R/api_keys.env
+R/examples/
+*.env
+*api_key*
+*secret*
+
 # Python related
 __pycache__/
 *.py[cod]
@@ -40,3 +64,20 @@ cache/
 .idea/
 .vscode/
 test_pbmc3k.R
+
+# Large files and visualizations
+mLLMCelltype_visualizations/
+
+# Test files and results
+tests/
+R/tests/
+R/.Rcheck-ignore
+
+# Web application
+mllmcelltype-web/
+
+# Additional sensitive patterns
+**/api_keys.*
+**/secrets.*
+**/*_key.*
+**/*_secret.*
