@@ -31,8 +31,10 @@ ModelType = Literal[
     "deepseek-chat",
     "deepseek-reasoner",
     # Gemini models
+    "gemini-2.5-pro",
     "gemini-2.0-flash",
-    "gemini-2.0-flash-001",
+    "gemini-2.0-flash-lite",
+    "gemini-2.0-flash-exp",
     "gemini-1.5-pro",
     "gemini-1.5-flash",
     # Qwen models
@@ -91,8 +93,10 @@ def get_provider(model: str) -> str:
         ],
         "deepseek": ["deepseek-chat", "deepseek-reasoner"],
         "gemini": [
+            "gemini-2.5-pro",
             "gemini-2.0-flash",
-            "gemini-2.0-flash-001",
+            "gemini-2.0-flash-lite",
+            "gemini-2.0-flash-exp",
             "gemini-1.5-pro",
             "gemini-1.5-flash",
         ],

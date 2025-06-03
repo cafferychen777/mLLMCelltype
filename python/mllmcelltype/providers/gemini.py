@@ -13,7 +13,7 @@ def process_gemini(prompt: str, model: str, api_key: str) -> list[str]:
 
     Args:
         prompt: The prompt to send to the API
-        model: The model name (e.g., 'gemini-2.0-flash', 'gemini-2.0-pro')
+        model: The model name (e.g., 'gemini-2.5-pro', 'gemini-2.0-flash', 'gemini-2.0-flash-lite')
         api_key: Google API key
 
     Returns:

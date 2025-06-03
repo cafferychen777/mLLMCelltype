@@ -21,7 +21,7 @@ Supported providers and models include:
 \item OpenAI: 'gpt-4o', 'gpt-4o-mini', 'gpt-4.1', 'gpt-4.1-mini', 'gpt-4.1-nano', 'gpt-4-turbo', 'gpt-3.5-turbo', 'o1', 'o1-mini', 'o1-preview', 'o1-pro'
 \item Anthropic: 'claude-3-7-sonnet-20250219', 'claude-3-5-sonnet-latest', 'claude-3-5-haiku-latest', 'claude-3-opus'
 \item DeepSeek: 'deepseek-chat', 'deepseek-reasoner'
-\item Google: 'gemini-2.5-pro', 'gemini-2.0-flash', 'gemini-2.0-flash-exp', 'gemini-1.5-pro', 'gemini-1.5-flash'
+\item Google: 'gemini-2.5-pro', 'gemini-2.0-flash', 'gemini-2.0-flash-lite', 'gemini-2.0-flash-exp', 'gemini-1.5-pro', 'gemini-1.5-flash'
 \item Qwen: 'qwen-max-2025-01-25', 'qwen3-72b'
 \item Stepfun: 'step-2-mini', 'step-2-16k', 'step-1-8k'
 \item Zhipu: 'glm-4-plus', 'glm-3-turbo'

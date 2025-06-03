@@ -50,7 +50,7 @@ mLLMCelltype harnesses collective intelligence from diverse LLMs to overcome sin
 
 - OpenAI GPT-4o/4.1
 - Anthropic Claude-3.7/3.5
-- Google Gemini-2.0/2.5
+- Google Gemini-2.0/2.5 (including Gemini-2.0-Flash-Lite)
 - X.AI Grok-3
 - DeepSeek-V3
 - Alibaba Qwen2.5/Qwen3

@@ -85,7 +85,7 @@ pip install git+https://github.com/cafferychen777/mLLMCelltype.git#subdirectory=
 
 - **OpenAI**: GPT-4.1/GPT-4.5/GPT-4o ([Clave API](https://platform.openai.com/settings/organization/billing/overview))
 - **Anthropic**: Claude-3.7-Sonnet/Claude-3.5-Haiku ([Clave API](https://console.anthropic.com/))
-- **Google**: Gemini-2.0-Pro/Gemini-2.0-Flash ([Clave API](https://ai.google.dev/?authuser=2))
+- **Google**: Gemini-2.5-Pro/Gemini-2.0-Flash/Gemini-2.0-Flash-Lite ([Clave API](https://ai.google.dev/?authuser=2))
 - **Alibaba**: Qwen2.5-Max ([Clave API](https://www.alibabacloud.com/en/product/modelstudio))
 - **DeepSeek**: DeepSeek-V3/DeepSeek-R1 ([Clave API](https://platform.deepseek.com/usage))
 - **Minimax**: MiniMax-Text-01 ([Clave API](https://intl.minimaxi.com/user-center/basic-information/interface-key))

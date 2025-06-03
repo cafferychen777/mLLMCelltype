@@ -150,7 +150,7 @@ pip install google-genai
 
 - **OpenAI**：GPT-4o、GPT-4.1 等系列模型
 - **Anthropic**：Claude-3.7-Sonnet、Claude-3.5-Haiku 等系列模型
-- **Google**：Gemini-2.0-Pro、Gemini-1.5-Flash 等系列模型
+- **Google**：Gemini-2.5-Pro、Gemini-2.0-Flash、Gemini-2.0-Flash-Lite 等系列模型
 - **X.AI**：Grok-3、Grok-3-Mini 等系列模型
 
 ### 推荐使用方案

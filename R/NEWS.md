@@ -1,5 +1,25 @@
 # mLLMCelltype Changelog
 
+## 1.2.5 (2025-06-02)
+
+### Model Updates
+* **Updated Gemini model support**: Added support for new Gemini models and removed discontinued ones
+  - Added `gemini-2.0-flash-lite` to supported models list
+  - Updated documentation to reflect Google's model migration recommendations
+  - Removed references to discontinued Gemini 1.5 Pro 001 and Gemini 1.5 Flash 001 models
+
+### Important Notes
+* **Google Gemini Model Migration**: Google has discontinued several Gemini 1.5 models:
+  - **Already discontinued**: Gemini 1.5 Pro 001, Gemini 1.5 Flash 001
+  - **Will be discontinued on Sept 24, 2025**: Gemini 1.5 Pro 002, Gemini 1.5 Flash 002, Gemini 1.5 Flash-8B -001
+  - **Recommended migration**: Use `gemini-2.0-flash` or `gemini-2.0-flash-lite` for better performance and continued support
+  - The aliases `gemini-1.5-pro` and `gemini-1.5-flash` will continue to work until September 24, 2025
+
+### Documentation Updates
+* Updated all README files (English and international versions) with new Gemini model information
+* Updated R documentation and vignettes to reflect model changes
+* Added migration guidance in main documentation
+
 ## 1.2.4 (2025-05-25)
 
 ### Critical Bug Fixes

@@ -2,6 +2,19 @@
 
 All notable changes to the Python implementation of mLLMCelltype will be documented in this file.
 
+## [1.2.2] - 2025-06-02
+
+### Updated
+- Updated Gemini model list to include new models and remove discontinued ones:
+  - Added support for `gemini-2.5-pro` and `gemini-2.0-flash-lite`
+  - Removed discontinued `gemini-2.0-flash-001` model
+  - Updated documentation to reflect Google's model migration recommendations
+
+### Notes
+- Google has discontinued Gemini 1.5 Pro 001 and Gemini 1.5 Flash 001 models
+- Gemini 1.5 Pro 002, Gemini 1.5 Flash 002, and Gemini 1.5 Flash-8B -001 will be discontinued on September 24, 2025
+- Users are recommended to migrate to `gemini-2.0-flash` or `gemini-2.0-flash-lite` for better performance
+
 ## [1.2.1] - 2025-04-29
 
 ### Added
