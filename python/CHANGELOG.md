@@ -2,6 +2,13 @@
 
 All notable changes to the Python implementation of mLLMCelltype will be documented in this file.
 
+## [1.2.3] - 2025-06-03
+
+### Fixed
+- Fixed `UnboundLocalError: local variable 'consensus_response' referenced before assignment` in `process_controversial_clusters` function
+- Added proper initialization and null checks for `consensus_response` variable to prevent crashes when consensus is not reached within maximum discussion rounds
+- Improved error handling in controversial cluster resolution process
+
 ## [1.2.2] - 2025-06-02
 
 ### Updated

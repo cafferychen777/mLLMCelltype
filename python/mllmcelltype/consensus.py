@@ -519,10 +519,13 @@ def process_controversial_clusters(
             # After all rounds, use the last round's decision if no consensus was reached
             if not final_decision:
                 # Try to extract majority_prediction from the last consensus check
-                if rounds_history and len(rounds_history) >= 1:
+                # Only try to access consensus_response if it was actually created in this iteration
+                last_consensus_check = None
+                if rounds_history and len(rounds_history) >= 1 and "consensus_response" in locals():
                     # Get the response from the last consensus check
                     last_consensus_check = consensus_response
 
+                if last_consensus_check is not None:
                     # Try to extract majority_prediction
                     try:
                         lines = last_consensus_check.strip().split("\n")
