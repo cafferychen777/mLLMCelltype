@@ -671,6 +671,250 @@ add_track_continuous(circ_data, feature_value = "consensus_proportion", track_nu
 dev.off()
 ```
 
+## Marker Gene Visualization
+
+mLLMCelltype includes enhanced marker gene visualization functions that create publication-ready bubble plots and heatmaps showing marker gene expression patterns across annotated cell types. These visualizations seamlessly integrate with the consensus annotation workflow.
+
+### Prerequisites for Marker Gene Visualization
+
+Before creating marker gene visualizations, ensure you have the required packages:
+
+```{r}
+# Install required packages if not already installed
+if (!requireNamespace("pheatmap", quietly = TRUE)) {
+  install.packages("pheatmap")
+}
+if (!requireNamespace("viridis", quietly = TRUE)) {
+  install.packages("viridis")
+}
+if (!requireNamespace("dplyr", quietly = TRUE)) {
+  install.packages("dplyr")
+}
+
+# Load required packages
+library(pheatmap)
+library(viridis)
+library(dplyr)
+```
+
+### Finding Marker Genes
+
+First, identify marker genes for each cluster using Seurat:
+
+```{r}
+# Find marker genes for each cluster
+pbmc_markers <- FindAllMarkers(
+  seurat_obj,
+  only.pos = TRUE,
+  min.pct = 0.25,
+  logfc.threshold = 0.25,
+  verbose = FALSE
+)
+
+# Display top markers for each cluster
+top_markers_preview <- pbmc_markers %>%
+  group_by(cluster) %>%
+  top_n(3, avg_log2FC) %>%
+  arrange(cluster, desc(avg_log2FC))
+
+print(top_markers_preview)
+```
+
+### Enhanced Bubble Plot Visualization
+
+The bubble plot shows both the percentage of cells expressing each gene (bubble size) and the average expression level (color intensity):
+
+```{r}
+# Create enhanced bubble plot
+bubble_result <- create_marker_bubble_plot(
+  seurat_obj = seurat_obj,
+  markers_df = pbmc_markers,
+  consensus_results = consensus_results,
+  top_n = 5,
+  title = "Marker Gene Expression by Cell Type",
+  color_palette = "plasma"
+)
+
+# Display the plot
+print(bubble_result$plot)
+
+# Save the plot
+ggsave(
+  filename = "marker_genes_bubble_plot.png",
+  plot = bubble_result$plot,
+  width = 12,
+  height = 10,
+  dpi = 300,
+  bg = "white"
+)
+```
+
+**Example Output:**
+
+<img src="figures/png/marker_bubble_plot.png" alt="Marker Gene Bubble Plot" width="90%"/>
+
+This bubble plot visualization shows:
+- **X-axis**: Cell types (from consensus annotation)
+- **Y-axis**: Marker genes (ordered by expression level)
+- **Bubble size**: Percentage of cells expressing the gene
+- **Color intensity**: Average expression level (log2 scale)
+
+### Enhanced Heatmap Visualization
+
+The heatmap displays scaled expression values with hierarchical clustering of genes:
+
+```{r}
+# Create enhanced heatmap
+png("marker_genes_heatmap.png", width = 1000, height = 800, res = 300, bg = "white")
+heatmap_matrix <- create_marker_heatmap(
+  seurat_obj = seurat_obj,
+  markers_df = pbmc_markers,
+  consensus_results = consensus_results,
+  top_n = 5,
+  title = "Marker Gene Expression Heatmap",
+  cluster_genes = TRUE,
+  scale_method = "row"
+)
+dev.off()
+
+# Display the matrix structure
+print(dim(heatmap_matrix))
+print(head(heatmap_matrix))
+```
+
+**Example Output:**
+
+<img src="figures/png/marker_heatmap.png" alt="Marker Gene Heatmap" width="90%"/>
+
+This heatmap visualization shows:
+- **Rows**: Marker genes (hierarchically clustered)
+- **Columns**: Cell types (from consensus annotation)
+- **Color scale**: Scaled expression values (row-wise scaling)
+- **Clustering**: Genes with similar expression patterns are grouped together
+
+### Customizing Marker Gene Visualizations
+
+Both visualization functions offer extensive customization options:
+
+```{r}
+# Bubble plot with different parameters
+bubble_custom <- create_marker_bubble_plot(
+  seurat_obj = seurat_obj,
+  markers_df = pbmc_markers,
+  consensus_results = consensus_results,
+  top_n = 3,  # Show fewer genes per cell type
+  title = "Top 3 Marker Genes by Cell Type",
+  color_palette = "viridis"  # Different color palette
+)
+
+# Heatmap without gene clustering
+png("marker_genes_heatmap_no_clustering.png", width = 1000, height = 800, res = 300, bg = "white")
+heatmap_no_cluster <- create_marker_heatmap(
+  seurat_obj = seurat_obj,
+  markers_df = pbmc_markers,
+  consensus_results = consensus_results,
+  top_n = 4,
+  title = "Marker Gene Expression (No Gene Clustering)",
+  cluster_genes = FALSE,  # Disable gene clustering
+  scale_method = "row",
+  color_palette = viridis::inferno(100)  # Custom color palette
+)
+dev.off()
+```
+
+### Combining Marker Gene Visualizations with Cell Type Plots
+
+Create a comprehensive figure combining cell type annotations with marker gene visualizations:
+
+```{r}
+# Create cell type UMAP
+p_umap <- SCpubr::do_DimPlot(
+  sample = seurat_obj,
+  group.by = "cell_type_consensus",
+  label = TRUE,
+  label.box = TRUE,
+  repel = TRUE,
+  legend.position = "right",
+  pt.size = 1.0,
+  colors.use = custom_colors,
+  font.size = 12,
+  plot.title = "Cell Type Annotations"
+) +
+  theme(plot.title = element_text(hjust = 0.5, face = "bold"))
+
+# Create bubble plot
+bubble_plot <- create_marker_bubble_plot(
+  seurat_obj = seurat_obj,
+  markers_df = pbmc_markers,
+  consensus_results = consensus_results,
+  top_n = 4,
+  title = "Marker Gene Expression",
+  color_palette = "plasma"
+)
+
+# Combine plots using patchwork
+combined_marker_viz <- p_umap | bubble_plot$plot
+
+# Add overall title
+combined_marker_viz <- combined_marker_viz +
+  plot_annotation(
+    title = "Cell Type Annotation and Marker Gene Expression",
+    subtitle = "Left: UMAP with cell type labels, Right: Marker gene bubble plot",
+    theme = theme(
+      plot.title = element_text(size = 16, hjust = 0.5, face = "bold"),
+      plot.subtitle = element_text(size = 12, hjust = 0.5)
+    )
+  )
+
+# Save combined visualization
+ggsave(
+  "combined_celltype_markers.png",
+  plot = combined_marker_viz,
+  width = 20,
+  height = 10,
+  dpi = 300,
+  bg = "white"
+)
+```
+
+### Marker Gene Visualization Best Practices
+
+1. **Gene Selection**: Use `top_n = 3-5` for clarity; too many genes can make plots cluttered
+2. **Color Palettes**:
+   - Use `plasma` or `viridis` for bubble plots (good contrast)
+   - Use `inferno` or custom palettes for heatmaps
+3. **Scaling**: Row-wise scaling (`scale_method = "row"`) is recommended for heatmaps
+4. **File Formats**: Save as PNG for presentations, PDF for publications
+5. **Resolution**: Use 300 DPI for publication-quality figures
+
+### Troubleshooting Marker Gene Visualizations
+
+Common issues and solutions:
+
+```{r}
+# Issue: Empty or missing consensus results
+if (is.null(consensus_results$final_annotations)) {
+  stop("Consensus results are missing. Please run consensus annotation first.")
+}
+
+# Issue: Marker genes data frame format
+if (!"avg_log2FC" %in% colnames(pbmc_markers)) {
+  stop("Marker genes data frame must contain 'avg_log2FC' column from FindAllMarkers()")
+}
+
+# Issue: Seurat object compatibility
+if (!"RNA" %in% names(seurat_obj@assays)) {
+  stop("Seurat object must contain 'RNA' assay for expression data")
+}
+
+# Issue: Cluster ID mismatch
+cluster_ids_seurat <- unique(as.character(Idents(seurat_obj)))
+cluster_ids_consensus <- names(consensus_results$final_annotations)
+if (!all(cluster_ids_consensus %in% cluster_ids_seurat)) {
+  warning("Some cluster IDs in consensus results don't match Seurat object")
+}
+```
+
 ## Additional Advanced Visualization Techniques
 
 ### Circlize Plot Visualization

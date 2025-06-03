@@ -90,6 +90,7 @@ These metrics help researchers identify which cell clusters have high confidence
 - **Complete Reasoning Chains**: Documents the full deliberation process
 - **Seamless Integration**: Works directly with standard Scanpy/Seurat workflows
 - **Modular Design**: Easily incorporate new LLMs as they become available
+- **Enhanced Marker Gene Visualization**: Publication-ready bubble plots and heatmaps showing marker gene expression patterns across annotated cell types
 
 ## Applicable Scenarios
 

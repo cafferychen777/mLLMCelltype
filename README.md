@@ -909,7 +909,9 @@ for (model in models_to_test) {
 }
 ```
 
-## Visualization Example
+## Visualization Examples
+
+### Cell Type Annotation Visualization
 
 Below is an example of publication-ready visualization created with mLLMCelltype and SCpubr, showing cell type annotations alongside uncertainty metrics (Consensus Proportion and Shannon Entropy):
 
@@ -918,6 +920,53 @@ Below is an example of publication-ready visualization created with mLLMCelltype
 </div>
 
 *Figure: Left panel shows cell type annotations on UMAP projection. Middle panel displays the consensus proportion using a yellow-green-blue gradient (deeper blue indicates stronger agreement among LLMs). Right panel shows Shannon entropy using an orange-red gradient (deeper red indicates lower uncertainty, lighter orange indicates higher uncertainty).*
+
+### Marker Gene Visualization
+
+mLLMCelltype now includes enhanced marker gene visualization functions that integrate seamlessly with the consensus annotation workflow:
+
+```r
+# Load required libraries
+library(mLLMCelltype)
+library(Seurat)
+library(ggplot2)
+
+# After running consensus annotation
+consensus_results <- interactive_consensus_annotation(
+  input = markers_df,
+  tissue_name = "human PBMC",
+  models = c("anthropic/claude-3.5-sonnet", "openai/gpt-4o"),
+  api_keys = list(openrouter = "your_api_key")
+)
+
+# Create enhanced bubble plot
+bubble_plot <- create_marker_bubble_plot(
+  seurat_obj = pbmc_data,
+  markers_df = markers_df,
+  consensus_results = consensus_results,
+  top_n = 5
+)
+
+# Display the plot
+print(bubble_plot$plot)
+
+# Create enhanced heatmap
+heatmap_matrix <- create_marker_heatmap(
+  seurat_obj = pbmc_data,
+  markers_df = markers_df,
+  consensus_results = consensus_results,
+  top_n = 5
+)
+```
+
+**Key Features of Marker Gene Visualization:**
+
+- **Bubble Plot**: Shows both percentage of cells expressing each gene (bubble size) and average expression level (color intensity)
+- **Heatmap**: Displays scaled expression values with hierarchical clustering of genes
+- **Publication-ready**: High-quality plots with customizable aesthetics using viridis color palettes
+- **Seamless Integration**: Works directly with consensus annotation results and Seurat objects
+
+For detailed instructions and advanced customization options, see the [Visualization Guide](R/vignettes/06-visualization-guide.html).
 
 ## Citation
 
