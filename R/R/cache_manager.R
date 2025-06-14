@@ -22,66 +22,24 @@ CacheManager <- R6::R6Class(
       }
     },
     
-    #' @description Generate cache key from input parameters
+    #' @description Generate cache key from input parameters (improved version)
     #' @param input Input data
     #' @param models Models used
     #' @param cluster_id Cluster ID
     #' @return Cache key string
     generate_key = function(input, models, cluster_id) {
-      # Add more robust type checking and error handling
-      tryCatch({
-        # For list input, use gene names
-        if (is.list(input) && !is.data.frame(input)) {
-          # Check if input[[cluster_id]] is a list
-          if (is.list(input[[cluster_id]]) && "genes" %in% names(input[[cluster_id]])) {
-            genes <- input[[cluster_id]]$genes
-            input_hash <- digest::digest(sort(as.character(genes)))
-          } else {
-            # If input[[cluster_id]] is not a list or doesn't have a 'genes' element
-            message("Warning: Expected input[[cluster_id]] to be a list with a 'genes' element")
-            # Use cluster_id as an alternative hash source
-            input_hash <- digest::digest(paste("cluster", cluster_id, sep="_"))
-          }
-        } else if (is.data.frame(input)) {
-          # For data frame input, use cluster's genes
-          if (all(c("cluster", "avg_log2FC", "gene") %in% names(input))) {
-            # Ensure cluster_id is treated as a string, consistent with other parts of the codebase
-            char_cluster_id <- as.character(cluster_id)
-            # Try to match cluster as string first
-            cluster_data <- input[input$cluster == char_cluster_id & input$avg_log2FC > 0, ]
-            # If no data found and cluster_id is numeric, try matching as numeric
-            if (nrow(cluster_data) == 0 && !is.na(suppressWarnings(as.numeric(char_cluster_id)))) {
-              cluster_data <- input[input$cluster == as.numeric(char_cluster_id) & input$avg_log2FC > 0, ]
-            }
-            if (nrow(cluster_data) > 0) {
-              input_hash <- digest::digest(sort(as.character(cluster_data$gene)))
-            } else {
-              message("Warning: No genes found for cluster ", cluster_id)
-              input_hash <- digest::digest(paste("empty_cluster", cluster_id, sep="_"))
-            }
-          } else {
-            message("Warning: Input data frame missing required columns")
-            input_hash <- digest::digest(paste("invalid_input", cluster_id, sep="_"))
-          }
-        } else {
-          # If input is neither a list nor a data frame
-          message("Warning: Input is neither a list nor a data frame")
-          input_hash <- digest::digest(paste("unknown_input", cluster_id, sep="_"))
-        }
-        
-        # Create key from input hash and models
-        key <- paste(input_hash, paste(sort(models), collapse = "_"), cluster_id, sep = "_")
-        
-        # Add version information to the key
-        key <- paste(key, self$cache_version, sep = "_v")
-        return(key)
-      }, error = function(e) {
-        # Catch all errors and return a key based on the error message
-        message("Error in generate_key: ", e$message)
-        error_hash <- digest::digest(paste("error", cluster_id, e$message, sep="_"))
-        key <- paste(error_hash, paste(sort(models), collapse = "_"), cluster_id, sep = "_")
-        return(key)
-      })
+      # Extract genes using a standardized approach
+      genes <- private$extract_genes_standardized(input, cluster_id)
+      
+      # Create standardized components with input context for empty genes
+      genes_hash <- private$create_genes_hash(genes, input, cluster_id)
+      models_hash <- private$create_models_hash(models)
+      cluster_hash <- private$create_cluster_hash(cluster_id)
+      
+      # Combine into final key with version prefix
+      key <- paste("v", self$cache_version, genes_hash, models_hash, cluster_hash, sep = "_")
+      
+      return(key)
     },
     
     #' @description Save results to cache
@@ -219,6 +177,138 @@ CacheManager <- R6::R6Class(
         message("Error validating cache: ", e$message)
         return(FALSE)
       })
+    }
+  ),
+  
+  private = list(
+    #' Extract genes from input in a standardized way
+    #' @param input Input data (list or data.frame)
+    #' @param cluster_id Cluster ID
+    #' @return Character vector of gene names
+    extract_genes_standardized = function(input, cluster_id) {
+      tryCatch({
+        if (is.list(input) && !is.data.frame(input)) {
+          # Handle list input
+          cluster_key <- as.character(cluster_id)
+          if (cluster_key %in% names(input) && 
+              is.list(input[[cluster_key]]) && 
+              "genes" %in% names(input[[cluster_key]])) {
+            genes <- input[[cluster_key]]$genes
+            return(sort(unique(as.character(genes))))
+          }
+        } else if (is.data.frame(input)) {
+          # Handle data frame input
+          if (all(c("cluster", "gene") %in% names(input))) {
+            # Convert cluster_id to character for consistent matching
+            char_cluster_id <- as.character(cluster_id)
+            
+            # Filter for the specific cluster
+            cluster_mask <- input$cluster == char_cluster_id
+            
+            # If no match and cluster_id could be numeric, try numeric matching
+            if (!any(cluster_mask) && !is.na(suppressWarnings(as.numeric(char_cluster_id)))) {
+              cluster_mask <- input$cluster == as.numeric(char_cluster_id)
+            }
+            
+            # Extract genes, optionally filtering by avg_log2FC if available
+            cluster_data <- input[cluster_mask, ]
+            if ("avg_log2FC" %in% names(cluster_data)) {
+              cluster_data <- cluster_data[cluster_data$avg_log2FC > 0, ]
+            }
+            
+            if (nrow(cluster_data) > 0) {
+              genes <- cluster_data$gene
+              return(sort(unique(as.character(genes))))
+            }
+          }
+        }
+        
+        # Fallback: return empty character vector
+        return(character(0))
+        
+      }, error = function(e) {
+        get_logger()$warn(paste("Error extracting genes:", e$message))
+        return(character(0))
+      })
+    },
+    
+    #' Create stable hash from genes list
+    #' @param genes Character vector of gene names
+    #' @param input Original input data (for context when genes is empty)
+    #' @param cluster_id Cluster ID (for context when genes is empty)
+    #' @return Hash string
+    create_genes_hash = function(genes, input = NULL, cluster_id = NULL) {
+      if (length(genes) == 0) {
+        # For empty gene lists, create hash based on input data characteristics
+        # This provides more differentiation than just "no_genes"
+        context_info <- list()
+        
+        if (!is.null(input) && !is.null(cluster_id)) {
+          if (is.data.frame(input)) {
+            # Include information about the input data structure
+            context_info$total_genes <- nrow(input)
+            context_info$total_clusters <- length(unique(input$cluster))
+            context_info$cluster_id <- as.character(cluster_id)
+            
+            # Include a sample of all genes to differentiate datasets
+            if ("gene" %in% names(input)) {
+              all_genes <- sort(unique(as.character(input$gene)))
+              # Use first and last few genes as signature
+              gene_signature <- c(
+                head(all_genes, 3),
+                tail(all_genes, 3)
+              )
+              context_info$gene_signature <- paste(gene_signature, collapse = "_")
+            }
+          } else if (is.list(input)) {
+            # For list input, use the structure
+            context_info$list_length <- length(input)
+            context_info$cluster_id <- as.character(cluster_id)
+            context_info$available_clusters <- paste(sort(names(input)), collapse = "_")
+          }
+        }
+        
+        if (length(context_info) > 0) {
+          context_hash <- digest::digest(context_info, algo = "xxhash64")
+          return(paste0("empty_", substr(context_hash, 1, 12)))
+        } else {
+          return("empty_unknown")
+        }
+      }
+      
+      # Sort and deduplicate for consistency
+      genes_clean <- sort(unique(as.character(genes)))
+      
+      # Use a fast hash algorithm
+      digest::digest(genes_clean, algo = "xxhash64")
+    },
+    
+    #' Create stable hash from models list
+    #' @param models Character vector of model names
+    #' @return Hash string
+    create_models_hash = function(models) {
+      if (length(models) == 0) {
+        return("no_models")
+      }
+      
+      # Sort for consistency and create abbreviated hash
+      models_sorted <- sort(unique(as.character(models)))
+      digest::digest(models_sorted, algo = "xxhash64")
+    },
+    
+    #' Create stable hash from cluster ID
+    #' @param cluster_id Cluster identifier
+    #' @return Hash string
+    create_cluster_hash = function(cluster_id) {
+      # Always convert to character for consistency
+      cluster_str <- as.character(cluster_id)
+      
+      # For short cluster IDs, return directly; for long ones, hash
+      if (nchar(cluster_str) <= 8) {
+        return(paste0("c", cluster_str))
+      } else {
+        return(paste0("c", substr(digest::digest(cluster_str, algo = "xxhash64"), 1, 8)))
+      }
     }
   )
 )
