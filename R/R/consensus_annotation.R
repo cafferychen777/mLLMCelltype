@@ -97,11 +97,13 @@ NULL
 #' @param models Vector of model names to use
 #' @param api_keys Named list of API keys
 #' @param top_gene_count Number of top differential genes to use
-#' @param logger Logger object for recording messages
 #' @return A list containing individual predictions and successful models
 #' @keywords internal
-get_initial_predictions <- function(input, tissue_name, models, api_keys, top_gene_count, logger) {
-  logger$log_entry("INFO", "Phase 1: Getting initial predictions from all models...")
+get_initial_predictions <- function(input, tissue_name, models, api_keys, top_gene_count) {
+  log_info("Phase 1: Getting initial predictions from all models...", list(
+    models_count = length(models),
+    models = models
+  ))
   message("\nPhase 1: Getting initial predictions from all models...")
 
   # Initialize tracking variables
@@ -116,7 +118,7 @@ get_initial_predictions <- function(input, tissue_name, models, api_keys, top_ge
       warning_msg <- sprintf("No API key found for model '%s' (provider: %s). This model will be skipped.",
                             model, get_provider(model))
       warning(warning_msg)
-      logger$log_entry("WARNING", warning_msg)
+      log_warn(warning_msg, list(model = model, provider = get_provider(model)))
       next
     }
 
@@ -133,7 +135,7 @@ get_initial_predictions <- function(input, tissue_name, models, api_keys, top_ge
     }, error = function(e) {
       warning_msg <- sprintf("Failed to get predictions from %s: %s", model, e$message)
       warning(warning_msg)
-      logger$log_entry("WARNING", warning_msg)
+      log_warn(warning_msg, list(model = model, error = e$message))
     })
   }
 
@@ -153,24 +155,27 @@ get_initial_predictions <- function(input, tissue_name, models, api_keys, top_ge
 #' @param individual_predictions List of predictions from each model
 #' @param controversy_threshold Threshold for marking clusters as controversial
 #' @param entropy_threshold Entropy threshold for identifying controversial clusters
-#' @param logger Logger object for recording messages
 #' @return A list containing controversial clusters and consensus results
 #' @keywords internal
-identify_controversial_clusters <- function(input, individual_predictions, controversy_threshold, entropy_threshold, api_keys, logger, consensus_check_model = NULL) {
-  logger$log_entry("INFO", "Phase 2: Identifying controversial clusters...")
-  message("\nPhase 2: Identifying controversial clusters...")
-
-  # Initialize consensus tracking
-  consensus_results <- list()
-  controversial_clusters <- character(0)
-  final_annotations <- list()
-
+identify_controversial_clusters <- function(input, individual_predictions, controversy_threshold, entropy_threshold, api_keys, consensus_check_model = NULL) {
   # For each cluster, check consensus
   clusters <- if (inherits(input, 'list')) {
     names(input)
   } else {
     unique(input$cluster)
   }
+  
+  log_info("Phase 2: Identifying controversial clusters...", list(
+    clusters_count = length(clusters),
+    entropy_threshold = entropy_threshold,
+    controversy_threshold = controversy_threshold
+  ))
+  message("\nPhase 2: Identifying controversial clusters...")
+
+  # Initialize consensus tracking
+  consensus_results <- list()
+  controversial_clusters <- character(0)
+  final_annotations <- list()
 
   # Restructure individual_predictions to be indexed by cluster_id
   # This handles the case where individual_predictions are returned as text lines from models
@@ -259,7 +264,7 @@ identify_controversial_clusters <- function(input, individual_predictions, contr
 
   for (cluster_id in clusters) {
     # Use original cluster ID for log output, no conversion needed
-    logger$log_entry("INFO", sprintf("Analyzing cluster %s...", cluster_id))
+    log_info(sprintf("Analyzing cluster %s...", cluster_id), list(cluster_id = cluster_id))
     message(sprintf("\nAnalyzing cluster %s...", cluster_id))
 
     # Get predictions for this cluster from each model
@@ -269,7 +274,7 @@ identify_controversial_clusters <- function(input, individual_predictions, contr
     valid_predictions <- cluster_predictions[!is.na(cluster_predictions)]
 
     if (length(valid_predictions) == 0) {
-      logger$log_entry("WARNING", sprintf("No valid predictions for cluster %s. Marking as controversial.", cluster_id))
+      log_warn(sprintf("No valid predictions for cluster %s. Marking as controversial.", cluster_id), list(cluster_id = cluster_id))
       message(sprintf("No valid predictions for cluster %s. Marking as controversial.", cluster_id))
       controversial_clusters <- c(controversial_clusters, as.character(cluster_id))
       next
@@ -286,9 +291,12 @@ identify_controversial_clusters <- function(input, individual_predictions, contr
         initial_consensus$consensus_proportion < controversy_threshold ||
         initial_consensus$entropy > entropy_threshold) {
 
-      logger$log_entry("INFO", sprintf("Cluster %s marked as controversial (reached: %s, consensus proportion: %.2f, entropy: %.2f)",
-                        cluster_id, initial_consensus$reached,
-                        initial_consensus$consensus_proportion, initial_consensus$entropy))
+      log_info(sprintf("Cluster %s marked as controversial", cluster_id), list(
+        cluster_id = cluster_id,
+        reached_consensus = initial_consensus$reached,
+        consensus_proportion = initial_consensus$consensus_proportion,
+        entropy = initial_consensus$entropy
+      ))
 
       message(sprintf("Cluster %s marked as controversial (reached: %s, consensus proportion: %.2f, entropy: %.2f)",
                      cluster_id, initial_consensus$reached,
@@ -299,9 +307,12 @@ identify_controversial_clusters <- function(input, individual_predictions, contr
       # Process non-controversial clusters
       final_annotations[[as.character(cluster_id)]] <- select_best_prediction(initial_consensus, valid_predictions)
 
-      logger$log_entry("INFO", sprintf("Consensus reached for cluster %s (consensus proportion: %.2f, entropy: %.2f, selected: %s)",
-                        cluster_id, initial_consensus$consensus_proportion,
-                        initial_consensus$entropy, final_annotations[[as.character(cluster_id)]]))
+      log_info(sprintf("Consensus reached for cluster %s", cluster_id), list(
+        cluster_id = cluster_id,
+        consensus_proportion = initial_consensus$consensus_proportion,
+        entropy = initial_consensus$entropy,
+        selected_cell_type = final_annotations[[as.character(cluster_id)]]
+      ))
 
       message(sprintf("Consensus reached for cluster %s (consensus proportion: %.2f, entropy: %.2f, selected: %s)",
                      cluster_id, initial_consensus$consensus_proportion,
@@ -357,7 +368,6 @@ select_best_prediction <- function(consensus_result, valid_predictions) {
 #' @param top_gene_count Number of top differential genes to use
 #' @param controversy_threshold Threshold for marking clusters as controversial
 #' @param max_discussion_rounds Maximum number of discussion rounds for controversial clusters
-#' @param logger Logger object for recording messages
 #' @param cache_manager Cache manager object
 #' @param use_cache Whether to use cached results
 #' @return A list containing discussion logs and final annotations
@@ -365,10 +375,10 @@ select_best_prediction <- function(consensus_result, valid_predictions) {
 process_controversial_clusters <- function(controversial_clusters, input, tissue_name,
                                           successful_models, api_keys, individual_predictions,
                                           top_gene_count, controversy_threshold, entropy_threshold, max_discussion_rounds,
-                                          logger, cache_manager, use_cache, consensus_check_model = NULL) {
+                                          cache_manager, use_cache, consensus_check_model = NULL) {
 
   if (length(controversial_clusters) == 0) {
-    logger$log_entry("INFO", "No controversial clusters found. All clusters have reached consensus.")
+    log_info("No controversial clusters found. All clusters have reached consensus.")
     message("\nNo controversial clusters found. All clusters have reached consensus.")
     return(list(
       discussion_logs = list(),
@@ -376,8 +386,11 @@ process_controversial_clusters <- function(controversial_clusters, input, tissue
     ))
   }
 
-  logger$log_entry("INFO", sprintf("Phase 3: Starting discussions for %d controversial clusters...",
-                    length(controversial_clusters)))
+  log_info(sprintf("Phase 3: Starting discussions for %d controversial clusters...",
+                   length(controversial_clusters)), list(
+    controversial_count = length(controversial_clusters),
+    clusters = controversial_clusters
+  ))
   message(sprintf("\nPhase 3: Starting discussions for %d controversial clusters...",
                  length(controversial_clusters)))
 
@@ -387,7 +400,9 @@ process_controversial_clusters <- function(controversial_clusters, input, tissue
   for (cluster_id in controversial_clusters) {
     # Ensure cluster_id is a string type
     char_cluster_id <- as.character(cluster_id)
-    logger$log_entry("INFO", sprintf("Starting discussion for cluster %s...", char_cluster_id))
+    log_info(sprintf("Starting discussion for cluster %s...", char_cluster_id), list(
+      cluster_id = char_cluster_id
+    ))
     message(sprintf("\nStarting discussion for cluster %s...", char_cluster_id))
 
     # Check cache
@@ -408,7 +423,10 @@ process_controversial_clusters <- function(controversial_clusters, input, tissue
 
       if (has_cache) {
         # Use cached results
-        logger$log_entry("INFO", sprintf("Loading cached result for cluster %s", char_cluster_id))
+        log_info(sprintf("Loading cached result for cluster %s", char_cluster_id), list(
+          cluster_id = char_cluster_id,
+          cache_key = cache_key
+        ))
         message(sprintf("Loading cached result for cluster %s", char_cluster_id))
 
         cached_result <- cache_manager$load_from_cache(cache_key)
@@ -425,7 +443,9 @@ process_controversial_clusters <- function(controversial_clusters, input, tissue
       discussion_result <- cached_result$discussion_log
       final_annotation <- cached_result$annotation
 
-      logger$log_entry("INFO", sprintf("Using cached result for cluster %s", char_cluster_id))
+      log_info(sprintf("Using cached result for cluster %s", char_cluster_id), list(
+        cluster_id = char_cluster_id
+      ))
       message(sprintf("Using cached result for cluster %s", char_cluster_id))
     } else {
       # Perform discussion
@@ -441,8 +461,7 @@ process_controversial_clusters <- function(controversial_clusters, input, tissue
         max_rounds = max_discussion_rounds,
         controversy_threshold = controversy_threshold,
         entropy_threshold = entropy_threshold,
-        consensus_check_model = consensus_check_model,
-        logger = logger
+        consensus_check_model = consensus_check_model
       )
 
       # Get results from the last round of discussion
@@ -461,7 +480,9 @@ process_controversial_clusters <- function(controversial_clusters, input, tissue
           is_controversial = TRUE
         )
         cache_manager$save_to_cache(cache_key, cache_data)
-        logger$log_entry("INFO", sprintf("Saved result to cache for cluster %s", char_cluster_id))
+        log_info(sprintf("Saved result to cache for cluster %s", char_cluster_id), list(
+          cluster_id = char_cluster_id
+        ))
       }
     }
 
@@ -473,7 +494,9 @@ process_controversial_clusters <- function(controversial_clusters, input, tissue
     discussion_logs[[char_cluster_id]] <- discussion_result
     final_annotations[[char_cluster_id]] <- final_annotation
 
-    logger$log_entry("INFO", sprintf("Completed discussion for cluster %s", char_cluster_id))
+    log_info(sprintf("Completed discussion for cluster %s", char_cluster_id), list(
+      cluster_id = char_cluster_id
+    ))
     message(sprintf("Completed discussion for cluster %s", char_cluster_id))
   }
 
@@ -508,10 +531,9 @@ clean_annotation <- function(annotation) {
 #' @param initial_results Results from initial prediction phase
 #' @param controversy_results Results from controversy identification phase
 #' @param discussion_results Results from discussion phase
-#' @param logger Logger object
 #' @return Combined results
 #' @keywords internal
-combine_results <- function(initial_results, controversy_results, discussion_results, logger) {
+combine_results <- function(initial_results, controversy_results, discussion_results) {
   # Combine final annotations from non-controversial and controversial clusters
   final_annotations <- controversy_results$final_annotations
 
@@ -549,20 +571,25 @@ combine_results <- function(initial_results, controversy_results, discussion_res
     if (char_cluster_id %in% names(final_annotations)) {
       # First handle NA values with descriptive replacements
       if (is.na(final_annotations[[char_cluster_id]])) {
-        logger$log_entry("WARNING", sprintf("Cluster %s final annotation is NA, replacing with descriptive placeholder", char_cluster_id))
+        log_warn(sprintf("Cluster %s final annotation is NA, replacing with descriptive placeholder", char_cluster_id), list(
+          cluster_id = char_cluster_id
+        ))
         final_annotations[[char_cluster_id]] <- "Data_Missing_In_Final_Annotations"
       }
       if (is.na(discussion_results_map[[char_cluster_id]])) {
-        logger$log_entry("WARNING", sprintf("Cluster %s discussion result is NA, replacing with descriptive placeholder", char_cluster_id))
+        log_warn(sprintf("Cluster %s discussion result is NA, replacing with descriptive placeholder", char_cluster_id), list(
+          cluster_id = char_cluster_id
+        ))
         discussion_results_map[[char_cluster_id]] <- "Data_Missing_In_Discussion_Results"
       }
 
       # Now we can safely compare without NA concerns
       if (final_annotations[[char_cluster_id]] != discussion_results_map[[char_cluster_id]]) {
-        logger$log_entry("WARNING", sprintf("Cluster %s final annotation '%s' differs from discussion result '%s', corrected",
-                                          char_cluster_id,
-                                          final_annotations[[char_cluster_id]],
-                                          discussion_results_map[[char_cluster_id]]))
+        log_warn(sprintf("Cluster %s final annotation differs from discussion result, corrected", char_cluster_id), list(
+          cluster_id = char_cluster_id,
+          final_annotation = final_annotations[[char_cluster_id]],
+          discussion_result = discussion_results_map[[char_cluster_id]]
+        ))
         final_annotations[[char_cluster_id]] <- discussion_results_map[[char_cluster_id]]
       }
     }
@@ -593,10 +620,11 @@ combine_results <- function(initial_results, controversy_results, discussion_res
 
         # If final annotation differs from consistent initial prediction, log warning and correct
         if (!is.null(final_prediction) && final_prediction != consistent_prediction) {
-          logger$log_entry("WARNING", sprintf("Cluster %s has consistent initial predictions '%s' but final annotation is '%s', corrected",
-                                            char_cluster_id,
-                                            consistent_prediction,
-                                            final_prediction))
+          log_warn(sprintf("Cluster %s has consistent initial predictions but different final annotation, corrected", char_cluster_id), list(
+            cluster_id = char_cluster_id,
+            consistent_prediction = consistent_prediction,
+            final_prediction = final_prediction
+          ))
           final_annotations[[char_cluster_id]] <- consistent_prediction
         }
       } else {
@@ -619,7 +647,7 @@ combine_results <- function(initial_results, controversy_results, discussion_res
     final_annotations = final_annotations,
     controversial_clusters = controversy_results$controversial_clusters,
     discussion_logs = discussion_results$discussion_logs,
-    session_id = logger$session_id
+    session_id = get_logger()$session_id
   ))
 }
 
@@ -722,12 +750,12 @@ interactive_consensus_annotation <- function(input,
     # Check for non-standard cluster IDs that might cause issues
     cluster_names <- names(input)
 
-    # 检查是否所有的 cluster ID 都是数字
+    # Check if all cluster IDs are numeric
     numeric_names <- suppressWarnings(as.numeric(cluster_names))
     non_numeric_clusters <- cluster_names[is.na(numeric_names)]
 
     if (length(non_numeric_clusters) > 0) {
-      # 有非数字的 cluster ID
+      # There are non-numeric cluster IDs
       display_clusters <- non_numeric_clusters[
         seq_len(min(3, length(non_numeric_clusters)))
       ]
@@ -757,17 +785,16 @@ interactive_consensus_annotation <- function(input,
     }
   }
 
-  # Initialize logger and cache manager
-  logger <- DiscussionLogger$new(log_dir)
+  # Initialize cache manager
   cache_manager <- CacheManager$new(cache_dir)
 
   # Log cache settings
   if (use_cache) {
     cache_msg <- sprintf("Cache enabled. Using cache directory: %s", cache_dir)
-    logger$log_entry("INFO", cache_msg)
+    log_info(cache_msg, list(cache_dir = cache_dir))
     message(cache_msg)
   } else {
-    logger$log_entry("INFO", "Cache disabled.")
+    log_info("Cache disabled")
     message("Cache disabled.")
   }
 
@@ -777,8 +804,7 @@ interactive_consensus_annotation <- function(input,
     tissue_name = tissue_name,
     models = models,
     api_keys = api_keys,
-    top_gene_count = top_gene_count,
-    logger = logger
+    top_gene_count = top_gene_count
   )
 
   # Phase 2: Identify controversial clusters
@@ -788,7 +814,7 @@ interactive_consensus_annotation <- function(input,
     consensus_check_model <- models[1]
     log_msg <- sprintf("No consensus_check_model specified, using %s",
                        consensus_check_model)
-    logger$log_entry("INFO", log_msg)
+    log_info(log_msg, list(consensus_check_model = consensus_check_model))
   }
 
   controversy_results <- identify_controversial_clusters(
@@ -797,7 +823,6 @@ interactive_consensus_annotation <- function(input,
     controversy_threshold = controversy_threshold,
     entropy_threshold = entropy_threshold,
     api_keys = api_keys,
-    logger = logger,
     consensus_check_model = consensus_check_model
   )
 
@@ -813,7 +838,7 @@ interactive_consensus_annotation <- function(input,
     controversy_threshold = controversy_threshold,
     entropy_threshold = entropy_threshold,
     max_discussion_rounds = max_discussion_rounds,
-    logger = logger,
+    # No logger parameter needed,
     cache_manager = cache_manager,
     use_cache = use_cache,
     consensus_check_model = consensus_check_model
@@ -823,8 +848,7 @@ interactive_consensus_annotation <- function(input,
   final_results <- combine_results(
     initial_results = initial_results,
     controversy_results = controversy_results,
-    discussion_results = discussion_results,
-    logger = logger
+    discussion_results = discussion_results
   )
 
   # Print summary of consensus building process

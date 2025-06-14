@@ -1,5 +1,33 @@
 # mLLMCelltype Changelog
 
+## 1.2.6 (2025-06-14)
+
+### Major Logging System Overhaul
+* **🔄 Unified Logging System**: Replaced fragmented logging infrastructure with comprehensive unified logging
+  - **Removed**: Old `DiscussionLogger` class and scattered `write_log` calls
+  - **Added**: New `UnifiedLogger` R6 class with structured JSON output, multi-level logging, and performance monitoring
+  - **New functions**: `configure_logger()`, `get_logger()`, `log_info()`, `log_warn()`, `log_error()`, `log_debug()`
+  - **Features**: Session tracking, API call monitoring, cache operation logging, automatic log rotation
+
+### Performance Improvements
+* **📊 Performance Monitoring**: Integrated performance tracking with session duration, API call counting, and error statistics
+* **🔄 Log Rotation**: Automatic log file rotation with configurable size limits and file retention
+* **📝 Structured Logging**: JSON-formatted logs with context metadata for better analysis and debugging
+
+### API Enhancements
+* **🔧 Function Signature Updates**: Removed logger parameters from all consensus annotation functions
+* **🧹 Code Cleanup**: Eliminated 20+ scattered logger parameter dependencies across the codebase
+* **⚡ Cache Integration**: Enhanced cache operations with detailed logging and performance tracking
+
+### Documentation Updates
+* **📚 Updated Vignettes**: Revised advanced features tutorial with new unified logging examples
+* **📖 Roxygen Documentation**: Updated all function documentation to reflect new logging system
+* **🔄 NAMESPACE Updates**: Added exports for new logging functions and UnifiedLogger class
+
+### Breaking Changes
+* **⚠️ Logger Parameters**: Removed `logger` parameters from `interactive_consensus_annotation()` and related functions
+* **⚠️ DiscussionLogger**: Deprecated `DiscussionLogger` class (still exported for backward compatibility but not recommended)
+
 ## 1.2.5 (2025-06-02)
 
 ### Model Updates

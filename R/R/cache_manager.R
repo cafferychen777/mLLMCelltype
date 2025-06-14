@@ -99,14 +99,18 @@ CacheManager <- R6::R6Class(
       # Try to save with error handling
       tryCatch({
         saveRDS(data, cache_file)
+        get_logger()$log_cache_operation("store", key, file.size(cache_file))
       }, error = function(e) {
+        get_logger()$log_cache_operation("store_failed", key, NULL)
         warning(paste("Failed to save cache file:", e$message))
         # Try to create parent directories if they don't exist
         dir.create(dirname(cache_file), recursive = TRUE, showWarnings = FALSE)
         # Try again
         tryCatch({
           saveRDS(data, cache_file)
+          get_logger()$log_cache_operation("store", key, file.size(cache_file))
         }, error = function(e2) {
+          get_logger()$log_cache_operation("store_failed", key, NULL)
           warning(paste("Second attempt to save cache file failed:", e2$message))
         })
       })
@@ -118,8 +122,10 @@ CacheManager <- R6::R6Class(
     load_from_cache = function(key) {
       cache_file <- file.path(self$cache_dir, paste0(key, ".rds"))
       if (file.exists(cache_file)) {
+        get_logger()$log_cache_operation("hit", key, file.size(cache_file))
         return(readRDS(cache_file))
       }
+      get_logger()$log_cache_operation("miss", key)
       return(NULL)
     },
     
@@ -174,6 +180,7 @@ CacheManager <- R6::R6Class(
       }
       
       unlink(cache_files)
+      get_logger()$log_cache_operation("clear", "all_cache", length(cache_files))
       message(sprintf("Cleared %d cache files.", length(cache_files)))
       
       return(invisible(NULL))

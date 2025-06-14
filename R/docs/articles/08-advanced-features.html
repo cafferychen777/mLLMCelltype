@@ -52,7 +52,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">mLLMCelltype</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">1.2.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">1.2.6</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -107,7 +107,7 @@
       <img src="../logo.png" class="logo" alt=""><h1>Advanced Features &amp; Case Studies</h1>
                         <h4 data-toc-skip class="author">Chen Yang</h4>
             
-            <h4 data-toc-skip class="date">2025-04-28</h4>
+            <h4 data-toc-skip class="date">2025-06-14</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/cafferychen777/mLLMCelltype/blob/HEAD/vignettes/08-advanced-features.Rmd" class="external-link"><code>vignettes/08-advanced-features.Rmd</code></a></small>
       <div class="d-none name"><code>08-advanced-features.Rmd</code></div>
@@ -135,7 +135,7 @@ workflow to capture these hierarchical relationships.</p>
 </h3>
 <p>Here’s a practical approach to perform hierarchical annotation:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://cafferyang.com/mLLMCelltype/" class="external-link">mLLMCelltype</a></span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://cafferychen777.github.io/mLLMCelltype/">mLLMCelltype</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://satijalab.org/seurat" class="external-link">Seurat</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a></span><span class="op">)</span></span>
 <span></span>
@@ -455,7 +455,7 @@ with other R packages and resources:</p>
 dataset:</p>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://satijalab.org/seurat" class="external-link">Seurat</a></span><span class="op">)</span></span>
-<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://cafferyang.com/mLLMCelltype/" class="external-link">mLLMCelltype</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://cafferychen777.github.io/mLLMCelltype/">mLLMCelltype</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://ggplot2.tidyverse.org" class="external-link">ggplot2</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a></span><span class="op">)</span></span>
 <span></span>
@@ -741,47 +741,55 @@ providers and models:</p>
 <span><span class="co"># )</span></span></code></pre></div>
 </div>
 <div class="section level3">
-<h3 id="using-the-discussionlogger">Using the DiscussionLogger<a class="anchor" aria-label="anchor" href="#using-the-discussionlogger"></a>
+<h3 id="using-the-unified-logging-system">Using the Unified Logging System<a class="anchor" aria-label="anchor" href="#using-the-unified-logging-system"></a>
 </h3>
-<p>mLLMCelltype provides a <code>DiscussionLogger</code> class for
-detailed logging of the consensus process:</p>
+<p>mLLMCelltype provides a comprehensive unified logging system with
+structured output, performance monitoring, and multi-level logging:</p>
 <div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># Create a custom logger</span></span>
-<span><span class="va">logger</span> <span class="op">&lt;-</span> <span class="va"><a href="../reference/DiscussionLogger.html">DiscussionLogger</a></span><span class="op">$</span><span class="fu">new</span><span class="op">(</span>base_dir <span class="op">=</span> <span class="st">"logs"</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="co"># Configure the global logger (recommended approach)</span></span>
+<span><span class="fu"><a href="../reference/configure_logger.html">configure_logger</a></span><span class="op">(</span>level <span class="op">=</span> <span class="st">"INFO"</span>, console_output <span class="op">=</span> <span class="cn">TRUE</span>, json_format <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span></span>
-<span><span class="co"># Start logging a cluster discussion</span></span>
-<span><span class="va">logger</span><span class="op">$</span><span class="fu">start_cluster_discussion</span><span class="op">(</span></span>
+<span><span class="co"># Use simple logging functions</span></span>
+<span><span class="fu"><a href="../reference/logging_functions.html">log_info</a></span><span class="op">(</span><span class="st">"Starting analysis of cluster 0"</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
 <span>  cluster_id <span class="op">=</span> <span class="st">"0"</span>,</span>
 <span>  tissue_name <span class="op">=</span> <span class="st">"human PBMC"</span>,</span>
-<span>  marker_genes <span class="op">=</span> <span class="st">"CD3D, CD3E, CD2, IL7R, LTB"</span></span>
+<span>  marker_genes <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"CD3D"</span>, <span class="st">"CD3E"</span>, <span class="st">"CD2"</span>, <span class="st">"IL7R"</span>, <span class="st">"LTB"</span><span class="op">)</span></span>
+<span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Log API calls with performance tracking</span></span>
+<span><span class="fu"><a href="../reference/logging_functions.html">log_info</a></span><span class="op">(</span><span class="st">"API call completed"</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
+<span>  provider <span class="op">=</span> <span class="st">"anthropic"</span>,</span>
+<span>  model <span class="op">=</span> <span class="st">"claude-3.5-sonnet"</span>,</span>
+<span>  duration_seconds <span class="op">=</span> <span class="fl">2.34</span>,</span>
+<span>  success <span class="op">=</span> <span class="cn">TRUE</span></span>
+<span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Log warnings and errors</span></span>
+<span><span class="fu"><a href="../reference/logging_functions.html">log_warn</a></span><span class="op">(</span><span class="st">"Model response had unusual format"</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
+<span>  model <span class="op">=</span> <span class="st">"gpt-4o"</span>,</span>
+<span>  response_length <span class="op">=</span> <span class="fl">50</span></span>
+<span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="../reference/logging_functions.html">log_error</a></span><span class="op">(</span><span class="st">"API call failed"</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
+<span>  provider <span class="op">=</span> <span class="st">"openai"</span>,</span>
+<span>  error <span class="op">=</span> <span class="st">"Rate limit exceeded"</span></span>
+<span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Alternatively, create a custom logger instance</span></span>
+<span><span class="va">custom_logger</span> <span class="op">&lt;-</span> <span class="va"><a href="../reference/UnifiedLogger.html">UnifiedLogger</a></span><span class="op">$</span><span class="fu">new</span><span class="op">(</span></span>
+<span>  base_dir <span class="op">=</span> <span class="st">"custom_logs"</span>,</span>
+<span>  level <span class="op">=</span> <span class="st">"DEBUG"</span>,</span>
+<span>  console_output <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  json_format <span class="op">=</span> <span class="cn">TRUE</span></span>
 <span><span class="op">)</span></span>
 <span></span>
-<span><span class="co"># Log a discussion entry</span></span>
-<span><span class="va">logger</span><span class="op">$</span><span class="fu">log_entry</span><span class="op">(</span><span class="st">"INFO"</span>, <span class="st">"Starting analysis of cluster 0"</span><span class="op">)</span></span>
+<span><span class="co"># Use the custom logger</span></span>
+<span><span class="va">custom_logger</span><span class="op">$</span><span class="fu">info</span><span class="op">(</span><span class="st">"Custom log message"</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>analysis_step <span class="op">=</span> <span class="st">"preprocessing"</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">custom_logger</span><span class="op">$</span><span class="fu">debug</span><span class="op">(</span><span class="st">"Detailed debugging info"</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>variable_state <span class="op">=</span> <span class="st">"initialized"</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
-<span><span class="co"># Log a model's prediction</span></span>
-<span><span class="va">logger</span><span class="op">$</span><span class="fu">log_prediction</span><span class="op">(</span></span>
-<span>  model_name <span class="op">=</span> <span class="st">"claude-3-7-sonnet-20250219"</span>,</span>
-<span>  round_number <span class="op">=</span> <span class="fl">1</span>,</span>
-<span>  prediction <span class="op">=</span> <span class="st">"T cells"</span></span>
-<span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># Log consensus check results</span></span>
-<span><span class="va">logger</span><span class="op">$</span><span class="fu">log_consensus_check</span><span class="op">(</span></span>
-<span>  round_number <span class="op">=</span> <span class="fl">1</span>,</span>
-<span>  reached_consensus <span class="op">=</span> <span class="cn">TRUE</span>,</span>
-<span>  consensus_proportion <span class="op">=</span> <span class="fl">0.8</span>,</span>
-<span>  entropy <span class="op">=</span> <span class="fl">0.3</span></span>
-<span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># Log final consensus</span></span>
-<span><span class="va">logger</span><span class="op">$</span><span class="fu">log_final_consensus</span><span class="op">(</span></span>
-<span>  final_cell_type <span class="op">=</span> <span class="st">"T cells"</span>,</span>
-<span>  summary <span class="op">=</span> <span class="st">"All models agreed on T cells based on CD3 markers"</span></span>
-<span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># End the cluster discussion</span></span>
-<span><span class="va">logger</span><span class="op">$</span><span class="fu">end_cluster_discussion</span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
+<span><span class="co"># Get performance summary</span></span>
+<span><span class="va">performance</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_logger.html">get_logger</a></span><span class="op">(</span><span class="op">)</span><span class="op">$</span><span class="fu">get_performance_summary</span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">performance</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="using-the-cachemanager">Using the CacheManager<a class="anchor" aria-label="anchor" href="#using-the-cachemanager"></a>

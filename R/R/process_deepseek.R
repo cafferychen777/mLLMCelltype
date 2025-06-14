@@ -1,17 +1,17 @@
 #' Process request using DeepSeek models
 #' @keywords internal
 process_deepseek <- function(prompt, model, api_key) {
-  write_log(sprintf("Starting DeepSeek API request with model: %s", model))
+  log_info("Starting DeepSeek API request", list(model = model, provider = "deepseek"))
 
   # DeepSeek API endpoint
   url <- "https://api.deepseek.com/v1/chat/completions"
-  write_log(sprintf("Using model: %s", model))
+  log_debug("Using model", list(model = model, provider = "deepseek"))
 
   # Process all input at once
   input_lines <- strsplit(prompt, "\n")[[1]]
   cutnum <- 1  # Changed to always use 1 chunk
 
-  write_log(sprintf("Processing %d chunks of input", cutnum))
+  log_debug("Processing chunks of input", list(chunk_count = cutnum))
 
   if (cutnum > 1) {
     cid <- as.numeric(cut(1:length(input_lines), cutnum))
@@ -21,7 +21,7 @@ process_deepseek <- function(prompt, model, api_key) {
 
   # Process each chunk
   allres <- sapply(1:cutnum, function(i) {
-    write_log(sprintf("Processing chunk %d of %d", i, cutnum))
+    log_debug("Processing chunk", list(current_chunk = i, total_chunks = cutnum))
     id <- which(cid == i)
 
     # Prepare the request body

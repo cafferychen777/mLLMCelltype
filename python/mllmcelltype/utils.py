@@ -499,6 +499,17 @@ def clean_annotation(annotation: str) -> str:
     if annotation and annotation[-1] in [".", ",", ";"]:
         annotation = annotation[:-1]
 
+    # Remove LaTeX formatting like $\boxed{...}$
+    annotation = re.sub(r"\$\\boxed\{(.+?)\}\$", r"\1", annotation)
+    annotation = re.sub(r"\$.+?\$", "", annotation)
+
+    # Truncate long descriptions (take the first part before comma or parenthesis if too long)
+    if len(annotation) > 50:
+        # Try to find a natural break point
+        short_version = annotation.split(",")[0].split("(")[0].strip()
+        if len(short_version) >= 10:  # Make sure we don't get too short of a name
+            annotation = short_version
+
     return annotation
 
 

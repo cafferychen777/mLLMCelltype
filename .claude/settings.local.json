@@ -1,0 +1,22 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(rg:*)",
+      "Bash(chmod:*)",
+      "Bash(grep:*)",
+      "Bash(Rscript:*)",
+      "Bash(find:*)",
+      "Bash(rm:*)",
+      "Bash(ls:*)",
+      "Bash(pip install:*)",
+      "Bash(R:*)",
+      "Bash(tree:*)",
+      "Bash(mkdir:*)",
+      "Bash(mv:*)",
+      "Bash(true)",
+      "Bash(git add:*)",
+      "Bash(git reset:*)"
+    ],
+    "deny": []
+  }
+}

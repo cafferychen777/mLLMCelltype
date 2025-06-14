@@ -198,11 +198,11 @@ pip install google-genai
 # Example of using mLLMCelltype for single-cell RNA-seq cell type annotation with Scanpy
 import scanpy as sc
 import pandas as pd
-from mllmcelltype import annotate_clusters, setup_logging, interactive_consensus_annotation
+from mllmcelltype import annotate_clusters, interactive_consensus_annotation
 import os
 
-# Initialize logging for mLLMCelltype framework
-setup_logging()
+# Note: Logging is automatically configured when importing mllmcelltype
+# You can customize logging if needed using the logging module
 
 # Load your single-cell RNA-seq dataset in AnnData format
 adata = sc.read_h5ad('your_data.h5ad')  # Replace with your scRNA-seq dataset path
@@ -347,10 +347,9 @@ For users who prefer a simpler approach with just one model, the Microsoft MAI-D
 
 ```python
 import os
-from mllmcelltype import annotate_clusters, setup_logging
+from mllmcelltype import annotate_clusters
 
-# Setup logging
-setup_logging()
+# Note: Logging is automatically configured
 
 # Set your OpenRouter API key
 os.environ["OPENROUTER_API_KEY"] = "your-openrouter-api-key"
@@ -385,10 +384,9 @@ If you're using Scanpy with AnnData objects, you can easily extract marker genes
 ```python
 import os
 import scanpy as sc
-from mllmcelltype import annotate_clusters, setup_logging
+from mllmcelltype import annotate_clusters
 
-# Setup logging
-setup_logging()
+# Note: Logging is automatically configured
 
 # Set your OpenRouter API key
 os.environ["OPENROUTER_API_KEY"] = "your-openrouter-api-key"
@@ -662,11 +660,12 @@ devtools::install_github("cafferychen777/mLLMCelltype", subdir = "R", force = TR
 # Load necessary packages
 library(mLLMCelltype)
 
-# Create cache and log directories
+# Configure unified logging (optional - uses defaults if not specified)
+configure_logger(level = "INFO", console_output = TRUE, json_format = TRUE)
+
+# Create cache directory
 cache_dir <- "path/to/your/cache"
-log_dir <- "path/to/your/logs"
 dir.create(cache_dir, showWarnings = FALSE, recursive = TRUE)
-dir.create(log_dir, showWarnings = FALSE, recursive = TRUE)
 
 # Read CSV file content
 markers_file <- "path/to/your/markers.csv"
@@ -730,8 +729,7 @@ consensus_results <-
     controversy_threshold = 0.6,
     entropy_threshold = 1.0,
     max_discussion_rounds = 3,
-    cache_dir = cache_dir,
-    log_dir = log_dir
+    cache_dir = cache_dir
   )
 
 # Alternatively, use free OpenRouter models (no credits required)
@@ -754,8 +752,7 @@ free_consensus_results <-
     controversy_threshold = 0.6,
     entropy_threshold = 1.0,
     max_discussion_rounds = 2,
-    cache_dir = cache_dir,
-    log_dir = log_dir
+    cache_dir = cache_dir
   )
 
 # Save results

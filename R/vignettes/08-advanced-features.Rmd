@@ -630,47 +630,55 @@ register_custom_model(
 # )
 ```
 
-### Using the DiscussionLogger
+### Using the Unified Logging System
 
-mLLMCelltype provides a `DiscussionLogger` class for detailed logging of the consensus process:
+mLLMCelltype provides a comprehensive unified logging system with structured output, performance monitoring, and multi-level logging:
 
 ```{r}
-# Create a custom logger
-logger <- DiscussionLogger$new(base_dir = "logs")
+# Configure the global logger (recommended approach)
+configure_logger(level = "INFO", console_output = TRUE, json_format = TRUE)
 
-# Start logging a cluster discussion
-logger$start_cluster_discussion(
+# Use simple logging functions
+log_info("Starting analysis of cluster 0", list(
   cluster_id = "0",
   tissue_name = "human PBMC",
-  marker_genes = "CD3D, CD3E, CD2, IL7R, LTB"
+  marker_genes = c("CD3D", "CD3E", "CD2", "IL7R", "LTB")
+))
+
+# Log API calls with performance tracking
+log_info("API call completed", list(
+  provider = "anthropic",
+  model = "claude-3.5-sonnet",
+  duration_seconds = 2.34,
+  success = TRUE
+))
+
+# Log warnings and errors
+log_warn("Model response had unusual format", list(
+  model = "gpt-4o",
+  response_length = 50
+))
+
+log_error("API call failed", list(
+  provider = "openai",
+  error = "Rate limit exceeded"
+))
+
+# Alternatively, create a custom logger instance
+custom_logger <- UnifiedLogger$new(
+  base_dir = "custom_logs",
+  level = "DEBUG",
+  console_output = TRUE,
+  json_format = TRUE
 )
 
-# Log a discussion entry
-logger$log_entry("INFO", "Starting analysis of cluster 0")
+# Use the custom logger
+custom_logger$info("Custom log message", list(analysis_step = "preprocessing"))
+custom_logger$debug("Detailed debugging info", list(variable_state = "initialized"))
 
-# Log a model's prediction
-logger$log_prediction(
-  model_name = "claude-3-7-sonnet-20250219",
-  round_number = 1,
-  prediction = "T cells"
-)
-
-# Log consensus check results
-logger$log_consensus_check(
-  round_number = 1,
-  reached_consensus = TRUE,
-  consensus_proportion = 0.8,
-  entropy = 0.3
-)
-
-# Log final consensus
-logger$log_final_consensus(
-  final_cell_type = "T cells",
-  summary = "All models agreed on T cells based on CD3 markers"
-)
-
-# End the cluster discussion
-logger$end_cluster_discussion()
+# Get performance summary
+performance <- get_logger()$get_performance_summary()
+print(performance)
 ```
 
 ### Using the CacheManager

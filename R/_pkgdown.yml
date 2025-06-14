@@ -117,13 +117,22 @@ reference:
       - starts_with("register_")
       - list_custom_providers
       - list_custom_models
-  - title: "Utility Functions"
-    desc: "Helper tools and utility functions"
+  - title: "Logging and Utilities"
+    desc: "Logging system and utility functions"
     contents:
+      - UnifiedLogger
+      - configure_logger
+      - get_logger
+      - logging_functions
       - CacheManager
       - DiscussionLogger
       - create_annotation_prompt
       - write_log
+  - title: "Visualization Functions"
+    desc: "Functions for creating visualizations"
+    contents:
+      - create_marker_bubble_plot
+      - create_marker_heatmap
 
 home:
   sidebar:

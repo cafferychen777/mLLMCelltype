@@ -8,10 +8,9 @@
 #' @param cluster_id Cluster identifier
 #' @param model Model to use for summary
 #' @param api_key API key for the model
-#' @param logger Logger instance
 #' @return Final cell type determination
 #' @keywords internal
-summarize_discussion <- function(discussion_log, cluster_id, model, api_key, logger = NULL) {
+summarize_discussion <- function(discussion_log, cluster_id, model, api_key) {
   # Check if discussion log is empty
   if (length(discussion_log) == 0 || all(nchar(trimws(discussion_log)) == 0)) {
     message("No discussion log found for cluster ", cluster_id, ". Skipping summary.")
@@ -74,9 +73,12 @@ summarize_discussion <- function(discussion_log, cluster_id, model, api_key, log
   }
   
   # Log final consensus
-  if (!is.null(logger)) {
-    logger$log_final_consensus(cell_type, summary)
-  }
+  log_info("Final consensus determined", list(
+    cluster_id = cluster_id,
+    cell_type = cell_type,
+    model = model,
+    summary_length = nchar(summary)
+  ))
   
   cell_type  # Return just the cell type
 }

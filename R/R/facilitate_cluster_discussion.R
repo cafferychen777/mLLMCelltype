@@ -11,8 +11,7 @@ facilitate_cluster_discussion <- function(cluster_id,
                                           max_rounds = 3,
                                           controversy_threshold = 0.7,
                                           entropy_threshold = 1.0,
-                                          consensus_check_model = NULL,
-                                          logger) {
+                                          consensus_check_model = NULL) {
 
   # Ensure cluster_id is always a string
   char_cluster_id <- as.character(cluster_id)
@@ -119,7 +118,11 @@ facilitate_cluster_discussion <- function(cluster_id,
   )
 
   # Initialize clustering discussion log file
-  logger$start_cluster_discussion(char_cluster_id, tissue_name, cluster_genes)
+  log_info("Starting cluster discussion", list(
+    cluster_id = char_cluster_id,
+    tissue_name = tissue_name,
+    cluster_genes = cluster_genes
+  ))
 
   # First round: Initial reasoning
   first_round_prompt <- create_initial_discussion_prompt(
@@ -146,7 +149,11 @@ facilitate_cluster_discussion <- function(cluster_id,
     )
 
     round1_responses[[model]] <- response
-    logger$log_prediction(model, 1, response)
+    log_info("Model prediction logged", list(
+      model = model,
+      round = 1,
+      prediction_length = nchar(response)
+    ))
   }
 
   discussion_log$rounds[[1]] <- list(
@@ -157,7 +164,12 @@ facilitate_cluster_discussion <- function(cluster_id,
   # Check consensus after first round
   # Parameters are passed to check_consensus and used in prompt template to instruct LLM # nolint
   consensus_result <- check_consensus(round1_responses, api_keys, controversy_threshold, entropy_threshold, consensus_check_model)
-  logger$log_consensus_check(1, consensus_result$reached, consensus_result$consensus_proportion, consensus_result$entropy)
+  log_info("Consensus check completed", list(
+    round = 1,
+    consensus_reached = consensus_result$reached,
+    consensus_proportion = consensus_result$consensus_proportion,
+    entropy = consensus_result$entropy
+  ))
 
   # Store consensus result in discussion log
   discussion_log$rounds[[1]]$consensus_result <- consensus_result
@@ -202,7 +214,11 @@ facilitate_cluster_discussion <- function(cluster_id,
       )
 
       round_responses[[model]] <- response
-      logger$log_prediction(model, round, response)
+      log_info("Model prediction logged", list(
+        model = model,
+        round = round,
+        prediction_length = nchar(response)
+      ))
     }
 
     discussion_log$rounds[[round]] <- list(
@@ -213,8 +229,12 @@ facilitate_cluster_discussion <- function(cluster_id,
     # Check if consensus is reached
     # Parameters are passed to check_consensus and used in prompt template to instruct LLM # nolint
     consensus_result <- check_consensus(round_responses, api_keys, controversy_threshold, entropy_threshold, consensus_check_model)
-    logger$log_consensus_check(round, consensus_result$reached,
-                              consensus_result$consensus_proportion, consensus_result$entropy)
+    log_info("Consensus check completed", list(
+      round = round,
+      consensus_reached = consensus_result$reached,
+      consensus_proportion = consensus_result$consensus_proportion,
+      entropy = consensus_result$entropy
+    ))
 
     # Store consensus result in discussion log
     discussion_log$rounds[[round]]$consensus_result <- consensus_result
@@ -240,7 +260,11 @@ facilitate_cluster_discussion <- function(cluster_id,
   }
 
   # End cluster discussion log recording
-  logger$end_cluster_discussion()
+  log_info("Cluster discussion completed", list(
+    cluster_id = char_cluster_id,
+    total_rounds = length(discussion_log$rounds),
+    consensus_reached = consensus_reached
+  ))
 
   discussion_log
 }

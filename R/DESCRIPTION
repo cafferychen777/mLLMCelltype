@@ -1,7 +1,7 @@
 Package: mLLMCelltype
 Type: Package
 Title: Cell Type Annotation Using Large Language Models
-Version: 1.2.4
+Version: 1.2.6
 Author: Chen Yang [aut, cre]
 Maintainer: Chen Yang <cafferychen777@tamu.edu>
 Authors@R:
@@ -14,7 +14,7 @@ Description: An R package that leverages various large language models (LLMs)
     our paper: <doi:10.1101/2025.04.10.647852>.
 License: MIT + file LICENSE
 BugReports: https://github.com/cafferychen777/mLLMCelltype/issues
-URL: https://cafferyang.com/mLLMCelltype/
+URL: https://cafferychen777.github.io/mLLMCelltype/
 Encoding: UTF-8
 Imports:
     dplyr,

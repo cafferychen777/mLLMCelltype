@@ -4,12 +4,7 @@
 \alias{combine_results}
 \title{Combine results from all phases of consensus annotation}
 \usage{
-combine_results(
-  initial_results,
-  controversy_results,
-  discussion_results,
-  logger
-)
+combine_results(initial_results, controversy_results, discussion_results)
 }
 \arguments{
 \item{initial_results}{Results from initial prediction phase}
@@ -17,8 +12,6 @@ combine_results(
 \item{controversy_results}{Results from controversy identification phase}
 
 \item{discussion_results}{Results from discussion phase}
-
-\item{logger}{Logger object}
 }
 \value{
 Combined results

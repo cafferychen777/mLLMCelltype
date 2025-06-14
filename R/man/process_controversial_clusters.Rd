@@ -15,7 +15,6 @@ process_controversial_clusters(
   controversy_threshold,
   entropy_threshold,
   max_discussion_rounds,
-  logger,
   cache_manager,
   use_cache,
   consensus_check_model = NULL
@@ -39,8 +38,6 @@ process_controversial_clusters(
 \item{controversy_threshold}{Threshold for marking clusters as controversial}
 
 \item{max_discussion_rounds}{Maximum number of discussion rounds for controversial clusters}
-
-\item{logger}{Logger object for recording messages}
 
 \item{cache_manager}{Cache manager object}
 

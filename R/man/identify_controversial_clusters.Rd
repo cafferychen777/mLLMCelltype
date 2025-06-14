@@ -10,7 +10,6 @@ identify_controversial_clusters(
   controversy_threshold,
   entropy_threshold,
   api_keys,
-  logger,
   consensus_check_model = NULL
 )
 }
@@ -22,8 +21,6 @@ identify_controversial_clusters(
 \item{controversy_threshold}{Threshold for marking clusters as controversial}
 
 \item{entropy_threshold}{Entropy threshold for identifying controversial clusters}
-
-\item{logger}{Logger object for recording messages}
 }
 \value{
 A list containing controversial clusters and consensus results

@@ -4,7 +4,7 @@
 \alias{summarize_discussion}
 \title{Summarize discussion and determine final cell type}
 \usage{
-summarize_discussion(discussion_log, cluster_id, model, api_key, logger = NULL)
+summarize_discussion(discussion_log, cluster_id, model, api_key)
 }
 \arguments{
 \item{discussion_log}{Discussion log for a cluster}
@@ -14,8 +14,6 @@ summarize_discussion(discussion_log, cluster_id, model, api_key, logger = NULL)
 \item{model}{Model to use for summary}
 
 \item{api_key}{API key for the model}
-
-\item{logger}{Logger instance}
 }
 \value{
 Final cell type determination

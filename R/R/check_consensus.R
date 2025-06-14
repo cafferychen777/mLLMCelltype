@@ -53,7 +53,7 @@ check_consensus <- function(round_responses, api_keys = NULL, controversy_thresh
   }
 
   # Add fallback models
-  fallback_models <- c("qwen-max-2025-01-25", "claude-3-5-sonnet-latest", "gpt-4o", "gemini-2.0-flash")
+  fallback_models <- c("qwen-max-2025-01-25", "claude-3-5-sonnet-20241022", "gpt-4o", "gemini-2.0-flash")
   # Remove any models that are already in models_to_try
   fallback_models <- fallback_models[!fallback_models %in% models_to_try]
   models_to_try <- c(models_to_try, fallback_models)

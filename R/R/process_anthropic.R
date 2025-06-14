@@ -1,17 +1,17 @@
 #' Process request using Anthropic models
 #' @keywords internal
 process_anthropic <- function(prompt, model, api_key) {
-  write_log(sprintf("Starting Anthropic API request with model: %s", model))
+  log_info("Starting Anthropic API request", list(model = model, provider = "anthropic"))
 
   # Anthropic API endpoint
   url <- "https://api.anthropic.com/v1/messages"
-  write_log(sprintf("Using model: %s", model))
+  log_debug("Using model", list(model = model, provider = "anthropic"))
 
   # Process all input at once
   input_lines <- strsplit(prompt, "\n")[[1]]
   cutnum <- 1  # Changed to always use 1 chunk
 
-  write_log(sprintf("Processing %d chunks of input", cutnum))
+  log_debug("Processing chunks of input", list(chunk_count = cutnum))
 
   if (cutnum > 1) {
     cid <- as.numeric(cut(1:length(input_lines), cutnum))
@@ -21,7 +21,7 @@ process_anthropic <- function(prompt, model, api_key) {
 
   # Process each chunk
   allres <- sapply(1:cutnum, function(i) {
-    write_log(sprintf("Processing chunk %d of %d", i, cutnum))
+    log_debug("Processing chunk", list(current_chunk = i, total_chunks = cutnum))
     id <- which(cid == i)
 
     # Prepare the request body
@@ -36,7 +36,7 @@ process_anthropic <- function(prompt, model, api_key) {
       )
     )
 
-    write_log("Sending API request...")
+    log_debug("Sending API request", list(model = model, provider = "anthropic"))
     # Make the API request
     response <- httr::POST(
       url = url,
@@ -51,29 +51,35 @@ process_anthropic <- function(prompt, model, api_key) {
 
     # Check for errors
     if (!inherits(response, "response")) {
-      write_log("ERROR: Invalid response object")
+      log_error("Invalid response object", list(provider = "anthropic", model = model))
       return(NULL)
     }
 
     if (response$status_code >= 400) {
       error_message <- httr::content(response, "parsed")
-      write_log(sprintf("ERROR: Anthropic API request failed: %s",
-                       if (!is.null(error_message$error$message)) error_message$error$message else "Unknown error"))
+      log_error("Anthropic API request failed", list(
+        provider = "anthropic",
+        model = model,
+        status_code = response$status_code,
+        error = if (!is.null(error_message$error$message)) error_message$error$message else "Unknown error"
+      ))
       return(NULL)
     }
 
-    write_log("Parsing API response...")
+    log_debug("Parsing API response", list(provider = "anthropic", model = model))
     # Parse the response
     content <- httr::content(response, "parsed")
 
     # Check if response has the expected structure
     if (is.null(content) || is.null(content$content) || length(content$content) == 0 ||
         is.null(content$content[[1]]$text)) {
-      write_log("ERROR: Unexpected response format from Anthropic API")
-      write_log(sprintf("Content structure: %s", paste(names(content), collapse = ", ")))
-      if (!is.null(content$content)) {
-        write_log(sprintf("Content structure: %s", jsonlite::toJSON(content$content, auto_unbox = TRUE, pretty = TRUE)))
-      }
+      log_error("Unexpected response format from Anthropic API", list(
+        provider = "anthropic",
+        model = model,
+        content_structure = names(content),
+        content_available = !is.null(content$content),
+        content_count = if(!is.null(content$content)) length(content$content) else 0
+      ))
       return(NULL)
     }
 
