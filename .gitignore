@@ -72,6 +72,7 @@ mLLMCelltype_visualizations/
 tests/
 R/tests/
 R/.Rcheck-ignore
+test_scripts/
 
 # Web application
 mllmcelltype-web/
