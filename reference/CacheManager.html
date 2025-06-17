@@ -27,7 +27,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">mLLMCelltype</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">1.2.4</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">1.2.8</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -124,7 +124,7 @@
 
 </div><p></p><hr><a id="method-CacheManager-generate_key"></a><div class="section">
 <h3 id="method-generate-key-">Method <code>generate_key()</code><a class="anchor" aria-label="anchor" href="#method-generate-key-"></a></h3>
-<p>Generate cache key from input parameters</p><div class="section">
+<p>Generate cache key from input parameters (improved version)</p><div class="section">
 <h4 id="usage-1">Usage<a class="anchor" aria-label="anchor" href="#usage-1"></a></h4>
 <p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">CacheManager</span><span class="op">$</span><span class="fu">generate_key</span><span class="op">(</span><span class="va">input</span>, <span class="va">models</span>, <span class="va">cluster_id</span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
@@ -255,7 +255,8 @@
 </div>
 <div class="section">
 <h4 id="returns-4">Returns<a class="anchor" aria-label="anchor" href="#returns-4"></a></h4>
-<p>TRUE if cache is valid, FALSE otherwise</p>
+<p>TRUE if cache is valid, FALSE otherwise
+Extract genes from input in a standardized way</p>
 </div>
 
 </div><p></p><hr><a id="method-CacheManager-clone"></a><div class="section">
