@@ -27,6 +27,7 @@
 #' Prepare list of models to try for consensus checking
 #' @param consensus_check_model User-specified model (can be NULL)
 #' @return Character vector of models in order of preference
+#' @keywords internal
 prepare_models_list <- function(consensus_check_model = NULL) {
   models_to_try <- c()
   
@@ -54,6 +55,7 @@ prepare_models_list <- function(consensus_check_model = NULL) {
 #' Parse standard 4-line consensus response format
 #' @param result_lines Character vector of 4 lines
 #' @return List with parsed values or NULL if not standard format
+#' @keywords internal
 parse_standard_format <- function(result_lines) {
   if (length(result_lines) != 4) return(NULL)
   
@@ -81,6 +83,7 @@ parse_standard_format <- function(result_lines) {
 #' @param pattern Pattern to match the label
 #' @param value_pattern Pattern to extract the numeric value
 #' @return Numeric value or NULL if not found
+#' @keywords internal
 extract_labeled_value <- function(lines, pattern, value_pattern) {
   for (line in lines) {
     if (grepl(pattern, line) && grepl("=", line)) {
@@ -105,6 +108,7 @@ extract_labeled_value <- function(lines, pattern, value_pattern) {
 #' Find majority prediction from response lines
 #' @param lines Character vector of response lines
 #' @return Character string of majority prediction
+#' @keywords internal
 find_majority_prediction <- function(lines) {
   numeric_pattern <- .CONSENSUS_CONSTANTS$NUMERIC_PATTERNS$GENERAL_NUMERIC
   
@@ -131,6 +135,7 @@ find_majority_prediction <- function(lines) {
 #' Parse flexible format consensus response
 #' @param lines Character vector of all response lines
 #' @return List with parsed values
+#' @keywords internal
 parse_flexible_format <- function(lines) {
   result <- list(
     consensus = FALSE,
@@ -176,6 +181,7 @@ parse_flexible_format <- function(lines) {
 #' Parse consensus response from model
 #' @param response Character string response from model
 #' @return List with consensus results
+#' @keywords internal
 parse_consensus_response <- function(response) {
   # Handle NULL or empty response
   if (is.null(response) || length(response) == 0) {
@@ -258,6 +264,7 @@ parse_consensus_response <- function(response) {
 #' @param api_keys List of API keys
 #' @param models_to_try Character vector of models to attempt
 #' @return List with success flag and response
+#' @keywords internal
 execute_consensus_check <- function(formatted_responses, api_keys, models_to_try) {
   max_retries <- .CONSENSUS_CONSTANTS$MAX_RETRIES
   

@@ -19,3 +19,4 @@ List with success flag and response
 \description{
 Execute consensus check with retry logic
 }
+\keyword{internal}

@@ -15,3 +15,4 @@ List with consensus results
 \description{
 Parse consensus response from model
 }
+\keyword{internal}

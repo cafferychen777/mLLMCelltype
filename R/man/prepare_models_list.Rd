@@ -15,3 +15,4 @@ Character vector of models in order of preference
 \description{
 Prepare list of models to try for consensus checking
 }
+\keyword{internal}

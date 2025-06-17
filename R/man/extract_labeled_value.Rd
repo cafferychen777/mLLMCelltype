@@ -19,3 +19,4 @@ Numeric value or NULL if not found
 \description{
 Extract numeric value from line containing a label
 }
+\keyword{internal}

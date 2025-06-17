@@ -15,3 +15,4 @@ List with parsed values or NULL if not standard format
 \description{
 Parse standard 4-line consensus response format
 }
+\keyword{internal}

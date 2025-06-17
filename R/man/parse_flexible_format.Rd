@@ -15,3 +15,4 @@ List with parsed values
 \description{
 Parse flexible format consensus response
 }
+\keyword{internal}

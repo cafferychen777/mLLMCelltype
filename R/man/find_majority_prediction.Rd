@@ -15,3 +15,4 @@ Character string of majority prediction
 \description{
 Find majority prediction from response lines
 }
+\keyword{internal}
