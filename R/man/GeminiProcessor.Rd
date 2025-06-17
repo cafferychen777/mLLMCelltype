@@ -13,7 +13,7 @@ Concrete implementation of BaseAPIProcessor for Gemini models.
 Handles Gemini-specific API calls, authentication, and response parsing.
 }
 \section{Super class}{
-\code{mLLMCelltype::BaseAPIProcessor} -> \code{GeminiProcessor}
+\code{\link[mLLMCelltype:BaseAPIProcessor]{mLLMCelltype::BaseAPIProcessor}} -> \code{GeminiProcessor}
 }
 \section{Public fields}{
 \if{html}{\out{<div class="r6-fields">}}

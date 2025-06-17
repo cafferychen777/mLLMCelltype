@@ -13,7 +13,7 @@ Concrete implementation of BaseAPIProcessor for StepFun models.
 Handles StepFun-specific API calls, authentication, and response parsing.
 }
 \section{Super class}{
-\code{mLLMCelltype::BaseAPIProcessor} -> \code{StepFunProcessor}
+\code{\link[mLLMCelltype:BaseAPIProcessor]{mLLMCelltype::BaseAPIProcessor}} -> \code{StepFunProcessor}
 }
 \section{Public fields}{
 \if{html}{\out{<div class="r6-fields">}}

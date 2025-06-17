@@ -13,7 +13,7 @@ Concrete implementation of BaseAPIProcessor for Qwen models.
 Handles Qwen-specific API calls, authentication, and response parsing.
 }
 \section{Super class}{
-\code{mLLMCelltype::BaseAPIProcessor} -> \code{QwenProcessor}
+\code{\link[mLLMCelltype:BaseAPIProcessor]{mLLMCelltype::BaseAPIProcessor}} -> \code{QwenProcessor}
 }
 \section{Public fields}{
 \if{html}{\out{<div class="r6-fields">}}

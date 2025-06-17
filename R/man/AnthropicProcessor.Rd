@@ -13,7 +13,7 @@ Concrete implementation of BaseAPIProcessor for Anthropic models.
 Handles Anthropic-specific API calls, authentication, and response parsing.
 }
 \section{Super class}{
-\code{mLLMCelltype::BaseAPIProcessor} -> \code{AnthropicProcessor}
+\code{\link[mLLMCelltype:BaseAPIProcessor]{mLLMCelltype::BaseAPIProcessor}} -> \code{AnthropicProcessor}
 }
 \section{Public fields}{
 \if{html}{\out{<div class="r6-fields">}}

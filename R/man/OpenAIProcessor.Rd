@@ -13,7 +13,7 @@ Concrete implementation of BaseAPIProcessor for OpenAI models.
 Handles OpenAI-specific API calls, authentication, and response parsing.
 }
 \section{Super class}{
-\code{mLLMCelltype::BaseAPIProcessor} -> \code{OpenAIProcessor}
+\code{\link[mLLMCelltype:BaseAPIProcessor]{mLLMCelltype::BaseAPIProcessor}} -> \code{OpenAIProcessor}
 }
 \section{Public fields}{
 \if{html}{\out{<div class="r6-fields">}}

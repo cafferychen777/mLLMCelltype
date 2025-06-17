@@ -13,7 +13,7 @@ Concrete implementation of BaseAPIProcessor for DeepSeek models.
 Handles DeepSeek-specific API calls, authentication, and response parsing.
 }
 \section{Super class}{
-\code{mLLMCelltype::BaseAPIProcessor} -> \code{DeepSeekProcessor}
+\code{\link[mLLMCelltype:BaseAPIProcessor]{mLLMCelltype::BaseAPIProcessor}} -> \code{DeepSeekProcessor}
 }
 \section{Public fields}{
 \if{html}{\out{<div class="r6-fields">}}

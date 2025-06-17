@@ -13,7 +13,7 @@ Concrete implementation of BaseAPIProcessor for Grok models.
 Handles Grok-specific API calls, authentication, and response parsing.
 }
 \section{Super class}{
-\code{mLLMCelltype::BaseAPIProcessor} -> \code{GrokProcessor}
+\code{\link[mLLMCelltype:BaseAPIProcessor]{mLLMCelltype::BaseAPIProcessor}} -> \code{GrokProcessor}
 }
 \section{Public fields}{
 \if{html}{\out{<div class="r6-fields">}}

@@ -13,7 +13,7 @@ Concrete implementation of BaseAPIProcessor for OpenRouter models.
 Handles OpenRouter-specific API calls, authentication, and response parsing.
 }
 \section{Super class}{
-\code{mLLMCelltype::BaseAPIProcessor} -> \code{OpenRouterProcessor}
+\code{\link[mLLMCelltype:BaseAPIProcessor]{mLLMCelltype::BaseAPIProcessor}} -> \code{OpenRouterProcessor}
 }
 \section{Public fields}{
 \if{html}{\out{<div class="r6-fields">}}

@@ -13,7 +13,7 @@ Concrete implementation of BaseAPIProcessor for Minimax models.
 Handles Minimax-specific API calls, authentication, and response parsing.
 }
 \section{Super class}{
-\code{mLLMCelltype::BaseAPIProcessor} -> \code{MinimaxProcessor}
+\code{\link[mLLMCelltype:BaseAPIProcessor]{mLLMCelltype::BaseAPIProcessor}} -> \code{MinimaxProcessor}
 }
 \section{Public fields}{
 \if{html}{\out{<div class="r6-fields">}}
