@@ -113,26 +113,23 @@ reference:
     contents:
       - get_provider
       - get_api_key
-      - process_openrouter
       - starts_with("register_")
       - list_custom_providers
       - list_custom_models
+  - title: "Processor Classes"
+    desc: "LLM processor classes for different providers"
+    contents:
+      - BaseAPIProcessor
+      - ends_with("Processor")
   - title: "Logging and Utilities"
     desc: "Logging system and utility functions"
     contents:
       - UnifiedLogger
       - configure_logger
       - get_logger
-      - logging_functions
+      - starts_with("log_")
       - CacheManager
-      - DiscussionLogger
       - create_annotation_prompt
-      - write_log
-  - title: "Visualization Functions"
-    desc: "Functions for creating visualizations"
-    contents:
-      - create_marker_bubble_plot
-      - create_marker_heatmap
 
 home:
   sidebar:
