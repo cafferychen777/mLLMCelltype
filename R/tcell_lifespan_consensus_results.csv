@@ -1,0 +1,6 @@
+"numeric_cluster","original_subtype","predicted_cell_type","consensus_proportion","entropy"
+"1","CD4_TCM_AQP3","T follicular helper cells",1,0
+"3","CD4_Naive_CCR7","Naive T cells",1,0
+"0","CD8_TEM_GNLY","CD8+ T cells",0.5,1
+"2","CD4_TEM_ANXA1","Memory T cells",0.5,1
+"4","CD8_Naive_LEF1","CD8+ Naive T cells",1,1

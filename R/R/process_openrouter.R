@@ -1,153 +1,30 @@
-#' Process request using OpenRouter API
+#' Process request using OpenRouter models
 #'
-#' This function processes annotation requests using the OpenRouter API, which provides
-#' access to various LLM models including OpenAI, Anthropic, Meta, and Google models.
-#' OpenRouter also offers free models with the `:free` suffix (e.g., 'meta-llama/llama-4-maverick:free').
+#' This function uses the new BaseAPIProcessor architecture for improved
+#' maintainability and consistent logging across all API providers.
 #'
-#' @param prompt Character string containing the prompt to send to the API
-#' @param model Character string specifying the model to use (e.g., 'openai/gpt-4o' or 'meta-llama/llama-4-maverick:free')
-#' @param api_key Character string containing the OpenRouter API key
-#' @return Character vector containing the model's response
-#' @details
-#' For free models, use the `:free` suffix in the model name. For example:
-#' \itemize{
-#'   \item 'meta-llama/llama-4-maverick:free' - Meta Llama 4 Maverick (free)
-#'   \item 'nvidia/llama-3.1-nemotron-ultra-253b-v1:free' - NVIDIA Nemotron Ultra 253B (free)
-#'   \item 'deepseek/deepseek-chat-v3-0324:free' - DeepSeek Chat v3 (free)
-#'   \item 'microsoft/mai-ds-r1:free' - Microsoft MAI-DS-R1 (free)
-#' }
-#' Free models don't consume credits but may have limitations compared to paid models.
+#' @param prompt Input prompt text
+#' @param model Model identifier
+#' @param api_key OpenRouter API key
+#' @return Processed response as character vector
 #' @keywords internal
-#' @export
 process_openrouter <- function(prompt, model, api_key) {
-  write_log(sprintf("Starting OpenRouter API request with model: %s", model))
-
-  # Check if API key is provided and not empty
-  if (is.null(api_key) || api_key == "") {
-    write_log("ERROR: OpenRouter API key is missing or empty")
-    stop("OpenRouter API key is required but not provided")
-  }
-
-  # OpenRouter API endpoint
-  url <- "https://openrouter.ai/api/v1/chat/completions"
-  write_log(sprintf("Using model: %s", model))
-
-  # Process all input at once
-  input_lines <- strsplit(prompt, "\n")[[1]]
-  cutnum <- 1  # Use 1 chunk for processing
-
-  write_log(sprintf("Processing %d chunks of input", cutnum))
-
-  if (cutnum > 1) {
-    cid <- as.numeric(cut(1:length(input_lines), cutnum))
+  # Source the required files with robust path resolution
+  script_dir <- if (exists("sys.frame") && !is.null(sys.frame(1)$ofile)) {
+    dirname(sys.frame(1)$ofile)
   } else {
-    cid <- rep(1, length(input_lines))
+    getwd()  # Fallback to current working directory
   }
 
-  # Process each chunk
-  allres <- sapply(1:cutnum, function(i) {
-    write_log(sprintf("Processing chunk %d of %d", i, cutnum))
-    id <- which(cid == i)
-
-    # Prepare the request body
-    body <- list(
-      model = model,
-      messages = list(
-        list(
-          role = "user",
-          content = paste(input_lines[id], collapse = '\n')
-        )
-      )
-    )
-
-    write_log("Sending API request...")
-    # Make the API request
-    response <- httr::POST(
-      url = url,
-      httr::add_headers(
-        "Content-Type" = "application/json",
-        "Authorization" = paste("Bearer", api_key)
-      ),
-      body = jsonlite::toJSON(body, auto_unbox = TRUE),
-      encode = "json"
-    )
-
-    # Check for errors
-    if (httr::http_error(response)) {
-      error_message <- httr::content(response, "parsed")
-      write_log(sprintf("ERROR: OpenRouter API request failed: %s",
-                       if (!is.null(error_message$error$message)) error_message$error$message else "Unknown error"))
-      stop("OpenRouter API request failed: ",
-           if (!is.null(error_message$error$message)) error_message$error$message else "Unknown error")
-    }
-
-    write_log("Parsing API response...")
-    # Parse the response
-    content <- httr::content(response, "parsed")
-
-    # Check if response has the expected structure
-    if (is.null(content) || is.null(content$choices) || length(content$choices) == 0 ||
-        is.null(content$choices[[1]]$message) || is.null(content$choices[[1]]$message$content)) {
-      write_log("ERROR: Unexpected response format from OpenRouter API")
-      write_log(sprintf("Content structure: %s", paste(names(content), collapse = ", ")))
-
-      # Check if there's an error message in the response
-      if (!is.null(content$error)) {
-        error_msg <- if (is.character(content$error)) content$error else
-                     if (!is.null(content$error$message)) content$error$message else
-                     "Unknown error"
-        write_log(sprintf("OpenRouter API error: %s", error_msg))
-
-        # If there's an error code, log it too
-        if (!is.null(content$error$code)) {
-          write_log(sprintf("Error code: %s", content$error$code))
-        }
-
-        # If there's a type, log it too
-        if (!is.null(content$error$type)) {
-          write_log(sprintf("Error type: %s", content$error$type))
-        }
-      }
-
-      if (!is.null(content$choices)) {
-        write_log(sprintf("Choices structure: %s", jsonlite::toJSON(content$choices, auto_unbox = TRUE, pretty = TRUE)))
-      }
-
-      # Log the full response for debugging
-      write_log(sprintf("Full response structure: %s", jsonlite::toJSON(content, auto_unbox = TRUE, pretty = TRUE)))
-
-      return(NULL)
-    }
-
-    # OpenRouter's response should be in content$choices[[1]]$message$content
-    response_content <- content$choices[[1]]$message$content
-    if (!is.character(response_content)) {
-      write_log("ERROR: Response content is not a character string")
-      write_log(sprintf("Response content type: %s", typeof(response_content)))
-      write_log(sprintf("Response content structure: %s", jsonlite::toJSON(content$choices[[1]]$message, auto_unbox = TRUE, pretty = TRUE)))
-      return(c("Error: Invalid response format"))
-    }
-
-    # OpenRouter follows OpenAI's response format
-    tryCatch({
-      res <- strsplit(response_content, '\n')[[1]]
-      write_log(sprintf("Got response with %d lines", length(res)))
-      write_log(sprintf("Raw response from OpenRouter:\n%s", paste(res, collapse = "\n")))
-      res
-    }, error = function(e) {
-      write_log(sprintf("ERROR: Failed to split response content: %s", e$message))
-      return(c("Error: Failed to parse response"))
-    })
-  }, simplify = FALSE)
-
-  write_log("All chunks processed successfully")
-
-  # Filter out NULL values and handle errors more gracefully
-  valid_results <- allres[!sapply(allres, is.null)]
-  if (length(valid_results) == 0) {
-    write_log("ERROR: No valid responses received from OpenRouter")
-    return(c("Error: No valid responses"))
+  if (!exists("BaseAPIProcessor")) {
+    source(file.path(script_dir, "base_api_processor.R"))
+  }
+  if (!exists("OpenRouterProcessor")) {
+    source(file.path(script_dir, "openrouter_processor.R"))
   }
 
-  return(gsub(',$', '', unlist(valid_results)))
+  # Create processor and handle request
+  # Note: OpenRouterProcessor is defined via source() above
+  processor <- get("OpenRouterProcessor")$new()
+  return(processor$process_request(prompt, model, api_key))
 }

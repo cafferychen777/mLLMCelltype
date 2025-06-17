@@ -118,10 +118,9 @@ facilitate_cluster_discussion <- function(cluster_id,
   )
 
   # Initialize clustering discussion log file
-  log_info("Starting cluster discussion", list(
-    cluster_id = char_cluster_id,
+  get_logger()$log_discussion(char_cluster_id, "start", list(
     tissue_name = tissue_name,
-    cluster_genes = cluster_genes
+    marker_genes = cluster_genes
   ))
 
   # First round: Initial reasoning
@@ -149,10 +148,12 @@ facilitate_cluster_discussion <- function(cluster_id,
     )
 
     round1_responses[[model]] <- response
-    log_info("Model prediction logged", list(
+    
+    # Log the model prediction to discussion file
+    get_logger()$log_discussion(char_cluster_id, "prediction", list(
       model = model,
       round = 1,
-      prediction_length = nchar(response)
+      prediction = response
     ))
   }
 
@@ -173,9 +174,18 @@ facilitate_cluster_discussion <- function(cluster_id,
 
   # Store consensus result in discussion log
   discussion_log$rounds[[1]]$consensus_result <- consensus_result
+  
+  # Log consensus result
+  get_logger()$log_discussion(char_cluster_id, "consensus", consensus_result)
 
   if (consensus_result$reached && consensus_result$consensus_proportion >= controversy_threshold && consensus_result$entropy <= entropy_threshold) {
     consensus_reached <- TRUE
+    # Log discussion end  
+    get_logger()$log_discussion(char_cluster_id, "end", list(
+      final_result = consensus_result$majority_prediction,
+      rounds_completed = 1,
+      consensus_reached = TRUE
+    ))
     message(sprintf("Consensus reached in round 1 with consensus proportion %.2f and entropy %.2f. Stopping discussion.",
                    consensus_result$consensus_proportion, consensus_result$entropy))
     return(discussion_log)
@@ -214,10 +224,12 @@ facilitate_cluster_discussion <- function(cluster_id,
       )
 
       round_responses[[model]] <- response
-      log_info("Model prediction logged", list(
+      
+      # Log the model prediction to discussion file
+      get_logger()$log_discussion(char_cluster_id, "prediction", list(
         model = model,
         round = round,
-        prediction_length = nchar(response)
+        prediction = response
       ))
     }
 
@@ -241,6 +253,9 @@ facilitate_cluster_discussion <- function(cluster_id,
 
     # Add extracted cell types to the discussion log
     discussion_log$rounds[[round]]$extracted_cell_types <- consensus_result$extracted_cell_types
+    
+    # Log consensus result
+    get_logger()$log_discussion(char_cluster_id, "consensus", consensus_result)
 
     # If we have high confidence consensus, stop the discussion
     if (consensus_result$reached && consensus_result$consensus_proportion >= controversy_threshold && consensus_result$entropy <= entropy_threshold) {
@@ -260,9 +275,15 @@ facilitate_cluster_discussion <- function(cluster_id,
   }
 
   # End cluster discussion log recording
-  log_info("Cluster discussion completed", list(
-    cluster_id = char_cluster_id,
-    total_rounds = length(discussion_log$rounds),
+  final_result <- if (length(discussion_log$rounds) > 0 && !is.null(discussion_log$rounds[[length(discussion_log$rounds)]]$consensus_result)) {
+    discussion_log$rounds[[length(discussion_log$rounds)]]$consensus_result$majority_prediction
+  } else {
+    "Unknown"
+  }
+  
+  get_logger()$log_discussion(char_cluster_id, "end", list(
+    final_result = final_result,
+    rounds_completed = length(discussion_log$rounds),
     consensus_reached = consensus_reached
   ))
 

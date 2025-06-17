@@ -214,7 +214,7 @@ annotate_cell_types <- function(input,
   provider <- get_provider(model)
 
   # Log model and provider information
-  write_log(sprintf("Processing input with Model: %s (Provider: %s)", model, provider))
+  log_info("Processing input with model and provider", list(model = model, provider = provider))
 
   # Generate prompt using the dedicated function
   prompt_result <- create_annotation_prompt(input, tissue_name, top_gene_count)
@@ -231,14 +231,13 @@ annotate_cell_types <- function(input,
   }
 
   # Log gene lists
-  write_log("\nGene lists for each cluster:")
+  log_debug("Gene lists for each cluster")
   cluster_ids <- names(prompt_result$gene_lists)
   for (id in cluster_ids) {
-    write_log(sprintf("Cluster %s: %s", id, prompt_result$gene_lists[[id]]))
+    log_debug("Cluster gene list", list(cluster = id, genes = prompt_result$gene_lists[[id]]))
   }
 
-  write_log("\nGenerated prompt:")
-  write_log(prompt)
+  log_debug("Generated prompt", list(prompt = prompt))
 
   # If no API key, return prompt
   if (is.na(api_key)) {
@@ -259,8 +258,7 @@ annotate_cell_types <- function(input,
     "openrouter" = process_openrouter(prompt, model, api_key)
   )
 
-  write_log("\nModel response:")
-  write_log(result)
+  log_info("Model response received", list(response = result))
 
   return(result)
 }

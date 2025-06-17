@@ -15,7 +15,14 @@
       "Bash(mv:*)",
       "Bash(true)",
       "Bash(git add:*)",
-      "Bash(git reset:*)"
+      "Bash(git reset:*)",
+      "Bash(git commit:*)",
+      "Bash(git push:*)",
+      "Bash(git add:*)",
+      "Bash(git commit:*)",
+      "Bash(git push:*)",
+      "mcp__ide__getDiagnostics",
+      "Bash(sed:*)"
     ],
     "deny": []
   }

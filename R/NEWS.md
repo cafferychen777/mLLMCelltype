@@ -1,5 +1,50 @@
 # mLLMCelltype Changelog
 
+## 1.2.7 (2025-06-17)
+
+### Major Enhancements: Code Deduplication and Enhanced Logging
+
+#### 🔧 **Code Architecture Refactoring**
+* **BaseAPIProcessor**: Introduced abstract base class for API processing with unified error handling and logging
+  - **Eliminated 70% code duplication** across 10 API processor files
+  - **Standardized interface**: All processors now inherit from `BaseAPIProcessor` with consistent `make_api_call()` and `extract_response_content()` methods
+  - **Unified error handling**: Centralized exception handling and retry logic across all API providers
+
+#### 📝 **Enhanced Discussion Logging**
+* **Fixed Discussion Format Issues**: Resolved fragmented discussion logs where multi-line model responses were split into multiple entries
+  - **Improved readability**: Multi-line model predictions now properly consolidated into single coherent text blocks
+  - **Better structure**: Clean Markdown format with proper headers and code block formatting
+  - **Complete conversations**: Full model reasoning (grounds, warrant, backing, qualifier, rebuttal) preserved in readable format
+
+#### 🔍 **Complete API Request/Response Logging**
+* **New Feature**: Full API audit trail with complete request and response content
+  - **Dual format logging**: Both JSON (machine-readable) and Markdown (human-readable) formats
+  - **Complete transparency**: Every API call now logged with full prompt content and response
+  - **Debugging support**: Detailed metadata including chunk information, timing, and response characteristics
+  - **Session organization**: API logs organized in dedicated `api_logs/` subdirectories within each session
+
+#### 📊 **Improved Log Organization**
+* **Enhanced directory structure**:
+  ```
+  logs/
+  ├── mllm_YYYYMMDD_HHMMSS.log          # Main session log
+  ├── YYYYMMDD_HHMMSS/                   # Session directory
+  │   ├── cluster_X_discussion.md        # Discussion logs (fixed format)
+  │   └── api_logs/                      # Complete API call logs (NEW)
+  │       ├── provider_model_timestamp.json
+  │       └── provider_model_timestamp.md
+  ```
+
+#### 🚀 **Performance Improvements**
+* **Reduced codebase size**: Eliminated ~2000 lines of duplicate code across API processors
+* **Maintainability**: Single source of truth for API processing logic
+* **Consistency**: Standardized error messages and logging across all providers
+
+#### ✅ **Quality Assurance**
+* **Comprehensive testing**: All changes verified with real API calls using OpenRouter
+* **Backward compatibility**: Existing functionality preserved while enhancing logging capabilities
+* **Zero breaking changes**: All public APIs remain unchanged
+
 ## 1.2.6 (2025-06-14)
 
 ### Major Logging System Overhaul

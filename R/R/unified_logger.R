@@ -136,6 +136,81 @@ UnifiedLogger <- R6::R6Class("UnifiedLogger",
     },
     
     #' @description
+    #' Log complete API request and response for debugging and audit
+    #' @param provider API provider name
+    #' @param model Model name
+    #' @param prompt_content The complete prompt sent to the API
+    #' @param response_content The complete response received from the API
+    #' @param request_metadata Additional request metadata (optional)
+    #' @param response_metadata Additional response metadata (optional)
+    log_api_request_response = function(provider, model, prompt_content, response_content, 
+                                      request_metadata = NULL, response_metadata = NULL) {
+      # Create API log directory if it doesn't exist
+      api_log_dir <- file.path(self$log_dir, self$session_id, "api_logs")
+      if (!dir.exists(api_log_dir)) {
+        dir.create(api_log_dir, recursive = TRUE)
+      }
+      
+      # Generate unique log file name for this API call
+      timestamp <- format(Sys.time(), "%Y%m%d_%H%M%S_%f")
+      api_call_id <- sprintf("%s_%s_%s", provider, gsub("[^A-Za-z0-9_-]", "_", model), timestamp)
+      
+      # Create complete API log entry
+      api_log_entry <- list(
+        api_call_id = api_call_id,
+        timestamp = format(Sys.time(), "%Y-%m-%d %H:%M:%S"),
+        session_id = self$session_id,
+        provider = provider,
+        model = model,
+        request = list(
+          prompt_content = prompt_content,
+          metadata = request_metadata
+        ),
+        response = list(
+          content = response_content,
+          metadata = response_metadata
+        ),
+        call_sequence = self$performance_stats$api_calls + 1
+      )
+      
+      # Write detailed API log to separate file
+      api_log_file <- file.path(api_log_dir, sprintf("%s.json", api_call_id))
+      writeLines(jsonlite::toJSON(api_log_entry, auto_unbox = TRUE, pretty = TRUE), api_log_file)
+      
+      # Also create human-readable version
+      readable_file <- file.path(api_log_dir, sprintf("%s.md", api_call_id))
+      readable_content <- sprintf(
+        "# API Call: %s\n\n**Provider:** %s\n**Model:** %s\n**Timestamp:** %s\n**Session:** %s\n\n## Request Prompt\n\n```\n%s\n```\n\n## Response\n\n```\n%s\n```\n\n## Metadata\n\n**Request Metadata:**\n```json\n%s\n```\n\n**Response Metadata:**\n```json\n%s\n```\n",
+        api_call_id,
+        provider,
+        model, 
+        api_log_entry$timestamp,
+        self$session_id,
+        prompt_content,
+        if(is.character(response_content)) paste(response_content, collapse = "\n") else as.character(response_content),
+        if(is.null(request_metadata)) "null" else jsonlite::toJSON(request_metadata, auto_unbox = TRUE, pretty = TRUE),
+        if(is.null(response_metadata)) "null" else jsonlite::toJSON(response_metadata, auto_unbox = TRUE, pretty = TRUE)
+      )
+      
+      writeLines(readable_content, readable_file)
+      
+      # Log summary to main log
+      self$debug(sprintf("API request/response logged: %s", api_call_id), list(
+        api_call_id = api_call_id,
+        provider = provider,
+        model = model,
+        prompt_length = nchar(as.character(prompt_content)),
+        response_length = if(is.character(response_content)) sum(nchar(response_content)) else nchar(as.character(response_content)),
+        files_created = c(
+          sprintf("%s.json", api_call_id),
+          sprintf("%s.md", api_call_id)
+        )
+      ))
+      
+      return(api_call_id)
+    },
+    
+    #' @description
     #' Log cache operations
     #' @param operation Operation type: "hit", "miss", "store", "clear"
     #' @param key Cache key
@@ -172,6 +247,72 @@ UnifiedLogger <- R6::R6Class("UnifiedLogger",
       )
       
       self$info(sprintf("Cluster %s: %s", cluster_id, stage), context)
+    },
+    
+    #' @description
+    #' Log detailed cluster discussion with complete model conversations
+    #' @param cluster_id Cluster identifier  
+    #' @param event_type Type of event (start, prediction, consensus, end)
+    #' @param data Event data
+    log_discussion = function(cluster_id, event_type, data = NULL) {
+      # Create session directory if needed
+      session_dir <- file.path(self$log_dir, self$session_id)
+      if (!dir.exists(session_dir)) {
+        dir.create(session_dir, recursive = TRUE)
+      }
+      
+      # Log to both main log and cluster-specific file
+      context <- list(
+        cluster_id = cluster_id,
+        event_type = event_type,
+        data = data
+      )
+      
+      self$info(sprintf("Discussion %s for cluster %s", event_type, cluster_id), context)
+      
+      # Also create detailed cluster log file for easy access
+      cluster_log_file <- file.path(session_dir, sprintf("cluster_%s_discussion.md", cluster_id))
+      
+      if (event_type == "start") {
+        # Create markdown log for better readability
+        content <- sprintf("# Cluster %s Discussion\n\n**Tissue:** %s\n**Markers:** %s\n**Started:** %s\n\n",
+                          cluster_id, 
+                          if(is.null(data$tissue_name)) "Unknown" else data$tissue_name,
+                          if(is.null(data$marker_genes)) "Unknown" else data$marker_genes, 
+                          format(Sys.time(), "%Y-%m-%d %H:%M:%S"))
+        cat(content, file = cluster_log_file)
+        
+      } else if (event_type == "prediction") {
+        # Append model prediction in readable format
+        # Handle both single strings and character vectors
+        prediction_text <- if(is.vector(data$prediction) && length(data$prediction) > 1) {
+          paste(data$prediction, collapse = "\n")
+        } else {
+          as.character(data$prediction)
+        }
+        
+        content <- sprintf("## %s (Round %s)\n\n```\n%s\n```\n\n---\n\n",
+                          data$model, 
+                          if(is.null(data$round)) "1" else data$round, 
+                          prediction_text)
+        cat(content, file = cluster_log_file, append = TRUE)
+        
+      } else if (event_type == "consensus") {
+        # Log consensus result
+        content <- sprintf("## Consensus Result\n\n**Reached:** %s\n**Proportion:** %.2f\n**Entropy:** %.2f\n**Decision:** %s\n\n---\n\n",
+                          data$reached %||% FALSE,
+                          data$consensus_proportion %||% 0,
+                          data$entropy %||% 0,
+                          data$majority_prediction %||% "Unknown")
+        cat(content, file = cluster_log_file, append = TRUE)
+        
+      } else if (event_type == "end") {
+        # Final summary
+        content <- sprintf("## Discussion Complete\n\n**Final Result:** %s\n**Completed:** %s\n",
+                          data$final_result %||% "Unknown",
+                          format(Sys.time(), "%Y-%m-%d %H:%M:%S"))
+        cat(content, file = cluster_log_file, append = TRUE)
+      }
     },
     
     #' @description

@@ -1,3 +1,4 @@
+
 # Constants for consensus checking
 .CONSENSUS_CONSTANTS <- list(
   MAX_RETRIES = 3,
@@ -30,13 +31,13 @@ prepare_models_list <- function(consensus_check_model = NULL) {
   models_to_try <- c()
   
   if (!is.null(consensus_check_model)) {
-    write_log(sprintf("Using specified consensus check model: %s", consensus_check_model))
+    get_logger()$info("Using specified consensus check model", list(model = consensus_check_model))
     
     if (grepl("/", consensus_check_model)) {
       parts <- strsplit(consensus_check_model, "/")[[1]]
       if (length(parts) > 1) {
         base_model <- parts[2]
-        write_log(sprintf("Detected OpenRouter model. Using base model name: %s", base_model))
+        get_logger()$info("Detected OpenRouter model. Using base model name", list(base_model = base_model))
         models_to_try <- c(consensus_check_model, base_model)
       } else {
         models_to_try <- c(consensus_check_model)
@@ -65,7 +66,7 @@ parse_standard_format <- function(result_lines) {
     return(NULL)
   }
   
-  write_log("Detected standard 4-line format")
+  get_logger()$debug("Detected standard 4-line format")
   
   list(
     consensus = as.numeric(trimws(result_lines[1])) == 1,
@@ -91,7 +92,7 @@ extract_labeled_value <- function(lines, pattern, value_pattern) {
           value_str <- substr(last_part, num_match, num_match + attr(num_match, "match.length") - 1)
           value <- as.numeric(value_str)
           if (!is.na(value)) {
-            write_log(sprintf("Found value %f in line: %s", value, line))
+            get_logger()$debug("Found value in line", list(value = value, line = line))
             return(value)
           }
         }
@@ -178,29 +179,29 @@ parse_flexible_format <- function(lines) {
 parse_consensus_response <- function(response) {
   # Handle NULL or empty response
   if (is.null(response) || length(response) == 0) {
-    write_log("WARNING: Response is NULL, empty, or has zero length")
+    get_logger()$warn("Response is NULL, empty, or has zero length")
     return(.DEFAULT_CONSENSUS_RESULT)
   }
   
   # Handle non-character responses
   if (!is.character(response)) {
-    write_log(sprintf("WARNING: Response is not character but %s, converting", typeof(response)))
+    get_logger()$warn("Response is not character, converting", list(type = typeof(response)))
     if (is.function(response)) {
-      write_log("ERROR: Response is a function, indicating serious API error")
+      get_logger()$error("Response is a function, indicating serious API error")
       return(.DEFAULT_CONSENSUS_RESULT)
     }
     
     tryCatch({
       response <- as.character(response)
     }, error = function(e) {
-      write_log(sprintf("ERROR: Failed to convert response: %s", e$message))
+      get_logger()$error("Failed to convert response", list(error = e$message))
       return(.DEFAULT_CONSENSUS_RESULT)
     })
   }
   
   # Check for empty string after conversion
   if (nchar(response) == 0) {
-    write_log("WARNING: Response is empty string")
+    get_logger()$warn("Response is empty string")
     return(.DEFAULT_CONSENSUS_RESULT)
   }
   
@@ -210,7 +211,7 @@ parse_consensus_response <- function(response) {
       split_lines <- strsplit(response, "\n")[[1]]
       trimws(split_lines[nchar(split_lines) > 0])
     }, error = function(e) {
-      write_log(sprintf("ERROR: Failed to split response: %s", e$message))
+      get_logger()$error("Failed to split response", list(error = e$message))
       return(c(response))
     })
   } else {
@@ -218,7 +219,7 @@ parse_consensus_response <- function(response) {
   }
   
   if (length(lines) < 4) {
-    write_log("WARNING: Not enough lines in response")
+    get_logger()$warn("Not enough lines in response", list(line_count = length(lines)))
     return(.DEFAULT_CONSENSUS_RESULT)
   }
   
@@ -227,8 +228,11 @@ parse_consensus_response <- function(response) {
   standard_result <- parse_standard_format(result_lines)
   
   if (!is.null(standard_result)) {
-    write_log(sprintf("Parsed standard format: consensus=%s, proportion=%f, entropy=%f",
-                     standard_result$consensus, standard_result$consensus_proportion, standard_result$entropy))
+    get_logger()$info("Parsed standard format", list(
+      consensus = standard_result$consensus,
+      proportion = standard_result$consensus_proportion,
+      entropy = standard_result$entropy
+    ))
     return(list(
       reached = standard_result$consensus,
       consensus_proportion = standard_result$consensus_proportion,
@@ -238,7 +242,7 @@ parse_consensus_response <- function(response) {
   }
   
   # Fall back to flexible parsing
-  write_log("Using flexible format parsing")
+  get_logger()$debug("Using flexible format parsing")
   flexible_result <- parse_flexible_format(lines)
   
   list(
@@ -258,7 +262,7 @@ execute_consensus_check <- function(formatted_responses, api_keys, models_to_try
   max_retries <- .CONSENSUS_CONSTANTS$MAX_RETRIES
   
   for (model_name in models_to_try) {
-    write_log(sprintf("Trying model %s for consensus check", model_name))
+    get_logger()$info("Trying model for consensus check", list(model = model_name))
     
     # Get API key
     api_key <- get_api_key(model_name, api_keys)
@@ -266,7 +270,7 @@ execute_consensus_check <- function(formatted_responses, api_keys, models_to_try
       provider <- tryCatch({
         get_provider(model_name)
       }, error = function(e) {
-        write_log(sprintf("ERROR: Could not determine provider for %s: %s", model_name, e$message))
+        get_logger()$error("Could not determine provider for model", list(model = model_name, error = e$message))
         return(NULL)
       })
       
@@ -277,13 +281,13 @@ execute_consensus_check <- function(formatted_responses, api_keys, models_to_try
     }
     
     if (is.null(api_key) || nchar(api_key) == 0) {
-      write_log(sprintf("No API key available for %s, skipping", model_name))
+      get_logger()$warn("No API key available for model, skipping", list(model = model_name))
       next
     }
     
     # Retry logic for current model
     for (attempt in 1:max_retries) {
-      write_log(sprintf("Attempt %d of %d with model %s", attempt, max_retries, model_name))
+      get_logger()$debug("Starting attempt with model", list(attempt = attempt, max_retries = max_retries, model = model_name))
       
       result <- tryCatch({
         temp_response <- get_model_response(formatted_responses, model_name, api_key)
@@ -292,14 +296,14 @@ execute_consensus_check <- function(formatted_responses, api_keys, models_to_try
           temp_response <- paste(temp_response, collapse = "\n")
         }
         
-        write_log(sprintf("Successfully got response from %s", model_name))
+        get_logger()$info("Successfully got response from model", list(model = model_name))
         list(success = TRUE, response = temp_response)
       }, error = function(e) {
-        write_log(sprintf("ERROR on %s attempt %d: %s", model_name, attempt, e$message))
+        get_logger()$error("API call failed on attempt", list(model = model_name, attempt = attempt, error = e$message))
         
         if (attempt < max_retries) {
           wait_time <- 5 * 2^(attempt-1)
-          write_log(sprintf("Waiting for %d seconds before next attempt...", wait_time))
+          get_logger()$info("Waiting before next attempt", list(wait_seconds = wait_time))
           Sys.sleep(wait_time)
         }
         
@@ -313,7 +317,7 @@ execute_consensus_check <- function(formatted_responses, api_keys, models_to_try
   }
   
   # All attempts failed
-  write_log("WARNING: All model attempts failed, consensus check could not be performed")
+  get_logger()$warn("All model attempts failed, consensus check could not be performed")
   warning("All available models failed for consensus check. Please ensure at least one model API key is valid.")
   list(success = FALSE, response = .CONSENSUS_CONSTANTS$DEFAULT_RESPONSE)
 }
@@ -329,12 +333,12 @@ execute_consensus_check <- function(formatted_responses, api_keys, models_to_try
 #' @keywords internal
 check_consensus <- function(round_responses, api_keys = NULL, controversy_threshold = 2/3, entropy_threshold = 1.0, consensus_check_model = NULL) {
   # Initialize logging
-  write_log("\n=== Starting check_consensus function ===")
-  write_log(sprintf("Input responses: %s", paste(round_responses, collapse = "; ")))
+  get_logger()$info("Starting check_consensus function")
+  get_logger()$debug("Input responses", list(responses = round_responses))
 
   # Validate input
   if (length(round_responses) < 2) {
-    write_log("WARNING: Not enough responses to check consensus")
+    get_logger()$warn("Not enough responses to check consensus", list(response_count = length(round_responses)))
     return(list(reached = FALSE, consensus_proportion = 0, entropy = 0, majority_prediction = "Insufficient_Responses"))
   }
 
@@ -347,7 +351,7 @@ check_consensus <- function(round_responses, api_keys = NULL, controversy_thresh
 
   # Handle execution failure
   if (!execution_result$success) {
-    write_log("All model attempts failed, using default values")
+    get_logger()$error("All model attempts failed, using default values")
     return(.DEFAULT_CONSENSUS_RESULT)
   }
 
@@ -355,11 +359,12 @@ check_consensus <- function(round_responses, api_keys = NULL, controversy_thresh
   result <- parse_consensus_response(execution_result$response)
   
   # Log final results
-  write_log(sprintf("Final results: consensus=%s, proportion=%f, entropy=%f, majority=%s",
-                   ifelse(result$reached, "TRUE", "FALSE"),
-                   result$consensus_proportion,
-                   result$entropy,
-                   result$majority_prediction))
+  get_logger()$info("Final consensus results", list(
+    consensus = result$reached,
+    proportion = result$consensus_proportion,
+    entropy = result$entropy,
+    majority = result$majority_prediction
+  ))
 
   return(result)
 }
