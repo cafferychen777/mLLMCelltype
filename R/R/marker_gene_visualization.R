@@ -38,13 +38,12 @@
 #' @import ggplot2
 #' @import dplyr
 #' @import viridis
-#' @import Seurat
 #' @export
-create_marker_bubble_plot <- function(seurat_obj, markers_df, consensus_results, 
-                                     top_n = 5, 
+create_marker_bubble_plot <- function(seurat_obj, markers_df, consensus_results,
+                                     top_n = 5,
                                      title = "Marker Gene Expression by Cell Type",
                                      color_palette = "plasma") {
-  
+
   # Check required packages
   if (!requireNamespace("ggplot2", quietly = TRUE)) {
     stop("Package 'ggplot2' is required for this function.")
@@ -54,6 +53,9 @@ create_marker_bubble_plot <- function(seurat_obj, markers_df, consensus_results,
   }
   if (!requireNamespace("viridis", quietly = TRUE)) {
     stop("Package 'viridis' is required for this function.")
+  }
+  if (!requireNamespace("Seurat", quietly = TRUE)) {
+    stop("Package 'Seurat' is required for this function. Please install it with: install.packages('Seurat')")
   }
   
   # Get final annotations
@@ -178,7 +180,6 @@ create_marker_bubble_plot <- function(seurat_obj, markers_df, consensus_results,
 #' @import pheatmap
 #' @import viridis
 #' @import dplyr
-#' @import Seurat
 #' @export
 create_marker_heatmap <- function(seurat_obj, markers_df, consensus_results,
                                  top_n = 5,
@@ -199,6 +200,9 @@ create_marker_heatmap <- function(seurat_obj, markers_df, consensus_results,
   }
   if (!requireNamespace("viridis", quietly = TRUE)) {
     stop("Package 'viridis' is required for this function.")
+  }
+  if (!requireNamespace("Seurat", quietly = TRUE)) {
+    stop("Package 'Seurat' is required for this function. Please install it with: install.packages('Seurat')")
   }
 
   # Set default color palette

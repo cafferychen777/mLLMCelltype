@@ -11,7 +11,8 @@ An object of class \code{environment} of length 0.
 custom_providers
 }
 \description{
-This module provides functionality to register and manage custom LLM providers
+This module provides functionality to register and manage custom LLM
+providers
 and models. It allows users to integrate their own LLM services with the
 mLLMCelltype framework.
 }

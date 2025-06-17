@@ -2,11 +2,22 @@
 % Please edit documentation in R/process_stepfun.R
 \name{process_stepfun}
 \alias{process_stepfun}
-\title{Process request using Stepfun models}
+\title{Process request using StepFun models}
 \usage{
 process_stepfun(prompt, model, api_key)
 }
+\arguments{
+\item{prompt}{Input prompt text}
+
+\item{model}{Model identifier}
+
+\item{api_key}{StepFun API key}
+}
+\value{
+Processed response as character vector
+}
 \description{
-Process request using Stepfun models
+This function uses the new BaseAPIProcessor architecture for improved
+maintainability and consistent logging across all API providers.
 }
 \keyword{internal}

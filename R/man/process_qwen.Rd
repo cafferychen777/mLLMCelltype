@@ -2,11 +2,22 @@
 % Please edit documentation in R/process_qwen.R
 \name{process_qwen}
 \alias{process_qwen}
-\title{Process request using QWEN models}
+\title{Process request using Qwen models}
 \usage{
 process_qwen(prompt, model, api_key)
 }
+\arguments{
+\item{prompt}{Input prompt text}
+
+\item{model}{Model identifier}
+
+\item{api_key}{Qwen API key}
+}
+\value{
+Processed response as character vector
+}
 \description{
-Process request using QWEN models
+This function uses the new BaseAPIProcessor architecture for improved
+maintainability and consistent logging across all API providers.
 }
 \keyword{internal}

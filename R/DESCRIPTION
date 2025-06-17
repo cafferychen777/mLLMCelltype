@@ -22,7 +22,11 @@ Imports:
     jsonlite (>= 1.7.0),
     R6 (>= 2.5.0),
     digest (>= 0.6.25),
-    magrittr
+    magrittr,
+    ggplot2,
+    viridis,
+    pheatmap,
+    utils
 Suggests:
     Seurat,
     testthat (>= 3.0.0),

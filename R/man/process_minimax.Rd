@@ -2,13 +2,22 @@
 % Please edit documentation in R/process_minimax.R
 \name{process_minimax}
 \alias{process_minimax}
-\title{Process request using MiniMax models
-Note: Model names are case-insensitive, but we use lowercase by convention (e.g., "minimax-text-01")}
+\title{Process request using Minimax models}
 \usage{
 process_minimax(prompt, model, api_key)
 }
+\arguments{
+\item{prompt}{Input prompt text}
+
+\item{model}{Model identifier}
+
+\item{api_key}{Minimax API key}
+}
+\value{
+Processed response as character vector
+}
 \description{
-Process request using MiniMax models
-Note: Model names are case-insensitive, but we use lowercase by convention (e.g., "minimax-text-01")
+This function uses the new BaseAPIProcessor architecture for improved
+maintainability and consistent logging across all API providers.
 }
 \keyword{internal}

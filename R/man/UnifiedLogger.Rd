@@ -42,8 +42,10 @@ log rotation, and performance monitoring capabilities.
 \item \href{#method-UnifiedLogger-warn}{\code{UnifiedLogger$warn()}}
 \item \href{#method-UnifiedLogger-error}{\code{UnifiedLogger$error()}}
 \item \href{#method-UnifiedLogger-log_api_call}{\code{UnifiedLogger$log_api_call()}}
+\item \href{#method-UnifiedLogger-log_api_request_response}{\code{UnifiedLogger$log_api_request_response()}}
 \item \href{#method-UnifiedLogger-log_cache_operation}{\code{UnifiedLogger$log_cache_operation()}}
 \item \href{#method-UnifiedLogger-log_cluster_progress}{\code{UnifiedLogger$log_cluster_progress()}}
+\item \href{#method-UnifiedLogger-log_discussion}{\code{UnifiedLogger$log_discussion()}}
 \item \href{#method-UnifiedLogger-get_performance_summary}{\code{UnifiedLogger$get_performance_summary()}}
 \item \href{#method-UnifiedLogger-cleanup_logs}{\code{UnifiedLogger$cleanup_logs()}}
 \item \href{#method-UnifiedLogger-set_level}{\code{UnifiedLogger$set_level()}}
@@ -192,6 +194,40 @@ Log API call performance
 }
 }
 \if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-UnifiedLogger-log_api_request_response"></a>}}
+\if{latex}{\out{\hypertarget{method-UnifiedLogger-log_api_request_response}{}}}
+\subsection{Method \code{log_api_request_response()}}{
+Log complete API request and response for debugging and audit
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{UnifiedLogger$log_api_request_response(
+  provider,
+  model,
+  prompt_content,
+  response_content,
+  request_metadata = NULL,
+  response_metadata = NULL
+)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{provider}}{API provider name}
+
+\item{\code{model}}{Model name}
+
+\item{\code{prompt_content}}{The complete prompt sent to the API}
+
+\item{\code{response_content}}{The complete response received from the API}
+
+\item{\code{request_metadata}}{Additional request metadata (optional)}
+
+\item{\code{response_metadata}}{Additional response metadata (optional)}
+}
+\if{html}{\out{</div>}}
+}
+}
+\if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-UnifiedLogger-log_cache_operation"></a>}}
 \if{latex}{\out{\hypertarget{method-UnifiedLogger-log_cache_operation}{}}}
 \subsection{Method \code{log_cache_operation()}}{
@@ -229,6 +265,27 @@ Log cluster annotation progress
 \item{\code{stage}}{Current stage}
 
 \item{\code{progress}}{Progress information}
+}
+\if{html}{\out{</div>}}
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-UnifiedLogger-log_discussion"></a>}}
+\if{latex}{\out{\hypertarget{method-UnifiedLogger-log_discussion}{}}}
+\subsection{Method \code{log_discussion()}}{
+Log detailed cluster discussion with complete model conversations
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{UnifiedLogger$log_discussion(cluster_id, event_type, data = NULL)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{cluster_id}}{Cluster identifier}
+
+\item{\code{event_type}}{Type of event (start, prediction, consensus, end)}
+
+\item{\code{data}}{Event data}
 }
 \if{html}{\out{</div>}}
 }

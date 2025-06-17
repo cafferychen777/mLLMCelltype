@@ -6,7 +6,18 @@
 \usage{
 process_deepseek(prompt, model, api_key)
 }
+\arguments{
+\item{prompt}{Input prompt text}
+
+\item{model}{Model identifier}
+
+\item{api_key}{DeepSeek API key}
+}
+\value{
+Processed response as character vector
+}
 \description{
-Process request using DeepSeek models
+This function uses the new BaseAPIProcessor architecture for improved
+maintainability and consistent logging across all API providers.
 }
 \keyword{internal}

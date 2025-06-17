@@ -18,7 +18,7 @@ jobs:
     env:
       GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - uses: r-lib/actions/setup-pandoc@v2
 
@@ -33,25 +33,28 @@ jobs:
 
       - name: Install required packages
         run: |
-          install.packages(c("pkgdown", "knitr", "rmarkdown", "devtools", "systemfonts", "ragg", "textshaping", "svglite", "ggplot2", "patchwork", "viridis", "ggExtra"))
+          install.packages(c("pkgdown", "knitr", "rmarkdown", "devtools", "systemfonts", "ragg", "textshaping", "svglite", "ggplot2", "patchwork", "viridis", "ggExtra", "remotes"))
         shell: Rscript {0}
 
       - name: Install package dependencies
         run: |
-          setwd("R")
-          devtools::install_deps(dependencies = TRUE)
+          devtools::install_deps("R", dependencies = TRUE)
         shell: Rscript {0}
 
-      - name: Verify systemfonts installation
+      - name: Install package
         run: |
-          Rscript -e "packageVersion('systemfonts')"
-          Rscript -e "packageVersion('ragg')"
-          Rscript -e "packageVersion('textshaping')"
+          devtools::install("R", upgrade = "never")
+        shell: Rscript {0}
+
+      - name: Verify package installation
+        run: |
+          library(mLLMCelltype)
+          packageVersion("mLLMCelltype")
+        shell: Rscript {0}
 
       - name: Build site
         run: |
-          setwd("R")
-          pkgdown::build_site()
+          pkgdown::build_site("R")
         shell: Rscript {0}
 
       - name: Deploy to GitHub pages 🚀

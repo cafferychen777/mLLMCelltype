@@ -2,21 +2,22 @@
 % Please edit documentation in R/process_grok.R
 \name{process_grok}
 \alias{process_grok}
-\title{Process request using X.AI Grok models}
+\title{Process request using Grok models}
 \usage{
 process_grok(prompt, model, api_key)
 }
 \arguments{
-\item{prompt}{The prompt to send to the Grok API}
+\item{prompt}{Input prompt text}
 
-\item{model}{The Grok model to use}
+\item{model}{Model identifier}
 
-\item{api_key}{The API key for X.AI Grok}
+\item{api_key}{Grok API key}
 }
 \value{
-The response from the Grok API
+Processed response as character vector
 }
 \description{
-Process request using X.AI Grok models
+This function uses the new BaseAPIProcessor architecture for improved
+maintainability and consistent logging across all API providers.
 }
 \keyword{internal}

@@ -6,7 +6,18 @@
 \usage{
 process_anthropic(prompt, model, api_key)
 }
+\arguments{
+\item{prompt}{Input prompt text}
+
+\item{model}{Model identifier}
+
+\item{api_key}{Anthropic API key}
+}
+\value{
+Processed response as character vector
+}
 \description{
-Process request using Anthropic models
+This function uses the new BaseAPIProcessor architecture for improved
+maintainability and consistent logging across all API providers.
 }
 \keyword{internal}

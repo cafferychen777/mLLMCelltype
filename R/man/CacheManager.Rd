@@ -50,7 +50,7 @@ Initialize cache manager
 \if{html}{\out{<a id="method-CacheManager-generate_key"></a>}}
 \if{latex}{\out{\hypertarget{method-CacheManager-generate_key}{}}}
 \subsection{Method \code{generate_key()}}{
-Generate cache key from input parameters
+Generate cache key from input parameters (improved version)
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{CacheManager$generate_key(input, models, cluster_id)}\if{html}{\out{</div>}}
 }
@@ -177,6 +177,7 @@ Validate cache content
 }
 \subsection{Returns}{
 TRUE if cache is valid, FALSE otherwise
+Extract genes from input in a standardized way
 }
 }
 \if{html}{\out{<hr>}}
