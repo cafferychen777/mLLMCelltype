@@ -49,6 +49,21 @@ mLLMCelltype is an open-source tool for single-cell transcriptomics analysis tha
 
 ## News
 
+🚀 **Web Application Launch (2025-06-18)**
+
+We're excited to announce the launch of mLLMCelltype Web Application! Now you can access mLLMCelltype's powerful cell type annotation capabilities directly through your web browser without any installation required.
+
+**✨ Key Features:**
+- **Easy-to-use interface**: Upload your scRNA-seq data and get annotations in minutes
+- **Multi-LLM consensus**: Choose from various AI models including GPT-4, Claude, Gemini, and more
+- **Real-time processing**: Monitor annotation progress with live updates
+- **Multiple export formats**: Download results in CSV, TSV, Excel, or JSON formats
+- **No setup required**: Start annotating immediately without installing packages
+
+**🌐 Access the Web App**: [https://mllmcelltype.com](https://mllmcelltype.com)
+
+**⚠️ Beta Testing Phase**: The web application is currently in beta testing. We welcome your feedback and suggestions to help us improve the platform. Please report any issues or share your experience through our [GitHub Issues](https://github.com/cafferychen777/mLLMCelltype/issues) or [Discord community](https://discord.gg/pb2aZdG4).
+
 **📢 Important: Gemini Model Migration (2025-06-02)**
 
 Google has discontinued several Gemini 1.5 models and will discontinue more on September 24, 2025:
