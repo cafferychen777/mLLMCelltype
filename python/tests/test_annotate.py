@@ -143,9 +143,7 @@ class TestAnnotation:
             ]
 
         # Set up PROVIDER_FUNCTIONS dictionary
-        mock_provider_functions.__getitem__.side_effect = lambda key: (
-            mock_provider_func if key == "openai" else None
-        )
+        mock_provider_functions.get.return_value = mock_provider_func
         mock_provider_functions.__contains__.return_value = True
 
         mock_load_api_key.return_value = "test-key"
