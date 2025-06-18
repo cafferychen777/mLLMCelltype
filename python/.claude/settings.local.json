@@ -9,7 +9,9 @@
       "Bash(python -m pytest tests/test_annotate.py -v)",
       "Bash(python:*)",
       "Bash(timeout:*)",
-      "Bash(git add:*)"
+      "Bash(git add:*)",
+      "Bash(git push:*)",
+      "Bash(git commit:*)"
     ],
     "deny": []
   }
