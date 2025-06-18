@@ -1,0 +1,16 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(grep:*)",
+      "Bash(find:*)",
+      "Bash(python3:*)",
+      "Bash(rm:*)",
+      "Bash(ls:*)",
+      "Bash(python -m pytest tests/test_annotate.py -v)",
+      "Bash(python:*)",
+      "Bash(timeout:*)",
+      "Bash(git add:*)"
+    ],
+    "deny": []
+  }
+}

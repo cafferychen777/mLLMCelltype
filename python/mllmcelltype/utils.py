@@ -15,6 +15,35 @@ import pandas as pd
 from .logger import write_log
 
 
+def _get_cache_dir(cache_dir: Optional[str] = None) -> str:
+    """Get cache directory path with consistent handling.
+
+    Args:
+        cache_dir: Custom cache directory or None for default
+
+    Returns:
+        str: Cache directory path
+    """
+    if cache_dir is None:
+        cache_dir = os.path.join(os.path.expanduser("~"), ".llmcelltype", "cache")
+    return cache_dir
+
+
+def _handle_cache_error(error: Exception, operation: str, file_path: str = "") -> None:
+    """Handle cache operation errors consistently.
+
+    Args:
+        error: The exception that occurred
+        operation: Description of the operation (e.g., "loading", "saving")
+        file_path: Optional file path for context
+    """
+    context = f" for {file_path}" if file_path else ""
+    write_log(
+        f"Error {operation} cache{context}: {str(error)}",
+        level="error" if "saving" in operation else "warning",
+    )
+
+
 def load_api_key(provider: str) -> str:
     """Load API key for a specific provider from environment variables or .env file.
 
@@ -132,15 +161,11 @@ def save_to_cache(
         cache_dir: The cache directory. If None, uses default directory.
 
     """
-    # Set cache directory
-    if cache_dir is None:
-        cache_dir = os.path.join(os.path.expanduser("~"), ".llmcelltype", "cache")
+    cache_dir = _get_cache_dir(cache_dir)
+    cache_file = os.path.join(cache_dir, f"{cache_key}.json")
 
     # Create cache directory if it doesn't exist
     os.makedirs(cache_dir, exist_ok=True)
-
-    # Create cache file path
-    cache_file = os.path.join(cache_dir, f"{cache_key}.json")
 
     # Ensure results are in a consistent format
     cache_data = {"version": "1.0", "timestamp": time.time(), "data": results}
@@ -151,7 +176,7 @@ def save_to_cache(
             json.dump(cache_data, f, indent=2)
         write_log(f"Saved results to cache: {cache_file}")
     except (OSError, TypeError, ValueError) as e:
-        write_log(f"Error saving to cache: {str(e)}", level="error")
+        _handle_cache_error(e, "saving", cache_file)
 
 
 def load_from_cache(
@@ -167,11 +192,7 @@ def load_from_cache(
         Optional[Union[list[str], dict[str, Any]]]: The cached results, or None if not found
 
     """
-    # Set cache directory
-    if cache_dir is None:
-        cache_dir = os.path.join(os.path.expanduser("~"), ".llmcelltype", "cache")
-
-    # Create cache file path
+    cache_dir = _get_cache_dir(cache_dir)
     cache_file = os.path.join(cache_dir, f"{cache_key}.json")
 
     # Check if cache file exists
@@ -196,14 +217,8 @@ def load_from_cache(
             write_log(f"Loaded results from cache (legacy format): {cache_file}")
 
         return results
-    except (
-        OSError,
-        json.JSONDecodeError,
-        KeyError,
-        TypeError,
-        ValueError,
-    ) as e:
-        write_log(f"Error loading from cache: {str(e)}", level="error")
+    except (OSError, json.JSONDecodeError, KeyError, TypeError, ValueError) as e:
+        _handle_cache_error(e, "loading", cache_file)
         return None
 
 
@@ -428,23 +443,8 @@ def format_results(results: list[str], clusters: list[str]) -> dict[str, str]:
     return result
 
 
-def clean_annotation(annotation: str) -> str:
-    """Clean up cell type annotation from LLM response.
-
-    Args:
-        annotation: Raw annotation string
-
-    Returns:
-        str: Cleaned annotation
-
-    """
-    # If input is empty or None, return an empty string
-    if not annotation:
-        return ""
-
-    # Remove common prefixes and formatting
-    annotation = annotation.strip()
-
+def _remove_common_prefixes(annotation: str) -> str:
+    """Remove common prefixes from annotations."""
     # Remove "Cluster X:" prefix if present
     if annotation.lower().startswith("cluster ") and ":" in annotation:
         annotation = annotation.split(":", 1)[1].strip()
@@ -461,27 +461,34 @@ def clean_annotation(annotation: str) -> str:
         if annotation.lower().startswith(prefix):
             annotation = annotation[len(prefix) :].strip()
 
-    # Process descriptive text, extract cell type name
-    # For example: "- Dendritic cells are the most accurate cell type annotation for Cluster 4" -> "Dendritic cells"
+    return annotation
+
+
+def _extract_cell_type_from_description(annotation: str) -> str:
+    """Extract cell type from descriptive text."""
     patterns = [
-        r"([\w\s-]+)\s+(?:is|are)\s+the\s+most\s+accurate\s+cell\s+type",  # Match "X is/are the most accurate cell type"
-        r"([\w\s-]+)\s+(?:is|are)\s+the\s+best\s+annotation",  # Match "X is/are the best annotation"
-        r"final\s+cell\s+type\s*:?\s*([\w\s-]+)",  # Match "final cell type: X"
-        r"final\s+decision\s*:?\s*([\w\s-]+)",  # Match "final decision: X"
-        r"majority\s+prediction\s*:?\s*([\w\s-]+)",  # Match "majority prediction: X"
+        r"([\w\s-]+)\s+(?:is|are)\s+the\s+most\s+accurate\s+cell\s+type",
+        r"([\w\s-]+)\s+(?:is|are)\s+the\s+best\s+annotation",
+        r"final\s+cell\s+type\s*:?\s*([\w\s-]+)",
+        r"final\s+decision\s*:?\s*([\w\s-]+)",
+        r"majority\s+prediction\s*:?\s*([\w\s-]+)",
     ]
 
     for pattern in patterns:
         match = re.search(pattern, annotation.lower())
         if match:
-            annotation = match.group(1).strip()
-            break
+            return match.group(1).strip()
 
+    return annotation
+
+
+def _clean_formatting(annotation: str) -> str:
+    """Clean formatting marks and symbols."""
     # Remove quotes
     if annotation.startswith('"') and annotation.endswith('"'):
         annotation = annotation[1:-1]
 
-    # Remove markdown emphasis marks (**, *, etc.)
+    # Remove markdown emphasis marks
     annotation = annotation.replace("**:", "").replace("**", "").replace("*", "")
 
     # Remove common prefix markers
@@ -499,15 +506,39 @@ def clean_annotation(annotation: str) -> str:
     if annotation and annotation[-1] in [".", ",", ";"]:
         annotation = annotation[:-1]
 
-    # Remove LaTeX formatting like $\boxed{...}$
+    # Remove LaTeX formatting
     annotation = re.sub(r"\$\\boxed\{(.+?)\}\$", r"\1", annotation)
     annotation = re.sub(r"\$.+?\$", "", annotation)
 
-    # Truncate long descriptions (take the first part before comma or parenthesis if too long)
+    return annotation
+
+
+def clean_annotation(annotation: str) -> str:
+    """Clean up cell type annotation from LLM response.
+
+    Args:
+        annotation: Raw annotation string
+
+    Returns:
+        str: Cleaned annotation
+
+    """
+    # If input is empty or None, return an empty string
+    if not annotation:
+        return ""
+
+    # Basic cleanup
+    annotation = annotation.strip()
+
+    # Apply cleaning steps
+    annotation = _remove_common_prefixes(annotation)
+    annotation = _extract_cell_type_from_description(annotation)
+    annotation = _clean_formatting(annotation)
+
+    # Truncate long descriptions
     if len(annotation) > 50:
-        # Try to find a natural break point
         short_version = annotation.split(",")[0].split("(")[0].strip()
-        if len(short_version) >= 10:  # Make sure we don't get too short of a name
+        if len(short_version) >= 10:
             annotation = short_version
 
     return annotation
@@ -602,11 +633,7 @@ def validate_cache(cache_key: str, cache_dir: Optional[str] = None) -> bool:
         bool: True if cache is valid, False otherwise
 
     """
-    # Set cache directory
-    if cache_dir is None:
-        cache_dir = os.path.join(os.path.expanduser("~"), ".llmcelltype", "cache")
-
-    # Create cache file path
+    cache_dir = _get_cache_dir(cache_dir)
     cache_file = os.path.join(cache_dir, f"{cache_key}.json")
 
     # Check if cache file exists
@@ -633,7 +660,7 @@ def validate_cache(cache_key: str, cache_dir: Optional[str] = None) -> bool:
         write_log(f"Invalid cache format for key {cache_key}", level="warning")
         return False
     except (OSError, json.JSONDecodeError, TypeError, ValueError) as e:
-        write_log(f"Error validating cache for key {cache_key}: {str(e)}", level="warning")
+        _handle_cache_error(e, "validating", cache_file)
         return False
 
 
@@ -649,8 +676,7 @@ def clear_cache(cache_dir: Optional[str] = None, older_than: Optional[int] = Non
         int: Number of cache files removed
 
     """
-    if cache_dir is None:
-        cache_dir = os.path.join(os.path.expanduser("~"), ".llmcelltype", "cache")
+    cache_dir = _get_cache_dir(cache_dir)
 
     if not os.path.exists(cache_dir):
         return 0
@@ -705,8 +731,7 @@ def get_cache_stats(cache_dir: Optional[str] = None) -> dict[str, Any]:
         dict[str, Any]: Cache statistics
 
     """
-    if cache_dir is None:
-        cache_dir = os.path.join(os.path.expanduser("~"), ".llmcelltype", "cache")
+    cache_dir = _get_cache_dir(cache_dir)
 
     if not os.path.exists(cache_dir):
         return {
@@ -815,19 +840,3 @@ def get_cache_stats(cache_dir: Optional[str] = None) -> dict[str, Any]:
         "format_counts": format_counts,
         "provider_counts": provider_counts,
     }
-
-
-def combine_results(
-    model_results: dict[str, dict[str, str]],
-) -> dict[str, dict[str, str]]:
-    """Combine results from multiple models into a single dictionary.
-
-    Args:
-        model_results: Dictionary mapping model names to dictionaries of cluster annotations
-
-    Returns:
-        dict[str, dict[str, str]]: Combined results
-
-    """
-    # Simply return the model results as they are already in the correct format
-    return model_results

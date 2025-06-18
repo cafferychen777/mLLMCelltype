@@ -6,6 +6,26 @@ from typing import Optional
 
 from .logger import write_log
 
+
+def _format_marker_genes_for_prompt(
+    marker_genes: dict[str, list[str]], cluster_format: str = "Cluster {}: {}"
+) -> str:
+    """Format marker genes consistently for prompts.
+
+    Args:
+        marker_genes: Dictionary mapping cluster names to marker gene lists
+        cluster_format: Format string for cluster entries
+
+    Returns:
+        str: Formatted marker genes text
+    """
+    marker_lines = []
+    for cluster, genes in marker_genes.items():
+        genes_str = ", ".join(genes)
+        marker_lines.append(cluster_format.format(cluster, genes_str))
+    return "\n".join(marker_lines)
+
+
 # Default prompt template for single dataset annotation
 DEFAULT_PROMPT_TEMPLATE = """You are an expert single-cell RNA-seq analyst specializing in cell type annotation.
 I need you to identify cell types of {species} cells from {tissue}.
@@ -24,20 +44,6 @@ Here are the marker genes for each cluster:
 {markers}
 """
 
-# Original simpler template
-SIMPLE_PROMPT_TEMPLATE = """You are a cell type annotation expert. Below are marker genes for different cell clusters in {context}.
-
-{clusters}
-
-For each numbered cluster, provide ONLY the cell type name in a new line, without any explanation.
-
-IMPORTANT: Provide your answers in the EXACT format below, with one cluster per line:
-Cluster 0: [Cell Type]
-Cluster 1: [Cell Type]
-...and so on, IN NUMERICAL ORDER.
-
-Only provide the cell type name, without any additional text or explanations.
-"""
 
 # Default prompt template for batch annotation
 DEFAULT_BATCH_PROMPT_TEMPLATE = """You are an expert single-cell RNA-seq analyst specializing in cell type annotation.
@@ -97,27 +103,6 @@ Only output these 4 lines, nothing else."""
     # Replace the placeholder
     return prompt.replace("{annotations}", formatted_annotations)
 
-
-# Original simpler batch template
-SIMPLE_BATCH_PROMPT_TEMPLATE = """You are a cell type annotation expert. Below are marker genes for different cell clusters in {context}.
-
-{clusters}
-
-For each set and its numbered clusters, provide ONLY the cell type name in a new line, without any explanation.
-
-IMPORTANT: Provide your answers in the EXACT format below, with one cluster per line:
-Set 1:
-Cluster 0: [Cell Type]
-Cluster 1: [Cell Type]
-...and so on, IN NUMERICAL ORDER.
-
-Set 2:
-Cluster 0: [Cell Type]
-Cluster 1: [Cell Type]
-...and so on, IN NUMERICAL ORDER.
-
-Only provide the cell type name, without any additional text or explanations.
-"""
 
 # Default JSON format prompt template
 DEFAULT_JSON_PROMPT_TEMPLATE = """You are an expert single-cell RNA-seq analyst specializing in cell type annotation.
@@ -271,26 +256,11 @@ def create_prompt(
     if not prompt_template:
         prompt_template = DEFAULT_PROMPT_TEMPLATE
 
-    # Check if using the new or old template format
-    if "{context}" in prompt_template and "{clusters}" in prompt_template:
-        # Using old template format
-        return create_prompt_legacy(
-            marker_genes=marker_genes,
-            species=species,
-            tissue=tissue,
-            additional_context=additional_context,
-            prompt_template=prompt_template,
-        )
-
     # Default tissue if none provided
     tissue_text = tissue if tissue else "unknown tissue"
 
-    # Format marker genes text
-    marker_text_lines = []
-    for cluster, genes in marker_genes.items():
-        marker_text_lines.append(f"Cluster {cluster}: {', '.join(genes)}")
-
-    marker_text = "\n".join(marker_text_lines)
+    # Format marker genes text using helper function
+    marker_text = _format_marker_genes_for_prompt(marker_genes)
 
     # Add additional context if provided
     context_text = f"\nAdditional context: {additional_context}\n" if additional_context else ""
@@ -307,58 +277,6 @@ def create_prompt(
             prompt = f"{prompt}{context_text}"
 
     write_log(f"Generated prompt with {len(prompt)} characters")
-    return prompt
-
-
-def create_prompt_legacy(
-    marker_genes: dict[str, list[str]],
-    species: str,
-    tissue: Optional[str] = None,
-    additional_context: Optional[str] = None,
-    prompt_template: Optional[str] = None,
-) -> str:
-    """Create a prompt for cell type annotation using the legacy template format.
-
-    Args:
-        marker_genes: Dictionary mapping cluster names to lists of marker genes
-        species: Species name (e.g., 'human', 'mouse')
-        tissue: Tissue name (e.g., 'brain', 'liver')
-        additional_context: Additional context to include in the prompt
-        prompt_template: Custom prompt template
-
-    Returns:
-        str: The generated prompt
-
-    """
-    # Use default template if not provided
-    if not prompt_template:
-        prompt_template = SIMPLE_PROMPT_TEMPLATE
-
-    # Format species and tissue
-    species_str = species.strip()
-    tissue_str = f" {tissue.strip()}" if tissue else ""
-
-    # Create context string
-    context_parts = []
-    if species_str:
-        context_parts.append(species_str)
-    if tissue_str:
-        context_parts.append(tissue_str.strip())
-
-    context = " ".join(context_parts)
-    if additional_context:
-        context += f"\nAdditional Context: {additional_context}"
-
-    # Create clusters string
-    clusters_str = ""
-    for cluster, genes in marker_genes.items():
-        genes_str = ", ".join(genes)
-        clusters_str += f"Cluster {cluster}: {genes_str}\n"
-
-    # Format prompt
-    prompt = prompt_template.format(context=context, clusters=clusters_str)
-
-    write_log(f"Generated legacy prompt with {len(prompt)} characters")
     return prompt
 
 
@@ -388,27 +306,14 @@ def create_batch_prompt(
     if not prompt_template:
         prompt_template = DEFAULT_BATCH_PROMPT_TEMPLATE
 
-    # Check if using the new or old template format
-    if "{context}" in prompt_template and "{clusters}" in prompt_template:
-        # Using old template format
-        return create_batch_prompt_legacy(
-            marker_genes_list=marker_genes_list,
-            species=species,
-            tissue=tissue,
-            additional_context=additional_context,
-            prompt_template=prompt_template,
-        )
-
     # Default tissue if none provided
     tissue_text = tissue if tissue else "unknown tissue"
 
-    # Format marker genes text
+    # Format marker genes text using helper function
     marker_text_lines = []
-
     for i, marker_genes in enumerate(marker_genes_list):
         marker_text_lines.append(f"\nSet {i + 1}:")
-        for cluster, genes in marker_genes.items():
-            marker_text_lines.append(f"Cluster {cluster}: {', '.join(genes)}")
+        marker_text_lines.append(_format_marker_genes_for_prompt(marker_genes))
 
     marker_text = "\n".join(marker_text_lines)
 
@@ -427,61 +332,6 @@ def create_batch_prompt(
             prompt = f"{prompt}{context_text}"
 
     write_log(f"Generated batch prompt with {len(prompt)} characters")
-    return prompt
-
-
-def create_batch_prompt_legacy(
-    marker_genes_list: list[dict[str, list[str]]],
-    species: str,
-    tissue: Optional[str] = None,
-    additional_context: Optional[str] = None,
-    prompt_template: Optional[str] = None,
-) -> str:
-    """Create a batch prompt for multiple sets of clusters using the legacy template format.
-
-    Args:
-        marker_genes_list: List of dictionaries mapping cluster names to lists of marker genes
-        species: Species name (e.g., 'human', 'mouse')
-        tissue: Tissue name (e.g., 'brain', 'liver')
-        additional_context: Additional context to include in the prompt
-        prompt_template: Custom prompt template
-
-    Returns:
-        str: The generated batch prompt
-
-    """
-    # Use default legacy template if not provided
-    if not prompt_template:
-        prompt_template = SIMPLE_BATCH_PROMPT_TEMPLATE
-
-    # Format species and tissue
-    species_str = species.strip()
-    tissue_str = f" {tissue.strip()}" if tissue else ""
-
-    # Create context string
-    context_parts = []
-    if species_str:
-        context_parts.append(species_str)
-    if tissue_str:
-        context_parts.append(tissue_str.strip())
-
-    context = " ".join(context_parts)
-    if additional_context:
-        context += f"\nAdditional Context: {additional_context}"
-
-    # Create clusters string
-    clusters_str = ""
-    for i, marker_genes in enumerate(marker_genes_list):
-        clusters_str += f"Set {i + 1}:\n"
-        for cluster, genes in marker_genes.items():
-            genes_str = ", ".join(genes)
-            clusters_str += f"Cluster {cluster}: {genes_str}\n"
-        clusters_str += "\n"
-
-    # Format prompt
-    prompt = prompt_template.format(context=context, clusters=clusters_str)
-
-    write_log(f"Generated legacy batch prompt with {len(prompt)} characters")
     return prompt
 
 

@@ -7,20 +7,9 @@ from typing import Optional, Union
 
 import pandas as pd
 
+from .functions import PROVIDER_FUNCTIONS
 from .logger import setup_logging, write_log
 from .prompts import create_batch_prompt, create_prompt
-from .providers import (
-    process_anthropic,
-    process_deepseek,
-    process_gemini,
-    process_grok,
-    process_minimax,
-    process_openai,
-    process_openrouter,
-    process_qwen,
-    process_stepfun,
-    process_zhipu,
-)
 from .utils import (
     create_cache_key,
     format_results,
@@ -29,20 +18,6 @@ from .utils import (
     parse_marker_genes,
     save_to_cache,
 )
-
-# Provider function mapping
-PROVIDER_FUNCTIONS = {
-    "openai": process_openai,
-    "anthropic": process_anthropic,
-    "deepseek": process_deepseek,
-    "gemini": process_gemini,
-    "qwen": process_qwen,
-    "stepfun": process_stepfun,
-    "zhipu": process_zhipu,
-    "minimax": process_minimax,
-    "grok": process_grok,
-    "openrouter": process_openrouter,
-}
 
 
 def annotate_clusters(
@@ -488,20 +463,7 @@ def get_model_response(
             return cached_result
 
     # Get provider function
-    provider_funcs = {
-        "openai": PROVIDER_FUNCTIONS["openai"],
-        "anthropic": PROVIDER_FUNCTIONS["anthropic"],
-        "deepseek": PROVIDER_FUNCTIONS["deepseek"],
-        "gemini": PROVIDER_FUNCTIONS["gemini"],
-        "qwen": PROVIDER_FUNCTIONS["qwen"],
-        "stepfun": PROVIDER_FUNCTIONS["stepfun"],
-        "zhipu": PROVIDER_FUNCTIONS["zhipu"],
-        "minimax": PROVIDER_FUNCTIONS["minimax"],
-        "grok": PROVIDER_FUNCTIONS["grok"],
-        "openrouter": PROVIDER_FUNCTIONS["openrouter"],
-    }
-
-    provider_func = provider_funcs.get(provider.lower())
+    provider_func = PROVIDER_FUNCTIONS.get(provider.lower())
     if not provider_func:
         error_msg = f"Unknown provider: {provider}"
         write_log(f"ERROR: {error_msg}", level="error")

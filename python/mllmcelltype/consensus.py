@@ -12,32 +12,206 @@ from typing import Any, Optional, Union
 
 import requests
 
+from .annotate import get_model_response
 from .logger import write_log
 from .prompts import create_discussion_consensus_check_prompt, create_discussion_prompt
 from .utils import clean_annotation
 
 
-def check_consensus_with_llm(
-    predictions: dict[str, dict[str, str]], api_keys: Optional[dict[str, str]] = None
-) -> tuple[dict[str, str], dict[str, float], dict[str, float]]:
-    """Check consensus among different model predictions using LLM assistance.
-    This function uses an LLM (Qwen or Claude) to evaluate semantic similarity between
-    annotations.
+def _get_api_key(provider: str, api_keys: Optional[dict[str, str]] = None) -> Optional[str]:
+    """Get API key for a specific provider.
 
     Args:
-        predictions: Dictionary mapping model names to dictionaries of
-            cluster annotations
+        provider: Provider name (e.g., 'qwen', 'anthropic')
+        api_keys: Optional dictionary of API keys
+
+    Returns:
+        Optional[str]: API key if found, None otherwise
+    """
+    # Try to get from provided api_keys first
+    if api_keys and provider in api_keys:
+        return api_keys[provider]
+
+    # Fallback to loading from environment/config
+    from .utils import load_api_key
+
+    return load_api_key(provider)
+
+
+def _handle_llm_error(
+    error: Exception, context: str, attempt: int = 0, max_attempts: int = 1
+) -> None:
+    """Handle LLM API call errors consistently.
+
+    Args:
+        error: The exception that occurred
+        context: Context description (e.g., "Qwen attempt", "Claude fallback")
+        attempt: Current attempt number (0-based)
+        max_attempts: Maximum number of attempts
+    """
+    if attempt < max_attempts - 1:
+        write_log(f"Error on {context} {attempt + 1}: {str(error)}", level="warning")
+        write_log("Waiting before next attempt...")
+    else:
+        write_log(f"Error on {context}: {str(error)}", level="warning")
+        if "attempt" in context.lower():
+            write_log(f"All {context.split()[0]} retry attempts failed")
+
+
+def _call_llm_with_retry(
+    prompt: str,
+    provider: str,
+    model: str,
+    api_key: Optional[str],
+    max_retries: int = 3,
+    fallback_provider: str = "anthropic",
+    fallback_model: str = "claude-3-5-sonnet-latest",
+    api_keys: Optional[dict[str, str]] = None,
+) -> Optional[str]:
+    """Call LLM with retry logic and fallback provider.
+
+    Args:
+        prompt: The prompt to send
+        provider: Primary provider to use
+        model: Primary model to use
+        api_key: API key for primary provider
+        max_retries: Maximum retry attempts
+        fallback_provider: Fallback provider if primary fails
+        fallback_model: Fallback model if primary fails
+        api_keys: Dictionary of API keys for fallback
+
+    Returns:
+        Optional[str]: LLM response or None if all attempts failed
+    """
+    # First try with primary provider
+    for attempt in range(max_retries):
+        try:
+            if api_key:
+                response = get_model_response(
+                    prompt=prompt,
+                    provider=provider,
+                    model=model,
+                    api_key=api_key,
+                )
+                write_log(f"Successfully got response from {provider} on attempt {attempt + 1}")
+                return response
+            else:
+                write_log(f"No API key found for {provider}, trying fallback")
+                break
+        except (
+            requests.RequestException,
+            ValueError,
+            KeyError,
+            json.JSONDecodeError,
+        ) as e:
+            _handle_llm_error(e, f"{provider} attempt", attempt, max_retries)
+            if attempt < max_retries - 1:
+                time.sleep(5 * (2**attempt))
+            else:
+                write_log(f"falling back to {fallback_provider}")
+
+    # Try fallback provider
+    if api_keys:
+        fallback_api_key = _get_api_key(fallback_provider, api_keys)
+        if fallback_api_key:
+            try:
+                response = get_model_response(
+                    prompt=prompt,
+                    provider=fallback_provider,
+                    model=fallback_model,
+                    api_key=fallback_api_key,
+                )
+                write_log(f"Successfully got response from {fallback_provider} as fallback")
+                return response
+            except (
+                requests.RequestException,
+                ValueError,
+                KeyError,
+                json.JSONDecodeError,
+            ) as e:
+                _handle_llm_error(e, f"{fallback_provider} fallback")
+        else:
+            write_log(f"No {fallback_provider} API key found, falling back to simple consensus")
+
+    return None
+
+
+def _parse_llm_consensus_response(
+    response: str,
+) -> tuple[Optional[float], Optional[float], Optional[str]]:
+    """Parse LLM consensus response to extract metrics and annotation.
+
+    Args:
+        response: LLM response text
+
+    Returns:
+        tuple[Optional[float], Optional[float], Optional[str]]: (consensus_proportion, entropy, annotation)
+    """
+    try:
+        # Split response by newlines and clean up
+        lines = response.strip().split("\n")
+        lines = [line.strip() for line in lines if line.strip()]
+
+        # Get the last 4 non-empty lines (standard format)
+        if len(lines) >= 4:
+            result_lines = lines[-4:]
+
+            # Check if it's a standard format (0/1, proportion, entropy, annotation)
+            if (
+                re.match(r"^\s*[01]\s*$", result_lines[0])
+                and re.match(r"^\s*(0\.\d+|1\.0*|1)\s*$", result_lines[1])
+                and re.match(r"^\s*(\d+\.\d+|\d+)\s*$", result_lines[2])
+            ):
+                # Extract consensus proportion
+                prop_value = float(result_lines[1].strip())
+
+                # Extract entropy value
+                entropy_value = float(result_lines[2].strip())
+
+                # Extract majority prediction
+                majority_prediction = result_lines[3].strip()
+                annotation = (
+                    majority_prediction
+                    if majority_prediction and majority_prediction != "Unknown"
+                    else "Unknown"
+                )
+
+                return prop_value, entropy_value, annotation
+    except (ValueError, KeyError, IndexError, json.JSONDecodeError) as e:
+        write_log(f"Error parsing LLM response: {str(e)}", level="warning")
+
+    return None, None, None
+
+
+def check_consensus(
+    predictions: dict[str, dict[str, str]],
+    consensus_threshold: float = 0.6,
+    entropy_threshold: float = 1.0,
+    api_keys: Optional[dict[str, str]] = None,
+    return_controversial: bool = True,
+) -> Union[
+    tuple[dict[str, str], dict[str, float], dict[str, float]],
+    tuple[dict[str, str], dict[str, float], dict[str, float], list[str]],
+]:
+    """Check consensus among different model predictions using LLM assistance.
+
+    This function uses an LLM (Qwen or Claude) to evaluate semantic similarity between
+    annotations and optionally identifies controversial clusters.
+
+    Args:
+        predictions: Dictionary mapping model names to dictionaries of cluster annotations
+        consensus_threshold: Agreement threshold below which a cluster is considered controversial
+        entropy_threshold: Entropy threshold above which a cluster is considered controversial
         api_keys: Dictionary mapping provider names to API keys
+        return_controversial: Whether to return controversial clusters list
 
     Returns:
         Tuple of:
             - Dictionary mapping cluster IDs to consensus annotations
             - Dictionary mapping cluster IDs to consensus proportion scores
             - Dictionary mapping cluster IDs to entropy scores
-
+            - List of controversial cluster IDs (only if return_controversial=True)
     """
-
-    from .annotate import get_model_response
     from .prompts import create_consensus_check_prompt
 
     consensus = {}
@@ -46,6 +220,8 @@ def check_consensus_with_llm(
 
     # Ensure we have annotations
     if not predictions or not all(predictions.values()):
+        if return_controversial:
+            return {}, {}, {}, []
         return {}, {}, {}
 
     # Get all clusters
@@ -79,118 +255,38 @@ def check_consensus_with_llm(
         # Create prompt for LLM
         prompt = create_consensus_check_prompt(cluster_annotations)
 
-        # Try with Qwen first
-        max_retries = 3
-        llm_response = None
+        # Get API keys for primary and fallback providers
+        qwen_api_key = _get_api_key("qwen", api_keys)
 
-        # First try with Qwen
-        for attempt in range(max_retries):
-            try:
-                # Get API key
-                qwen_api_key = None
-                if api_keys and "qwen" in api_keys:
-                    qwen_api_key = api_keys["qwen"]
+        # Call LLM with retry and fallback logic
+        llm_response = _call_llm_with_retry(
+            prompt=prompt,
+            provider="qwen",
+            model="qwen-max-2025-01-25",
+            api_key=qwen_api_key,
+            max_retries=3,
+            fallback_provider="anthropic",
+            fallback_model="claude-3-5-sonnet-latest",
+            api_keys=api_keys,
+        )
 
-                if not qwen_api_key:
-                    from .utils import load_api_key
-
-                    qwen_api_key = load_api_key("qwen")
-
-                if qwen_api_key:
-                    llm_response = get_model_response(
-                        prompt=prompt,
-                        provider="qwen",
-                        model="qwen-max-2025-01-25",
-                        api_key=qwen_api_key,
-                    )
-                    write_log(f"Successfully got response from Qwen on attempt {attempt + 1}")
-                    break
-                write_log("No Qwen API key found, trying Claude")
-                break
-            except (
-                requests.RequestException,
-                ValueError,
-                KeyError,
-                json.JSONDecodeError,
-            ) as e:
-                write_log(f"Error on Qwen attempt {attempt + 1}: {str(e)}", level="warning")
-                if attempt == max_retries - 1:
-                    write_log("All Qwen retry attempts failed, falling back to Claude")
-                else:
-                    write_log("Waiting before next attempt...")
-                    time.sleep(5 * (2**attempt))
-
-        # Try Claude as fallback
-        if not llm_response:
-            try:
-                # Get API key
-                anthropic_api_key = None
-                if api_keys and "anthropic" in api_keys:
-                    anthropic_api_key = api_keys["anthropic"]
-
-                if not anthropic_api_key:
-                    from .utils import load_api_key
-
-                    anthropic_api_key = load_api_key("anthropic")
-
-                if anthropic_api_key:
-                    llm_response = get_model_response(
-                        prompt=prompt,
-                        provider="anthropic",
-                        model="claude-3-5-sonnet-latest",
-                        api_key=anthropic_api_key,
-                    )
-                    write_log("Successfully got response from Claude as fallback")
-                else:
-                    write_log("No Claude API key found, falling back to simple consensus")
-            except (
-                requests.RequestException,
-                ValueError,
-                KeyError,
-                json.JSONDecodeError,
-            ) as e:
-                write_log(f"Error on Claude fallback: {str(e)}", level="warning")
-
-        # Parse LLM response
+        # Parse LLM response using unified parser
         if llm_response:
-            try:
-                # Split response by newlines and clean up
-                lines = llm_response.strip().split("\n")
-                lines = [line.strip() for line in lines if line.strip()]
+            prop_value, entropy_value, majority_prediction = _parse_llm_consensus_response(
+                llm_response
+            )
 
-                # Get the last 4 non-empty lines (standard format)
-                if len(lines) >= 4:
-                    result_lines = lines[-4:]
-
-                    # Check if it's a standard format (0/1, proportion, entropy,
-                    # annotation)
-                    if (
-                        re.match(r"^\s*[01]\s*$", result_lines[0])
-                        and re.match(r"^\s*(0\.\d+|1\.0*|1)\s*$", result_lines[1])
-                        and re.match(r"^\s*(\d+\.\d+|\d+)\s*$", result_lines[2])
-                    ):
-                        # Extract consensus proportion
-                        prop_value = float(result_lines[1].strip())
-                        consensus_proportion[cluster] = prop_value
-
-                        # Extract entropy value
-                        entropy_value = float(result_lines[2].strip())
-                        entropy[cluster] = entropy_value
-
-                        # Extract majority prediction
-                        majority_prediction = result_lines[3].strip()
-                        consensus[cluster] = (
-                            majority_prediction
-                            if majority_prediction and majority_prediction != "Unknown"
-                            else "Unknown"
-                        )
-
-                        continue  # Successfully parsed, move to next cluster
-            except (ValueError, KeyError, IndexError, json.JSONDecodeError) as e:
-                write_log(f"Error parsing LLM response: {str(e)}", level="warning")
+            if (
+                prop_value is not None
+                and entropy_value is not None
+                and majority_prediction is not None
+            ):
+                consensus_proportion[cluster] = prop_value
+                entropy[cluster] = entropy_value
+                consensus[cluster] = majority_prediction
+                continue
 
         # Fallback to simple consensus calculation if LLM approach failed
-        # Count occurrences of each annotation
         annotation_counts = Counter(cluster_annotations)
 
         # Find most common annotation
@@ -212,44 +308,16 @@ def check_consensus_with_llm(
 
         consensus[cluster] = most_common_annotation
 
+    if return_controversial:
+        # Find controversial clusters based on both consensus proportion and entropy
+        controversial = [
+            cluster
+            for cluster, score in consensus_proportion.items()
+            if score < consensus_threshold or entropy.get(cluster, 0) > entropy_threshold
+        ]
+        return consensus, consensus_proportion, entropy, controversial
+
     return consensus, consensus_proportion, entropy
-
-
-def check_consensus(
-    predictions: dict[str, dict[str, str]],
-    consensus_threshold: float = 0.6,
-    entropy_threshold: float = 1.0,
-    api_keys: Optional[dict[str, str]] = None,
-) -> tuple[dict[str, str], dict[str, float], dict[str, float], list[str]]:
-    """Check if there is consensus among different model predictions.
-    Uses LLM assistance to evaluate semantic similarity between annotations.
-
-    Args:
-        predictions: Dictionary mapping model names to dictionaries of
-            cluster annotations
-        consensus_threshold: Agreement threshold below which a cluster is considered controversial
-        entropy_threshold: Entropy threshold above which a cluster is considered controversial
-        api_keys: Dictionary mapping provider names to API keys
-
-    Returns:
-        Tuple of:
-            - Dictionary mapping cluster IDs to consensus annotations
-            - Dictionary mapping cluster IDs to consensus proportion scores
-            - Dictionary mapping cluster IDs to entropy scores
-            - List of controversial cluster IDs
-
-    """
-    # Find consensus annotations and metrics using LLM
-    consensus, consensus_proportion, entropy = check_consensus_with_llm(predictions, api_keys)
-
-    # Find controversial clusters based on both consensus proportion and entropy
-    controversial = [
-        cluster
-        for cluster, score in consensus_proportion.items()
-        if score < consensus_threshold or entropy.get(cluster, 0) > entropy_threshold
-    ]
-
-    return consensus, consensus_proportion, entropy, controversial
 
 
 def process_controversial_clusters(
@@ -294,7 +362,6 @@ def process_controversial_clusters(
 
     """
 
-    from .annotate import get_model_response
     from .prompts import create_consensus_check_prompt
 
     results = {}
@@ -1107,7 +1174,6 @@ def facilitate_cluster_discussion(
         str: Discussion result
 
     """
-    from .annotate import get_model_response
     from .prompts import create_discussion_prompt
 
     # Generate discussion prompt

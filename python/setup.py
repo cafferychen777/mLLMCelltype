@@ -42,6 +42,11 @@ setup(
             "matplotlib>=3.3.0",
             "seaborn>=0.11.0",
         ],
+        "examples": [
+            "matplotlib>=3.3.0",
+            "scanpy>=1.8.0",
+            "python-dotenv>=0.19.0",
+        ],
         "openai": ["openai>=1.0.0"],
         "anthropic": ["anthropic>=0.5.0"],
         "gemini": ["google-genai>=1.0.0"],

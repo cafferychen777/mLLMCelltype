@@ -1,11 +1,6 @@
 """mLLMCelltype: A Python module for cell type annotation using various LLMs."""
 
 from .annotate import annotate_clusters, batch_annotate_clusters, get_model_response
-from .compare import (
-    analyze_confusion_patterns,
-    compare_model_predictions,
-    create_comparison_table,
-)
 from .consensus import (
     check_consensus,
     facilitate_cluster_discussion,
@@ -80,8 +75,4 @@ __all__ = [
     "print_consensus_summary",
     "facilitate_cluster_discussion",
     "summarize_discussion",
-    # Compare
-    "compare_model_predictions",
-    "create_comparison_table",
-    "analyze_confusion_patterns",
 ]

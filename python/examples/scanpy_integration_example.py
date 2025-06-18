@@ -7,20 +7,23 @@ Uses API keys from .env file in the mLLMCelltype directory.
 import os
 import sys
 
-# Set matplotlib to non-interactive mode to avoid plotting blocks
-import matplotlib
-import numpy as np
-import pandas as pd
+# Try to import matplotlib for visualization (optional)
+try:
+    import matplotlib
+    import matplotlib.pyplot as plt
 
-matplotlib.use("Agg")  # Use Agg backend, which is a non-interactive backend
-import matplotlib.pyplot as plt
-import scanpy as sc
-
-# Turn off interactive plotting
-plt.ioff()
+    matplotlib.use("Agg")  # Use Agg backend, which is a non-interactive backend
+    plt.ioff()
+    MATPLOTLIB_AVAILABLE = True
+except ImportError:
+    MATPLOTLIB_AVAILABLE = False
+    print("Warning: matplotlib not available. Plots will be skipped.")
 
 import shutil
 
+import numpy as np
+import pandas as pd
+import scanpy as sc
 from dotenv import load_dotenv
 
 # Add python directory to path for local development
@@ -151,11 +154,14 @@ if len(models) < 2:
         # Add annotations to AnnData object
         adata.obs["cell_type"] = adata.obs["leiden"].astype(str).map(annotations)
 
-        # Visualize results
-        sc.pl.umap(
-            adata, color="cell_type", legend_loc="on data", save="_single_model_annotation.png"
-        )
-        print(f"Results saved as figures/umap_single_model_annotation.png")
+        # Visualize results if matplotlib is available
+        if MATPLOTLIB_AVAILABLE:
+            sc.pl.umap(
+                adata, color="cell_type", legend_loc="on data", save="_single_model_annotation.png"
+            )
+            print(f"Results saved as figures/umap_single_model_annotation.png")
+        else:
+            print("Skipping visualization (matplotlib not available)")
 
         # Print annotations
         print("\nCluster annotations:")
@@ -191,18 +197,21 @@ adata.obs["consensus_proportion"] = (
 )
 adata.obs["entropy"] = adata.obs["leiden"].astype(str).map(consensus_results["entropy"])
 
-# Visualize results
-plt.figure(figsize=(12, 10))
-sc.pl.umap(
-    adata, color="consensus_cell_type", legend_loc="on data", save="_consensus_annotation.png"
-)
-sc.pl.umap(adata, color="consensus_proportion", save="_consensus_proportion.png")
-sc.pl.umap(adata, color="entropy", save="_entropy.png")
+# Visualize results if matplotlib is available
+if MATPLOTLIB_AVAILABLE:
+    plt.figure(figsize=(12, 10))
+    sc.pl.umap(
+        adata, color="consensus_cell_type", legend_loc="on data", save="_consensus_annotation.png"
+    )
+    sc.pl.umap(adata, color="consensus_proportion", save="_consensus_proportion.png")
+    sc.pl.umap(adata, color="entropy", save="_entropy.png")
 
-print("\nResults saved as:")
-print("- figures/umap_consensus_annotation.png")
-print("- figures/umap_consensus_proportion.png")
-print("- figures/umap_entropy.png")
+    print("\nResults saved as:")
+    print("- figures/umap_consensus_annotation.png")
+    print("- figures/umap_consensus_proportion.png")
+    print("- figures/umap_entropy.png")
+else:
+    print("\nSkipping visualization (matplotlib not available)")
 
 # Print consensus annotations with uncertainty metrics
 print("\nConsensus annotations with uncertainty metrics:")
