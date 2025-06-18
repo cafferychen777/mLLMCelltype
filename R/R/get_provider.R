@@ -11,9 +11,9 @@ utils::globalVariables(c("custom_models"))
 #' Supported providers and models include:
 #' \itemize{
 #'   \item OpenAI: 'gpt-4o', 'gpt-4o-mini', 'gpt-4.1', 'gpt-4.1-mini', 'gpt-4.1-nano', 'gpt-4-turbo', 'gpt-3.5-turbo', 'o1', 'o1-mini', 'o1-preview', 'o1-pro'
-#'   \item Anthropic: 'claude-3-7-sonnet-20250219', 'claude-3-5-sonnet-latest', 'claude-3-5-haiku-latest', 'claude-3-opus'
-#'   \item DeepSeek: 'deepseek-chat', 'deepseek-reasoner'
-#'   \item Google: 'gemini-2.5-pro', 'gemini-2.0-flash', 'gemini-2.0-flash-lite', 'gemini-2.0-flash-exp', 'gemini-1.5-pro', 'gemini-1.5-flash'
+#'   \item Anthropic: 'claude-sonnet-4-20250514', 'claude-opus-4-20250514', 'claude-3-7-sonnet-20250219', 'claude-3-5-sonnet-20241022', 'claude-3-5-haiku-20241022', 'claude-3-opus-20240229'
+#'   \item DeepSeek: 'deepseek-chat', 'deepseek-r1', 'deepseek-r1-zero', 'deepseek-reasoner'
+#'   \item Google: 'gemini-2.5-pro', 'gemini-2.5-flash', 'gemini-2.0-flash', 'gemini-2.0-flash-lite', 'gemini-1.5-pro-latest', 'gemini-1.5-flash-latest', 'gemini-1.5-flash-8b'
 #'   \item Qwen: 'qwen-max-2025-01-25', 'qwen3-72b'
 #'   \item Stepfun: 'step-2-mini', 'step-2-16k', 'step-1-8k'
 #'   \item Zhipu: 'glm-4-plus', 'glm-3-turbo'
@@ -22,10 +22,10 @@ utils::globalVariables(c("custom_models"))
 #'   \item OpenRouter: Provides access to models from multiple providers through a single API. Format: 'provider/model-name'
 #'     \itemize{
 #'       \item OpenAI models: 'openai/gpt-4o', 'openai/gpt-4o-mini', 'openai/gpt-4-turbo', 'openai/gpt-4', 'openai/gpt-3.5-turbo'
-#'       \item Anthropic models: 'anthropic/claude-3.7-sonnet', 'anthropic/claude-3.5-sonnet',
-#'         'anthropic/claude-3.5-haiku', 'anthropic/claude-3-opus'
+#'       \item Anthropic models: 'anthropic/claude-sonnet-4', 'anthropic/claude-opus-4', 'anthropic/claude-3.7-sonnet',
+#'         'anthropic/claude-3.5-sonnet', 'anthropic/claude-3.5-haiku', 'anthropic/claude-3-opus'
 #'       \item Meta models: 'meta-llama/llama-3-70b-instruct', 'meta-llama/llama-3-8b-instruct', 'meta-llama/llama-2-70b-chat'
-#'       \item Google models: 'google/gemini-2.5-pro-preview-03-25', 'google/gemini-1.5-pro-latest', 'google/gemini-1.5-flash'
+#'       \item Google models: 'google/gemini-2.5-pro', 'google/gemini-2.5-flash', 'google/gemini-2.0-flash', 'google/gemini-1.5-pro-latest', 'google/gemini-1.5-flash'
 #'       \item Mistral models: 'mistralai/mistral-large', 'mistralai/mistral-medium', 'mistralai/mistral-small'
 #'       \item Other models: 'microsoft/mai-ds-r1', 'perplexity/sonar-small-chat', 'cohere/command-r', 'deepseek/deepseek-chat', 'thudm/glm-z1-32b'
 #'     }
@@ -46,17 +46,39 @@ get_provider <- function(model) {
   # List of supported models for each provider (all in lowercase)
   openai_models <- c("gpt-4o", "gpt-4o-mini", "gpt-4.1", "gpt-4.1-mini", "gpt-4.1-nano", "gpt-4-turbo", "gpt-3.5-turbo", "o1", "o1-mini", "o1-preview", "o1-pro")
   anthropic_models <- c(
-    "claude-3-5-haiku-20241022",
-    "claude-3-5-sonnet-20240620",
-    "claude-3-5-sonnet-20241022",
-    "claude-3-7-sonnet-20250219",
-    "claude-3-haiku-20240307",
-    "claude-3-opus-20240229",
+    "claude-sonnet-4-20250514",
     "claude-opus-4-20250514",
-    "claude-sonnet-4-20250514"
+    "claude-3-7-sonnet-20250219",
+    "claude-3-5-sonnet-20241022",
+    "claude-3-5-sonnet-20240620",
+    "claude-3-5-haiku-20241022",
+    "claude-3-opus-20240229",
+    "claude-3-haiku-20240307"
   )
-  deepseek_models <- c("deepseek-chat", "deepseek-reasoner")
-  gemini_models <- c("gemini-2.5-pro", "gemini-2.0-flash", "gemini-2.0-flash-lite", "gemini-2.0-flash-exp", "gemini-1.5-pro", "gemini-1.5-flash")
+  deepseek_models <- c("deepseek-chat", "deepseek-r1", "deepseek-r1-zero", "deepseek-reasoner")
+  gemini_models <- c(
+    "gemini-2.5-pro",
+    "gemini-2
+    .5-flash",
+    "gemini-2.5-pro-preview-06-05",
+    "gemini-2.5-pro-preview-05-06",
+    "gemini-2.5-pro-preview-03-25",
+    "gemini-2.5-flash-preview-05-20",
+    "gemini-2.5-flash-preview-04-17",
+    "gemini-2.0-flash",
+    "gemini-2.0-flash-001",
+    "gemini-2.0-flash-lite",
+    "gemini-2.0-flash-lite-001",
+    "gemini-2.0-flash-exp",
+    "gemini-1.5-pro-latest",
+    "gemini-1.5-pro-002",
+    "gemini-1.5-pro",
+    "gemini-1.5-flash-latest",
+    "gemini-1.5-flash-002",
+    "gemini-1.5-flash",
+    "gemini-1.5-flash-8b",
+    "gemini-1.5-flash-8b-001"
+  )
   qwen_models <- c(
     "qwen-max",
     "qwen-max-2025-01-25",
@@ -103,7 +125,7 @@ get_provider <- function(model) {
     "chatglm-6b",
     "glm-edge"
   )
-  minimax_models <- c("minimax-text-01")
+  minimax_models <- c("minimax-text-01", "minimax-01", "minimax-m1")
   grok_models <- c("grok-3", "grok-3-latest", "grok-3-fast", "grok-3-fast-latest", "grok-3-mini", "grok-3-mini-latest", "grok-3-mini-fast", "grok-3-mini-fast-latest")
   openrouter_models <- c(
     # OpenAI models
@@ -118,19 +140,19 @@ get_provider <- function(model) {
     "openai/gpt-4o-mini-2024-07-18", "openai/gpt-4o-mini-search-preview", "openai/gpt-4o-search-preview",
     "openai/gpt-4o:extended", "openai/o1", "openai/o1-mini",
     "openai/o1-mini-2024-09-12", "openai/o1-preview", "openai/o1-preview-2024-09-12",
-    "openai/o1-pro", "openai/o3", "openai/o3-mini",
+    "openai/o1-pro", "openai/o3", "openai/o3-mini", "openai/o3-pro",
     "openai/o3-mini-high", "openai/o4-mini", "openai/o4-mini-high",
 
     # Anthropic models
-    "anthropic/claude-2", "anthropic/claude-2.0", "anthropic/claude-2.0:beta",
-    "anthropic/claude-2.1", "anthropic/claude-2.1:beta", "anthropic/claude-2:beta",
-    "anthropic/claude-3-haiku", "anthropic/claude-3-haiku:beta", "anthropic/claude-3-opus",
-    "anthropic/claude-3-opus:beta", "anthropic/claude-3-sonnet", "anthropic/claude-3-sonnet:beta",
+    "anthropic/claude-opus-4", "anthropic/claude-sonnet-4", "anthropic/claude-3.7-sonnet",
+    "anthropic/claude-3.7-sonnet:beta", "anthropic/claude-3.7-sonnet:thinking", 
+    "anthropic/claude-3.5-sonnet", "anthropic/claude-3.5-sonnet-20241022", "anthropic/claude-3.5-sonnet-20240620",
+    "anthropic/claude-3.5-sonnet-20240620:beta", "anthropic/claude-3.5-sonnet:beta",
     "anthropic/claude-3.5-haiku", "anthropic/claude-3.5-haiku-20241022", "anthropic/claude-3.5-haiku-20241022:beta",
-    "anthropic/claude-3.5-haiku:beta", "anthropic/claude-3.5-sonnet", "anthropic/claude-3.5-sonnet-20240620",
-    "anthropic/claude-3.5-sonnet-20240620:beta", "anthropic/claude-3.5-sonnet:beta", "anthropic/claude-3.7-sonnet",
-    "anthropic/claude-3.7-sonnet:beta", "anthropic/claude-3.7-sonnet:thinking", "anthropic/claude-opus-4",
-    "anthropic/claude-sonnet-4",
+    "anthropic/claude-3.5-haiku:beta", "anthropic/claude-3-opus", "anthropic/claude-3-opus:beta", 
+    "anthropic/claude-3-sonnet", "anthropic/claude-3-sonnet:beta", "anthropic/claude-3-haiku", 
+    "anthropic/claude-3-haiku:beta", "anthropic/claude-2.1", "anthropic/claude-2.1:beta", 
+    "anthropic/claude-2.0", "anthropic/claude-2.0:beta", "anthropic/claude-2", "anthropic/claude-2:beta",
 
     # Meta-Llama models
     "meta-llama/llama-2-70b-chat", "meta-llama/llama-3-70b-instruct", "meta-llama/llama-3-8b-instruct",
@@ -144,14 +166,15 @@ get_provider <- function(model) {
     "meta-llama/llama-guard-3-8b", "meta-llama/llama-guard-4-12b",
 
     # Google models
-    "google/gemini-2.0-flash-001", "google/gemini-2.0-flash-exp:free", "google/gemini-2.0-flash-lite-001",
+    "google/gemini-2.5-pro", "google/gemini-2.5-flash", "google/gemini-2.5-flash-lite-preview-06-17",
+    "google/gemini-2.5-pro-preview", "google/gemini-2.5-pro-preview-05-06", "google/gemini-2.5-pro-exp-03-25",
     "google/gemini-2.5-flash-preview", "google/gemini-2.5-flash-preview-05-20", "google/gemini-2.5-flash-preview-05-20:thinking",
-    "google/gemini-2.5-flash-preview:thinking", "google/gemini-2.5-pro-exp-03-25", "google/gemini-2.5-pro-preview",
-    "google/gemini-flash-1.5", "google/gemini-flash-1.5-8b", "google/gemini-pro-1.5",
+    "google/gemini-2.5-flash-preview:thinking", "google/gemini-2.0-flash-001", "google/gemini-2.0-flash-lite-001", 
+    "google/gemini-2.0-flash-exp:free", "google/gemini-pro-1.5", "google/gemini-flash-1.5", 
+    "google/gemini-flash-1.5-8b", "google/gemma-3-27b-it", "google/gemma-3-27b-it:free", 
+    "google/gemma-3-12b-it", "google/gemma-3-12b-it:free", "google/gemma-3-4b-it", 
+    "google/gemma-3-4b-it:free", "google/gemma-3-1b-it:free", "google/gemma-3n-e4b-it:free", 
     "google/gemma-2-27b-it", "google/gemma-2-9b-it", "google/gemma-2-9b-it:free",
-    "google/gemma-3-12b-it", "google/gemma-3-12b-it:free", "google/gemma-3-1b-it:free",
-    "google/gemma-3-27b-it", "google/gemma-3-27b-it:free", "google/gemma-3-4b-it",
-    "google/gemma-3-4b-it:free", "google/gemma-3n-e4b-it:free",
 
     # Mistral models
     "mistralai/codestral-2501", "mistralai/codestral-mamba", "mistralai/devstral-small",
@@ -168,11 +191,14 @@ get_provider <- function(model) {
     # DeepSeek models
     "deepseek/deepseek-chat", "deepseek/deepseek-chat-v3-0324", "deepseek/deepseek-chat-v3-0324:free",
     "deepseek/deepseek-chat:free", "deepseek/deepseek-coder", "deepseek/deepseek-prover-v2",
-    "deepseek/deepseek-prover-v2:free", "deepseek/deepseek-r1", "deepseek/deepseek-r1-distill-llama-70b",
-    "deepseek/deepseek-r1-distill-llama-70b:free", "deepseek/deepseek-r1-distill-llama-8b", "deepseek/deepseek-r1-distill-qwen-1.5b",
-    "deepseek/deepseek-r1-distill-qwen-14b", "deepseek/deepseek-r1-distill-qwen-14b:free", "deepseek/deepseek-r1-distill-qwen-32b",
+    "deepseek/deepseek-prover-v2:free", "deepseek/deepseek-r1", "deepseek/deepseek-r1-0528", 
+    "deepseek/deepseek-r1-0528:free", "deepseek/deepseek-r1-0528-qwen3-8b", "deepseek/deepseek-r1-0528-qwen3-8b:free",
+    "deepseek/deepseek-r1-distill-llama-70b", "deepseek/deepseek-r1-distill-llama-70b:free", 
+    "deepseek/deepseek-r1-distill-llama-8b", "deepseek/deepseek-r1-distill-qwen-1.5b",
+    "deepseek/deepseek-r1-distill-qwen-7b", "deepseek/deepseek-r1-distill-qwen-14b", 
+    "deepseek/deepseek-r1-distill-qwen-14b:free", "deepseek/deepseek-r1-distill-qwen-32b",
     "deepseek/deepseek-r1-distill-qwen-32b:free", "deepseek/deepseek-r1-zero:free", "deepseek/deepseek-r1:free",
-    "deepseek/deepseek-v3-base:free",
+    "deepseek/deepseek-v3-base:free", "tngtech/deepseek-r1t-chimera:free",
 
     # Qwen models
     "qwen/qwen-2-72b-instruct", "qwen/qwen-2.5-72b-instruct", "qwen/qwen-2.5-72b-instruct:free",
@@ -215,7 +241,7 @@ get_provider <- function(model) {
     "featherless/qwerky-72b:free", "gryphe/mythomax-l2-13b", "inception/mercury-coder-small-beta",
     "infermatic/mn-inferor-12b", "inflection/inflection-3-pi", "inflection/inflection-3-productivity",
     "liquid/lfm-3b", "liquid/lfm-40b", "liquid/lfm-7b",
-    "mancer/weaver", "minimax/minimax-01", "moonshotai/kimi-vl-a3b-thinking:free",
+    "mancer/weaver", "minimax/minimax-01", "minimax/minimax-m1", "minimax/minimax-m1:extended", "moonshotai/kimi-vl-a3b-thinking:free",
     "moonshotai/moonlight-16b-a3b-instruct:free", "neversleep/llama-3-lumimaid-70b", "neversleep/llama-3-lumimaid-8b",
     "neversleep/llama-3-lumimaid-8b:extended", "neversleep/llama-3.1-lumimaid-70b", "neversleep/llama-3.1-lumimaid-8b",
     "neversleep/noromaid-20b", "nothingiisreal/mn-celeste-12b", "nousresearch/deephermes-3-llama-3-8b-preview:free",
