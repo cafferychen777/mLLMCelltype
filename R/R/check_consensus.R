@@ -3,7 +3,7 @@
 .CONSENSUS_CONSTANTS <- list(
   MAX_RETRIES = 3,
   DEFAULT_RESPONSE = "0\n0\n0\nUnknown",
-  FALLBACK_MODELS = c("qwen-max-2025-01-25", "claude-3-5-sonnet-20241022", "gpt-4o", "gemini-2.0-flash"),
+  FALLBACK_MODELS = c("claude-sonnet-4-20250514", "gpt-4.1-mini", "gemini-2.5-flash", "qwen-max-2025-01-25", "deepseek-r1"),
   NUMERIC_PATTERNS = list(
     CONSENSUS_INDICATOR = "^\\s*[01]\\s*$",
     PROPORTION = "^\\s*(0\\.\\d+|1\\.0*|1)\\s*$",
