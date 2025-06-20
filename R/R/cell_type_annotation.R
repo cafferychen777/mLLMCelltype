@@ -47,11 +47,11 @@ utils::globalVariables(c("cluster", "avg_log2FC", "gene"))
 #' @param tissue_name Character string specifying the tissue type or cell source (e.g., 'human PBMC',
 #'   'mouse brain'). This helps provide context for more accurate annotations.
 #' @param model Character string specifying the LLM model to use. Supported models:
-#'   - OpenAI: 'gpt-4o', 'o1'
-#'   - Anthropic: 'claude-3-7-sonnet-20250219', 'claude-3-5-sonnet-20241022',
+#'   - OpenAI: 'gpt-4o', 'gpt-4o-mini', 'gpt-4.1', 'gpt-4.1-mini', 'gpt-4.1-nano', 'gpt-4-turbo', 'gpt-3.5-turbo', 'o1', 'o1-mini', 'o1-preview', 'o1-pro'
+#'   - Anthropic: 'claude-sonnet-4-20250514', 'claude-opus-4-20250514', 'claude-3-7-sonnet-20250219', 'claude-3-5-sonnet-20241022',
 #'     'claude-3-5-haiku-20241022', 'claude-3-opus-20240229'
-#'   - DeepSeek: 'deepseek-chat', 'deepseek-reasoner'
-#'   - Google: 'gemini-2.0-flash', 'gemini-2.0-flash-exp', 'gemini-1.5-pro', 'gemini-1.5-flash'
+#'   - DeepSeek: 'deepseek-chat', 'deepseek-r1', 'deepseek-r1-zero', 'deepseek-reasoner'
+#'   - Google: 'gemini-2.5-pro', 'gemini-2.5-flash', 'gemini-2.0-flash', 'gemini-2.0-flash-lite', 'gemini-1.5-pro-latest', 'gemini-1.5-flash-latest', 'gemini-1.5-flash-8b'
 #'   - Alibaba: 'qwen-max-2025-01-25', 'qwen3-72b'
 #'   - Stepfun: 'step-2-16k', 'step-2-mini', 'step-1-8k'
 #'   - Zhipu: 'glm-4-plus', 'glm-3-turbo'
@@ -59,10 +59,10 @@ utils::globalVariables(c("cluster", "avg_log2FC", "gene"))
 #'   - X.AI: 'grok-3-latest', 'grok-3', 'grok-3-fast', 'grok-3-fast-latest', 'grok-3-mini', 'grok-3-mini-latest', 'grok-3-mini-fast', 'grok-3-mini-fast-latest'
 #'   - OpenRouter: Provides access to models from multiple providers through a single API. Format: 'provider/model-name'
 #'     - OpenAI models: 'openai/gpt-4o', 'openai/gpt-4o-mini', 'openai/gpt-4-turbo', 'openai/gpt-4', 'openai/gpt-3.5-turbo'
-#'     - Anthropic models: 'anthropic/claude-3.7-sonnet', 'anthropic/claude-3.5-sonnet',
-#'       'anthropic/claude-3.5-haiku', 'anthropic/claude-3-opus'
+#'     - Anthropic models: 'anthropic/claude-sonnet-4', 'anthropic/claude-opus-4', 'anthropic/claude-3.7-sonnet',
+#'       'anthropic/claude-3.5-sonnet', 'anthropic/claude-3.5-haiku', 'anthropic/claude-3-opus'
 #'     - Meta models: 'meta-llama/llama-3-70b-instruct', 'meta-llama/llama-3-8b-instruct', 'meta-llama/llama-2-70b-chat'
-#'     - Google models: 'google/gemini-2.5-pro-preview-03-25', 'google/gemini-1.5-pro-latest', 'google/gemini-1.5-flash'
+#'     - Google models: 'google/gemini-2.5-pro', 'google/gemini-2.5-flash', 'google/gemini-2.0-flash', 'google/gemini-1.5-pro-latest', 'google/gemini-1.5-flash'
 #'     - Mistral models: 'mistralai/mistral-large', 'mistralai/mistral-medium', 'mistralai/mistral-small'
 #'     - Other models: 'microsoft/mai-ds-r1', 'perplexity/sonar-small-chat', 'cohere/command-r', 'deepseek/deepseek-chat', 'thudm/glm-z1-32b'
 #' @param api_key Character string containing the API key for the selected model.
