@@ -544,6 +544,61 @@ def clean_annotation(annotation: str) -> str:
     return annotation
 
 
+def normalize_annotation_for_comparison(annotation: str) -> str:
+    """Normalize cell type annotation for comparison purposes.
+
+    This function performs more aggressive normalization than clean_annotation
+    to help identify semantically similar annotations in the fallback consensus calculation.
+
+    Args:
+        annotation: Cell type annotation string
+
+    Returns:
+        str: Normalized annotation for comparison
+    """
+    if not annotation:
+        return ""
+
+    # Start with basic cleaning
+    normalized = clean_annotation(annotation)
+
+    # Convert to lowercase for comparison
+    normalized = normalized.lower()
+
+    # Remove common punctuation and symbols
+    normalized = normalized.replace("-", " ")
+    normalized = normalized.replace("+", " positive ")
+    normalized = normalized.replace("/", " ")
+    normalized = normalized.replace("_", " ")
+
+    # Normalize common variations
+    replacements = {
+        "t cell": "t cells",
+        "b cell": "b cells",
+        "nk cell": "nk cells",
+        "cd4 ": "cd4+ ",
+        "cd8 ": "cd8+ ",
+        "naive": "naive",
+        "naïve": "naive",
+        "tumour": "tumor",
+        " cell$": " cells",  # Ensure plural at end
+    }
+
+    for old, new in replacements.items():
+        if "$" in old:
+            # Handle regex patterns
+            import re
+
+            normalized = re.sub(old, new, normalized)
+        else:
+            normalized = normalized.replace(old, new)
+
+    # Remove extra whitespace
+    normalized = " ".join(normalized.split())
+
+    return normalized
+
+
 def find_agreement(
     annotations: dict[str, dict[str, str]],
 ) -> tuple[dict[str, str], dict[str, float], dict[str, float]]:

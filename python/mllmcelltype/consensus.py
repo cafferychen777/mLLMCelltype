@@ -15,7 +15,7 @@ import requests
 from .annotate import get_model_response
 from .logger import write_log
 from .prompts import create_discussion_consensus_check_prompt, create_discussion_prompt
-from .utils import clean_annotation
+from .utils import clean_annotation, normalize_annotation_for_comparison
 
 
 def _get_api_key(provider: str, api_keys: Optional[dict[str, str]] = None) -> Optional[str]:
@@ -189,13 +189,15 @@ def check_consensus(
     entropy_threshold: float = 1.0,
     api_keys: Optional[dict[str, str]] = None,
     return_controversial: bool = True,
+    consensus_model: Optional[dict[str, str]] = None,
+    available_models: Optional[list[Union[str, dict[str, str]]]] = None,
 ) -> Union[
     tuple[dict[str, str], dict[str, float], dict[str, float]],
     tuple[dict[str, str], dict[str, float], dict[str, float], list[str]],
 ]:
     """Check consensus among different model predictions using LLM assistance.
 
-    This function uses an LLM (Qwen or Claude) to evaluate semantic similarity between
+    This function uses an LLM to evaluate semantic similarity between
     annotations and optionally identifies controversial clusters.
 
     Args:
@@ -204,6 +206,11 @@ def check_consensus(
         entropy_threshold: Entropy threshold above which a cluster is considered controversial
         api_keys: Dictionary mapping provider names to API keys
         return_controversial: Whether to return controversial clusters list
+        consensus_model: Optional dict with 'provider' and 'model' keys to specify which model
+            to use for consensus checking. If not provided, will try available_models first,
+            then defaults to Qwen with Anthropic fallback.
+        available_models: Optional list of models that are available for use. Used as fallback
+            when consensus_model is not specified and default models are not available.
 
     Returns:
         Tuple of:
@@ -255,15 +262,55 @@ def check_consensus(
         # Create prompt for LLM
         prompt = create_consensus_check_prompt(cluster_annotations)
 
-        # Get API keys for primary and fallback providers
-        qwen_api_key = _get_api_key("qwen", api_keys)
+        # Determine which model to use
+        if consensus_model:
+            primary_provider = consensus_model.get("provider", "qwen")
+            primary_model = consensus_model.get("model", "qwen-max-2025-01-25")
+        else:
+            # Default to Qwen if not specified
+            primary_provider = "qwen"
+            primary_model = "qwen-max-2025-01-25"
+
+        # Get API key for primary provider
+        primary_api_key = _get_api_key(primary_provider, api_keys)
+
+        # If primary model is not available and we have available_models, try to use one of them
+        if not primary_api_key and available_models and not consensus_model:
+            write_log(
+                f"Primary consensus model {primary_provider} not available, trying available models",
+                level="info",
+            )
+
+            from .functions import get_provider
+
+            # Try to find a suitable model from available_models
+            for model_item in available_models:
+                if isinstance(model_item, dict):
+                    alt_provider = model_item.get("provider")
+                    alt_model = model_item.get("model")
+                    if not alt_provider and alt_model:
+                        alt_provider = get_provider(alt_model)
+                else:
+                    alt_model = model_item
+                    alt_provider = get_provider(model_item)
+
+                # Check if we have API key for this alternative model
+                if alt_provider and alt_provider in api_keys:
+                    primary_provider = alt_provider
+                    primary_model = alt_model
+                    primary_api_key = api_keys[alt_provider]
+                    write_log(
+                        f"Using available model {alt_model} from {alt_provider} for consensus checking",
+                        level="info",
+                    )
+                    break
 
         # Call LLM with retry and fallback logic
         llm_response = _call_llm_with_retry(
             prompt=prompt,
-            provider="qwen",
-            model="qwen-max-2025-01-25",
-            api_key=qwen_api_key,
+            provider=primary_provider,
+            model=primary_model,
+            api_key=primary_api_key,
             max_retries=3,
             fallback_provider="anthropic",
             fallback_model="claude-3-5-sonnet-latest",
@@ -287,26 +334,51 @@ def check_consensus(
                 continue
 
         # Fallback to simple consensus calculation if LLM approach failed
-        annotation_counts = Counter(cluster_annotations)
+        write_log(f"Using fallback consensus calculation for cluster {cluster}", level="info")
 
-        # Find most common annotation
-        most_common = annotation_counts.most_common(1)[0]
-        most_common_annotation = most_common[0]
-        most_common_count = most_common[1]
+        # Normalize annotations for better comparison
+        normalized_annotations = {}
+        for original in cluster_annotations:
+            normalized = normalize_annotation_for_comparison(original)
+            if normalized not in normalized_annotations:
+                normalized_annotations[normalized] = []
+            normalized_annotations[normalized].append(original)
 
-        # Calculate consensus proportion
+        # Count normalized annotations
+        normalized_counts = {
+            norm: len(originals) for norm, originals in normalized_annotations.items()
+        }
+
+        # Find most common normalized annotation
+        most_common_normalized = max(normalized_counts.items(), key=lambda x: x[1])
+        most_common_norm_key = most_common_normalized[0]
+        most_common_count = most_common_normalized[1]
+
+        # Get the most frequent original annotation from the most common normalized group
+        original_annotations = normalized_annotations[most_common_norm_key]
+        original_counts = Counter(original_annotations)
+        most_common_annotation = original_counts.most_common(1)[0][0]
+
+        # Calculate consensus proportion based on normalized counts
         prop = most_common_count / len(cluster_annotations)
         consensus_proportion[cluster] = prop
 
-        # Calculate entropy
+        # Calculate entropy based on normalized groups
         ent = 0.0
         total = len(cluster_annotations)
-        for count in annotation_counts.values():
+        for count in normalized_counts.values():
             p = count / total
             ent -= p * (math.log2(p) if p > 0 else 0)
         entropy[cluster] = ent
 
         consensus[cluster] = most_common_annotation
+
+        if prop < consensus_threshold or ent > entropy_threshold:
+            write_log(
+                f"Cluster {cluster} may be controversial based on fallback calculation: "
+                f"CP={prop:.2f}, H={ent:.2f}",
+                level="info",
+            )
 
     if return_controversial:
         # Find controversial clusters based on both consensus proportion and entropy
@@ -814,6 +886,7 @@ def interactive_consensus_annotation(
     use_cache: bool = True,
     cache_dir: Optional[str] = None,
     verbose: bool = False,
+    consensus_model: Optional[Union[str, dict[str, str]]] = None,
 ) -> dict[str, Any]:
     """Perform consensus annotation of cell types using multiple LLMs and interactive resolution.
 
@@ -830,6 +903,10 @@ def interactive_consensus_annotation(
         use_cache: Whether to use cache
         cache_dir: Directory to store cache files
         verbose: Whether to print detailed logs
+        consensus_model: Optional model specification for consensus checking and discussion.
+            Can be a string (model name) or dict with 'provider' and 'model' keys.
+            If not provided, defaults to Qwen for consensus checking and selects from
+            input models for discussion.
 
     Returns:
         dict[str, Any]: Dictionary containing consensus results and metadata
@@ -861,6 +938,26 @@ def interactive_consensus_annotation(
                 api_key = load_api_key(provider)
                 if api_key:
                     api_keys[provider] = api_key
+
+    # Process consensus_model parameter
+    consensus_model_dict = None
+    if consensus_model:
+        if isinstance(consensus_model, str):
+            # If it's a string, get the provider
+            consensus_provider = get_provider(consensus_model)
+            consensus_model_dict = {"provider": consensus_provider, "model": consensus_model}
+        else:
+            # It's already a dict
+            consensus_model_dict = consensus_model
+
+        # Ensure we have API key for consensus model
+        consensus_provider = consensus_model_dict.get("provider")
+        if consensus_provider and consensus_provider not in api_keys:
+            from .utils import load_api_key
+
+            api_key = load_api_key(consensus_provider)
+            if api_key:
+                api_keys[consensus_provider] = api_key
 
     # Run initial annotations with all models
     model_results = {}
@@ -932,6 +1029,8 @@ def interactive_consensus_annotation(
         consensus_threshold=consensus_threshold,
         entropy_threshold=entropy_threshold,
         api_keys=api_keys,
+        consensus_model=consensus_model_dict,
+        available_models=models,
     )
 
     if verbose:
@@ -940,49 +1039,56 @@ def interactive_consensus_annotation(
     # If there are controversial clusters, resolve them
     resolved = {}
     if controversial:
-        # Choose best model for discussion
+        # Choose model for discussion
         discussion_model = None
         discussion_provider = None
 
-        # Try to use the most capable model available
-        for preferred_model_name in ["gpt-4o", "claude-3-opus", "gemini-2.0-pro"]:
-            # Check if the preferred model is in the models list
-            for model_item in models:
-                if isinstance(model_item, dict):
-                    # For dictionary models, check the 'model' key
-                    if model_item.get("model") == preferred_model_name:
-                        discussion_provider = model_item.get("provider")
-                        discussion_model = preferred_model_name
-                        # If provider is not explicitly provided, try to get it from model name
-                        if not discussion_provider:
-                            discussion_provider = get_provider(discussion_model)
-                        if discussion_provider in api_keys:
+        # First priority: use consensus_model if specified
+        if consensus_model_dict:
+            discussion_provider = consensus_model_dict.get("provider")
+            discussion_model = consensus_model_dict.get("model")
+            if verbose:
+                write_log(f"Using specified consensus model for discussion: {discussion_model}")
+        else:
+            # Otherwise, try to use the most capable model available from the input models
+            for preferred_model_name in ["gpt-4o", "claude-3-opus", "gemini-2.0-pro"]:
+                # Check if the preferred model is in the models list
+                for model_item in models:
+                    if isinstance(model_item, dict):
+                        # For dictionary models, check the 'model' key
+                        if model_item.get("model") == preferred_model_name:
+                            discussion_provider = model_item.get("provider")
+                            discussion_model = preferred_model_name
+                            # If provider is not explicitly provided, try to get it from model name
+                            if not discussion_provider:
+                                discussion_provider = get_provider(discussion_model)
+                            if discussion_provider in api_keys:
+                                break
+                    elif model_item == preferred_model_name:
+                        # For string models
+                        provider = get_provider(preferred_model_name)
+                        if provider in api_keys:
+                            discussion_model = preferred_model_name
+                            discussion_provider = provider
                             break
-                elif model_item == preferred_model_name:
-                    # For string models
-                    provider = get_provider(preferred_model_name)
-                    if provider in api_keys:
-                        discussion_model = preferred_model_name
-                        discussion_provider = provider
-                        break
-            # If we found a model, break out of the outer loop too
-            if discussion_model:
-                break
+                # If we found a model, break out of the outer loop too
+                if discussion_model:
+                    break
 
-        # If no preferred model is available, use the first one
-        if not discussion_model and models:
-            first_model = models[0]
-            # Handle both string models and dict models
-            if isinstance(first_model, dict):
-                discussion_provider = first_model.get("provider")
-                discussion_model = first_model.get("model")
+            # If no preferred model is available, use the first one
+            if not discussion_model and models:
+                first_model = models[0]
+                # Handle both string models and dict models
+                if isinstance(first_model, dict):
+                    discussion_provider = first_model.get("provider")
+                    discussion_model = first_model.get("model")
 
-                # If provider is not explicitly provided, try to get it from model name
-                if not discussion_provider and discussion_model:
+                    # If provider is not explicitly provided, try to get it from model name
+                    if not discussion_provider and discussion_model:
+                        discussion_provider = get_provider(discussion_model)
+                else:
+                    discussion_model = first_model
                     discussion_provider = get_provider(discussion_model)
-            else:
-                discussion_model = first_model
-                discussion_provider = get_provider(discussion_model)
 
         if discussion_model:
             if verbose:
@@ -1073,7 +1179,14 @@ def print_consensus_summary(result: dict[str, Any]) -> None:
     print(f"Species: {metadata.get('species', 'Unknown')}")
     if metadata.get("tissue"):
         print(f"Tissue: {metadata['tissue']}")
-    print(f"Models used: {', '.join(metadata.get('models', []))}")
+    models_list = metadata.get("models", [])
+    model_names = []
+    for model in models_list:
+        if isinstance(model, dict):
+            model_names.append(model.get("model", "Unknown"))
+        else:
+            model_names.append(str(model))
+    print(f"Models used: {', '.join(model_names)}")
     print(f"Consensus threshold: {metadata.get('consensus_threshold', 0.6)}")
     print()
 
