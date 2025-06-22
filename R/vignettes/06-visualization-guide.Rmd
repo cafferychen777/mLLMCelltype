@@ -25,7 +25,7 @@ knitr::opts_chunk$set(
 )
 ```
 
-<img src="../man/figures/logo.png" align="right" height="139" alt="mLLMCelltype logo" />
+![mLLMCelltype logo](../man/figures/logo.png)
 
 # Visualization Guide
 
@@ -342,7 +342,7 @@ p1
 
 **Example Output:**
 
-<img src="figures/png/fig1_cell_types.png" alt="Enhanced Cell Type UMAP" width="90%"/>
+![Enhanced Cell Type UMAP](figures/png/fig1_cell_types.png)
 
 This visualization clearly shows distinct cell type clusters with optimized labels and borders, making it easy to identify different cell populations.
 
@@ -373,7 +373,7 @@ p2
 
 **Example Output:**
 
-<img src="figures/png/fig2_density_contours.png" alt="UMAP with Density Contours" width="90%"/>
+![UMAP with Density Contours](figures/png/fig2_density_contours.png)
 
 Density contours highlight the concentration of cells within each cluster, providing additional information about cluster density and boundaries.
 
@@ -402,7 +402,7 @@ p3
 
 **Example Output:**
 
-<img src="figures/png/fig3_controversial_clusters.png" alt="Controversial Clusters" width="90%"/>
+![Controversial Clusters](figures/png/fig3_controversial_clusters.png)
 
 This visualization highlights clusters with low consensus or high entropy (red), which may require further investigation or validation.
 
@@ -434,7 +434,7 @@ p4
 
 **Example Output:**
 
-<img src="figures/png/fig4_marginal_distributions.png" alt="UMAP with Marginal Distributions" width="90%"/>
+![UMAP with Marginal Distributions](figures/png/fig4_marginal_distributions.png)
 
 Marginal distributions show the density of cells along each axis, providing additional context about the overall distribution of cells in the UMAP space.
 
@@ -467,7 +467,7 @@ p5
 
 **Example Output:**
 
-<img src="figures/png/fig5_consensus_proportion.png" alt="Consensus Proportion" width="90%"/>
+![Consensus Proportion](figures/png/fig5_consensus_proportion.png)
 
 This visualization shows the consensus proportion for each cell, with higher values (blue) indicating greater agreement among models about the cell type annotation.
 
@@ -500,7 +500,7 @@ p6
 
 **Example Output:**
 
-<img src="figures/png/fig6_entropy.png" alt="Shannon Entropy" width="90%"/>
+![Shannon Entropy](figures/png/fig6_entropy.png)
 
 This visualization shows the entropy for each cell, with higher values (yellow) indicating greater uncertainty in the cell type annotation. Lower entropy (red) suggests more confident annotations.
 
@@ -534,7 +534,7 @@ p7
 
 **Example Output:**
 
-<img src="figures/png/fig7_cell_types_with_consensus.png" alt="Cell Types with Consensus Proportion" width="90%"/>
+![Cell Types with Consensus Proportion](figures/png/fig7_cell_types_with_consensus.png)
 
 This visualization combines cell type information with consensus proportion, showing both the cell type clusters and the confidence in each annotation. Cell type boundaries are shown with colored outlines, while the color intensity represents the consensus proportion.
 
@@ -573,7 +573,7 @@ p8
 
 **Example Output:**
 
-<img src="figures/png/fig8_uncertainty_violins.png" alt="Uncertainty Metrics Violin Plots" width="90%"/>
+![Uncertainty Metrics Violin Plots](figures/png/fig8_uncertainty_violins.png)
 
 Violin plots show the distribution of consensus proportion and entropy values for each cell type, allowing for easy comparison of annotation confidence across different cell populations.
 
@@ -597,7 +597,7 @@ simplified_dashboard
 
 **Example Output:**
 
-<img src="figures/png/fig9_dashboard.png" alt="Combined Dashboard" width="90%"/>
+![Combined Dashboard](figures/png/fig9_dashboard.png)
 
 This dashboard combines multiple visualizations into a single figure, providing a comprehensive view of cell type annotations and uncertainty metrics. The panels are labeled for easy reference in publications.
 
@@ -629,7 +629,7 @@ p1_pub
 
 **Example Output:**
 
-<img src="figures/png/fig10_publication.png" alt="High-Resolution Publication Figure" width="90%"/>
+![High-Resolution Publication Figure](figures/png/fig10_publication.png)
 
 This high-resolution figure is specifically designed for publication, with optimized dimensions, font sizes, and visual elements. The increased height provides more space for clear visualization of cell type clusters and labels.
 
@@ -673,7 +673,10 @@ dev.off()
 
 ## Marker Gene Visualization
 
-mLLMCelltype includes enhanced marker gene visualization functions that create publication-ready bubble plots and heatmaps showing marker gene expression patterns across annotated cell types. These visualizations seamlessly integrate with the consensus annotation workflow.
+mLLMCelltype includes enhanced marker gene visualization functions that create publication-ready dotplots and heatmaps showing marker gene expression patterns across annotated cell types. These visualizations seamlessly integrate with the consensus annotation workflow:
+
+- **Dotplots**: Classic visualization with marker genes vs cell types, showing both expression level and percentage
+- **Heatmaps**: Comprehensive expression matrices with hierarchical clustering and consensus annotations
 
 ### Prerequisites for Marker Gene Visualization
 
@@ -690,11 +693,19 @@ if (!requireNamespace("viridis", quietly = TRUE)) {
 if (!requireNamespace("dplyr", quietly = TRUE)) {
   install.packages("dplyr")
 }
+if (!requireNamespace("ComplexHeatmap", quietly = TRUE)) {
+  BiocManager::install("ComplexHeatmap")
+}
+if (!requireNamespace("circlize", quietly = TRUE)) {
+  install.packages("circlize")
+}
 
 # Load required packages
 library(pheatmap)
 library(viridis)
 library(dplyr)
+library(ComplexHeatmap)  # For advanced heatmaps
+library(circlize)        # For color functions
 ```
 
 ### Finding Marker Genes
@@ -751,9 +762,10 @@ ggsave(
 
 **Example Output:**
 
-<img src="figures/png/marker_bubble_plot.png" alt="Marker Gene Bubble Plot" width="90%"/>
+![Marker Gene Bubble Plot](figures/png/marker_bubble_plot.png)
 
 This bubble plot visualization shows:
+
 - **X-axis**: Cell types (from consensus annotation)
 - **Y-axis**: Marker genes (ordered by expression level)
 - **Bubble size**: Percentage of cells expressing the gene
@@ -784,9 +796,10 @@ print(head(heatmap_matrix))
 
 **Example Output:**
 
-<img src="figures/png/marker_heatmap.png" alt="Marker Gene Heatmap" width="90%"/>
+![Marker Gene Heatmap](figures/png/marker_heatmap.png)
 
 This heatmap visualization shows:
+
 - **Rows**: Marker genes (hierarchically clustered)
 - **Columns**: Cell types (from consensus annotation)
 - **Color scale**: Scaled expression values (row-wise scaling)
@@ -877,15 +890,284 @@ ggsave(
 )
 ```
 
+### Dotplot Visualization (Marker Genes vs Cell Types)
+
+The dotplot is a popular visualization that shows marker gene expression across cell types with both expression level (color) and expression percentage (dot size):
+
+```{r}
+# Create marker gene dotplot using Seurat's DotPlot function
+# First, prepare the top marker genes for each cluster
+top_markers <- pbmc_markers %>%
+  group_by(cluster) %>%
+  top_n(n = 5, wt = avg_log2FC) %>%
+  pull(gene) %>%
+  unique()
+
+# Set cell identities to the consensus cell types for proper grouping
+Idents(seurat_obj) <- seurat_obj$cell_type_consensus
+
+# Create the basic dotplot
+p_dotplot <- DotPlot(
+  seurat_obj, 
+  features = top_markers,
+  dot.scale = 8,
+  col.min = 0,
+  col.max = 2.5,
+  dot.min = 0.1
+) +
+  scale_color_gradient2(
+    low = "blue", 
+    mid = "white", 
+    high = "red",
+    midpoint = 0,
+    name = "Average\nExpression"
+  ) +
+  guides(
+    size = guide_legend(
+      title = "Percent\nExpressed",
+      override.aes = list(color = "black")
+    )
+  ) +
+  theme(
+    axis.text.x = element_text(angle = 45, hjust = 1, vjust = 1),
+    axis.text.y = element_text(size = 10),
+    axis.title = element_text(size = 12),
+    plot.title = element_text(hjust = 0.5, size = 14, face = "bold"),
+    legend.title = element_text(size = 10),
+    legend.text = element_text(size = 9)
+  ) +
+  labs(
+    title = "Marker Gene Expression Dotplot",
+    x = "Marker Genes",
+    y = "Cell Types"
+  ) +
+  coord_flip()  # Flip to have genes on Y-axis, cell types on X-axis
+
+# Display the dotplot
+print(p_dotplot)
+
+# Save the dotplot
+ggsave(
+  "marker_genes_dotplot.png",
+  plot = p_dotplot,
+  width = 12,
+  height = 10,
+  dpi = 300,
+  bg = "white"
+)
+```
+
+**Example Output:**
+
+![Marker Gene Dotplot](figures/png/fig12_marker_dotplot.png)
+
+This dotplot visualization shows:
+
+- **Y-axis**: Marker genes (top genes for each cell type)
+- **X-axis**: Cell types (from consensus annotation)
+- **Dot size**: Percentage of cells expressing the gene
+- **Color intensity**: Average expression level (scaled)
+
+### Enhanced Heatmap (Marker Genes vs Cell Types)
+
+Create a classic heatmap showing marker gene expression across cell types:
+
+```{r}
+# Create enhanced heatmap with marker genes vs cell types
+library(ComplexHeatmap)
+library(circlize)
+
+# Prepare expression matrix for top marker genes
+top_markers_per_type <- pbmc_markers %>%
+  group_by(cluster) %>%
+  top_n(n = 4, wt = avg_log2FC) %>%
+  arrange(cluster, desc(avg_log2FC))
+
+# Get unique top markers
+selected_genes <- unique(top_markers_per_type$gene)
+
+# Calculate average expression per cell type
+Idents(seurat_obj) <- seurat_obj$cell_type_consensus
+avg_expression <- AverageExpression(
+  seurat_obj, 
+  features = selected_genes,
+  group.by = "cell_type_consensus"
+)$RNA
+
+# Scale the expression data (row-wise scaling)
+scaled_expression <- t(scale(t(avg_expression)))
+
+# Create annotation for cell types showing consensus metrics
+cell_type_names <- colnames(scaled_expression)
+consensus_annotation <- data.frame(
+  CellType = cell_type_names,
+  row.names = cell_type_names
+)
+
+# Get consensus proportion for each cell type (take average per cell type)
+consensus_props <- sapply(cell_type_names, function(ct) {
+  cells_of_type <- which(seurat_obj$cell_type_consensus == ct)
+  if(length(cells_of_type) > 0) {
+    mean(seurat_obj$consensus_proportion[cells_of_type], na.rm = TRUE)
+  } else {
+    NA
+  }
+})
+
+consensus_annotation$ConsensusProp <- consensus_props
+
+# Create color schemes
+col_fun_expr = colorRamp2(
+  c(-2, 0, 2), 
+  c("blue", "white", "red")
+)
+
+col_fun_consensus = colorRamp2(
+  c(0.5, 1), 
+  c("yellow", "darkgreen")
+)
+
+# Create the heatmap with ComplexHeatmap
+p_heatmap <- Heatmap(
+  scaled_expression,
+  name = "Scaled\nExpression",
+  col = col_fun_expr,
+  
+  # Row (gene) configuration
+  row_title = "Marker Genes",
+  row_title_side = "left",
+  row_names_gp = gpar(fontsize = 10),
+  row_dend_side = "right",
+  cluster_rows = TRUE,
+  
+  # Column (cell type) configuration  
+  column_title = "Cell Types",
+  column_names_gp = gpar(fontsize = 10),
+  column_names_rot = 45,
+  cluster_columns = FALSE,
+  
+  # Add consensus proportion annotation
+  top_annotation = HeatmapAnnotation(
+    ConsensusProp = consensus_annotation$ConsensusProp,
+    col = list(ConsensusProp = col_fun_consensus),
+    annotation_name_gp = gpar(fontsize = 10),
+    simple_anno_size = unit(0.5, "cm")
+  ),
+  
+  # Heatmap body configuration
+  rect_gp = gpar(col = "white", lwd = 0.5),
+  cell_fun = function(j, i, x, y, width, height, fill) {
+    # Add text showing expression values for high expression
+    if(abs(scaled_expression[i, j]) > 1.5) {
+      grid.text(sprintf("%.1f", scaled_expression[i, j]), 
+                x, y, gp = gpar(fontsize = 8, col = "white"))
+    }
+  },
+  
+  # Legend configuration
+  heatmap_legend_param = list(
+    title_gp = gpar(fontsize = 12),
+    labels_gp = gpar(fontsize = 10),
+    legend_height = unit(4, "cm")
+  ),
+  
+  # Size configuration
+  width = unit(0.8 * length(cell_type_names), "cm"),
+  height = unit(0.4 * length(selected_genes), "cm")
+)
+
+# Save the heatmap
+png("marker_genes_heatmap_complex.png", 
+    width = 1400, height = 1000, res = 300, bg = "white")
+draw(p_heatmap, 
+     column_title = "Marker Gene Expression Across Cell Types",
+     column_title_gp = gpar(fontsize = 14, fontface = "bold"))
+dev.off()
+
+# Also create with base R/pheatmap for compatibility
+library(pheatmap)
+
+# Create annotation data frame for pheatmap
+annotation_col <- data.frame(
+  ConsensusProp = consensus_props,
+  row.names = cell_type_names
+)
+
+# Create the pheatmap version
+png("marker_genes_heatmap_pheatmap.png", 
+    width = 1200, height = 1000, res = 300, bg = "white")
+
+pheatmap(
+  scaled_expression,
+  scale = "none",  # Already scaled
+  clustering_distance_rows = "euclidean",
+  clustering_method = "complete",
+  cluster_cols = FALSE,
+  cluster_rows = TRUE,
+  
+  # Colors
+  color = colorRampPalette(c("blue", "white", "red"))(100),
+  breaks = seq(-2.5, 2.5, length.out = 101),
+  
+  # Annotations
+  annotation_col = annotation_col,
+  annotation_colors = list(
+    ConsensusProp = colorRampPalette(c("yellow", "darkgreen"))(100)
+  ),
+  
+  # Labels and titles
+  main = "Marker Gene Expression Heatmap",
+  fontsize = 10,
+  fontsize_row = 9,
+  fontsize_col = 9,
+  
+  # Display numbers for high expression
+  display_numbers = matrix(
+    ifelse(abs(scaled_expression) > 1.5, 
+           sprintf("%.1f", scaled_expression), ""),
+    nrow = nrow(scaled_expression)
+  ),
+  number_color = "white",
+  fontsize_number = 8,
+  
+  # Cell size
+  cellwidth = 25,
+  cellheight = 15,
+  
+  # Borders
+  border_color = "white"
+)
+
+dev.off()
+```
+
+**Example Output:**
+
+![Enhanced Marker Gene Heatmap](figures/png/fig13_marker_heatmap.png)
+
+This enhanced heatmap visualization shows:
+
+- **Rows**: Marker genes (hierarchically clustered by expression pattern)
+- **Columns**: Cell types (from consensus annotation)
+- **Color scale**: Scaled expression values (navy = low, red = high)  
+- **Top annotation**: Consensus proportion for each cell type
+- **Clean layout**: No cluttered text, focus on expression patterns
+
+### Alternative: Simplified Dotplot
+
+For a quick analysis with predefined key markers, you can create a simplified version by selecting specific genes of interest and using a simpler color scheme. This approach is faster when you already know which markers to focus on.
+
 ### Marker Gene Visualization Best Practices
 
 1. **Gene Selection**: Use `top_n = 3-5` for clarity; too many genes can make plots cluttered
 2. **Color Palettes**:
    - Use `plasma` or `viridis` for bubble plots (good contrast)
    - Use `inferno` or custom palettes for heatmaps
+   - Use blue-white-red for heatmaps (intuitive for expression)
 3. **Scaling**: Row-wise scaling (`scale_method = "row"`) is recommended for heatmaps
-4. **File Formats**: Save as PNG for presentations, PDF for publications
-5. **Resolution**: Use 300 DPI for publication-quality figures
+4. **Dotplots**: Use appropriate dot size scaling and clear color gradients
+5. **File Formats**: Save as PNG for presentations, PDF for publications
+6. **Resolution**: Use 300 DPI for publication-quality figures
 
 ### Troubleshooting Marker Gene Visualizations
 
@@ -979,7 +1261,7 @@ add_track_continuous(
 
 **Example Output:**
 
-<img src="figures/png/fig11_circlize_plot.png" alt="Circlize Plot" width="90%"/>
+![Circlize Plot](figures/png/fig11_circlize_plot.png)
 
 This visualization presents cell types in a circular layout with additional tracks showing metadata. The outer ring shows cell types, the middle ring indicates controversial vs. consensus clusters, and the inner ring displays consensus proportion values. This compact representation is particularly useful for visualizing multiple aspects of your data simultaneously.
 
