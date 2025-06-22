@@ -114,7 +114,9 @@
 
     
     
-<p><img src="../reference/figures/logo.png" align="right" height="139" alt="mLLMCelltype logo"></p>
+<div class="float">
+<img src="../reference/figures/logo.png" alt="mLLMCelltype logo"><div class="figcaption">mLLMCelltype logo</div>
+</div>
 <div class="section level2">
 <h2 id="visualization-guide">Visualization Guide<a class="anchor" aria-label="anchor" href="#visualization-guide"></a>
 </h2>
@@ -451,7 +453,9 @@ placement, and improved aesthetics:</p>
 <span></span>
 <span><span class="va">p1</span></span></code></pre></div>
 <p><strong>Example Output:</strong></p>
-<p><img src="figures/png/fig1_cell_types.png" alt="Enhanced Cell Type UMAP" width="90%"></p>
+<div class="float">
+<img src="figures/png/fig1_cell_types.png" alt="Enhanced Cell Type UMAP"><div class="figcaption">Enhanced Cell Type UMAP</div>
+</div>
 <p>This visualization clearly shows distinct cell type clusters with
 optimized labels and borders, making it easy to identify different cell
 populations.</p>
@@ -481,7 +485,9 @@ boundaries:</p>
 <span></span>
 <span><span class="va">p2</span></span></code></pre></div>
 <p><strong>Example Output:</strong></p>
-<p><img src="figures/png/fig2_density_contours.png" alt="UMAP with Density Contours" width="90%"></p>
+<div class="float">
+<img src="figures/png/fig2_density_contours.png" alt="UMAP with Density Contours"><div class="figcaption">UMAP with Density Contours</div>
+</div>
 <p>Density contours highlight the concentration of cells within each
 cluster, providing additional information about cluster density and
 boundaries.</p>
@@ -509,7 +515,9 @@ entropy) can provide valuable insights:</p>
 <span></span>
 <span><span class="va">p3</span></span></code></pre></div>
 <p><strong>Example Output:</strong></p>
-<p><img src="figures/png/fig3_controversial_clusters.png" alt="Controversial Clusters" width="90%"></p>
+<div class="float">
+<img src="figures/png/fig3_controversial_clusters.png" alt="Controversial Clusters"><div class="figcaption">Controversial Clusters</div>
+</div>
 <p>This visualization highlights clusters with low consensus or high
 entropy (red), which may require further investigation or
 validation.</p>
@@ -540,7 +548,9 @@ distribution of cells:</p>
 <span></span>
 <span><span class="va">p4</span></span></code></pre></div>
 <p><strong>Example Output:</strong></p>
-<p><img src="figures/png/fig4_marginal_distributions.png" alt="UMAP with Marginal Distributions" width="90%"></p>
+<div class="float">
+<img src="figures/png/fig4_marginal_distributions.png" alt="UMAP with Marginal Distributions"><div class="figcaption">UMAP with Marginal Distributions</div>
+</div>
 <p>Marginal distributions show the density of cells along each axis,
 providing additional context about the overall distribution of cells in
 the UMAP space.</p>
@@ -572,7 +582,9 @@ contours:</p>
 <span></span>
 <span><span class="va">p5</span></span></code></pre></div>
 <p><strong>Example Output:</strong></p>
-<p><img src="figures/png/fig5_consensus_proportion.png" alt="Consensus Proportion" width="90%"></p>
+<div class="float">
+<img src="figures/png/fig5_consensus_proportion.png" alt="Consensus Proportion"><div class="figcaption">Consensus Proportion</div>
+</div>
 <p>This visualization shows the consensus proportion for each cell, with
 higher values (blue) indicating greater agreement among models about the
 cell type annotation.</p>
@@ -603,7 +615,9 @@ cell type annotation.</p>
 <span></span>
 <span><span class="va">p6</span></span></code></pre></div>
 <p><strong>Example Output:</strong></p>
-<p><img src="figures/png/fig6_entropy.png" alt="Shannon Entropy" width="90%"></p>
+<div class="float">
+<img src="figures/png/fig6_entropy.png" alt="Shannon Entropy"><div class="figcaption">Shannon Entropy</div>
+</div>
 <p>This visualization shows the entropy for each cell, with higher
 values (yellow) indicating greater uncertainty in the cell type
 annotation. Lower entropy (red) suggests more confident annotations.</p>
@@ -636,7 +650,9 @@ view:</p>
 <span></span>
 <span><span class="va">p7</span></span></code></pre></div>
 <p><strong>Example Output:</strong></p>
-<p><img src="figures/png/fig7_cell_types_with_consensus.png" alt="Cell Types with Consensus Proportion" width="90%"></p>
+<div class="float">
+<img src="figures/png/fig7_cell_types_with_consensus.png" alt="Cell Types with Consensus Proportion"><div class="figcaption">Cell Types with Consensus Proportion</div>
+</div>
 <p>This visualization combines cell type information with consensus
 proportion, showing both the cell type clusters and the confidence in
 each annotation. Cell type boundaries are shown with colored outlines,
@@ -675,7 +691,9 @@ metrics by cell type:</p>
 <span><span class="va">p8</span> <span class="op">&lt;-</span> <span class="va">p8a</span> <span class="op">/</span> <span class="va">p8b</span> <span class="op">+</span> <span class="fu"><a href="https://patchwork.data-imaginist.com/reference/plot_layout.html" class="external-link">plot_layout</a></span><span class="op">(</span>heights <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">1</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="va">p8</span></span></code></pre></div>
 <p><strong>Example Output:</strong></p>
-<p><img src="figures/png/fig8_uncertainty_violins.png" alt="Uncertainty Metrics Violin Plots" width="90%"></p>
+<div class="float">
+<img src="figures/png/fig8_uncertainty_violins.png" alt="Uncertainty Metrics Violin Plots"><div class="figcaption">Uncertainty Metrics Violin Plots</div>
+</div>
 <p>Violin plots show the distribution of consensus proportion and
 entropy values for each cell type, allowing for easy comparison of
 annotation confidence across different cell populations.</p>
@@ -698,7 +716,9 @@ comprehensive view:</p>
 <span></span>
 <span><span class="va">simplified_dashboard</span></span></code></pre></div>
 <p><strong>Example Output:</strong></p>
-<p><img src="figures/png/fig9_dashboard.png" alt="Combined Dashboard" width="90%"></p>
+<div class="float">
+<img src="figures/png/fig9_dashboard.png" alt="Combined Dashboard"><div class="figcaption">Combined Dashboard</div>
+</div>
 <p>This dashboard combines multiple visualizations into a single figure,
 providing a comprehensive view of cell type annotations and uncertainty
 metrics. The panels are labeled for easy reference in publications.</p>
@@ -728,7 +748,9 @@ metrics. The panels are labeled for easy reference in publications.</p>
 <span></span>
 <span><span class="va">p1_pub</span></span></code></pre></div>
 <p><strong>Example Output:</strong></p>
-<p><img src="figures/png/fig10_publication.png" alt="High-Resolution Publication Figure" width="90%"></p>
+<div class="float">
+<img src="figures/png/fig10_publication.png" alt="High-Resolution Publication Figure"><div class="figcaption">High-Resolution Publication Figure</div>
+</div>
 <p>This high-resolution figure is specifically designed for publication,
 with optimized dimensions, font sizes, and visual elements. The
 increased height provides more space for clear visualization of cell
@@ -777,10 +799,17 @@ type clusters and labels.</p>
 <h3 id="marker-gene-visualization">Marker Gene Visualization<a class="anchor" aria-label="anchor" href="#marker-gene-visualization"></a>
 </h3>
 <p>mLLMCelltype includes enhanced marker gene visualization functions
-that create publication-ready bubble plots and heatmaps showing marker
-gene expression patterns across annotated cell types. These
-visualizations seamlessly integrate with the consensus annotation
-workflow.</p>
+that create publication-ready dotplots and heatmaps showing marker gene
+expression patterns across annotated cell types. These visualizations
+seamlessly integrate with the consensus annotation workflow:</p>
+<ul>
+<li>
+<strong>Dotplots</strong>: Classic visualization with marker genes
+vs cell types, showing both expression level and percentage</li>
+<li>
+<strong>Heatmaps</strong>: Comprehensive expression matrices with
+hierarchical clustering and consensus annotations</li>
+</ul>
 <div class="section level4">
 <h4 id="prerequisites-for-marker-gene-visualization">Prerequisites for Marker Gene Visualization<a class="anchor" aria-label="anchor" href="#prerequisites-for-marker-gene-visualization"></a>
 </h4>
@@ -797,11 +826,19 @@ required packages:</p>
 <span><span class="kw">if</span> <span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/ns-load.html" class="external-link">requireNamespace</a></span><span class="op">(</span><span class="st">"dplyr"</span>, quietly <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"dplyr"</span><span class="op">)</span></span>
 <span><span class="op">}</span></span>
+<span><span class="kw">if</span> <span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/ns-load.html" class="external-link">requireNamespace</a></span><span class="op">(</span><span class="st">"ComplexHeatmap"</span>, quietly <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
+<span>  <span class="fu">BiocManager</span><span class="fu">::</span><span class="fu">install</span><span class="op">(</span><span class="st">"ComplexHeatmap"</span><span class="op">)</span></span>
+<span><span class="op">}</span></span>
+<span><span class="kw">if</span> <span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/ns-load.html" class="external-link">requireNamespace</a></span><span class="op">(</span><span class="st">"circlize"</span>, quietly <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"circlize"</span><span class="op">)</span></span>
+<span><span class="op">}</span></span>
 <span></span>
 <span><span class="co"># Load required packages</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">pheatmap</span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://sjmgarnier.github.io/viridis/" class="external-link">viridis</a></span><span class="op">)</span></span>
-<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a></span><span class="op">)</span></span></code></pre></div>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">ComplexHeatmap</span><span class="op">)</span>  <span class="co"># For advanced heatmaps</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/jokergoo/circlize" class="external-link">circlize</a></span><span class="op">)</span>        <span class="co"># For color functions</span></span></code></pre></div>
 </div>
 <div class="section level4">
 <h4 id="finding-marker-genes">Finding Marker Genes<a class="anchor" aria-label="anchor" href="#finding-marker-genes"></a>
@@ -855,12 +892,23 @@ intensity):</p>
 <span>  bg <span class="op">=</span> <span class="st">"white"</span></span>
 <span><span class="op">)</span></span></code></pre></div>
 <p><strong>Example Output:</strong></p>
-<p><img src="figures/png/marker_bubble_plot.png" alt="Marker Gene Bubble Plot" width="90%"></p>
-<p>This bubble plot visualization shows: - <strong>X-axis</strong>: Cell
-types (from consensus annotation) - <strong>Y-axis</strong>: Marker
-genes (ordered by expression level) - <strong>Bubble size</strong>:
-Percentage of cells expressing the gene - <strong>Color
-intensity</strong>: Average expression level (log2 scale)</p>
+<div class="float">
+<img src="figures/png/marker_bubble_plot.png" alt="Marker Gene Bubble Plot"><div class="figcaption">Marker Gene Bubble Plot</div>
+</div>
+<p>This bubble plot visualization shows:</p>
+<ul>
+<li>
+<strong>X-axis</strong>: Cell types (from consensus annotation)</li>
+<li>
+<strong>Y-axis</strong>: Marker genes (ordered by expression
+level)</li>
+<li>
+<strong>Bubble size</strong>: Percentage of cells expressing the
+gene</li>
+<li>
+<strong>Color intensity</strong>: Average expression level (log2
+scale)</li>
+</ul>
 </div>
 <div class="section level4">
 <h4 id="enhanced-heatmap-visualization">Enhanced Heatmap Visualization<a class="anchor" aria-label="anchor" href="#enhanced-heatmap-visualization"></a>
@@ -885,12 +933,23 @@ clustering of genes:</p>
 <span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/dim.html" class="external-link">dim</a></span><span class="op">(</span><span class="va">heatmap_matrix</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">heatmap_matrix</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <p><strong>Example Output:</strong></p>
-<p><img src="figures/png/marker_heatmap.png" alt="Marker Gene Heatmap" width="90%"></p>
-<p>This heatmap visualization shows: - <strong>Rows</strong>: Marker
-genes (hierarchically clustered) - <strong>Columns</strong>: Cell types
-(from consensus annotation) - <strong>Color scale</strong>: Scaled
-expression values (row-wise scaling) - <strong>Clustering</strong>:
-Genes with similar expression patterns are grouped together</p>
+<div class="float">
+<img src="figures/png/marker_heatmap.png" alt="Marker Gene Heatmap"><div class="figcaption">Marker Gene Heatmap</div>
+</div>
+<p>This heatmap visualization shows:</p>
+<ul>
+<li>
+<strong>Rows</strong>: Marker genes (hierarchically clustered)</li>
+<li>
+<strong>Columns</strong>: Cell types (from consensus
+annotation)</li>
+<li>
+<strong>Color scale</strong>: Scaled expression values (row-wise
+scaling)</li>
+<li>
+<strong>Clustering</strong>: Genes with similar expression patterns
+are grouped together</li>
+</ul>
 </div>
 <div class="section level4">
 <h4 id="customizing-marker-gene-visualizations">Customizing Marker Gene Visualizations<a class="anchor" aria-label="anchor" href="#customizing-marker-gene-visualizations"></a>
@@ -978,6 +1037,296 @@ marker gene visualizations:</p>
 <span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level4">
+<h4 id="dotplot-visualization-marker-genes-vs-cell-types">Dotplot Visualization (Marker Genes vs Cell Types)<a class="anchor" aria-label="anchor" href="#dotplot-visualization-marker-genes-vs-cell-types"></a>
+</h4>
+<p>The dotplot is a popular visualization that shows marker gene
+expression across cell types with both expression level (color) and
+expression percentage (dot size):</p>
+<div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Create marker gene dotplot using Seurat's DotPlot function</span></span>
+<span><span class="co"># First, prepare the top marker genes for each cluster</span></span>
+<span><span class="va">top_markers</span> <span class="op">&lt;-</span> <span class="va">pbmc_markers</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html" class="external-link">group_by</a></span><span class="op">(</span><span class="va">cluster</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/top_n.html" class="external-link">top_n</a></span><span class="op">(</span>n <span class="op">=</span> <span class="fl">5</span>, wt <span class="op">=</span> <span class="va">avg_log2FC</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/pull.html" class="external-link">pull</a></span><span class="op">(</span><span class="va">gene</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/unique.html" class="external-link">unique</a></span><span class="op">(</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Set cell identities to the consensus cell types for proper grouping</span></span>
+<span><span class="fu"><a href="https://satijalab.github.io/seurat-object/reference/Idents.html" class="external-link">Idents</a></span><span class="op">(</span><span class="va">seurat_obj</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="va">seurat_obj</span><span class="op">$</span><span class="va">cell_type_consensus</span></span>
+<span></span>
+<span><span class="co"># Create the basic dotplot</span></span>
+<span><span class="va">p_dotplot</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://satijalab.org/seurat/reference/DotPlot.html" class="external-link">DotPlot</a></span><span class="op">(</span></span>
+<span>  <span class="va">seurat_obj</span>, </span>
+<span>  features <span class="op">=</span> <span class="va">top_markers</span>,</span>
+<span>  dot.scale <span class="op">=</span> <span class="fl">8</span>,</span>
+<span>  col.min <span class="op">=</span> <span class="fl">0</span>,</span>
+<span>  col.max <span class="op">=</span> <span class="fl">2.5</span>,</span>
+<span>  dot.min <span class="op">=</span> <span class="fl">0.1</span></span>
+<span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_gradient.html" class="external-link">scale_color_gradient2</a></span><span class="op">(</span></span>
+<span>    low <span class="op">=</span> <span class="st">"blue"</span>, </span>
+<span>    mid <span class="op">=</span> <span class="st">"white"</span>, </span>
+<span>    high <span class="op">=</span> <span class="st">"red"</span>,</span>
+<span>    midpoint <span class="op">=</span> <span class="fl">0</span>,</span>
+<span>    name <span class="op">=</span> <span class="st">"Average\nExpression"</span></span>
+<span>  <span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/guides.html" class="external-link">guides</a></span><span class="op">(</span></span>
+<span>    size <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/guide_legend.html" class="external-link">guide_legend</a></span><span class="op">(</span></span>
+<span>      title <span class="op">=</span> <span class="st">"Percent\nExpressed"</span>,</span>
+<span>      override.aes <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>color <span class="op">=</span> <span class="st">"black"</span><span class="op">)</span></span>
+<span>    <span class="op">)</span></span>
+<span>  <span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme.html" class="external-link">theme</a></span><span class="op">(</span></span>
+<span>    axis.text.x <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html" class="external-link">element_text</a></span><span class="op">(</span>angle <span class="op">=</span> <span class="fl">45</span>, hjust <span class="op">=</span> <span class="fl">1</span>, vjust <span class="op">=</span> <span class="fl">1</span><span class="op">)</span>,</span>
+<span>    axis.text.y <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html" class="external-link">element_text</a></span><span class="op">(</span>size <span class="op">=</span> <span class="fl">10</span><span class="op">)</span>,</span>
+<span>    axis.title <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html" class="external-link">element_text</a></span><span class="op">(</span>size <span class="op">=</span> <span class="fl">12</span><span class="op">)</span>,</span>
+<span>    plot.title <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html" class="external-link">element_text</a></span><span class="op">(</span>hjust <span class="op">=</span> <span class="fl">0.5</span>, size <span class="op">=</span> <span class="fl">14</span>, face <span class="op">=</span> <span class="st">"bold"</span><span class="op">)</span>,</span>
+<span>    legend.title <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html" class="external-link">element_text</a></span><span class="op">(</span>size <span class="op">=</span> <span class="fl">10</span><span class="op">)</span>,</span>
+<span>    legend.text <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html" class="external-link">element_text</a></span><span class="op">(</span>size <span class="op">=</span> <span class="fl">9</span><span class="op">)</span></span>
+<span>  <span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span></span>
+<span>    title <span class="op">=</span> <span class="st">"Marker Gene Expression Dotplot"</span>,</span>
+<span>    x <span class="op">=</span> <span class="st">"Marker Genes"</span>,</span>
+<span>    y <span class="op">=</span> <span class="st">"Cell Types"</span></span>
+<span>  <span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/coord_flip.html" class="external-link">coord_flip</a></span><span class="op">(</span><span class="op">)</span>  <span class="co"># Flip to have genes on Y-axis, cell types on X-axis</span></span>
+<span></span>
+<span><span class="co"># Display the dotplot</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">p_dotplot</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Save the dotplot</span></span>
+<span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggsave.html" class="external-link">ggsave</a></span><span class="op">(</span></span>
+<span>  <span class="st">"marker_genes_dotplot.png"</span>,</span>
+<span>  plot <span class="op">=</span> <span class="va">p_dotplot</span>,</span>
+<span>  width <span class="op">=</span> <span class="fl">12</span>,</span>
+<span>  height <span class="op">=</span> <span class="fl">10</span>,</span>
+<span>  dpi <span class="op">=</span> <span class="fl">300</span>,</span>
+<span>  bg <span class="op">=</span> <span class="st">"white"</span></span>
+<span><span class="op">)</span></span></code></pre></div>
+<p><strong>Example Output:</strong></p>
+<div class="float">
+<img src="figures/png/fig12_marker_dotplot.png" alt="Marker Gene Dotplot"><div class="figcaption">Marker Gene Dotplot</div>
+</div>
+<p>This dotplot visualization shows:</p>
+<ul>
+<li>
+<strong>Y-axis</strong>: Marker genes (top genes for each cell
+type)</li>
+<li>
+<strong>X-axis</strong>: Cell types (from consensus annotation)</li>
+<li>
+<strong>Dot size</strong>: Percentage of cells expressing the
+gene</li>
+<li>
+<strong>Color intensity</strong>: Average expression level
+(scaled)</li>
+</ul>
+</div>
+<div class="section level4">
+<h4 id="enhanced-heatmap-marker-genes-vs-cell-types">Enhanced Heatmap (Marker Genes vs Cell Types)<a class="anchor" aria-label="anchor" href="#enhanced-heatmap-marker-genes-vs-cell-types"></a>
+</h4>
+<p>Create a classic heatmap showing marker gene expression across cell
+types:</p>
+<div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Create enhanced heatmap with marker genes vs cell types</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">ComplexHeatmap</span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/jokergoo/circlize" class="external-link">circlize</a></span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Prepare expression matrix for top marker genes</span></span>
+<span><span class="va">top_markers_per_type</span> <span class="op">&lt;-</span> <span class="va">pbmc_markers</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html" class="external-link">group_by</a></span><span class="op">(</span><span class="va">cluster</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/top_n.html" class="external-link">top_n</a></span><span class="op">(</span>n <span class="op">=</span> <span class="fl">4</span>, wt <span class="op">=</span> <span class="va">avg_log2FC</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/arrange.html" class="external-link">arrange</a></span><span class="op">(</span><span class="va">cluster</span>, <span class="fu"><a href="https://dplyr.tidyverse.org/reference/desc.html" class="external-link">desc</a></span><span class="op">(</span><span class="va">avg_log2FC</span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Get unique top markers</span></span>
+<span><span class="va">selected_genes</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/unique.html" class="external-link">unique</a></span><span class="op">(</span><span class="va">top_markers_per_type</span><span class="op">$</span><span class="va">gene</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Calculate average expression per cell type</span></span>
+<span><span class="fu"><a href="https://satijalab.github.io/seurat-object/reference/Idents.html" class="external-link">Idents</a></span><span class="op">(</span><span class="va">seurat_obj</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="va">seurat_obj</span><span class="op">$</span><span class="va">cell_type_consensus</span></span>
+<span><span class="va">avg_expression</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://satijalab.org/seurat/reference/AverageExpression.html" class="external-link">AverageExpression</a></span><span class="op">(</span></span>
+<span>  <span class="va">seurat_obj</span>, </span>
+<span>  features <span class="op">=</span> <span class="va">selected_genes</span>,</span>
+<span>  group.by <span class="op">=</span> <span class="st">"cell_type_consensus"</span></span>
+<span><span class="op">)</span><span class="op">$</span><span class="va">RNA</span></span>
+<span></span>
+<span><span class="co"># Scale the expression data (row-wise scaling)</span></span>
+<span><span class="va">scaled_expression</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/t.html" class="external-link">t</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/scale.html" class="external-link">scale</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/t.html" class="external-link">t</a></span><span class="op">(</span><span class="va">avg_expression</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Create annotation for cell types showing consensus metrics</span></span>
+<span><span class="va">cell_type_names</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">colnames</a></span><span class="op">(</span><span class="va">scaled_expression</span><span class="op">)</span></span>
+<span><span class="va">consensus_annotation</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
+<span>  CellType <span class="op">=</span> <span class="va">cell_type_names</span>,</span>
+<span>  row.names <span class="op">=</span> <span class="va">cell_type_names</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Get consensus proportion for each cell type (take average per cell type)</span></span>
+<span><span class="va">consensus_props</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">sapply</a></span><span class="op">(</span><span class="va">cell_type_names</span>, <span class="kw">function</span><span class="op">(</span><span class="va">ct</span><span class="op">)</span> <span class="op">{</span></span>
+<span>  <span class="va">cells_of_type</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/which.html" class="external-link">which</a></span><span class="op">(</span><span class="va">seurat_obj</span><span class="op">$</span><span class="va">cell_type_consensus</span> <span class="op">==</span> <span class="va">ct</span><span class="op">)</span></span>
+<span>  <span class="kw">if</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">cells_of_type</span><span class="op">)</span> <span class="op">&gt;</span> <span class="fl">0</span><span class="op">)</span> <span class="op">{</span></span>
+<span>    <span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="va">seurat_obj</span><span class="op">$</span><span class="va">consensus_proportion</span><span class="op">[</span><span class="va">cells_of_type</span><span class="op">]</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span>  <span class="op">}</span> <span class="kw">else</span> <span class="op">{</span></span>
+<span>    <span class="cn">NA</span></span>
+<span>  <span class="op">}</span></span>
+<span><span class="op">}</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">consensus_annotation</span><span class="op">$</span><span class="va">ConsensusProp</span> <span class="op">&lt;-</span> <span class="va">consensus_props</span></span>
+<span></span>
+<span><span class="co"># Create color schemes</span></span>
+<span><span class="va">col_fun_expr</span> <span class="op">=</span> <span class="fu">colorRamp2</span><span class="op">(</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">2</span>, <span class="fl">0</span>, <span class="fl">2</span><span class="op">)</span>, </span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"blue"</span>, <span class="st">"white"</span>, <span class="st">"red"</span><span class="op">)</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">col_fun_consensus</span> <span class="op">=</span> <span class="fu">colorRamp2</span><span class="op">(</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.5</span>, <span class="fl">1</span><span class="op">)</span>, </span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"yellow"</span>, <span class="st">"darkgreen"</span><span class="op">)</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Create the heatmap with ComplexHeatmap</span></span>
+<span><span class="va">p_heatmap</span> <span class="op">&lt;-</span> <span class="fu">Heatmap</span><span class="op">(</span></span>
+<span>  <span class="va">scaled_expression</span>,</span>
+<span>  name <span class="op">=</span> <span class="st">"Scaled\nExpression"</span>,</span>
+<span>  col <span class="op">=</span> <span class="va">col_fun_expr</span>,</span>
+<span>  </span>
+<span>  <span class="co"># Row (gene) configuration</span></span>
+<span>  row_title <span class="op">=</span> <span class="st">"Marker Genes"</span>,</span>
+<span>  row_title_side <span class="op">=</span> <span class="st">"left"</span>,</span>
+<span>  row_names_gp <span class="op">=</span> <span class="fu">gpar</span><span class="op">(</span>fontsize <span class="op">=</span> <span class="fl">10</span><span class="op">)</span>,</span>
+<span>  row_dend_side <span class="op">=</span> <span class="st">"right"</span>,</span>
+<span>  cluster_rows <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  </span>
+<span>  <span class="co"># Column (cell type) configuration  </span></span>
+<span>  column_title <span class="op">=</span> <span class="st">"Cell Types"</span>,</span>
+<span>  column_names_gp <span class="op">=</span> <span class="fu">gpar</span><span class="op">(</span>fontsize <span class="op">=</span> <span class="fl">10</span><span class="op">)</span>,</span>
+<span>  column_names_rot <span class="op">=</span> <span class="fl">45</span>,</span>
+<span>  cluster_columns <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  </span>
+<span>  <span class="co"># Add consensus proportion annotation</span></span>
+<span>  top_annotation <span class="op">=</span> <span class="fu">HeatmapAnnotation</span><span class="op">(</span></span>
+<span>    ConsensusProp <span class="op">=</span> <span class="va">consensus_annotation</span><span class="op">$</span><span class="va">ConsensusProp</span>,</span>
+<span>    col <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>ConsensusProp <span class="op">=</span> <span class="va">col_fun_consensus</span><span class="op">)</span>,</span>
+<span>    annotation_name_gp <span class="op">=</span> <span class="fu">gpar</span><span class="op">(</span>fontsize <span class="op">=</span> <span class="fl">10</span><span class="op">)</span>,</span>
+<span>    simple_anno_size <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/grid/unit.html" class="external-link">unit</a></span><span class="op">(</span><span class="fl">0.5</span>, <span class="st">"cm"</span><span class="op">)</span></span>
+<span>  <span class="op">)</span>,</span>
+<span>  </span>
+<span>  <span class="co"># Heatmap body configuration</span></span>
+<span>  rect_gp <span class="op">=</span> <span class="fu">gpar</span><span class="op">(</span>col <span class="op">=</span> <span class="st">"white"</span>, lwd <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span>,</span>
+<span>  cell_fun <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">j</span>, <span class="va">i</span>, <span class="va">x</span>, <span class="va">y</span>, <span class="va">width</span>, <span class="va">height</span>, <span class="va">fill</span><span class="op">)</span> <span class="op">{</span></span>
+<span>    <span class="co"># Add text showing expression values for high expression</span></span>
+<span>    <span class="kw">if</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">abs</a></span><span class="op">(</span><span class="va">scaled_expression</span><span class="op">[</span><span class="va">i</span>, <span class="va">j</span><span class="op">]</span><span class="op">)</span> <span class="op">&gt;</span> <span class="fl">1.5</span><span class="op">)</span> <span class="op">{</span></span>
+<span>      <span class="fu">grid.text</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/sprintf.html" class="external-link">sprintf</a></span><span class="op">(</span><span class="st">"%.1f"</span>, <span class="va">scaled_expression</span><span class="op">[</span><span class="va">i</span>, <span class="va">j</span><span class="op">]</span><span class="op">)</span>, </span>
+<span>                <span class="va">x</span>, <span class="va">y</span>, gp <span class="op">=</span> <span class="fu">gpar</span><span class="op">(</span>fontsize <span class="op">=</span> <span class="fl">8</span>, col <span class="op">=</span> <span class="st">"white"</span><span class="op">)</span><span class="op">)</span></span>
+<span>    <span class="op">}</span></span>
+<span>  <span class="op">}</span>,</span>
+<span>  </span>
+<span>  <span class="co"># Legend configuration</span></span>
+<span>  heatmap_legend_param <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
+<span>    title_gp <span class="op">=</span> <span class="fu">gpar</span><span class="op">(</span>fontsize <span class="op">=</span> <span class="fl">12</span><span class="op">)</span>,</span>
+<span>    labels_gp <span class="op">=</span> <span class="fu">gpar</span><span class="op">(</span>fontsize <span class="op">=</span> <span class="fl">10</span><span class="op">)</span>,</span>
+<span>    legend_height <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/grid/unit.html" class="external-link">unit</a></span><span class="op">(</span><span class="fl">4</span>, <span class="st">"cm"</span><span class="op">)</span></span>
+<span>  <span class="op">)</span>,</span>
+<span>  </span>
+<span>  <span class="co"># Size configuration</span></span>
+<span>  width <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/grid/unit.html" class="external-link">unit</a></span><span class="op">(</span><span class="fl">0.8</span> <span class="op">*</span> <span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">cell_type_names</span><span class="op">)</span>, <span class="st">"cm"</span><span class="op">)</span>,</span>
+<span>  height <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/grid/unit.html" class="external-link">unit</a></span><span class="op">(</span><span class="fl">0.4</span> <span class="op">*</span> <span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">selected_genes</span><span class="op">)</span>, <span class="st">"cm"</span><span class="op">)</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Save the heatmap</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/grDevices/png.html" class="external-link">png</a></span><span class="op">(</span><span class="st">"marker_genes_heatmap_complex.png"</span>, </span>
+<span>    width <span class="op">=</span> <span class="fl">1400</span>, height <span class="op">=</span> <span class="fl">1000</span>, res <span class="op">=</span> <span class="fl">300</span>, bg <span class="op">=</span> <span class="st">"white"</span><span class="op">)</span></span>
+<span><span class="fu">draw</span><span class="op">(</span><span class="va">p_heatmap</span>, </span>
+<span>     column_title <span class="op">=</span> <span class="st">"Marker Gene Expression Across Cell Types"</span>,</span>
+<span>     column_title_gp <span class="op">=</span> <span class="fu">gpar</span><span class="op">(</span>fontsize <span class="op">=</span> <span class="fl">14</span>, fontface <span class="op">=</span> <span class="st">"bold"</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/grDevices/dev.html" class="external-link">dev.off</a></span><span class="op">(</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Also create with base R/pheatmap for compatibility</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">pheatmap</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Create annotation data frame for pheatmap</span></span>
+<span><span class="va">annotation_col</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
+<span>  ConsensusProp <span class="op">=</span> <span class="va">consensus_props</span>,</span>
+<span>  row.names <span class="op">=</span> <span class="va">cell_type_names</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Create the pheatmap version</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/grDevices/png.html" class="external-link">png</a></span><span class="op">(</span><span class="st">"marker_genes_heatmap_pheatmap.png"</span>, </span>
+<span>    width <span class="op">=</span> <span class="fl">1200</span>, height <span class="op">=</span> <span class="fl">1000</span>, res <span class="op">=</span> <span class="fl">300</span>, bg <span class="op">=</span> <span class="st">"white"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">pheatmap</span><span class="op">(</span></span>
+<span>  <span class="va">scaled_expression</span>,</span>
+<span>  scale <span class="op">=</span> <span class="st">"none"</span>,  <span class="co"># Already scaled</span></span>
+<span>  clustering_distance_rows <span class="op">=</span> <span class="st">"euclidean"</span>,</span>
+<span>  clustering_method <span class="op">=</span> <span class="st">"complete"</span>,</span>
+<span>  cluster_cols <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  cluster_rows <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  </span>
+<span>  <span class="co"># Colors</span></span>
+<span>  color <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/grDevices/colorRamp.html" class="external-link">colorRampPalette</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"blue"</span>, <span class="st">"white"</span>, <span class="st">"red"</span><span class="op">)</span><span class="op">)</span><span class="op">(</span><span class="fl">100</span><span class="op">)</span>,</span>
+<span>  breaks <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="op">-</span><span class="fl">2.5</span>, <span class="fl">2.5</span>, length.out <span class="op">=</span> <span class="fl">101</span><span class="op">)</span>,</span>
+<span>  </span>
+<span>  <span class="co"># Annotations</span></span>
+<span>  annotation_col <span class="op">=</span> <span class="va">annotation_col</span>,</span>
+<span>  annotation_colors <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
+<span>    ConsensusProp <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/grDevices/colorRamp.html" class="external-link">colorRampPalette</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"yellow"</span>, <span class="st">"darkgreen"</span><span class="op">)</span><span class="op">)</span><span class="op">(</span><span class="fl">100</span><span class="op">)</span></span>
+<span>  <span class="op">)</span>,</span>
+<span>  </span>
+<span>  <span class="co"># Labels and titles</span></span>
+<span>  main <span class="op">=</span> <span class="st">"Marker Gene Expression Heatmap"</span>,</span>
+<span>  fontsize <span class="op">=</span> <span class="fl">10</span>,</span>
+<span>  fontsize_row <span class="op">=</span> <span class="fl">9</span>,</span>
+<span>  fontsize_col <span class="op">=</span> <span class="fl">9</span>,</span>
+<span>  </span>
+<span>  <span class="co"># Display numbers for high expression</span></span>
+<span>  display_numbers <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span></span>
+<span>    <span class="fu"><a href="https://rdrr.io/r/base/ifelse.html" class="external-link">ifelse</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">abs</a></span><span class="op">(</span><span class="va">scaled_expression</span><span class="op">)</span> <span class="op">&gt;</span> <span class="fl">1.5</span>, </span>
+<span>           <span class="fu"><a href="https://rdrr.io/r/base/sprintf.html" class="external-link">sprintf</a></span><span class="op">(</span><span class="st">"%.1f"</span>, <span class="va">scaled_expression</span><span class="op">)</span>, <span class="st">""</span><span class="op">)</span>,</span>
+<span>    nrow <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">scaled_expression</span><span class="op">)</span></span>
+<span>  <span class="op">)</span>,</span>
+<span>  number_color <span class="op">=</span> <span class="st">"white"</span>,</span>
+<span>  fontsize_number <span class="op">=</span> <span class="fl">8</span>,</span>
+<span>  </span>
+<span>  <span class="co"># Cell size</span></span>
+<span>  cellwidth <span class="op">=</span> <span class="fl">25</span>,</span>
+<span>  cellheight <span class="op">=</span> <span class="fl">15</span>,</span>
+<span>  </span>
+<span>  <span class="co"># Borders</span></span>
+<span>  border_color <span class="op">=</span> <span class="st">"white"</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/grDevices/dev.html" class="external-link">dev.off</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
+<p><strong>Example Output:</strong></p>
+<div class="float">
+<img src="figures/png/fig13_marker_heatmap.png" alt="Enhanced Marker Gene Heatmap"><div class="figcaption">Enhanced Marker Gene Heatmap</div>
+</div>
+<p>This enhanced heatmap visualization shows:</p>
+<ul>
+<li>
+<strong>Rows</strong>: Marker genes (hierarchically clustered by
+expression pattern)</li>
+<li>
+<strong>Columns</strong>: Cell types (from consensus
+annotation)</li>
+<li>
+<strong>Color scale</strong>: Scaled expression values (navy = low,
+red = high)<br>
+</li>
+<li>
+<strong>Top annotation</strong>: Consensus proportion for each cell
+type</li>
+<li>
+<strong>Clean layout</strong>: No cluttered text, focus on
+expression patterns</li>
+</ul>
+</div>
+<div class="section level4">
+<h4 id="alternative-simplified-dotplot">Alternative: Simplified Dotplot<a class="anchor" aria-label="anchor" href="#alternative-simplified-dotplot"></a>
+</h4>
+<p>For a quick analysis with predefined key markers, you can create a
+simplified version by selecting specific genes of interest and using a
+simpler color scheme. This approach is faster when you already know
+which markers to focus on.</p>
+</div>
+<div class="section level4">
 <h4 id="marker-gene-visualization-best-practices">Marker Gene Visualization Best Practices<a class="anchor" aria-label="anchor" href="#marker-gene-visualization-best-practices"></a>
 </h4>
 <ol style="list-style-type: decimal">
@@ -990,11 +1339,15 @@ clarity; too many genes can make plots cluttered</li>
 <li>Use <code>plasma</code> or <code>viridis</code> for bubble plots
 (good contrast)</li>
 <li>Use <code>inferno</code> or custom palettes for heatmaps</li>
+<li>Use blue-white-red for heatmaps (intuitive for expression)</li>
 </ul>
 </li>
 <li>
 <strong>Scaling</strong>: Row-wise scaling
 (<code>scale_method = "row"</code>) is recommended for heatmaps</li>
+<li>
+<strong>Dotplots</strong>: Use appropriate dot size scaling and
+clear color gradients</li>
 <li>
 <strong>File Formats</strong>: Save as PNG for presentations, PDF
 for publications</li>
@@ -1007,7 +1360,7 @@ figures</li>
 <h4 id="troubleshooting-marker-gene-visualizations">Troubleshooting Marker Gene Visualizations<a class="anchor" aria-label="anchor" href="#troubleshooting-marker-gene-visualizations"></a>
 </h4>
 <p>Common issues and solutions:</p>
-<div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb28"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Issue: Empty or missing consensus results</span></span>
 <span><span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/NULL.html" class="external-link">is.null</a></span><span class="op">(</span><span class="va">consensus_results</span><span class="op">$</span><span class="va">final_annotations</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
 <span>  <span class="kw"><a href="https://rdrr.io/r/base/stop.html" class="external-link">stop</a></span><span class="op">(</span><span class="st">"Consensus results are missing. Please run consensus annotation first."</span><span class="op">)</span></span>
@@ -1039,7 +1392,7 @@ figures</li>
 </h4>
 <p>Circlize plots provide a unique circular representation of your data,
 combining cell type information with metadata in concentric rings:</p>
-<div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb29"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Install required packages if not already installed</span></span>
 <span><span class="kw">if</span> <span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/ns-load.html" class="external-link">requireNamespace</a></span><span class="op">(</span><span class="st">"circlize"</span>, quietly <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"circlize"</span><span class="op">)</span></span>
@@ -1094,7 +1447,9 @@ combining cell type information with metadata in concentric rings:</p>
 <span>  gradient_color <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"blue"</span>, <span class="st">"yellow"</span>, <span class="st">"red"</span><span class="op">)</span></span>
 <span><span class="op">)</span></span></code></pre></div>
 <p><strong>Example Output:</strong></p>
-<p><img src="figures/png/fig11_circlize_plot.png" alt="Circlize Plot" width="90%"></p>
+<div class="float">
+<img src="figures/png/fig11_circlize_plot.png" alt="Circlize Plot"><div class="figcaption">Circlize Plot</div>
+</div>
 <p>This visualization presents cell types in a circular layout with
 additional tracks showing metadata. The outer ring shows cell types, the
 middle ring indicates controversial vs. consensus clusters, and the
@@ -1107,7 +1462,7 @@ of your data simultaneously.</p>
 </h4>
 <p>You can visualize how different models agree or disagree with the
 consensus:</p>
-<div class="sourceCode" id="cb28"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb30"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Assuming you have individual model results in the Seurat object</span></span>
 <span><span class="co"># Create a function to calculate agreement with consensus</span></span>
 <span><span class="va">calculate_agreement</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">seurat_obj</span>, <span class="va">model_column</span>, <span class="va">consensus_column</span><span class="op">)</span> <span class="op">{</span></span>
@@ -1148,7 +1503,7 @@ consensus:</p>
 </h4>
 <p>Create a heatmap to visualize all model predictions for each
 cluster:</p>
-<div class="sourceCode" id="cb29"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb31"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">pheatmap</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Create a matrix of model predictions for each cluster</span></span>
@@ -1251,7 +1606,7 @@ cluster:</p>
 </h3>
 <p>The discussion logs contain valuable information about the reasoning
 process. Here’s how to visualize key aspects:</p>
-<div class="sourceCode" id="cb30"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb32"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://juliasilge.github.io/tidytext/" class="external-link">tidytext</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="http://blog.fellstat.com/?cat=11" class="external-link">wordcloud</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://stringr.tidyverse.org" class="external-link">stringr</a></span><span class="op">)</span></span>
@@ -1340,7 +1695,7 @@ process. Here’s how to visualize key aspects:</p>
 <h3 id="additional-saving-options">Additional Saving Options<a class="anchor" aria-label="anchor" href="#additional-saving-options"></a>
 </h3>
 <p>For more flexibility in saving your visualizations:</p>
-<div class="sourceCode" id="cb31"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb33"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Save a single plot with high resolution</span></span>
 <span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggsave.html" class="external-link">ggsave</a></span><span class="op">(</span><span class="st">"cell_type_annotations.png"</span>, plot <span class="op">=</span> <span class="va">p1</span>, width <span class="op">=</span> <span class="fl">10</span>, height <span class="op">=</span> <span class="fl">8</span>, dpi <span class="op">=</span> <span class="fl">600</span><span class="op">)</span></span>
 <span></span>
@@ -1395,7 +1750,7 @@ entropy)</li>
 </h3>
 <p>Here’s a complete example workflow for creating publication-ready
 visualizations:</p>
-<div class="sourceCode" id="cb32"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb34"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://satijalab.org/seurat" class="external-link">Seurat</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://cafferychen777.github.io/mLLMCelltype/">mLLMCelltype</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://ggplot2.tidyverse.org" class="external-link">ggplot2</a></span><span class="op">)</span></span>
@@ -1520,7 +1875,7 @@ visualizations:</p>
 version of SCpubr</li>
 <li>Use standard ggplot2 functions to add titles instead:</li>
 </ul>
-<div class="sourceCode" id="cb33"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb35"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">p</span> <span class="op">&lt;-</span> <span class="va">p</span> <span class="op">+</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">ggtitle</a></span><span class="op">(</span><span class="st">"My Title"</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme.html" class="external-link">theme</a></span><span class="op">(</span>plot.title <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html" class="external-link">element_text</a></span><span class="op">(</span>hjust <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <ul>
 <li>Check the SCpubr documentation for your installed version</li>
