@@ -106,7 +106,7 @@
       <img src="../logo.png" class="logo" alt=""><h1>Usage Tutorial</h1>
                         <h4 data-toc-skip class="author">Chen Yang</h4>
             
-            <h4 data-toc-skip class="date">2025-06-20</h4>
+            <h4 data-toc-skip class="date">2025-06-22</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/cafferychen777/mLLMCelltype/blob/main/vignettes/04-usage-tutorial.Rmd" class="external-link"><code>vignettes/04-usage-tutorial.Rmd</code></a></small>
       <div class="d-none name"><code>04-usage-tutorial.Rmd</code></div>
@@ -161,6 +161,16 @@ through interactive discussion:</p>
 <span>  cache_dir <span class="op">=</span> <span class="st">"consensus_cache"</span>,  <span class="co"># Directory for cache</span></span>
 <span>  use_cache <span class="op">=</span> <span class="cn">TRUE</span>      <span class="co"># Whether to use cache</span></span>
 <span><span class="op">)</span></span></code></pre></div>
+<p><strong>Important Note on
+<code>consensus_check_model</code></strong>: This parameter is critical
+for annotation accuracy. The consensus check model evaluates semantic
+similarity, calculates consensus metrics, and moderates discussions. We
+strongly recommend using high-performance models like: -
+<code>claude-opus-4-20250514</code> (best overall) -
+<code>claude-3-7-sonnet-20250219</code> (excellent balance) -
+<code>o1</code> (advanced reasoning) - <code>gpt-4o</code> (strong
+performance) - <code>gemini-2.5-pro</code> (top-tier)</p>
+<p>See the main README for detailed recommendations and examples.</p>
 </div>
 </div>
 <div class="section level3">
