@@ -69,6 +69,15 @@ consensus_results <- interactive_consensus_annotation(
 )
 ```
 
+**Important Note on `consensus_check_model`**: This parameter is critical for annotation accuracy. The consensus check model evaluates semantic similarity, calculates consensus metrics, and moderates discussions. We strongly recommend using high-performance models like:
+- `claude-opus-4-20250514` (best overall)
+- `claude-3-7-sonnet-20250219` (excellent balance)
+- `o1` (advanced reasoning)
+- `gpt-4o` (strong performance)
+- `gemini-2.5-pro` (top-tier)
+
+See the main README for detailed recommendations and examples.
+
 ## Detailed Usage Scenarios
 
 ### Scenario 1: Basic Annotation with a Single Model

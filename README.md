@@ -921,6 +921,154 @@ for (model in models_to_test) {
 }
 ```
 
+### Advanced Consensus Configuration: Specifying the Consensus Check Model
+
+The `consensus_check_model` parameter (R) / `consensus_model` parameter (Python) allows you to specify which LLM model to use for consensus checking and discussion moderation. This parameter is **critical** for the accuracy of consensus annotation because the consensus check model:
+
+1. Evaluates semantic similarity between different cell type annotations
+2. Calculates consensus metrics (proportion and entropy)
+3. Moderates and synthesizes discussions between models for controversial clusters
+4. Makes final decisions when models disagree
+
+**⚠️ Important: We strongly recommend using the most capable models available for consensus checking, as this directly impacts annotation quality.**
+
+#### Recommended Models for Consensus Checking (Ranked by Performance)
+
+1. **Anthropic Claude Models** (Highest recommendation)
+   - `claude-opus-4-20250514` - Best overall performance
+   - `claude-3-7-sonnet-20250219` - Excellent balance of performance and speed
+   - `claude-3-5-sonnet-20241022` - Good performance with faster response
+
+2. **OpenAI Models**
+   - `o1` / `o1-pro` - Advanced reasoning capabilities
+   - `gpt-4o` - Strong performance across various cell types
+   - `gpt-4.1` - Latest GPT-4 variant
+
+3. **Google Gemini Models**
+   - `gemini-2.5-pro` - Top-tier performance
+   - `gemini-2.0-flash` - Good performance with faster processing
+
+4. **Other High-Performance Models**
+   - `deepseek-r1` / `deepseek-reasoner` - Strong reasoning capabilities
+   - `qwen-max-2025-01-25` - Excellent for scientific contexts
+   - `grok-3-latest` - Advanced language understanding
+
+#### R Package Usage
+
+```r
+# Example 1: Using the best available model for consensus checking (Recommended)
+consensus_results <- interactive_consensus_annotation(
+  input = marker_genes_list,
+  tissue_name = "human brain",
+  models = c("gpt-4o", "claude-3-7-sonnet-20250219", "gemini-2.0-flash", "qwen-max-2025-01-25"),
+  api_keys = api_keys,
+  consensus_check_model = "claude-opus-4-20250514",  # Use the most capable model
+  controversy_threshold = 0.7,
+  entropy_threshold = 1.0
+)
+
+# Example 2: Using a high-performance model when Claude Opus is not available
+consensus_results <- interactive_consensus_annotation(
+  input = marker_genes_list,
+  tissue_name = "mouse liver",
+  models = c("gpt-4o", "gemini-2.0-flash", "qwen-max-2025-01-25"),
+  api_keys = api_keys,
+  consensus_check_model = "claude-3-7-sonnet-20250219",  # Alternative high-performance model
+  controversy_threshold = 0.7,
+  entropy_threshold = 1.0
+)
+
+# Example 3: Using OpenAI's reasoning model for complex cases
+consensus_results <- interactive_consensus_annotation(
+  input = marker_genes_list,
+  tissue_name = "human immune cells",
+  models = c("gpt-4o", "claude-3-7-sonnet-20250219", "gemini-2.0-flash"),
+  api_keys = api_keys,
+  consensus_check_model = "o1",  # OpenAI's advanced reasoning model
+  controversy_threshold = 0.7,
+  entropy_threshold = 1.0
+)
+
+# ⚠️ NOT RECOMMENDED: Avoid using less capable or free models for consensus checking
+# as this may significantly reduce annotation accuracy
+```
+
+#### Python Package Usage
+
+```python
+# Example 1: Using the best available model for consensus checking (Recommended)
+consensus_results = interactive_consensus_annotation(
+    marker_genes=marker_genes,
+    species="human",
+    tissue="brain",
+    models=["gpt-4o", "claude-3-7-sonnet-20250219", "gemini-2.0-flash", "qwen-max-2025-01-25"],
+    consensus_model="claude-opus-4-20250514",  # Use the most capable model
+    consensus_threshold=0.7,
+    entropy_threshold=1.0
+)
+
+# Example 2: Using dictionary format with a high-performance model
+consensus_results = interactive_consensus_annotation(
+    marker_genes=marker_genes,
+    species="mouse",
+    tissue="liver",
+    models=["gpt-4o", "gemini-2.0-flash", "qwen-max-2025-01-25"],
+    consensus_model={"provider": "anthropic", "model": "claude-3-7-sonnet-20250219"},
+    consensus_threshold=0.7,
+    entropy_threshold=1.0
+)
+
+# Example 3: Using Google's latest model for consensus
+consensus_results = interactive_consensus_annotation(
+    marker_genes=marker_genes,
+    species="human",
+    tissue="heart",
+    models=["gpt-4o", "claude-3-7-sonnet-20250219", "qwen-max-2025-01-25"],
+    consensus_model={"provider": "google", "model": "gemini-2.5-pro"},
+    consensus_threshold=0.7,
+    entropy_threshold=1.0
+)
+
+# Example 4: Default behavior (uses Qwen with high-performance fallback)
+consensus_results = interactive_consensus_annotation(
+    marker_genes=marker_genes,
+    species="human",
+    tissue="blood",
+    models=["gpt-4o", "claude-3-7-sonnet-20250219", "gemini-2.0-flash"],
+    # If not specified, defaults to qwen-max-2025-01-25 (a high-performance model)
+    consensus_threshold=0.7,
+    entropy_threshold=1.0
+)
+```
+
+#### Best Practices for Consensus Model Selection
+
+1. **Prioritize Accuracy Over Cost**: The consensus check model plays a crucial role in determining final annotations. Using a less capable model here can compromise the entire annotation process.
+
+2. **Model Availability**: Ensure you have API access to your chosen consensus model. The system will use fallback models if the primary choice is unavailable.
+
+3. **Consistency**: Use the same high-performance model for all consensus checks within a project to ensure consistent evaluation criteria.
+
+4. **Complex Tissues**: For challenging tissues (e.g., brain, immune system), consider using the most advanced models like Claude Opus, O1, or Gemini 2.5 Pro.
+
+5. **Default Behavior**: 
+   - R: Uses the first model in the `models` list if not specified
+   - Python: Defaults to `qwen-max-2025-01-25` (a high-performance model) with `claude-3-5-sonnet-latest` as fallback
+
+#### Why Model Quality Matters for Consensus Checking
+
+The consensus check model must:
+- Accurately assess semantic similarity between different cell type names (e.g., recognizing that "T lymphocyte" and "T cell" refer to the same cell type)
+- Understand biological context and hierarchical relationships
+- Synthesize discussions from multiple models to reach accurate conclusions
+- Provide reliable confidence metrics for downstream analysis
+
+Using a less capable model for these critical tasks can lead to:
+- Misidentification of controversial clusters
+- Incorrect consensus calculations
+- Poor resolution of disagreements between models
+- Ultimately, less accurate cell type annotations
+
 ## Visualization Examples
 
 ### Cell Type Annotation Visualization
