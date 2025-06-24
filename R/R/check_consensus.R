@@ -1,4 +1,65 @@
 
+#' Normalize annotation for comparison
+#' @param annotation The annotation string to normalize
+#' @return Normalized annotation string
+#' @keywords internal
+normalize_annotation <- function(annotation) {
+  # Convert to lowercase
+  normalized <- tolower(trimws(annotation))
+  
+  # Remove common variations
+  normalized <- gsub("\\s+", " ", normalized)  # Multiple spaces to single
+  normalized <- gsub("[[:punct:]]", "", normalized)  # Remove punctuation
+  
+  # Handle plurals (simple approach)
+  normalized <- gsub("cells$", "cell", normalized)
+  normalized <- gsub("cytes$", "cyte", normalized)
+  
+  # Common cell type variations
+  normalized <- gsub("t lymphocyte", "t cell", normalized)
+  normalized <- gsub("b lymphocyte", "b cell", normalized)
+  normalized <- gsub("natural killer", "nk", normalized)
+  
+  return(normalized)
+}
+
+#' Calculate simple consensus without LLM
+#' @param round_responses Vector of model responses
+#' @return List with consensus_proportion, entropy, and majority_prediction
+#' @keywords internal
+calculate_simple_consensus <- function(round_responses) {
+  # Normalize all annotations
+  normalized_responses <- sapply(round_responses, normalize_annotation)
+  
+  # Count occurrences
+  response_counts <- table(normalized_responses)
+  total_responses <- length(round_responses)
+  
+  
+  # Find most common response
+  most_common_idx <- which.max(response_counts)
+  most_common_normalized <- names(response_counts)[most_common_idx]
+  most_common_count <- as.numeric(response_counts[most_common_idx])
+  
+  # Find original annotation that matches the most common normalized form
+  matching_idx <- which(normalized_responses == most_common_normalized)[1]
+  majority_prediction <- round_responses[matching_idx]
+  
+  # Calculate consensus proportion
+  consensus_proportion <- most_common_count / total_responses
+  
+  # Calculate Shannon entropy
+  proportions <- as.numeric(response_counts) / total_responses
+  entropy <- -sum(proportions * log2(proportions + 1e-10))  # Add small value to avoid log(0)
+  
+  
+  return(list(
+    consensus_proportion = consensus_proportion,
+    entropy = entropy,
+    majority_prediction = majority_prediction
+  ))
+}
+
 # Constants for consensus checking
 .CONSENSUS_CONSTANTS <- list(
   MAX_RETRIES = 3,
@@ -349,6 +410,74 @@ check_consensus <- function(round_responses, api_keys = NULL, controversy_thresh
     return(list(reached = FALSE, consensus_proportion = 0, entropy = 0, majority_prediction = "Insufficient_Responses"))
   }
 
+  # OPTIMIZATION: First try simple consensus calculation
+  get_logger()$info("Starting with simple consensus calculation")
+  
+  # Extract cell types from responses if they are discussion format
+  extracted_cell_types <- sapply(round_responses, function(response) {
+    if (is.character(response) && length(response) > 1) {
+      # Multi-line response (discussion format)
+      # Look for line starting with "CELL TYPE:"
+      cell_type_lines <- grep("^CELL TYPE:", response, value = TRUE, ignore.case = TRUE)
+      if (length(cell_type_lines) > 0) {
+        # Extract cell type after "CELL TYPE:"
+        cell_type <- trimws(sub("^CELL TYPE:\\s*", "", cell_type_lines[1], ignore.case = TRUE))
+        return(cell_type)
+      }
+    } else if (is.character(response) && length(response) == 1) {
+      # Single line response - return as is
+      return(response)
+    }
+    # Default to "Unknown" if extraction fails
+    return("Unknown")
+  })
+  
+  
+  # Calculate simple consensus
+  simple_result <- calculate_simple_consensus(extracted_cell_types)
+  
+  
+  # Check if simple consensus meets thresholds
+  if (simple_result$consensus_proportion >= controversy_threshold && 
+      simple_result$entropy <= entropy_threshold) {
+    # Simple consensus is sufficient
+    get_logger()$info("✅ CONSENSUS ACHIEVED WITH SIMPLE CHECK - NO LLM NEEDED!", list(
+      proportion = simple_result$consensus_proportion,
+      entropy = simple_result$entropy,
+      controversy_threshold = controversy_threshold,
+      entropy_threshold = entropy_threshold,
+      majority = simple_result$majority_prediction
+    ))
+    
+    message(sprintf("✅ Cluster consensus achieved via SIMPLE CHECK: %s (CP=%.2f, H=%.2f)",
+                    simple_result$majority_prediction,
+                    simple_result$consensus_proportion,
+                    simple_result$entropy))
+    
+    return(list(
+      reached = TRUE,
+      consensus_proportion = simple_result$consensus_proportion,
+      entropy = simple_result$entropy,
+      majority_prediction = simple_result$majority_prediction
+    ))
+  }
+  
+  # Simple consensus didn't meet thresholds, use LLM for double-checking
+  get_logger()$info("⚠️ Simple consensus BELOW threshold, REQUIRING LLM double-check", list(
+    proportion = simple_result$consensus_proportion,
+    entropy = simple_result$entropy,
+    controversy_threshold = controversy_threshold,
+    entropy_threshold = entropy_threshold,
+    reason = if(simple_result$consensus_proportion < controversy_threshold) 
+             "Low consensus proportion" else "High entropy"
+  ))
+  
+  message(sprintf("⚠️ Simple check insufficient (CP=%.2f < %.2f OR H=%.2f > %.2f) - Using LLM",
+                  simple_result$consensus_proportion,
+                  controversy_threshold,
+                  simple_result$entropy,
+                  entropy_threshold))
+
   # Get the formatted prompt from the dedicated function
   formatted_responses <- create_consensus_check_prompt(round_responses, controversy_threshold, entropy_threshold)
 
@@ -356,22 +485,35 @@ check_consensus <- function(round_responses, api_keys = NULL, controversy_thresh
   models_to_try <- prepare_models_list(consensus_check_model)
   execution_result <- execute_consensus_check(formatted_responses, api_keys, models_to_try)
 
-  # Handle execution failure
+  # Handle execution failure - fall back to simple consensus
   if (!execution_result$success) {
-    get_logger()$error("All model attempts failed, using default values")
-    return(.DEFAULT_CONSENSUS_RESULT)
+    get_logger()$error("All model attempts failed, using simple consensus results")
+    return(list(
+      reached = simple_result$consensus_proportion >= controversy_threshold && 
+               simple_result$entropy <= entropy_threshold,
+      consensus_proportion = simple_result$consensus_proportion,
+      entropy = simple_result$entropy,
+      majority_prediction = simple_result$majority_prediction
+    ))
   }
 
   # Parse the response using the new modular approach
   result <- parse_consensus_response(execution_result$response)
   
-  # Log final results
-  get_logger()$info("Final consensus results", list(
-    consensus = result$reached,
-    proportion = result$consensus_proportion,
-    entropy = result$entropy,
-    majority = result$majority_prediction
-  ))
+  
+  # Compare LLM result with simple consensus
+  if (result$reached) {
+    message(sprintf("📊 LLM CONFIRMED consensus: %s (CP=%.2f, H=%.2f)",
+                    result$majority_prediction,
+                    result$consensus_proportion,
+                    result$entropy))
+  } else {
+    message(sprintf("📊 LLM REJECTED consensus: Simple suggested %s but LLM found CP=%.2f, H=%.2f",
+                    simple_result$majority_prediction,
+                    result$consensus_proportion,
+                    result$entropy))
+  }
+  
 
   return(result)
 }

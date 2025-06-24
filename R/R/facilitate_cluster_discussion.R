@@ -162,9 +162,56 @@ facilitate_cluster_discussion <- function(cluster_id,
     responses = round1_responses
   )
 
-  # Check consensus after first round
+  # Filter out error responses before consensus check
+  valid_round1_responses <- list()
+  for (model_name in names(round1_responses)) {
+    response <- round1_responses[[model_name]]
+    # Check if response is valid (not an error message)
+    if (!is.null(response) && 
+        (!is.character(response) || 
+         (is.character(response) && !any(grepl("^Error:", response))))) {
+      valid_round1_responses[[model_name]] <- response
+    } else {
+      log_warn(sprintf("Model %s failed to provide valid response for cluster %s", 
+                      model_name, char_cluster_id))
+    }
+  }
+  
+  # Check if we have enough valid responses to continue
+  if (length(valid_round1_responses) < 2) {
+    log_warn(sprintf("Only %d valid responses received for cluster %s. Skipping discussion.", 
+                    length(valid_round1_responses), char_cluster_id))
+    
+    # Return with best available prediction or "Unknown"
+    best_prediction <- if(length(valid_round1_responses) == 1) {
+      # Extract cell type from the single valid response
+      response_text <- valid_round1_responses[[1]]
+      if (is.character(response_text) && length(response_text) > 0) {
+        # Try to extract cell type from first line
+        cell_type_match <- regexpr("CELL TYPE:\\s*(.+)", response_text[1], ignore.case = TRUE)
+        if (cell_type_match > 0) {
+          trimws(sub("CELL TYPE:\\s*", "", response_text[1], ignore.case = TRUE))
+        } else {
+          "Unknown"
+        }
+      } else {
+        "Unknown"
+      }
+    } else {
+      "Unknown"
+    }
+    
+    return(list(
+      cluster_id = char_cluster_id,
+      final_cell_type = best_prediction,
+      consensus_reached = FALSE,
+      discussion_log = discussion_log
+    ))
+  }
+
+  # Check consensus after first round with valid responses only
   # Parameters are passed to check_consensus and used in prompt template to instruct LLM # nolint
-  consensus_result <- check_consensus(round1_responses, api_keys, controversy_threshold, entropy_threshold, consensus_check_model)
+  consensus_result <- check_consensus(valid_round1_responses, api_keys, controversy_threshold, entropy_threshold, consensus_check_model)
   log_info("Consensus check completed", list(
     round = 1,
     consensus_reached = consensus_result$reached,
@@ -238,9 +285,31 @@ facilitate_cluster_discussion <- function(cluster_id,
       responses = round_responses
     )
 
-    # Check if consensus is reached
+    # Filter out error responses before consensus check
+    valid_round_responses <- list()
+    for (model_name in names(round_responses)) {
+      response <- round_responses[[model_name]]
+      # Check if response is valid (not an error message)
+      if (!is.null(response) && 
+          (!is.character(response) || 
+           (is.character(response) && !any(grepl("^Error:", response))))) {
+        valid_round_responses[[model_name]] <- response
+      } else {
+        log_warn(sprintf("Model %s failed to provide valid response for cluster %s in round %d", 
+                        model_name, char_cluster_id, round))
+      }
+    }
+    
+    # Check if we have enough valid responses to continue
+    if (length(valid_round_responses) < 2) {
+      log_warn(sprintf("Only %d valid responses in round %d for cluster %s. Ending discussion.", 
+                      length(valid_round_responses), round, char_cluster_id))
+      break  # Exit the discussion loop
+    }
+
+    # Check if consensus is reached with valid responses only
     # Parameters are passed to check_consensus and used in prompt template to instruct LLM # nolint
-    consensus_result <- check_consensus(round_responses, api_keys, controversy_threshold, entropy_threshold, consensus_check_model)
+    consensus_result <- check_consensus(valid_round_responses, api_keys, controversy_threshold, entropy_threshold, consensus_check_model)
     log_info("Consensus check completed", list(
       round = round,
       consensus_reached = consensus_result$reached,
