@@ -259,6 +259,61 @@ def check_consensus(
                 entropy[cluster] = 0.0
             continue
 
+        # OPTIMIZATION: First try simple consensus calculation
+        write_log(f"Starting with simple consensus calculation for cluster {cluster}", level="info")
+
+        # Normalize annotations for better comparison
+        normalized_annotations = {}
+        for original in cluster_annotations:
+            normalized = normalize_annotation_for_comparison(original)
+            if normalized not in normalized_annotations:
+                normalized_annotations[normalized] = []
+            normalized_annotations[normalized].append(original)
+
+        # Count normalized annotations
+        normalized_counts = {
+            norm: len(originals) for norm, originals in normalized_annotations.items()
+        }
+
+        # Find most common normalized annotation
+        most_common_normalized = max(normalized_counts.items(), key=lambda x: x[1])
+        most_common_norm_key = most_common_normalized[0]
+        most_common_count = most_common_normalized[1]
+
+        # Get the most frequent original annotation from the most common normalized group
+        original_annotations = normalized_annotations[most_common_norm_key]
+        original_counts = Counter(original_annotations)
+        most_common_annotation = original_counts.most_common(1)[0][0]
+
+        # Calculate consensus proportion based on normalized counts
+        prop = most_common_count / len(cluster_annotations)
+
+        # Calculate entropy based on normalized groups
+        ent = 0.0
+        total = len(cluster_annotations)
+        for count in normalized_counts.values():
+            p = count / total
+            ent -= p * (math.log2(p) if p > 0 else 0)
+
+        # Check if simple consensus meets thresholds
+        if prop >= consensus_threshold and ent <= entropy_threshold:
+            # Simple consensus is sufficient
+            consensus_proportion[cluster] = prop
+            entropy[cluster] = ent
+            consensus[cluster] = most_common_annotation
+            write_log(
+                f"Cluster {cluster} achieved consensus with simple check: "
+                f"CP={prop:.2f}, H={ent:.2f}",
+                level="info",
+            )
+            continue
+
+        # Simple consensus didn't meet thresholds, use LLM for double-checking
+        write_log(
+            f"Cluster {cluster} needs LLM double-check: " f"CP={prop:.2f}, H={ent:.2f}",
+            level="info",
+        )
+
         # Create prompt for LLM
         prompt = create_consensus_check_prompt(cluster_annotations)
 
@@ -331,54 +386,22 @@ def check_consensus(
                 consensus_proportion[cluster] = prop_value
                 entropy[cluster] = entropy_value
                 consensus[cluster] = majority_prediction
+                write_log(
+                    f"LLM consensus check for cluster {cluster}: "
+                    f"CP={prop_value:.2f}, H={entropy_value:.2f}",
+                    level="info",
+                )
                 continue
 
-        # Fallback to simple consensus calculation if LLM approach failed
-        write_log(f"Using fallback consensus calculation for cluster {cluster}", level="info")
-
-        # Normalize annotations for better comparison
-        normalized_annotations = {}
-        for original in cluster_annotations:
-            normalized = normalize_annotation_for_comparison(original)
-            if normalized not in normalized_annotations:
-                normalized_annotations[normalized] = []
-            normalized_annotations[normalized].append(original)
-
-        # Count normalized annotations
-        normalized_counts = {
-            norm: len(originals) for norm, originals in normalized_annotations.items()
-        }
-
-        # Find most common normalized annotation
-        most_common_normalized = max(normalized_counts.items(), key=lambda x: x[1])
-        most_common_norm_key = most_common_normalized[0]
-        most_common_count = most_common_normalized[1]
-
-        # Get the most frequent original annotation from the most common normalized group
-        original_annotations = normalized_annotations[most_common_norm_key]
-        original_counts = Counter(original_annotations)
-        most_common_annotation = original_counts.most_common(1)[0][0]
-
-        # Calculate consensus proportion based on normalized counts
-        prop = most_common_count / len(cluster_annotations)
+        # If LLM failed, use the simple consensus results we already calculated
         consensus_proportion[cluster] = prop
-
-        # Calculate entropy based on normalized groups
-        ent = 0.0
-        total = len(cluster_annotations)
-        for count in normalized_counts.values():
-            p = count / total
-            ent -= p * (math.log2(p) if p > 0 else 0)
         entropy[cluster] = ent
-
         consensus[cluster] = most_common_annotation
-
-        if prop < consensus_threshold or ent > entropy_threshold:
-            write_log(
-                f"Cluster {cluster} may be controversial based on fallback calculation: "
-                f"CP={prop:.2f}, H={ent:.2f}",
-                level="info",
-            )
+        write_log(
+            f"Using simple consensus for cluster {cluster} after LLM failure: "
+            f"CP={prop:.2f}, H={ent:.2f}",
+            level="info",
+        )
 
     if return_controversial:
         # Find controversial clusters based on both consensus proportion and entropy
