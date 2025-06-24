@@ -14,12 +14,6 @@
 #' @return None, prints summary to console
 #' @keywords internal
 print_consensus_summary <- function(results) {
-  # Debug: Print the structure of results
-  cat("DEBUG: Structure of results:\n")
-  cat(sprintf("DEBUG: Names in results: %s\n", paste(names(results), collapse = ", ")))
-  cat(sprintf("DEBUG: Length of final_annotations: %d\n", length(results$final_annotations)))
-  cat(sprintf("DEBUG: Length of controversial_clusters: %d\n", length(results$controversial_clusters)))
-  
   # Print consensus building summary
   cat("\nConsensus Building Summary:\n")
   cat(sprintf("Total clusters analyzed: %d\n", length(results$final_annotations)))
@@ -28,14 +22,10 @@ print_consensus_summary <- function(results) {
   
   # If there are controversial clusters, print detailed results
   if (length(results$controversial_clusters) > 0) {
-    # Debug: Print controversial clusters
-    cat("DEBUG: Controversial clusters: ", paste(results$controversial_clusters, collapse = ", "), "\n")
     cat("\nDetailed results for controversial clusters:\n")
     
     # Iterate through each controversial cluster
     for (cluster_id in results$controversial_clusters) {
-      # Debug: Print current cluster ID
-      cat(sprintf("DEBUG: Processing cluster_id: %s (type: %s)\n", cluster_id, typeof(cluster_id)))
       # Ensure cluster_id is always a string type
       char_cluster_id <- as.character(cluster_id)
       
@@ -43,15 +33,6 @@ print_consensus_summary <- function(results) {
       cat("Initial predictions:\n")
       
       # Prioritize initial predictions from discussion_logs, as these are the actual predictions used for discussion
-      cat("DEBUG: Checking discussion_logs...\n")
-      cat(sprintf("DEBUG: discussion_logs exists: %s\n", !is.null(results$discussion_logs)))
-      if (!is.null(results$discussion_logs)) {
-        cat(sprintf("DEBUG: discussion_logs[[%s]] exists: %s\n", char_cluster_id, !is.null(results$discussion_logs[[char_cluster_id]])))
-      }
-      if (!is.null(results$discussion_logs) && !is.null(results$discussion_logs[[char_cluster_id]])) {
-        cat(sprintf("DEBUG: discussion_logs[[%s]]$initial_predictions exists: %s\n", char_cluster_id, !is.null(results$discussion_logs[[char_cluster_id]]$initial_predictions)))
-      }
-      
       if (!is.null(results$discussion_logs) && 
           !is.null(results$discussion_logs[[char_cluster_id]]) && 
           !is.null(results$discussion_logs[[char_cluster_id]]$initial_predictions)) {
@@ -74,9 +55,6 @@ print_consensus_summary <- function(results) {
       # If no initial predictions in discussion logs, use initial_results
       else if (!is.null(results$initial_results) && 
                !is.null(results$initial_results$individual_predictions)) {
-        cat("DEBUG: Using initial_results$individual_predictions\n")
-        cat(sprintf("DEBUG: Models in individual_predictions: %s\n", paste(names(results$initial_results$individual_predictions), collapse = ", ")))
-        
         # Iterate through each model's prediction
         for (model in names(results$initial_results$individual_predictions)) {
           # Check if prediction has names
@@ -135,50 +113,28 @@ print_consensus_summary <- function(results) {
       }
       
       # Print final consensus
-      cat("DEBUG: Checking final_annotations...\n")
-      cat(sprintf("DEBUG: final_annotations exists: %s\n", !is.null(results$final_annotations)))
-      if (!is.null(results$final_annotations)) {
-        cat(sprintf("DEBUG: final_annotations[[%s]] exists: %s\n", char_cluster_id, !is.null(results$final_annotations[[char_cluster_id]])))
-      }
-      
       if (!is.null(results$final_annotations) && 
           !is.null(results$final_annotations[[char_cluster_id]])) {
         
         final_annotation <- results$final_annotations[[char_cluster_id]]
-        cat(sprintf("DEBUG: final_annotation type: %s, is.list: %s, is.vector: %s, length: %d\n", 
-                    typeof(final_annotation), 
-                    is.list(final_annotation), 
-                    is.vector(final_annotation), 
-                    length(final_annotation)))
-        
-        cat(sprintf("DEBUG: Processing final_annotation - is.list: %s, is.vector: %s, length > 0: %s, !is.character: %s\n", 
-                    is.list(final_annotation), 
-                    is.vector(final_annotation), 
-                    length(final_annotation) > 0, 
-                    ifelse(is.vector(final_annotation), !is.character(final_annotation), TRUE)))
         
         # Handle NA values first
         if (is.null(final_annotation) || is.na(final_annotation)) {
           final_annotation_str <- "Final_Annotation_Missing"
         } else if (is.list(final_annotation) || (is.vector(final_annotation) && length(final_annotation) > 0 && !is.character(final_annotation))) {
           # If it's a list or non-character vector, take the first element
-          cat("DEBUG: Converting list/vector element to string\n")
           final_annotation_str <- tryCatch({
             as.character(final_annotation[[1]])
           }, error = function(e) {
-            cat(sprintf("DEBUG: Error converting final_annotation[[1]] to string: %s\n", e$message))
             "Error_Converting_To_String"
           })
-          cat(sprintf("DEBUG: final_annotation_str: %s\n", final_annotation_str))
         } else {
           # Otherwise convert directly to string
           final_annotation_str <- tryCatch({
             as.character(final_annotation)
           }, error = function(e) {
-            cat(sprintf("DEBUG: Error converting final_annotation to string: %s\n", e$message))
             "Error_Converting_To_String"
           })
-          cat(sprintf("DEBUG: final_annotation_str: %s\n", final_annotation_str))
         }
         
         # Validate consistency between final consensus and initial predictions
@@ -192,15 +148,12 @@ print_consensus_summary <- function(results) {
             predictions <- results$initial_results$individual_predictions[[first_model]]
             has_names <- all(names(results$initial_results$individual_predictions) %in% names(results$discussion_logs[[char_cluster_id]]$initial_predictions))
           }, error = function(e) {
-            cat(sprintf("DEBUG: Error getting first model predictions: %s\n", e$message))
             has_names <- FALSE
           })
           
           # Collect predictions from all models
           all_predictions <- list()
           # Validation using discussion log predictions
-          cat("DEBUG: Collecting discussion log predictions for cluster_id: ", char_cluster_id, "\n")
-          
           discussion_log_predictions <- NULL
           if (!is.null(results$discussion_logs) && 
               !is.null(results$discussion_logs[[char_cluster_id]]) && 
@@ -219,7 +172,6 @@ print_consensus_summary <- function(results) {
                 if (!is.na(pred)) {
                   # Make sure to compare against the placeholder string too
                   if (pred != "" && pred != "No prediction provided") { 
-                     cat(sprintf("DEBUG: Adding prediction from discussion log for model %s: %s\n", model, pred))
                      all_predictions[[model]] <- pred
                   }
                 }
@@ -227,10 +179,8 @@ print_consensus_summary <- function(results) {
             } # End model loop
 
             # Check if all collected models predicted the same result and compare with final consensus
-            cat(sprintf("DEBUG: all_predictions (from discussion log) length: %d\n", length(all_predictions)))
             if (length(all_predictions) > 0) {
               unique_preds <- unique(unlist(all_predictions))
-              cat(sprintf("DEBUG: unique_preds (from discussion log): %s\n", paste(unique_preds, collapse = ", ")))
               if (length(unique_preds) == 1) {
                 # We don't need to clean prefix here as discussion log preds should be clean
                 clean_pred <- trimws(unique_preds[1]) # Just trim whitespace
@@ -244,8 +194,6 @@ print_consensus_summary <- function(results) {
                 }
               }
             }
-          } else {
-            cat("DEBUG: No discussion log predictions available for validation.\n")
           } # End check for discussion_log_predictions
         }
         
