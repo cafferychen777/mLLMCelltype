@@ -441,7 +441,7 @@ check_consensus <- function(round_responses, api_keys = NULL, controversy_thresh
   if (simple_result$consensus_proportion >= controversy_threshold && 
       simple_result$entropy <= entropy_threshold) {
     # Simple consensus is sufficient
-    get_logger()$info("✅ CONSENSUS ACHIEVED WITH SIMPLE CHECK - NO LLM NEEDED!", list(
+    get_logger()$info("CONSENSUS ACHIEVED WITH SIMPLE CHECK - NO LLM NEEDED", list(
       proportion = simple_result$consensus_proportion,
       entropy = simple_result$entropy,
       controversy_threshold = controversy_threshold,
@@ -449,7 +449,7 @@ check_consensus <- function(round_responses, api_keys = NULL, controversy_thresh
       majority = simple_result$majority_prediction
     ))
     
-    message(sprintf("✅ Cluster consensus achieved via SIMPLE CHECK: %s (CP=%.2f, H=%.2f)",
+    message(sprintf("Cluster consensus achieved via SIMPLE CHECK: %s (CP=%.2f, H=%.2f)",
                     simple_result$majority_prediction,
                     simple_result$consensus_proportion,
                     simple_result$entropy))
@@ -463,7 +463,7 @@ check_consensus <- function(round_responses, api_keys = NULL, controversy_thresh
   }
   
   # Simple consensus didn't meet thresholds, use LLM for double-checking
-  get_logger()$info("⚠️ Simple consensus BELOW threshold, REQUIRING LLM double-check", list(
+  get_logger()$info("Simple consensus BELOW threshold, REQUIRING LLM double-check", list(
     proportion = simple_result$consensus_proportion,
     entropy = simple_result$entropy,
     controversy_threshold = controversy_threshold,
@@ -472,7 +472,7 @@ check_consensus <- function(round_responses, api_keys = NULL, controversy_thresh
              "Low consensus proportion" else "High entropy"
   ))
   
-  message(sprintf("⚠️ Simple check insufficient (CP=%.2f < %.2f OR H=%.2f > %.2f) - Using LLM",
+  message(sprintf("Simple check insufficient (CP=%.2f < %.2f OR H=%.2f > %.2f) - Using LLM",
                   simple_result$consensus_proportion,
                   controversy_threshold,
                   simple_result$entropy,
@@ -503,12 +503,12 @@ check_consensus <- function(round_responses, api_keys = NULL, controversy_thresh
   
   # Compare LLM result with simple consensus
   if (result$reached) {
-    message(sprintf("📊 LLM CONFIRMED consensus: %s (CP=%.2f, H=%.2f)",
+    message(sprintf("LLM CONFIRMED consensus: %s (CP=%.2f, H=%.2f)",
                     result$majority_prediction,
                     result$consensus_proportion,
                     result$entropy))
   } else {
-    message(sprintf("📊 LLM REJECTED consensus: Simple suggested %s but LLM found CP=%.2f, H=%.2f",
+    message(sprintf("LLM REJECTED consensus: Simple suggested %s but LLM found CP=%.2f, H=%.2f",
                     simple_result$majority_prediction,
                     result$consensus_proportion,
                     result$entropy))
