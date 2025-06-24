@@ -310,7 +310,7 @@ def check_consensus(
 
         # Simple consensus didn't meet thresholds, use LLM for double-checking
         write_log(
-            f"Cluster {cluster} needs LLM double-check: " f"CP={prop:.2f}, H={ent:.2f}",
+            f"Cluster {cluster} needs LLM double-check: CP={prop:.2f}, H={ent:.2f}",
             level="info",
         )
 

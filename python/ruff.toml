@@ -30,9 +30,6 @@ ignore = [
     "E203",  # 冒号周围的空格
 ]
 
-# 同时允许 `# noqa` 注释来忽略特定行的错误
-# 注意：此选项已弃用，未来版本将被移除
-ignore-init-module-imports = true
 
 [lint.isort]
 known-first-party = ["mllmcelltype"]
