@@ -1099,32 +1099,38 @@ consensus_results <- interactive_consensus_annotation(
   api_keys = list(openrouter = "your_api_key")
 )
 
-# Erweiterte Bubble-Plot erstellen
-bubble_plot <- create_marker_bubble_plot(
-  seurat_obj = pbmc_data,
-  markers_df = markers_df,
-  consensus_results = consensus_results,
-  top_n = 5
-)
+# Markergen-Visualisierungen mit Seurat erstellen
+# Konsensus-Annotationen zum Seurat-Objekt hinzufügen
+cluster_ids <- as.character(Idents(pbmc_data))
+cell_type_annotations <- consensus_results$final_annotations[cluster_ids]
 
-# Plot anzeigen
-print(bubble_plot$plot)
+# Fehlende Annotationen behandeln
+if (any(is.na(cell_type_annotations))) {
+  na_mask <- is.na(cell_type_annotations)
+  cell_type_annotations[na_mask] <- paste("Cluster", cluster_ids[na_mask])
+}
 
-# Erweiterte Heatmap erstellen
-heatmap_matrix <- create_marker_heatmap(
-  seurat_obj = pbmc_data,
-  markers_df = markers_df,
-  consensus_results = consensus_results,
-  top_n = 5
-)
+# Zum Seurat-Objekt hinzufügen
+pbmc_data@meta.data$cell_type_consensus <- cell_type_annotations
+
+# Dotplot der Markergene erstellen
+DotPlot(pbmc_data, 
+        features = top_markers,
+        group.by = "cell_type_consensus") + 
+  RotatedAxis()
+
+# Heatmap der Markergene erstellen
+DoHeatmap(pbmc_data, 
+          features = top_markers,
+          group.by = "cell_type_consensus")
 ```
 
 **Hauptmerkmale der Markergen-Visualisierung:**
 
-- **Bubble-Plot**: Zeigt sowohl den Prozentsatz der Zellen, die jedes Gen exprimieren (Blasengröße) als auch das durchschnittliche Expressionsniveau (Farbintensität)
-- **Heatmap**: Zeigt skalierte Expressionswerte mit hierarchischem Clustering von Genen
-- **Publikationsreif**: Hochwertige Plots mit anpassbarer Ästhetik unter Verwendung von Viridis-Farbpaletten
-- **Nahtlose Integration**: Arbeitet direkt mit Konsensus-Annotationsergebnissen und Seurat-Objekten
+- **DotPlot**: Zeigt sowohl den Prozentsatz der Zellen, die jedes Gen exprimieren (Punktgröße) als auch das durchschnittliche Expressionsniveau (Farbintensität)
+- **Heatmap**: Zeigt skalierte Expressionswerte mit Clustering von Genen und Zelltypen
+- **Nahtlose Integration**: Arbeitet direkt mit Konsensus-Annotationsergebnissen, die zum Seurat-Objekt hinzugefügt wurden
+- **Standard Seurat-Funktionen**: Verwendet vertraute Seurat-Visualisierungsfunktionen für Konsistenz
 
 Für detaillierte Anweisungen und erweiterte Anpassungsoptionen siehe die [Visualisierungsanleitung](R/vignettes/06-visualization-guide.html).
 

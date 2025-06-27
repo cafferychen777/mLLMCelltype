@@ -942,39 +942,37 @@ consensus_results <- interactive_consensus_annotation(
   api_keys = list(openrouter = "your_api_key")
 )
 
-# Visualiser les gènes marqueurs pour chaque type cellulaire annoté
-# Cette fonction crée des graphiques en points de haute qualité montrant l'expression des gènes marqueurs
-visualize_marker_genes(
-  seurat_object = pbmc,
-  consensus_results = consensus_results,
-  top_n_markers = 5,  # Afficher les 5 principaux gènes marqueurs par type cellulaire
-  output_file = "marker_gene_dotplot.pdf"
-)
+# Créer des visualisations de gènes marqueurs en utilisant Seurat
+# Ajouter les annotations de consensus à l'objet Seurat
+cluster_ids <- as.character(Idents(pbmc))
+cell_type_annotations <- consensus_results$final_annotations[cluster_ids]
 
-# Créer des cartes de chaleur de gènes marqueurs
-create_marker_heatmap(
-  seurat_object = pbmc,
-  consensus_results = consensus_results,
-  cluster_column = "cell_type",
-  top_n_markers = 10,
-  output_file = "marker_gene_heatmap.pdf"
-)
+# Gérer les annotations manquantes
+if (any(is.na(cell_type_annotations))) {
+  na_mask <- is.na(cell_type_annotations)
+  cell_type_annotations[na_mask] <- paste("Cluster", cluster_ids[na_mask])
+}
 
-# Générer des graphiques en violon pour des gènes marqueurs spécifiques
-plot_marker_violins(
-  seurat_object = pbmc,
-  genes = c("CD3D", "CD19", "CD14", "MS4A1"),
-  group_by = "cell_type",
-  output_file = "marker_gene_violins.pdf"
-)
+# Ajouter à l'objet Seurat
+pbmc@meta.data$cell_type_consensus <- cell_type_annotations
+
+# Créer un dotplot de gènes marqueurs
+DotPlot(pbmc, 
+        features = top_markers,
+        group.by = "cell_type_consensus") + 
+  RotatedAxis()
+
+# Créer une carte de chaleur de gènes marqueurs
+DoHeatmap(pbmc, 
+          features = top_markers,
+          group.by = "cell_type_consensus")
 ```
 
 Les fonctions de visualisation fournissent :
-- **Graphiques en points** : Montrent le pourcentage d'expression et le niveau d'expression moyen des gènes marqueurs dans tous les types cellulaires
-- **Cartes de chaleur** : Visualisent les motifs d'expression de multiples gènes marqueurs à travers les types cellulaires
-- **Graphiques en violon** : Montrent les distributions d'expression de gènes individuels par type cellulaire
-- **Intégration automatique** : Fonctionne directement avec les résultats d'annotation de consensus
-- **Qualité publication** : Génère des figures haute résolution prêtes pour la publication
+- **DotPlot** : Montre le pourcentage de cellules exprimant chaque gène (taille du point) et le niveau d'expression moyen (intensité de la couleur)
+- **Heatmap** : Visualise les valeurs d'expression mises à l'échelle avec regroupement des gènes et des types cellulaires
+- **Intégration transparente** : Fonctionne directement avec les résultats d'annotation de consensus ajoutés à l'objet Seurat
+- **Fonctions Seurat standard** : Utilise les fonctions de visualisation familières de Seurat pour la cohérence
 
 ## Citation
 

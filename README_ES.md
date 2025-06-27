@@ -1004,39 +1004,37 @@ consensus_results <- interactive_consensus_annotation(
   api_keys = list(openrouter = "your_api_key")
 )
 
-# Visualizar genes marcadores para cada tipo celular anotado
-# Esta función crea gráficos de punto de alta calidad mostrando la expresión de genes marcadores
-visualize_marker_genes(
-  seurat_object = pbmc,
-  consensus_results = consensus_results,
-  top_n_markers = 5,  # Mostrar los 5 genes marcadores principales por tipo celular
-  output_file = "marker_gene_dotplot.pdf"
-)
+# Crear visualizaciones de genes marcadores usando Seurat
+# Agregar anotaciones de consenso al objeto Seurat
+cluster_ids <- as.character(Idents(pbmc))
+cell_type_annotations <- consensus_results$final_annotations[cluster_ids]
 
-# Crear mapas de calor de genes marcadores
-create_marker_heatmap(
-  seurat_object = pbmc,
-  consensus_results = consensus_results,
-  cluster_column = "cell_type",
-  top_n_markers = 10,
-  output_file = "marker_gene_heatmap.pdf"
-)
+# Manejar anotaciones faltantes
+if (any(is.na(cell_type_annotations))) {
+  na_mask <- is.na(cell_type_annotations)
+  cell_type_annotations[na_mask] <- paste("Cluster", cluster_ids[na_mask])
+}
 
-# Generar gráficos de violín para genes marcadores específicos
-plot_marker_violins(
-  seurat_object = pbmc,
-  genes = c("CD3D", "CD19", "CD14", "MS4A1"),
-  group_by = "cell_type",
-  output_file = "marker_gene_violins.pdf"
-)
+# Agregar al objeto Seurat
+pbmc@meta.data$cell_type_consensus <- cell_type_annotations
+
+# Crear un dotplot de genes marcadores
+DotPlot(pbmc, 
+        features = top_markers,
+        group.by = "cell_type_consensus") + 
+  RotatedAxis()
+
+# Crear un mapa de calor de genes marcadores
+DoHeatmap(pbmc, 
+          features = top_markers,
+          group.by = "cell_type_consensus")
 ```
 
 Las funciones de visualización proporcionan:
-- **Gráficos de punto**: Muestran el porcentaje de expresión y el nivel de expresión promedio de genes marcadores en todos los tipos celulares
-- **Mapas de calor**: Visualizan patrones de expresión de múltiples genes marcadores a través de tipos celulares
-- **Gráficos de violín**: Muestran distribuciones de expresión de genes individuales por tipo celular
-- **Integración automática**: Trabaja directamente con los resultados de anotación de consenso
-- **Calidad de publicación**: Genera figuras de alta resolución listas para publicación
+- **DotPlot**: Muestra el porcentaje de células que expresan cada gen (tamaño del punto) y el nivel de expresión promedio (intensidad del color)
+- **Heatmap**: Visualiza valores de expresión escalados con agrupamiento de genes y tipos celulares
+- **Integración perfecta**: Trabaja directamente con los resultados de anotación de consenso agregados al objeto Seurat
+- **Funciones estándar de Seurat**: Utiliza funciones de visualización familiares de Seurat para mantener la consistencia
 
 ## Cita
 
