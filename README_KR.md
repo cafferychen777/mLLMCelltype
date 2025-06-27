@@ -180,6 +180,10 @@ devtools::install_github("cafferychen777/mLLMCelltype", subdir = "R")
 
 ### Python 버전
 
+[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/drive/1ZgmtlaORogSy0-QsaF0CHwFWOyOD26d2?usp=sharing)
+
+**빠른 시작**: 설치 없이 Google Colab에서 mLLMCelltype을 즉시 사용해보세요! 위의 배지를 클릭하여 예제와 단계별 가이드가 포함된 대화형 노트북을 열어보세요.
+
 ```bash
 # PyPI에서 설치
 pip install mllmcelltype
