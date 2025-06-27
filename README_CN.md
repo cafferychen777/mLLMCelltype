@@ -162,6 +162,12 @@ devtools::install_github("cafferychen777/mLLMCelltype", subdir = "R")
 
 **快速开始**：无需安装即可在 Google Colab 中立即体验 mLLMCelltype！点击上方徽章打开我们的交互式笔记本，包含示例和逐步指导。
 
+**💡 中国大陆用户使用 Google Colab 的优势**：
+- 虽然 Google Colab 也需要 VPN 访问，但对 VPN 环境的纯净性要求较低，对区域限制也更宽松
+- 在 Colab 笔记本中运行代码本质上是在 Google 的机房中执行，这可以有效避开某些模型厂商对网络环境的严格要求
+- 许多翻墙环境无法满足 OpenAI、Anthropic 等厂商的高标准网络要求，但在 Colab 中运行可以绕过这些限制
+- 一旦成功访问 Colab，即可稳定使用各种国际主流 AI 模型，无需担心本地网络环境问题
+
 ```bash
 # 从PyPI安装
 pip install mllmcelltype
