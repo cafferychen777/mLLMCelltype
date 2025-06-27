@@ -35,9 +35,12 @@ setup(
             "anthropic>=0.5.0",
             "google-genai>=1.0.0",
             "python-dotenv>=0.19.0",
+            # Visualization libraries for user's own plotting needs
             "matplotlib>=3.3.0",
             "seaborn>=0.11.0",
         ],
+        # Visualization libraries (not used in core package, but useful for users)
+        # Note: If using with scanpy, these are already included as scanpy dependencies
         "visualization": [
             "matplotlib>=3.3.0",
             "seaborn>=0.11.0",
