@@ -106,7 +106,7 @@
       <img src="../logo.png" class="logo" alt=""><h1>Visualization Guide</h1>
                         <h4 data-toc-skip class="author">Chen Yang</h4>
             
-            <h4 data-toc-skip class="date">2025-06-24</h4>
+            <h4 data-toc-skip class="date">2025-06-27</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/cafferychen777/mLLMCelltype/blob/main/vignettes/06-visualization-guide.Rmd" class="external-link"><code>vignettes/06-visualization-guide.Rmd</code></a></small>
       <div class="d-none name"><code>06-visualization-guide.Rmd</code></div>
@@ -798,18 +798,10 @@ type clusters and labels.</p>
 <div class="section level3">
 <h3 id="marker-gene-visualization">Marker Gene Visualization<a class="anchor" aria-label="anchor" href="#marker-gene-visualization"></a>
 </h3>
-<p>mLLMCelltype includes enhanced marker gene visualization functions
-that create publication-ready dotplots and heatmaps showing marker gene
-expression patterns across annotated cell types. These visualizations
-seamlessly integrate with the consensus annotation workflow:</p>
-<ul>
-<li>
-<strong>Dotplots</strong>: Classic visualization with marker genes
-vs cell types, showing both expression level and percentage</li>
-<li>
-<strong>Heatmaps</strong>: Comprehensive expression matrices with
-hierarchical clustering and consensus annotations</li>
-</ul>
+<p>While mLLMCelltype focuses on cell type annotation, you can create
+marker gene visualizations using standard Seurat functions. These
+visualizations help validate the consensus annotations by showing marker
+gene expression patterns across annotated cell types.</p>
 <div class="section level4">
 <h4 id="prerequisites-for-marker-gene-visualization">Prerequisites for Marker Gene Visualization<a class="anchor" aria-label="anchor" href="#prerequisites-for-marker-gene-visualization"></a>
 </h4>
@@ -863,186 +855,12 @@ required packages:</p>
 <span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">top_markers_preview</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level4">
-<h4 id="enhanced-bubble-plot-visualization">Enhanced Bubble Plot Visualization<a class="anchor" aria-label="anchor" href="#enhanced-bubble-plot-visualization"></a>
-</h4>
-<p>The bubble plot shows both the percentage of cells expressing each
-gene (bubble size) and the average expression level (color
-intensity):</p>
-<div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># Create enhanced bubble plot</span></span>
-<span><span class="va">bubble_result</span> <span class="op">&lt;-</span> <span class="fu">create_marker_bubble_plot</span><span class="op">(</span></span>
-<span>  seurat_obj <span class="op">=</span> <span class="va">seurat_obj</span>,</span>
-<span>  markers_df <span class="op">=</span> <span class="va">pbmc_markers</span>,</span>
-<span>  consensus_results <span class="op">=</span> <span class="va">consensus_results</span>,</span>
-<span>  top_n <span class="op">=</span> <span class="fl">5</span>,</span>
-<span>  title <span class="op">=</span> <span class="st">"Marker Gene Expression by Cell Type"</span>,</span>
-<span>  color_palette <span class="op">=</span> <span class="st">"plasma"</span></span>
-<span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># Display the plot</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">bubble_result</span><span class="op">$</span><span class="va">plot</span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># Save the plot</span></span>
-<span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggsave.html" class="external-link">ggsave</a></span><span class="op">(</span></span>
-<span>  filename <span class="op">=</span> <span class="st">"marker_genes_bubble_plot.png"</span>,</span>
-<span>  plot <span class="op">=</span> <span class="va">bubble_result</span><span class="op">$</span><span class="va">plot</span>,</span>
-<span>  width <span class="op">=</span> <span class="fl">12</span>,</span>
-<span>  height <span class="op">=</span> <span class="fl">10</span>,</span>
-<span>  dpi <span class="op">=</span> <span class="fl">300</span>,</span>
-<span>  bg <span class="op">=</span> <span class="st">"white"</span></span>
-<span><span class="op">)</span></span></code></pre></div>
-<p><strong>Example Output:</strong></p>
-<div class="float">
-<img src="figures/png/marker_bubble_plot.png" alt="Marker Gene Bubble Plot"><div class="figcaption">Marker Gene Bubble Plot</div>
-</div>
-<p>This bubble plot visualization shows:</p>
-<ul>
-<li>
-<strong>X-axis</strong>: Cell types (from consensus annotation)</li>
-<li>
-<strong>Y-axis</strong>: Marker genes (ordered by expression
-level)</li>
-<li>
-<strong>Bubble size</strong>: Percentage of cells expressing the
-gene</li>
-<li>
-<strong>Color intensity</strong>: Average expression level (log2
-scale)</li>
-</ul>
-</div>
-<div class="section level4">
-<h4 id="enhanced-heatmap-visualization">Enhanced Heatmap Visualization<a class="anchor" aria-label="anchor" href="#enhanced-heatmap-visualization"></a>
-</h4>
-<p>The heatmap displays scaled expression values with hierarchical
-clustering of genes:</p>
-<div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># Create enhanced heatmap</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/grDevices/png.html" class="external-link">png</a></span><span class="op">(</span><span class="st">"marker_genes_heatmap.png"</span>, width <span class="op">=</span> <span class="fl">1000</span>, height <span class="op">=</span> <span class="fl">800</span>, res <span class="op">=</span> <span class="fl">300</span>, bg <span class="op">=</span> <span class="st">"white"</span><span class="op">)</span></span>
-<span><span class="va">heatmap_matrix</span> <span class="op">&lt;-</span> <span class="fu">create_marker_heatmap</span><span class="op">(</span></span>
-<span>  seurat_obj <span class="op">=</span> <span class="va">seurat_obj</span>,</span>
-<span>  markers_df <span class="op">=</span> <span class="va">pbmc_markers</span>,</span>
-<span>  consensus_results <span class="op">=</span> <span class="va">consensus_results</span>,</span>
-<span>  top_n <span class="op">=</span> <span class="fl">5</span>,</span>
-<span>  title <span class="op">=</span> <span class="st">"Marker Gene Expression Heatmap"</span>,</span>
-<span>  cluster_genes <span class="op">=</span> <span class="cn">TRUE</span>,</span>
-<span>  scale_method <span class="op">=</span> <span class="st">"row"</span></span>
-<span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/grDevices/dev.html" class="external-link">dev.off</a></span><span class="op">(</span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># Display the matrix structure</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/dim.html" class="external-link">dim</a></span><span class="op">(</span><span class="va">heatmap_matrix</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">heatmap_matrix</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
-<p><strong>Example Output:</strong></p>
-<div class="float">
-<img src="figures/png/marker_heatmap.png" alt="Marker Gene Heatmap"><div class="figcaption">Marker Gene Heatmap</div>
-</div>
-<p>This heatmap visualization shows:</p>
-<ul>
-<li>
-<strong>Rows</strong>: Marker genes (hierarchically clustered)</li>
-<li>
-<strong>Columns</strong>: Cell types (from consensus
-annotation)</li>
-<li>
-<strong>Color scale</strong>: Scaled expression values (row-wise
-scaling)</li>
-<li>
-<strong>Clustering</strong>: Genes with similar expression patterns
-are grouped together</li>
-</ul>
-</div>
-<div class="section level4">
-<h4 id="customizing-marker-gene-visualizations">Customizing Marker Gene Visualizations<a class="anchor" aria-label="anchor" href="#customizing-marker-gene-visualizations"></a>
-</h4>
-<p>Both visualization functions offer extensive customization
-options:</p>
-<div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># Bubble plot with different parameters</span></span>
-<span><span class="va">bubble_custom</span> <span class="op">&lt;-</span> <span class="fu">create_marker_bubble_plot</span><span class="op">(</span></span>
-<span>  seurat_obj <span class="op">=</span> <span class="va">seurat_obj</span>,</span>
-<span>  markers_df <span class="op">=</span> <span class="va">pbmc_markers</span>,</span>
-<span>  consensus_results <span class="op">=</span> <span class="va">consensus_results</span>,</span>
-<span>  top_n <span class="op">=</span> <span class="fl">3</span>,  <span class="co"># Show fewer genes per cell type</span></span>
-<span>  title <span class="op">=</span> <span class="st">"Top 3 Marker Genes by Cell Type"</span>,</span>
-<span>  color_palette <span class="op">=</span> <span class="st">"viridis"</span>  <span class="co"># Different color palette</span></span>
-<span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># Heatmap without gene clustering</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/grDevices/png.html" class="external-link">png</a></span><span class="op">(</span><span class="st">"marker_genes_heatmap_no_clustering.png"</span>, width <span class="op">=</span> <span class="fl">1000</span>, height <span class="op">=</span> <span class="fl">800</span>, res <span class="op">=</span> <span class="fl">300</span>, bg <span class="op">=</span> <span class="st">"white"</span><span class="op">)</span></span>
-<span><span class="va">heatmap_no_cluster</span> <span class="op">&lt;-</span> <span class="fu">create_marker_heatmap</span><span class="op">(</span></span>
-<span>  seurat_obj <span class="op">=</span> <span class="va">seurat_obj</span>,</span>
-<span>  markers_df <span class="op">=</span> <span class="va">pbmc_markers</span>,</span>
-<span>  consensus_results <span class="op">=</span> <span class="va">consensus_results</span>,</span>
-<span>  top_n <span class="op">=</span> <span class="fl">4</span>,</span>
-<span>  title <span class="op">=</span> <span class="st">"Marker Gene Expression (No Gene Clustering)"</span>,</span>
-<span>  cluster_genes <span class="op">=</span> <span class="cn">FALSE</span>,  <span class="co"># Disable gene clustering</span></span>
-<span>  scale_method <span class="op">=</span> <span class="st">"row"</span>,</span>
-<span>  color_palette <span class="op">=</span> <span class="fu">viridis</span><span class="fu">::</span><span class="fu"><a href="https://sjmgarnier.github.io/viridisLite/reference/viridis.html" class="external-link">inferno</a></span><span class="op">(</span><span class="fl">100</span><span class="op">)</span>  <span class="co"># Custom color palette</span></span>
-<span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/grDevices/dev.html" class="external-link">dev.off</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
-</div>
-<div class="section level4">
-<h4 id="combining-marker-gene-visualizations-with-cell-type-plots">Combining Marker Gene Visualizations with Cell Type Plots<a class="anchor" aria-label="anchor" href="#combining-marker-gene-visualizations-with-cell-type-plots"></a>
-</h4>
-<p>Create a comprehensive figure combining cell type annotations with
-marker gene visualizations:</p>
-<div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># Create cell type UMAP</span></span>
-<span><span class="va">p_umap</span> <span class="op">&lt;-</span> <span class="fu">SCpubr</span><span class="fu">::</span><span class="fu">do_DimPlot</span><span class="op">(</span></span>
-<span>  sample <span class="op">=</span> <span class="va">seurat_obj</span>,</span>
-<span>  group.by <span class="op">=</span> <span class="st">"cell_type_consensus"</span>,</span>
-<span>  label <span class="op">=</span> <span class="cn">TRUE</span>,</span>
-<span>  label.box <span class="op">=</span> <span class="cn">TRUE</span>,</span>
-<span>  repel <span class="op">=</span> <span class="cn">TRUE</span>,</span>
-<span>  legend.position <span class="op">=</span> <span class="st">"right"</span>,</span>
-<span>  pt.size <span class="op">=</span> <span class="fl">1.0</span>,</span>
-<span>  colors.use <span class="op">=</span> <span class="va">custom_colors</span>,</span>
-<span>  font.size <span class="op">=</span> <span class="fl">12</span>,</span>
-<span>  plot.title <span class="op">=</span> <span class="st">"Cell Type Annotations"</span></span>
-<span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme.html" class="external-link">theme</a></span><span class="op">(</span>plot.title <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html" class="external-link">element_text</a></span><span class="op">(</span>hjust <span class="op">=</span> <span class="fl">0.5</span>, face <span class="op">=</span> <span class="st">"bold"</span><span class="op">)</span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># Create bubble plot</span></span>
-<span><span class="va">bubble_plot</span> <span class="op">&lt;-</span> <span class="fu">create_marker_bubble_plot</span><span class="op">(</span></span>
-<span>  seurat_obj <span class="op">=</span> <span class="va">seurat_obj</span>,</span>
-<span>  markers_df <span class="op">=</span> <span class="va">pbmc_markers</span>,</span>
-<span>  consensus_results <span class="op">=</span> <span class="va">consensus_results</span>,</span>
-<span>  top_n <span class="op">=</span> <span class="fl">4</span>,</span>
-<span>  title <span class="op">=</span> <span class="st">"Marker Gene Expression"</span>,</span>
-<span>  color_palette <span class="op">=</span> <span class="st">"plasma"</span></span>
-<span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># Combine plots using patchwork</span></span>
-<span><span class="va">combined_marker_viz</span> <span class="op">&lt;-</span> <span class="va">p_umap</span> <span class="op">|</span> <span class="va">bubble_plot</span><span class="op">$</span><span class="va">plot</span></span>
-<span></span>
-<span><span class="co"># Add overall title</span></span>
-<span><span class="va">combined_marker_viz</span> <span class="op">&lt;-</span> <span class="va">combined_marker_viz</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://patchwork.data-imaginist.com/reference/plot_annotation.html" class="external-link">plot_annotation</a></span><span class="op">(</span></span>
-<span>    title <span class="op">=</span> <span class="st">"Cell Type Annotation and Marker Gene Expression"</span>,</span>
-<span>    subtitle <span class="op">=</span> <span class="st">"Left: UMAP with cell type labels, Right: Marker gene bubble plot"</span>,</span>
-<span>    theme <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme.html" class="external-link">theme</a></span><span class="op">(</span></span>
-<span>      plot.title <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html" class="external-link">element_text</a></span><span class="op">(</span>size <span class="op">=</span> <span class="fl">16</span>, hjust <span class="op">=</span> <span class="fl">0.5</span>, face <span class="op">=</span> <span class="st">"bold"</span><span class="op">)</span>,</span>
-<span>      plot.subtitle <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html" class="external-link">element_text</a></span><span class="op">(</span>size <span class="op">=</span> <span class="fl">12</span>, hjust <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span></span>
-<span>    <span class="op">)</span></span>
-<span>  <span class="op">)</span></span>
-<span></span>
-<span><span class="co"># Save combined visualization</span></span>
-<span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggsave.html" class="external-link">ggsave</a></span><span class="op">(</span></span>
-<span>  <span class="st">"combined_celltype_markers.png"</span>,</span>
-<span>  plot <span class="op">=</span> <span class="va">combined_marker_viz</span>,</span>
-<span>  width <span class="op">=</span> <span class="fl">20</span>,</span>
-<span>  height <span class="op">=</span> <span class="fl">10</span>,</span>
-<span>  dpi <span class="op">=</span> <span class="fl">300</span>,</span>
-<span>  bg <span class="op">=</span> <span class="st">"white"</span></span>
-<span><span class="op">)</span></span></code></pre></div>
-</div>
-<div class="section level4">
 <h4 id="dotplot-visualization-marker-genes-vs-cell-types">Dotplot Visualization (Marker Genes vs Cell Types)<a class="anchor" aria-label="anchor" href="#dotplot-visualization-marker-genes-vs-cell-types"></a>
 </h4>
 <p>The dotplot is a popular visualization that shows marker gene
 expression across cell types with both expression level (color) and
 expression percentage (dot size):</p>
-<div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Create marker gene dotplot using Seurat's DotPlot function</span></span>
 <span><span class="co"># First, prepare the top marker genes for each cluster</span></span>
 <span><span class="va">top_markers</span> <span class="op">&lt;-</span> <span class="va">pbmc_markers</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
@@ -1127,7 +945,7 @@ gene</li>
 </h4>
 <p>Create a classic heatmap showing marker gene expression across cell
 types:</p>
-<div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Create enhanced heatmap with marker genes vs cell types</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">ComplexHeatmap</span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/jokergoo/circlize" class="external-link">circlize</a></span><span class="op">)</span></span>
@@ -1331,23 +1149,27 @@ which markers to focus on.</p>
 </h4>
 <ol style="list-style-type: decimal">
 <li>
-<strong>Gene Selection</strong>: Use <code>top_n = 3-5</code> for
-clarity; too many genes can make plots cluttered</li>
+<strong>Gene Selection</strong>: Select top 3-5 marker genes per
+cell type for clarity; too many genes can make plots cluttered</li>
 <li>
 <strong>Color Palettes</strong>:
 <ul>
-<li>Use <code>plasma</code> or <code>viridis</code> for bubble plots
-(good contrast)</li>
-<li>Use <code>inferno</code> or custom palettes for heatmaps</li>
-<li>Use blue-white-red for heatmaps (intuitive for expression)</li>
+<li>Use <code>viridis</code> or sequential color palettes for
+dotplots</li>
+<li>Use blue-white-red diverging palettes for heatmaps (intuitive for
+expression)</li>
+<li>Consider colorblind-friendly palettes</li>
 </ul>
 </li>
 <li>
-<strong>Scaling</strong>: Row-wise scaling
-(<code>scale_method = "row"</code>) is recommended for heatmaps</li>
+<strong>Scaling</strong>: Row-wise scaling is recommended for
+heatmaps when using <code>pheatmap</code> or
+<code>ComplexHeatmap</code>
+</li>
 <li>
-<strong>Dotplots</strong>: Use appropriate dot size scaling and
-clear color gradients</li>
+<strong>Dotplots</strong>: Use Seurat’s <code>DotPlot</code>
+function with appropriate dot size scaling and clear color
+gradients</li>
 <li>
 <strong>File Formats</strong>: Save as PNG for presentations, PDF
 for publications</li>
@@ -1360,7 +1182,7 @@ figures</li>
 <h4 id="troubleshooting-marker-gene-visualizations">Troubleshooting Marker Gene Visualizations<a class="anchor" aria-label="anchor" href="#troubleshooting-marker-gene-visualizations"></a>
 </h4>
 <p>Common issues and solutions:</p>
-<div class="sourceCode" id="cb28"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Issue: Empty or missing consensus results</span></span>
 <span><span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/NULL.html" class="external-link">is.null</a></span><span class="op">(</span><span class="va">consensus_results</span><span class="op">$</span><span class="va">final_annotations</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
 <span>  <span class="kw"><a href="https://rdrr.io/r/base/stop.html" class="external-link">stop</a></span><span class="op">(</span><span class="st">"Consensus results are missing. Please run consensus annotation first."</span><span class="op">)</span></span>
@@ -1392,7 +1214,7 @@ figures</li>
 </h4>
 <p>Circlize plots provide a unique circular representation of your data,
 combining cell type information with metadata in concentric rings:</p>
-<div class="sourceCode" id="cb29"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Install required packages if not already installed</span></span>
 <span><span class="kw">if</span> <span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/ns-load.html" class="external-link">requireNamespace</a></span><span class="op">(</span><span class="st">"circlize"</span>, quietly <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"circlize"</span><span class="op">)</span></span>
@@ -1462,7 +1284,7 @@ of your data simultaneously.</p>
 </h4>
 <p>You can visualize how different models agree or disagree with the
 consensus:</p>
-<div class="sourceCode" id="cb30"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Assuming you have individual model results in the Seurat object</span></span>
 <span><span class="co"># Create a function to calculate agreement with consensus</span></span>
 <span><span class="va">calculate_agreement</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">seurat_obj</span>, <span class="va">model_column</span>, <span class="va">consensus_column</span><span class="op">)</span> <span class="op">{</span></span>
@@ -1503,7 +1325,7 @@ consensus:</p>
 </h4>
 <p>Create a heatmap to visualize all model predictions for each
 cluster:</p>
-<div class="sourceCode" id="cb31"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">pheatmap</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Create a matrix of model predictions for each cluster</span></span>
@@ -1606,7 +1428,7 @@ cluster:</p>
 </h3>
 <p>The discussion logs contain valuable information about the reasoning
 process. Here’s how to visualize key aspects:</p>
-<div class="sourceCode" id="cb32"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb28"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://juliasilge.github.io/tidytext/" class="external-link">tidytext</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="http://blog.fellstat.com/?cat=11" class="external-link">wordcloud</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://stringr.tidyverse.org" class="external-link">stringr</a></span><span class="op">)</span></span>
@@ -1695,7 +1517,7 @@ process. Here’s how to visualize key aspects:</p>
 <h3 id="additional-saving-options">Additional Saving Options<a class="anchor" aria-label="anchor" href="#additional-saving-options"></a>
 </h3>
 <p>For more flexibility in saving your visualizations:</p>
-<div class="sourceCode" id="cb33"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb29"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Save a single plot with high resolution</span></span>
 <span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggsave.html" class="external-link">ggsave</a></span><span class="op">(</span><span class="st">"cell_type_annotations.png"</span>, plot <span class="op">=</span> <span class="va">p1</span>, width <span class="op">=</span> <span class="fl">10</span>, height <span class="op">=</span> <span class="fl">8</span>, dpi <span class="op">=</span> <span class="fl">600</span><span class="op">)</span></span>
 <span></span>
@@ -1750,7 +1572,7 @@ entropy)</li>
 </h3>
 <p>Here’s a complete example workflow for creating publication-ready
 visualizations:</p>
-<div class="sourceCode" id="cb34"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb30"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://satijalab.org/seurat" class="external-link">Seurat</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://cafferychen777.github.io/mLLMCelltype/">mLLMCelltype</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://ggplot2.tidyverse.org" class="external-link">ggplot2</a></span><span class="op">)</span></span>
@@ -1875,7 +1697,7 @@ visualizations:</p>
 version of SCpubr</li>
 <li>Use standard ggplot2 functions to add titles instead:</li>
 </ul>
-<div class="sourceCode" id="cb35"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb31"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">p</span> <span class="op">&lt;-</span> <span class="va">p</span> <span class="op">+</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">ggtitle</a></span><span class="op">(</span><span class="st">"My Title"</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme.html" class="external-link">theme</a></span><span class="op">(</span>plot.title <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html" class="external-link">element_text</a></span><span class="op">(</span>hjust <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <ul>
 <li>Check the SCpubr documentation for your installed version</li>

@@ -31,6 +31,7 @@
 <url><loc>https://cafferychen777.github.io/mLLMCelltype/reference/UnifiedLogger.html</loc></url>
 <url><loc>https://cafferychen777.github.io/mLLMCelltype/reference/ZhipuProcessor.html</loc></url>
 <url><loc>https://cafferychen777.github.io/mLLMCelltype/reference/annotate_cell_types.html</loc></url>
+<url><loc>https://cafferychen777.github.io/mLLMCelltype/reference/calculate_simple_consensus.html</loc></url>
 <url><loc>https://cafferychen777.github.io/mLLMCelltype/reference/check_consensus.html</loc></url>
 <url><loc>https://cafferychen777.github.io/mLLMCelltype/reference/clean_annotation.html</loc></url>
 <url><loc>https://cafferychen777.github.io/mLLMCelltype/reference/combine_results.html</loc></url>
@@ -44,6 +45,8 @@
 <url><loc>https://cafferychen777.github.io/mLLMCelltype/reference/create_marker_heatmap.html</loc></url>
 <url><loc>https://cafferychen777.github.io/mLLMCelltype/reference/create_standardization_prompt.html</loc></url>
 <url><loc>https://cafferychen777.github.io/mLLMCelltype/reference/custom_providers.html</loc></url>
+<url><loc>https://cafferychen777.github.io/mLLMCelltype/reference/dot-onAttach.html</loc></url>
+<url><loc>https://cafferychen777.github.io/mLLMCelltype/reference/dot-onLoad.html</loc></url>
 <url><loc>https://cafferychen777.github.io/mLLMCelltype/reference/execute_consensus_check.html</loc></url>
 <url><loc>https://cafferychen777.github.io/mLLMCelltype/reference/extract_labeled_value.html</loc></url>
 <url><loc>https://cafferychen777.github.io/mLLMCelltype/reference/facilitate_cluster_discussion.html</loc></url>
@@ -59,6 +62,7 @@
 <url><loc>https://cafferychen777.github.io/mLLMCelltype/reference/list_custom_models.html</loc></url>
 <url><loc>https://cafferychen777.github.io/mLLMCelltype/reference/list_custom_providers.html</loc></url>
 <url><loc>https://cafferychen777.github.io/mLLMCelltype/reference/logging_functions.html</loc></url>
+<url><loc>https://cafferychen777.github.io/mLLMCelltype/reference/normalize_annotation.html</loc></url>
 <url><loc>https://cafferychen777.github.io/mLLMCelltype/reference/parse_consensus_response.html</loc></url>
 <url><loc>https://cafferychen777.github.io/mLLMCelltype/reference/parse_flexible_format.html</loc></url>
 <url><loc>https://cafferychen777.github.io/mLLMCelltype/reference/parse_standard_format.html</loc></url>
