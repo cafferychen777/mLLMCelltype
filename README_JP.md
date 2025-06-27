@@ -931,24 +931,20 @@ consensus_results <- interactive_consensus_annotation(
   api_keys = list(openrouter = "your_api_key")
 )
 
-# 拡張バブルプロットの作成
-bubble_plot <- create_marker_bubble_plot(
-  seurat_obj = pbmc_data,
-  markers_df = markers_df,
-  consensus_results = consensus_results,
-  top_n = 5
-)
+# Seuratを使用したマーカー遺伝子の可視化作成
+# Seuratオブジェクトにコンセンサスアノテーションを追加
+pbmc_data$cell_type_consensus <- consensus_results$final_annotations[Idents(pbmc_data)]
 
-# プロットの表示
-print(bubble_plot$plot)
+# マーカー遺伝子のドットプロット作成
+DotPlot(pbmc_data, 
+        features = top_markers,
+        group.by = "cell_type_consensus") + 
+  RotatedAxis()
 
-# 拡張ヒートマップの作成
-heatmap_matrix <- create_marker_heatmap(
-  seurat_obj = pbmc_data,
-  markers_df = markers_df,
-  consensus_results = consensus_results,
-  top_n = 5
-)
+# マーカー遺伝子のヒートマップ作成
+DoHeatmap(pbmc_data, 
+          features = top_markers,
+          group.by = "cell_type_consensus")
 ```
 
 **マーカー遺伝子可視化の主な特徴：**

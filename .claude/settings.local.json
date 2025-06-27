@@ -49,7 +49,12 @@
       "Bash(export CLOUDSDK_PYTHON_SITEPACKAGES=1)",
       "Bash(CLOUDSDK_PYTHON_SITEPACKAGES=1 gcloud builds submit --config cloudbuild.yaml .)",
       "Bash(kill:*)",
-      "Bash(gcloud logs read:*)"
+      "Bash(gcloud logs read:*)",
+      "Bash(npm run dev:*)",
+      "Bash(gcloud config get-value:*)",
+      "Bash(./scripts/deploy_to_gcp.sh:*)",
+      "Bash(gcloud storage ls:*)",
+      "WebFetch(domain:docs.anthropic.com)"
     ],
     "deny": []
   }

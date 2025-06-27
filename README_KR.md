@@ -459,32 +459,28 @@ consensus_results <- interactive_consensus_annotation(
   api_keys = list(openrouter = "your_api_key")
 )
 
-# 향상된 버블 플롯 생성
-bubble_plot <- create_marker_bubble_plot(
-  seurat_obj = pbmc_data,
-  markers_df = markers_df,
-  consensus_results = consensus_results,
-  top_n = 5
-)
+# Seurat를 사용한 마커 유전자 시각화 생성
+# Seurat 객체에 합의 주석 추가
+pbmc_data$cell_type_consensus <- consensus_results$final_annotations[Idents(pbmc_data)]
 
-# 플롯 표시
-print(bubble_plot$plot)
+# 마커 유전자의 dotplot 생성
+DotPlot(pbmc_data, 
+        features = top_markers,
+        group.by = "cell_type_consensus") + 
+  RotatedAxis()
 
-# 향상된 히트맵 생성
-heatmap_matrix <- create_marker_heatmap(
-  seurat_obj = pbmc_data,
-  markers_df = markers_df,
-  consensus_results = consensus_results,
-  top_n = 5
-)
+# 마커 유전자의 히트맵 생성
+DoHeatmap(pbmc_data, 
+          features = top_markers,
+          group.by = "cell_type_consensus")
 ```
 
 **마커 유전자 시각화의 주요 특징:**
 
-- **버블 플롯**: 각 유전자를 발현하는 세포의 백분율(버블 크기)과 평균 발현 수준(색상 강도) 모두 표시
-- **히트맵**: 유전자의 계층적 클러스터링과 함께 스케일된 발현 값 표시
-- **출판 준비**: viridis 색상 팔레트를 사용한 사용자 정의 가능한 미학의 고품질 플롯
-- **원활한 통합**: 합의 주석 결과와 Seurat 객체와 직접 작동
+- **DotPlot**: 각 유전자를 발현하는 세포의 백분율(점 크기)과 평균 발현 수준(색상 강도) 표시
+- **DoHeatmap**: 유전자의 계층적 클러스터링과 함께 스케일된 발현 값 표시
+- **표준 Seurat 함수**: 익숙한 Seurat 시각화 함수를 사용하여 일관된 워크플로우 유지
+- **원활한 통합**: 합의 주석 결과를 Seurat 객체와 직접 작동
 
 자세한 지침과 고급 사용자 정의 옵션은 [시각화 가이드](R/vignettes/06-visualization-guide.html)를 참조하세요.
 

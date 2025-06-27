@@ -1455,32 +1455,38 @@ consensus_results <- interactive_consensus_annotation(
   api_keys = list(openrouter = "your_api_key")
 )
 
-# 创建增强的气泡图
-bubble_plot <- create_marker_bubble_plot(
-  seurat_obj = pbmc_data,
-  markers_df = markers_df,
-  consensus_results = consensus_results,
-  top_n = 5
-)
+# 使用Seurat创建标记基因可视化
+# 将共识注释添加到Seurat对象
+cluster_ids <- as.character(Idents(pbmc_data))
+cell_type_annotations <- consensus_results$final_annotations[cluster_ids]
 
-# 显示图表
-print(bubble_plot$plot)
+# 处理任何缺失的注释
+if (any(is.na(cell_type_annotations))) {
+  na_mask <- is.na(cell_type_annotations)
+  cell_type_annotations[na_mask] <- paste("Cluster", cluster_ids[na_mask])
+}
 
-# 创建增强的热图
-heatmap_matrix <- create_marker_heatmap(
-  seurat_obj = pbmc_data,
-  markers_df = markers_df,
-  consensus_results = consensus_results,
-  top_n = 5
-)
+# 添加到Seurat对象
+pbmc_data@meta.data$cell_type_consensus <- cell_type_annotations
+
+# 创建标记基因点图
+DotPlot(pbmc_data, 
+        features = top_markers,
+        group.by = "cell_type_consensus") + 
+  RotatedAxis()
+
+# 创建标记基因热图
+DoHeatmap(pbmc_data, 
+          features = top_markers,
+          group.by = "cell_type_consensus")
 ```
 
 **标记基因可视化的主要特性：**
 
-- **气泡图**：显示表达每个基因的细胞百分比（气泡大小）和平均表达水平（颜色强度）
-- **热图**：显示缩放的表达值，并对基因进行层次聚类
-- **出版质量**：使用viridis调色板的高质量图表，具有可自定义的美学效果
-- **无缝集成**：直接与共识注释结果和Seurat对象配合使用
+- **点图（DotPlot）**：显示表达每个基因的细胞百分比（点大小）和平均表达水平（颜色强度）
+- **热图（Heatmap）**：显示缩放的表达值，可对基因和细胞类型进行聚类
+- **无缝集成**：直接将共识注释结果添加到Seurat对象中使用
+- **标准Seurat函数**：使用熟悉的Seurat可视化函数，保持一致性
 
 有关详细说明和高级自定义选项，请参阅[可视化指南](R/vignettes/06-visualization-guide.html)。
 

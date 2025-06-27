@@ -1099,32 +1099,38 @@ consensus_results <- interactive_consensus_annotation(
   api_keys = list(openrouter = "your_api_key")
 )
 
-# Create enhanced bubble plot
-bubble_plot <- create_marker_bubble_plot(
-  seurat_obj = pbmc_data,
-  markers_df = markers_df,
-  consensus_results = consensus_results,
-  top_n = 5
-)
+# Create marker gene visualizations using Seurat
+# Add consensus annotations to Seurat object
+cluster_ids <- as.character(Idents(pbmc_data))
+cell_type_annotations <- consensus_results$final_annotations[cluster_ids]
 
-# Display the plot
-print(bubble_plot$plot)
+# Handle any missing annotations
+if (any(is.na(cell_type_annotations))) {
+  na_mask <- is.na(cell_type_annotations)
+  cell_type_annotations[na_mask] <- paste("Cluster", cluster_ids[na_mask])
+}
 
-# Create enhanced heatmap
-heatmap_matrix <- create_marker_heatmap(
-  seurat_obj = pbmc_data,
-  markers_df = markers_df,
-  consensus_results = consensus_results,
-  top_n = 5
-)
+# Add to Seurat object
+pbmc_data@meta.data$cell_type_consensus <- cell_type_annotations
+
+# Create a dotplot of marker genes
+DotPlot(pbmc_data, 
+        features = top_markers,
+        group.by = "cell_type_consensus") + 
+  RotatedAxis()
+
+# Create a heatmap of marker genes
+DoHeatmap(pbmc_data, 
+          features = top_markers,
+          group.by = "cell_type_consensus")
 ```
 
 **Key Features of Marker Gene Visualization:**
 
-- **Bubble Plot**: Shows both percentage of cells expressing each gene (bubble size) and average expression level (color intensity)
-- **Heatmap**: Displays scaled expression values with hierarchical clustering of genes
-- **Publication-ready**: High-quality plots with customizable aesthetics using viridis color palettes
-- **Seamless Integration**: Works directly with consensus annotation results and Seurat objects
+- **DotPlot**: Shows both percentage of cells expressing each gene (dot size) and average expression level (color intensity)
+- **Heatmap**: Displays scaled expression values with clustering of genes and cell types
+- **Seamless Integration**: Works directly with consensus annotation results added to Seurat objects
+- **Standard Seurat Functions**: Uses familiar Seurat visualization functions for consistency
 
 For detailed instructions and advanced customization options, see the [Visualization Guide](R/vignettes/06-visualization-guide.html).
 
