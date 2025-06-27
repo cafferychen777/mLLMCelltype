@@ -719,13 +719,21 @@ pbmc_markers <- FindAllMarkers(
   verbose = FALSE
 )
 
-# Display top markers for each cluster
+# Get top markers for visualization
+top_markers <- pbmc_markers %>%
+  group_by(cluster) %>%
+  top_n(n = 5, wt = avg_log2FC) %>%
+  pull(gene) %>%
+  unique()
+
+# Display top markers preview
 top_markers_preview <- pbmc_markers %>%
   group_by(cluster) %>%
   top_n(3, avg_log2FC) %>%
   arrange(cluster, desc(avg_log2FC))
 
 print(top_markers_preview)
+print(paste("Selected", length(top_markers), "marker genes for visualization"))
 ```
 
 
