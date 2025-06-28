@@ -60,8 +60,7 @@ get_provider <- function(model) {
   deepseek_models <- c("deepseek-chat", "deepseek-r1", "deepseek-r1-zero", "deepseek-reasoner")
   gemini_models <- c(
     "gemini-2.5-pro",
-    "gemini-2
-    .5-flash",
+    "gemini-2.5-flash",
     "gemini-2.5-pro-preview-06-05",
     "gemini-2.5-pro-preview-05-06",
     "gemini-2.5-pro-preview-03-25",

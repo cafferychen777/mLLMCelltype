@@ -277,7 +277,7 @@ for i in range(len(adata.obs['leiden'].cat.categories)):
 # At least one API key is required for multi-LLM consensus annotation
 os.environ["OPENAI_API_KEY"] = "your-openai-api-key"      # For GPT-4o/4.1 models (recommended)
 os.environ["ANTHROPIC_API_KEY"] = "your-anthropic-api-key"  # For Claude-4/3.7/3.5 models
-os.environ["GEMINI_API_KEY"] = "your-gemini-api-key"      # For Google Gemini-2.0 models
+os.environ["GEMINI_API_KEY"] = "your-gemini-api-key"      # For Google Gemini-2.5 models
 os.environ["QWEN_API_KEY"] = "your-qwen-api-key"        # For Alibaba Qwen2.5 models
 # Additional optional LLM providers for enhanced consensus diversity:
 # os.environ["DEEPSEEK_API_KEY"] = "your-deepseek-api-key"   # For DeepSeek-V3 models
@@ -291,7 +291,7 @@ consensus_results = interactive_consensus_annotation(
     marker_genes=marker_genes,  # Dictionary of marker genes for each cluster
     species="human",            # Specify organism for appropriate cell type annotation
     tissue="blood",            # Specify tissue context for more accurate annotation
-    models=["gpt-4o", "claude-opus-4-20250514", "gemini-1.5-pro", "qwen-max-2025-01-25"],  # Multiple LLMs for consensus
+    models=["gpt-4o", "claude-opus-4-20250514", "gemini-2.5-pro", "qwen-max-2025-01-25"],  # Multiple LLMs for consensus
     consensus_threshold=1,     # Minimum proportion required for consensus agreement
     max_discussion_rounds=3    # Number of deliberation rounds between models for refinement
 )
@@ -492,7 +492,7 @@ dir.create(cache_dir, showWarnings = FALSE, recursive = TRUE)
 # - OpenAI: 'gpt-4o', 'gpt-4o-mini', 'gpt-4.1', 'gpt-4.1-mini', 'gpt-4.1-nano', 'gpt-4-turbo', 'gpt-3.5-turbo', 'o1', 'o1-mini', 'o1-preview', 'o1-pro'
 # - Anthropic: 'claude-3-7-sonnet-20250219', 'claude-3-5-sonnet-20241022', 'claude-3-5-haiku-20241022', 'claude-3-opus-20240229'
 # - DeepSeek: 'deepseek-chat', 'deepseek-reasoner'
-# - Google: 'gemini-2.5-pro', 'gemini-2.0-flash', 'gemini-2.0-flash-lite', 'gemini-2.0-flash-exp', 'gemini-1.5-pro', 'gemini-1.5-flash'
+# - Google: 'gemini-2.5-pro', 'gemini-2.5-flash', 'gemini-2.0-flash', 'gemini-2.0-flash-lite', 'gemini-1.5-pro', 'gemini-1.5-flash'
 # - Qwen: 'qwen-max-2025-01-25'
 # - Stepfun: 'step-2-mini', 'step-2-16k', 'step-1-8k'
 # - Zhipu: 'glm-4-plus', 'glm-3-turbo'
@@ -502,7 +502,7 @@ dir.create(cache_dir, showWarnings = FALSE, recursive = TRUE)
 #   - OpenAI models: 'openai/gpt-4o', 'openai/gpt-4o-mini', 'openai/gpt-4-turbo', 'openai/gpt-4', 'openai/gpt-3.5-turbo'
 #   - Anthropic models: 'anthropic/claude-3.7-sonnet', 'anthropic/claude-3.5-sonnet', 'anthropic/claude-3.5-haiku', 'anthropic/claude-3-opus'
 #   - Meta models: 'meta-llama/llama-3-70b-instruct', 'meta-llama/llama-3-8b-instruct', 'meta-llama/llama-2-70b-chat'
-#   - Google models: 'google/gemini-2.5-pro-preview-03-25', 'google/gemini-1.5-pro-latest', 'google/gemini-1.5-flash'
+#   - Google models: 'google/gemini-2.5-pro', 'google/gemini-2.5-flash', 'google/gemini-1.5-pro-latest', 'google/gemini-1.5-flash'
 #   - Mistral models: 'mistralai/mistral-large', 'mistralai/mistral-medium', 'mistralai/mistral-small'
 #   - Other models: 'microsoft/mai-ds-r1', 'perplexity/sonar-small-chat', 'cohere/command-r', 'deepseek/deepseek-chat', 'thudm/glm-z1-32b'
 
@@ -513,7 +513,7 @@ consensus_results <- interactive_consensus_annotation(
   models = c(
     "claude-opus-4-20250514",    # Anthropic Claude 4 (latest)
     "gpt-4o",                   # OpenAI
-    "gemini-1.5-pro",           # Google
+    "gemini-2.5-pro",           # Google
     "qwen-max-2025-01-25"       # Alibaba
   ),
   api_keys = list(
@@ -740,8 +740,8 @@ consensus_results <-
   interactive_consensus_annotation(
     input = marker_genes_list,
     tissue_name = "your tissue type", # e.g., "human heart"
-    models = c("gemini-2.0-flash",
-              "gemini-1.5-pro",
+    models = c("gemini-2.5-pro",
+              "gemini-2.5-flash",
               "qwen-max-2025-01-25",
               "grok-3-latest",
               "claude-3-7-sonnet-20250219",
@@ -833,7 +833,7 @@ pbmc_markers <- FindAllMarkers(pbmc,
 # - OpenAI: 'gpt-4o', 'gpt-4o-mini', 'gpt-4.1', 'gpt-4.1-mini', 'gpt-4.1-nano', 'gpt-4-turbo', 'gpt-3.5-turbo', 'o1', 'o1-mini', 'o1-preview', 'o1-pro'
 # - Anthropic: 'claude-3-7-sonnet-20250219', 'claude-3-5-sonnet-20241022', 'claude-3-5-haiku-20241022', 'claude-3-opus-20240229'
 # - DeepSeek: 'deepseek-chat', 'deepseek-reasoner'
-# - Google: 'gemini-2.5-pro', 'gemini-2.0-flash', 'gemini-2.0-flash-lite', 'gemini-2.0-flash-exp', 'gemini-1.5-pro', 'gemini-1.5-flash'
+# - Google: 'gemini-2.5-pro', 'gemini-2.5-flash', 'gemini-2.0-flash', 'gemini-2.0-flash-lite', 'gemini-1.5-pro', 'gemini-1.5-flash'
 # - Qwen: 'qwen-max-2025-01-25'
 # - Stepfun: 'step-2-mini', 'step-2-16k', 'step-1-8k'
 # - Zhipu: 'glm-4-plus', 'glm-3-turbo'
@@ -843,7 +843,7 @@ pbmc_markers <- FindAllMarkers(pbmc,
 #   - OpenAI models: 'openai/gpt-4o', 'openai/gpt-4o-mini', 'openai/gpt-4-turbo', 'openai/gpt-4', 'openai/gpt-3.5-turbo'
 #   - Anthropic models: 'anthropic/claude-3.7-sonnet', 'anthropic/claude-3.5-sonnet', 'anthropic/claude-3.5-haiku', 'anthropic/claude-3-opus'
 #   - Meta models: 'meta-llama/llama-3-70b-instruct', 'meta-llama/llama-3-8b-instruct', 'meta-llama/llama-2-70b-chat'
-#   - Google models: 'google/gemini-2.5-pro-preview-03-25', 'google/gemini-1.5-pro-latest', 'google/gemini-1.5-flash'
+#   - Google models: 'google/gemini-2.5-pro', 'google/gemini-2.5-flash', 'google/gemini-1.5-pro-latest', 'google/gemini-1.5-flash'
 #   - Mistral models: 'mistralai/mistral-large', 'mistralai/mistral-medium', 'mistralai/mistral-small'
 #   - Other models: 'microsoft/mai-ds-r1', 'perplexity/sonar-small-chat', 'cohere/command-r', 'deepseek/deepseek-chat', 'thudm/glm-z1-32b'
 
@@ -890,7 +890,7 @@ You can also compare annotations from different models by running `annotate_cell
 models_to_test <- c(
   "claude-3-7-sonnet-20250219",  # Anthropic
   "gpt-4o",                      # OpenAI
-  "gemini-1.5-pro",              # Google
+  "gemini-2.5-pro",              # Google
   "qwen-max-2025-01-25"          # Alibaba
 )
 
@@ -952,7 +952,8 @@ The `consensus_check_model` parameter (R) / `consensus_model` parameter (Python)
    - `gpt-4.1` - Latest GPT-4 variant
 
 3. **Google Gemini Models**
-   - `gemini-2.5-pro` - Top-tier performance
+   - `gemini-2.5-pro` - Top-tier performance with enhanced reasoning
+   - `gemini-2.5-flash` - Excellent balance of performance and speed
    - `gemini-2.0-flash` - Good performance with faster processing
 
 4. **Other High-Performance Models**
@@ -967,7 +968,7 @@ The `consensus_check_model` parameter (R) / `consensus_model` parameter (Python)
 consensus_results <- interactive_consensus_annotation(
   input = marker_genes_list,
   tissue_name = "human brain",
-  models = c("gpt-4o", "claude-sonnet-4-20250514", "gemini-2.0-flash", "qwen-max-2025-01-25"),
+  models = c("gpt-4o", "claude-sonnet-4-20250514", "gemini-2.5-pro", "qwen-max-2025-01-25"),
   api_keys = api_keys,
   consensus_check_model = "claude-opus-4-20250514",  # Use the most capable model
   controversy_threshold = 0.7,
@@ -978,7 +979,7 @@ consensus_results <- interactive_consensus_annotation(
 consensus_results <- interactive_consensus_annotation(
   input = marker_genes_list,
   tissue_name = "mouse liver",
-  models = c("gpt-4o", "gemini-2.0-flash", "qwen-max-2025-01-25"),
+  models = c("gpt-4o", "gemini-2.5-pro", "qwen-max-2025-01-25"),
   api_keys = api_keys,
   consensus_check_model = "claude-3-7-sonnet-20250219",  # Alternative high-performance model
   controversy_threshold = 0.7,
@@ -989,7 +990,7 @@ consensus_results <- interactive_consensus_annotation(
 consensus_results <- interactive_consensus_annotation(
   input = marker_genes_list,
   tissue_name = "human immune cells",
-  models = c("gpt-4o", "claude-sonnet-4-20250514", "gemini-2.0-flash"),
+  models = c("gpt-4o", "claude-sonnet-4-20250514", "gemini-2.5-pro"),
   api_keys = api_keys,
   consensus_check_model = "o1",  # OpenAI's advanced reasoning model
   controversy_threshold = 0.7,
@@ -1008,7 +1009,7 @@ consensus_results = interactive_consensus_annotation(
     marker_genes=marker_genes,
     species="human",
     tissue="brain",
-    models=["gpt-4o", "claude-sonnet-4-20250514", "gemini-2.0-flash", "qwen-max-2025-01-25"],
+    models=["gpt-4o", "claude-sonnet-4-20250514", "gemini-2.5-pro", "qwen-max-2025-01-25"],
     consensus_model="claude-opus-4-20250514",  # Use the most capable model
     consensus_threshold=0.7,
     entropy_threshold=1.0
@@ -1019,7 +1020,7 @@ consensus_results = interactive_consensus_annotation(
     marker_genes=marker_genes,
     species="mouse",
     tissue="liver",
-    models=["gpt-4o", "gemini-2.0-flash", "qwen-max-2025-01-25"],
+    models=["gpt-4o", "gemini-2.5-pro", "qwen-max-2025-01-25"],
     consensus_model={"provider": "anthropic", "model": "claude-sonnet-4-20250514"},
     consensus_threshold=0.7,
     entropy_threshold=1.0
@@ -1041,7 +1042,7 @@ consensus_results = interactive_consensus_annotation(
     marker_genes=marker_genes,
     species="human",
     tissue="blood",
-    models=["gpt-4o", "claude-3-7-sonnet-20250219", "gemini-2.0-flash"],
+    models=["gpt-4o", "claude-3-7-sonnet-20250219", "gemini-2.5-pro"],
     # If not specified, defaults to qwen-max-2025-01-25 (a high-performance model)
     consensus_threshold=0.7,
     entropy_threshold=1.0

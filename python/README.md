@@ -373,7 +373,7 @@ result = interactive_consensus_annotation(
     models=[                                              # Multiple LLM models
         'gpt-4o',                                         # OpenAI direct API
         'claude-3-7-sonnet-20250219',                     # Anthropic direct API
-        'gemini-2.5-pro-preview-03-25',                   # Google direct API
+        'gemini-2.5-pro',                                  # Google direct API
         'qwen-max-2025-01-25',                            # Alibaba direct API
         {"provider": "openrouter", "model": "openai/gpt-4o"},             # OpenRouter (OpenAI)
         {"provider": "openrouter", "model": "anthropic/claude-3-opus"},   # OpenRouter (Anthropic)
@@ -528,7 +528,8 @@ The `consensus_model` parameter in `interactive_consensus_annotation` allows you
    - `gpt-4.1` - Latest GPT-4 variant
 
 3. **Google Gemini Models**
-   - `gemini-2.5-pro` - Top-tier performance
+   - `gemini-2.5-pro` - Top-tier performance with enhanced reasoning
+   - `gemini-2.5-flash` - Excellent balance of performance and speed
    - `gemini-2.0-flash` - Good performance with faster processing
 
 4. **Other High-Performance Models**
@@ -546,7 +547,7 @@ consensus_results = interactive_consensus_annotation(
     marker_genes=marker_genes,
     species="human",
     tissue="brain",
-    models=["gpt-4o", "claude-3-7-sonnet-20250219", "gemini-2.0-flash", "qwen-max-2025-01-25"],
+    models=["gpt-4o", "claude-3-7-sonnet-20250219", "gemini-2.5-pro", "qwen-max-2025-01-25"],
     consensus_model="claude-opus-4-20250514",  # Use the most capable model
     consensus_threshold=0.7,
     entropy_threshold=1.0
@@ -557,7 +558,7 @@ consensus_results = interactive_consensus_annotation(
     marker_genes=marker_genes,
     species="mouse",
     tissue="liver",
-    models=["gpt-4o", "gemini-2.0-flash", "qwen-max-2025-01-25"],
+    models=["gpt-4o", "gemini-2.5-pro", "qwen-max-2025-01-25"],
     consensus_model={"provider": "anthropic", "model": "claude-3-7-sonnet-20250219"},
     consensus_threshold=0.7,
     entropy_threshold=1.0
@@ -579,7 +580,7 @@ consensus_results = interactive_consensus_annotation(
     marker_genes=marker_genes,
     species="human",
     tissue="immune cells",
-    models=["gpt-4o", "claude-3-7-sonnet-20250219", "gemini-2.0-flash"],
+    models=["gpt-4o", "claude-3-7-sonnet-20250219", "gemini-2.5-pro"],
     consensus_model="o1",  # OpenAI's advanced reasoning model
     consensus_threshold=0.7,
     entropy_threshold=1.0,
@@ -591,7 +592,7 @@ consensus_results = interactive_consensus_annotation(
     marker_genes=marker_genes,
     species="human",
     tissue="blood",
-    models=["gpt-4o", "claude-3-7-sonnet-20250219", "gemini-2.0-flash"],
+    models=["gpt-4o", "claude-3-7-sonnet-20250219", "gemini-2.5-pro"],
     # If not specified, defaults to qwen-max-2025-01-25 with claude-3-5-sonnet-latest as fallback
     consensus_threshold=0.7,
     entropy_threshold=1.0
@@ -780,7 +781,7 @@ import mllmcelltype as mct
 consensus_results = mct.interactive_consensus_annotation(
     marker_genes=marker_genes,
     species='human',
-    models=['gpt-4o', 'claude-3-7-sonnet-20250219', 'gemini-2.5-pro-preview-03-25', 'openai/gpt-4o'],  # Can include OpenRouter models
+    models=['gpt-4o', 'claude-3-7-sonnet-20250219', 'gemini-2.5-pro', 'openai/gpt-4o'],  # Can include OpenRouter models
     consensus_threshold=0.7
 )
 

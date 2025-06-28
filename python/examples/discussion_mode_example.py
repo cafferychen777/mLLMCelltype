@@ -157,7 +157,7 @@ def main():
     if "anthropic" in api_keys:
         models.append("claude-3-5-sonnet-latest")
     if "gemini" in api_keys:
-        models.append("gemini-1.5-pro")
+        models.append("gemini-2.5-pro")
     if "qwen" in api_keys:
         models.append("qwen-max")
 
