@@ -293,7 +293,7 @@ markers <- FindAllMarkers(seurat_obj, only.pos = TRUE, min.pct = 0.25, logfc.thr
 consensus_results <- interactive_consensus_annotation(
   input = markers,
   tissue_name = "human PBMC",
-  models = c("gpt-4o", "claude-3-7-sonnet-20250219", "gemini-2.5-pro"),
+  models = c("gpt-4o", "claude-sonnet-4-20250514", "gemini-2.5-pro"),
   api_keys = list(
     openai = "your_openai_api_key",
     anthropic = "your_anthropic_api_key",
@@ -338,7 +338,7 @@ markers_dict = mct.utils.convert_scanpy_markers(adata)  # 마커 유전자 사�
 consensus_results = mct.annotate.interactive_consensus_annotation(
     input=markers_dict,                                             # 마커 유전자 사전
     tissue_name="human PBMC",                                      # 조직 정보 지정(주석 정확도 향상)
-    models=["gpt-4o", "claude-3-7-sonnet-20250219", "gemini-2.5-pro"],  # 다양한 대형 언어 모델 사용
+    models=["gpt-4o", "claude-sonnet-4-20250514", "gemini-2.5-pro"],  # 다양한 대형 언어 모델 사용
     api_keys={                                                     # 각 LLM 제공업체의 API 키 설정
         "openai": "your_openai_api_key",                             # OpenAI GPT-4o API 키
         "anthropic": "your_anthropic_api_key",                       # Anthropic Claude API 키
@@ -368,7 +368,7 @@ adata.obs["cell_type"] = adata.obs["leiden"].map(
 
 1. **Anthropic Claude 모델** (최고 권장)
    - `claude-opus-4-20250514` - 최고 전체 성능
-   - `claude-3-7-sonnet-20250219` - 성능과 속도의 우수한 균형
+   - `claude-sonnet-4-20250514` - Claude 4는 뛰어난 성능과 이해력을 제공
    - `claude-3-5-sonnet-20241022` - 빠른 응답으로 좋은 성능
 
 2. **OpenAI 모델**
@@ -393,7 +393,7 @@ consensus_results = interactive_consensus_annotation(
     marker_genes=marker_genes,
     species="human",
     tissue="brain",
-    models=["gpt-4o", "claude-3-7-sonnet-20250219", "gemini-2.5-flash", "qwen-max-2025-01-25"],
+    models=["gpt-4o", "claude-sonnet-4-20250514", "gemini-2.5-flash", "qwen-max-2025-01-25"],
     consensus_model="claude-opus-4-20250514",  # 가장 우수한 모델 사용
     consensus_threshold=0.7,
     entropy_threshold=1.0
@@ -405,7 +405,7 @@ consensus_results = interactive_consensus_annotation(
     species="mouse",
     tissue="liver",
     models=["gpt-4o", "gemini-2.5-flash", "qwen-max-2025-01-25"],
-    consensus_model={"provider": "anthropic", "model": "claude-3-7-sonnet-20250219"},
+    consensus_model={"provider": "anthropic", "model": "claude-sonnet-4-20250514"},
     consensus_threshold=0.7,
     entropy_threshold=1.0
 )
@@ -626,7 +626,7 @@ consensus_results <-
               "gemini-2.5-pro",
               "qwen-max-2025-01-25",
               "grok-3-latest",
-              "anthropic/claude-3-7-sonnet-20250219",
+              "anthropic/claude-sonnet-4",
               "openai/gpt-4o"),
     api_keys = api_keys,
     controversy_threshold = 0.6,
@@ -687,7 +687,7 @@ pbmc_markers <- FindAllMarkers(pbmc,
 # 지원되는 어떤 공급업체에서나 모델 선택
 # 지원되는 모델 목록:
 # - OpenAI: 'gpt-4o', 'gpt-4o-mini', 'gpt-4.1', 'gpt-4.1-mini', 'gpt-4.1-nano', 'gpt-4-turbo', 'gpt-3.5-turbo', 'o1', 'o1-mini', 'o1-preview', 'o1-pro'
-# - Anthropic: 'claude-3-7-sonnet-20250219', 'claude-3-5-sonnet-latest', 'claude-3-5-haiku-latest', 'claude-3-opus'
+# - Anthropic: 'claude-sonnet-4-20250514', 'claude-3-5-sonnet-latest', 'claude-3-5-haiku-latest', 'claude-3-opus'
 # - DeepSeek: 'deepseek-chat', 'deepseek-reasoner'
 # - Google: 'gemini-2.5-pro', 'gemini-2.5-flash', 'gemini-2.0-flash', 'gemini-1.5-pro', 'gemini-1.5-flash'
 # - Qwen: 'qwen-max-2025-01-25'
@@ -697,7 +697,7 @@ pbmc_markers <- FindAllMarkers(pbmc,
 # - Grok: 'grok-3', 'grok-3-latest', 'grok-3-fast', 'grok-3-fast-latest', 'grok-3-mini', 'grok-3-mini-latest', 'grok-3-mini-fast', 'grok-3-mini-fast-latest'
 # - OpenRouter: 단일 API로 여러 모델에 액세스. 형식: 'provider/model-name'
 #   - OpenAI 모델: 'openai/gpt-4o', 'openai/gpt-4o-mini', 'openai/gpt-4-turbo', 'openai/gpt-4', 'openai/gpt-3.5-turbo'
-#   - Anthropic 모델: 'anthropic/claude-3-7-sonnet-20250219', 'anthropic/claude-3-5-sonnet-latest', 'anthropic/claude-3-5-haiku-latest', 'anthropic/claude-3-opus'
+#   - Anthropic 모델: 'anthropic/claude-sonnet-4', 'anthropic/claude-3-5-sonnet-latest', 'anthropic/claude-3-5-haiku-latest', 'anthropic/claude-3-opus'
 #   - Meta 모델: 'meta-llama/llama-3-70b-instruct', 'meta-llama/llama-3-8b-instruct', 'meta-llama/llama-2-70b-chat'
 #   - Google 모델: 'google/gemini-2.5-pro', 'google/gemini-2.5-flash', 'google/gemini-1.5-pro-latest', 'google/gemini-1.5-flash'
 #   - Mistral 모델: 'mistralai/mistral-large', 'mistralai/mistral-medium', 'mistralai/mistral-small'
@@ -707,7 +707,7 @@ pbmc_markers <- FindAllMarkers(pbmc,
 single_model_results <- annotate_cell_types(
   input = pbmc_markers,
   tissue_name = "human PBMC",  # 조직 문맥 제공
-  model = "claude-3-7-sonnet-20250219",  # 단일 모델 지정
+  model = "claude-sonnet-4-20250514",  # 단일 모델 지정
   api_key = "your-anthropic-key",  # API 키 직접 제공
   top_gene_count = 10
 )
@@ -734,7 +734,7 @@ DimPlot(pbmc, group.by = "cell_type", label = TRUE) +
 
 ```r
 # 다양한 모델을 사용하여 주석
-models <- c("claude-3-7-sonnet-20250219", "gpt-4o", "gemini-2.5-pro", "qwen-max-2025-01-25", "grok-3")
+models <- c("claude-sonnet-4-20250514", "gpt-4o", "gemini-2.5-pro", "qwen-max-2025-01-25", "grok-3")
 api_keys <- c("your-anthropic-key", "your-openai-key", "your-google-key", "your-qwen-key", "your-xai-key")
 
 # 각 모델에 대한 열 생성
@@ -759,7 +759,7 @@ for (i in 1:length(models)) {
 }
 
 # 다양한 모델의 결과 시각화
-p1 <- DimPlot(pbmc, group.by = "cell_type_claude_3_7_sonnet_20250219", label = TRUE) + ggtitle("Claude 3.7")
+p1 <- DimPlot(pbmc, group.by = "cell_type_claude_3_7_sonnet_20250219", label = TRUE) + ggtitle("Claude 4")
 p2 <- DimPlot(pbmc, group.by = "cell_type_gpt_4o", label = TRUE) + ggtitle("GPT-4o")
 p3 <- DimPlot(pbmc, group.by = "cell_type_gemini_2_0_pro", label = TRUE) + ggtitle("Gemini 2.0 Pro")
 p4 <- DimPlot(pbmc, group.by = "cell_type_qwen_max_2025_01_25", label = TRUE) + ggtitle("Qwen Max")

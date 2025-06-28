@@ -394,7 +394,7 @@ def get_default_model(provider: str) -> str:
     """
     default_models = {
         "openai": "gpt-4.1",
-        "anthropic": "claude-3-7-sonnet-20250219",
+        "anthropic": "claude-sonnet-4-20250514",
         "deepseek": "deepseek-chat",
         "gemini": "gemini-2.5-pro-preview-03-25",
         "qwen": "qwen-max-2025-01-25",

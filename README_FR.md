@@ -226,7 +226,7 @@ markers <- FindAllMarkers(seurat_obj, only.pos = TRUE, min.pct = 0.25, logfc.thr
 consensus_results <- interactive_consensus_annotation(
   input = markers,  # Tableau de gènes marqueurs identifiés par Seurat
   tissue_name = "human PBMC",  # Spécifier le type de tissu pour fournir un contexte biologique aux LLM
-  models = c("gpt-4o", "claude-3-7-sonnet-20250219", "gemini-2.5-pro"),  # Utiliser les modèles LLM les plus récents
+  models = c("gpt-4o", "claude-sonnet-4-20250514", "gemini-2.5-pro"),  # Utiliser les modèles LLM les plus récents
   api_keys = list(
     openai = "your_openai_api_key",
     anthropic = "your_anthropic_api_key",
@@ -322,7 +322,7 @@ consensus_results <-
               "gemini-2.5-pro",
               "qwen-max-2025-01-25",
               "grok-3-latest",
-              "anthropic/claude-3-7-sonnet-20250219",
+              "anthropic/claude-sonnet-4",
               "openai/gpt-4o"),
     api_keys = api_keys,
     controversy_threshold = 0.6,
@@ -444,7 +444,7 @@ consensus_results = interactive_consensus_annotation(
     marker_genes=marker_genes,  # Dictionnaire de gènes marqueurs pour chaque cluster
     species="human",            # Spécifier l'organisme pour une annotation appropriée des types cellulaires
     tissue="blood",            # Spécifier le contexte tissulaire pour une annotation plus précise
-    models=["gpt-4o", "claude-3-7-sonnet-20250219", "gemini-2.5-pro", "qwen-max-2025-01-25"],  # Plusieurs LLM pour le consensus
+    models=["gpt-4o", "claude-sonnet-4-20250514", "gemini-2.5-pro", "qwen-max-2025-01-25"],  # Plusieurs LLM pour le consensus
     consensus_threshold=1,     # Proportion minimale requise pour l'accord de consensus
     max_discussion_rounds=3    # Nombre de rondes de délibération entre modèles pour le raffinement
 )
@@ -688,7 +688,7 @@ pbmc_markers <- FindAllMarkers(pbmc,
 # Choisir un modèle parmi les fournisseurs pris en charge
 # Modèles pris en charge incluent :
 # - OpenAI : 'gpt-4o', 'gpt-4o-mini', 'gpt-4.1', 'gpt-4.1-mini', 'gpt-4.1-nano', 'gpt-4-turbo', 'gpt-3.5-turbo', 'o1', 'o1-mini', 'o1-preview', 'o1-pro'
-# - Anthropic : 'claude-3-7-sonnet-20250219', 'claude-3-5-sonnet-latest', 'claude-3-5-haiku-latest', 'claude-3-opus'
+# - Anthropic : 'claude-sonnet-4-20250514', 'claude-3-5-sonnet-latest', 'claude-3-5-haiku-latest', 'claude-3-opus'
 # - DeepSeek : 'deepseek-chat', 'deepseek-reasoner'
 # - Google : 'gemini-2.5-pro', 'gemini-2.5-flash', 'gemini-2.0-flash', 'gemini-1.5-pro', 'gemini-1.5-flash'
 # - Qwen : 'qwen-max-2025-01-25'
@@ -698,7 +698,7 @@ pbmc_markers <- FindAllMarkers(pbmc,
 # - Grok : 'grok-3', 'grok-3-latest', 'grok-3-fast', 'grok-3-fast-latest', 'grok-3-mini', 'grok-3-mini-latest', 'grok-3-mini-fast', 'grok-3-mini-fast-latest'
 # - OpenRouter : Accès à plusieurs modèles via une seule API. Format : 'fournisseur/nom-du-modèle'
 #   - Modèles OpenAI : 'openai/gpt-4o', 'openai/gpt-4o-mini', 'openai/gpt-4-turbo', 'openai/gpt-4', 'openai/gpt-3.5-turbo'
-#   - Modèles Anthropic : 'anthropic/claude-3-7-sonnet-20250219', 'anthropic/claude-3-5-sonnet-latest', 'anthropic/claude-3-5-haiku-latest', 'anthropic/claude-3-opus'
+#   - Modèles Anthropic : 'anthropic/claude-sonnet-4', 'anthropic/claude-3-5-sonnet-latest', 'anthropic/claude-3-5-haiku-latest', 'anthropic/claude-3-opus'
 #   - Modèles Meta : 'meta-llama/llama-3-70b-instruct', 'meta-llama/llama-3-8b-instruct', 'meta-llama/llama-2-70b-chat'
 #   - Modèles Google : 'google/gemini-2.5-pro', 'google/gemini-2.5-flash', 'google/gemini-1.5-pro-latest', 'google/gemini-1.5-flash'
 #   - Modèles Mistral : 'mistralai/mistral-large', 'mistralai/mistral-medium', 'mistralai/mistral-small'
@@ -708,7 +708,7 @@ pbmc_markers <- FindAllMarkers(pbmc,
 single_model_results <- annotate_cell_types(
   input = pbmc_markers,
   tissue_name = "human PBMC",  # fournir le contexte tissulaire
-  model = "claude-3-7-sonnet-20250219",  # spécifier un seul modèle
+  model = "claude-sonnet-4-20250514",  # spécifier un seul modèle
   api_key = "your-anthropic-key",  # fournir directement la clé API
   top_gene_count = 10
 )
@@ -735,7 +735,7 @@ Vous pouvez également comparer les annotations de différents modèles en exéc
 
 ```r
 # Utiliser différents modèles pour l'annotation
-models <- c("claude-3-7-sonnet-20250219", "gpt-4o", "gemini-2.5-pro", "qwen-max-2025-01-25", "grok-3")
+models <- c("claude-sonnet-4-20250514", "gpt-4o", "gemini-2.5-pro", "qwen-max-2025-01-25", "grok-3")
 api_keys <- c("your-anthropic-key", "your-openai-key", "your-google-key", "your-qwen-key", "your-xai-key")
 
 # Créer une colonne pour chaque modèle
@@ -760,7 +760,7 @@ for (i in 1:length(models)) {
 }
 
 # Visualiser les résultats des différents modèles
-p1 <- DimPlot(pbmc, group.by = "cell_type_claude_3_7_sonnet_20250219", label = TRUE) + ggtitle("Claude 3.7")
+p1 <- DimPlot(pbmc, group.by = "cell_type_claude_3_7_sonnet_20250219", label = TRUE) + ggtitle("Claude 4")
 p2 <- DimPlot(pbmc, group.by = "cell_type_gpt_4o", label = TRUE) + ggtitle("GPT-4o")
 p3 <- DimPlot(pbmc, group.by = "cell_type_gemini_2_5_pro", label = TRUE) + ggtitle("Gemini 2.5 Pro")
 p4 <- DimPlot(pbmc, group.by = "cell_type_qwen_max_2025_01_25", label = TRUE) + ggtitle("Qwen Max")
@@ -785,7 +785,7 @@ Le paramètre `consensus_check_model` (R) / `consensus_model` (Python) vous perm
 
 1. **Modèles Anthropic Claude** (Recommandation la plus élevée)
    - `claude-opus-4-20250514` - Meilleure performance globale
-   - `claude-3-7-sonnet-20250219` - Excellent équilibre entre performance et vitesse
+   - `claude-sonnet-4-20250514` - Claude 4 offre des performances et une compréhension supérieures
    - `claude-3-5-sonnet-20241022` - Bonne performance avec réponse plus rapide
 
 2. **Modèles OpenAI**
@@ -809,7 +809,7 @@ Le paramètre `consensus_check_model` (R) / `consensus_model` (Python) vous perm
 consensus_results <- interactive_consensus_annotation(
   input = marker_genes_list,
   tissue_name = "human brain",
-  models = c("gpt-4o", "claude-3-7-sonnet-20250219", "gemini-2.5-flash", "qwen-max-2025-01-25"),
+  models = c("gpt-4o", "claude-sonnet-4-20250514", "gemini-2.5-flash", "qwen-max-2025-01-25"),
   api_keys = api_keys,
   consensus_check_model = "claude-opus-4-20250514",  # Utiliser le modèle le plus performant
   controversy_threshold = 0.7,
@@ -822,7 +822,7 @@ consensus_results <- interactive_consensus_annotation(
   tissue_name = "mouse liver",
   models = c("gpt-4o", "gemini-2.5-flash", "qwen-max-2025-01-25"),
   api_keys = api_keys,
-  consensus_check_model = "claude-3-7-sonnet-20250219",  # Modèle alternatif haute performance
+  consensus_check_model = "claude-sonnet-4-20250514",  # Modèle alternatif haute performance
   controversy_threshold = 0.7,
   entropy_threshold = 1.0
 )
@@ -831,7 +831,7 @@ consensus_results <- interactive_consensus_annotation(
 consensus_results <- interactive_consensus_annotation(
   input = marker_genes_list,
   tissue_name = "human immune cells",
-  models = c("gpt-4o", "claude-3-7-sonnet-20250219", "gemini-2.5-flash"),
+  models = c("gpt-4o", "claude-sonnet-4-20250514", "gemini-2.5-flash"),
   api_keys = api_keys,
   consensus_check_model = "o1",  # Modèle de raisonnement avancé d'OpenAI
   controversy_threshold = 0.7,
@@ -850,7 +850,7 @@ consensus_results = interactive_consensus_annotation(
     marker_genes=marker_genes,
     species="human",
     tissue="brain",
-    models=["gpt-4o", "claude-3-7-sonnet-20250219", "gemini-2.5-flash", "qwen-max-2025-01-25"],
+    models=["gpt-4o", "claude-sonnet-4-20250514", "gemini-2.5-flash", "qwen-max-2025-01-25"],
     consensus_model="claude-opus-4-20250514",  # Utiliser le modèle le plus performant
     consensus_threshold=0.7,
     entropy_threshold=1.0
@@ -862,7 +862,7 @@ consensus_results = interactive_consensus_annotation(
     species="mouse",
     tissue="liver",
     models=["gpt-4o", "gemini-2.5-flash", "qwen-max-2025-01-25"],
-    consensus_model={"provider": "anthropic", "model": "claude-3-7-sonnet-20250219"},
+    consensus_model={"provider": "anthropic", "model": "claude-sonnet-4-20250514"},
     consensus_threshold=0.7,
     entropy_threshold=1.0
 )
@@ -872,7 +872,7 @@ consensus_results = interactive_consensus_annotation(
     marker_genes=marker_genes,
     species="human",
     tissue="heart",
-    models=["gpt-4o", "claude-3-7-sonnet-20250219", "qwen-max-2025-01-25"],
+    models=["gpt-4o", "claude-sonnet-4-20250514", "qwen-max-2025-01-25"],
     consensus_model={"provider": "google", "model": "gemini-2.5-pro"},
     consensus_threshold=0.7,
     entropy_threshold=1.0
@@ -883,7 +883,7 @@ consensus_results = interactive_consensus_annotation(
     marker_genes=marker_genes,
     species="human",
     tissue="blood",
-    models=["gpt-4o", "claude-3-7-sonnet-20250219", "gemini-2.5-flash"],
+    models=["gpt-4o", "claude-sonnet-4-20250514", "gemini-2.5-flash"],
     # Si non spécifié, utilise qwen-max-2025-01-25 par défaut (un modèle haute performance)
     consensus_threshold=0.7,
     entropy_threshold=1.0

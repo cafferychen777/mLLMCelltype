@@ -490,7 +490,7 @@ dir.create(cache_dir, showWarnings = FALSE, recursive = TRUE)
 # Choose a model from any supported provider
 # Supported models include:
 # - OpenAI: 'gpt-4o', 'gpt-4o-mini', 'gpt-4.1', 'gpt-4.1-mini', 'gpt-4.1-nano', 'gpt-4-turbo', 'gpt-3.5-turbo', 'o1', 'o1-mini', 'o1-preview', 'o1-pro'
-# - Anthropic: 'claude-3-7-sonnet-20250219', 'claude-3-5-sonnet-20241022', 'claude-3-5-haiku-20241022', 'claude-3-opus-20240229'
+# - Anthropic: 'claude-sonnet-4-20250514', 'claude-3-5-sonnet-20241022', 'claude-3-5-haiku-20241022', 'claude-3-opus-20240229'
 # - DeepSeek: 'deepseek-chat', 'deepseek-reasoner'
 # - Google: 'gemini-2.5-pro', 'gemini-2.5-flash', 'gemini-2.0-flash', 'gemini-2.0-flash-lite', 'gemini-1.5-pro', 'gemini-1.5-flash'
 # - Qwen: 'qwen-max-2025-01-25'
@@ -744,7 +744,7 @@ consensus_results <-
               "gemini-2.5-flash",
               "qwen-max-2025-01-25",
               "grok-3-latest",
-              "claude-3-7-sonnet-20250219",
+              "claude-sonnet-4-20250514",
               "gpt-4o"),
     api_keys = api_keys,
     controversy_threshold = 0.6,
@@ -831,7 +831,7 @@ pbmc_markers <- FindAllMarkers(pbmc,
 # Choose a model from any supported provider
 # Supported models include:
 # - OpenAI: 'gpt-4o', 'gpt-4o-mini', 'gpt-4.1', 'gpt-4.1-mini', 'gpt-4.1-nano', 'gpt-4-turbo', 'gpt-3.5-turbo', 'o1', 'o1-mini', 'o1-preview', 'o1-pro'
-# - Anthropic: 'claude-3-7-sonnet-20250219', 'claude-3-5-sonnet-20241022', 'claude-3-5-haiku-20241022', 'claude-3-opus-20240229'
+# - Anthropic: 'claude-sonnet-4-20250514', 'claude-3-5-sonnet-20241022', 'claude-3-5-haiku-20241022', 'claude-3-opus-20240229'
 # - DeepSeek: 'deepseek-chat', 'deepseek-reasoner'
 # - Google: 'gemini-2.5-pro', 'gemini-2.5-flash', 'gemini-2.0-flash', 'gemini-2.0-flash-lite', 'gemini-1.5-pro', 'gemini-1.5-flash'
 # - Qwen: 'qwen-max-2025-01-25'
@@ -888,7 +888,7 @@ You can also compare annotations from different models by running `annotate_cell
 ```r
 # Define models to test
 models_to_test <- c(
-  "claude-3-7-sonnet-20250219",  # Anthropic
+  "claude-sonnet-4-20250514",     # Anthropic
   "gpt-4o",                      # OpenAI
   "gemini-2.5-pro",              # Google
   "qwen-max-2025-01-25"          # Alibaba
@@ -943,7 +943,7 @@ The `consensus_check_model` parameter (R) / `consensus_model` parameter (Python)
 1. **Anthropic Claude Models** (Highest recommendation)
    - `claude-opus-4-20250514` - Best overall performance (Claude 4 - latest release, June 27, 2025)
    - `claude-sonnet-4-20250514` - Excellent balance of performance and speed (Claude 4)
-   - `claude-3-7-sonnet-20250219` - Strong performance with Claude 3.7
+   - `claude-sonnet-4-20250514` - Superior performance with Claude 4
    - `claude-3-5-sonnet-20241022` - Good performance with faster response
 
 2. **OpenAI Models**
@@ -981,7 +981,7 @@ consensus_results <- interactive_consensus_annotation(
   tissue_name = "mouse liver",
   models = c("gpt-4o", "gemini-2.5-pro", "qwen-max-2025-01-25"),
   api_keys = api_keys,
-  consensus_check_model = "claude-3-7-sonnet-20250219",  # Alternative high-performance model
+  consensus_check_model = "claude-sonnet-4-20250514",     # High-performance Claude 4 model
   controversy_threshold = 0.7,
   entropy_threshold = 1.0
 )
@@ -1042,7 +1042,7 @@ consensus_results = interactive_consensus_annotation(
     marker_genes=marker_genes,
     species="human",
     tissue="blood",
-    models=["gpt-4o", "claude-3-7-sonnet-20250219", "gemini-2.5-pro"],
+    models=["gpt-4o", "claude-sonnet-4-20250514", "gemini-2.5-pro"],
     # If not specified, defaults to qwen-max-2025-01-25 (a high-performance model)
     consensus_threshold=0.7,
     entropy_threshold=1.0

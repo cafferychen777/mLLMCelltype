@@ -35,9 +35,9 @@ def process_anthropic(prompt: str, model: str, api_key: str) -> list[str]:
         "claude-opus-4": "claude-opus-4-20250514",
         "claude-sonnet-4-20250514": "claude-sonnet-4-20250514",
         "claude-sonnet-4": "claude-sonnet-4-20250514",
-        # Claude 3.7 series
-        "claude-3-7-sonnet-20250219": "claude-3-7-sonnet-20250219",
-        "claude-3-7-sonnet": "claude-3-7-sonnet-20250219",
+        # Claude 3.7 series (deprecated - use Claude 4 instead)
+        "claude-3-7-sonnet-20250219": "claude-sonnet-4-20250514",
+        "claude-3-7-sonnet": "claude-sonnet-4-20250514",
         # Claude 3.5 series
         "claude-3-5-sonnet-20241022": "claude-3-5-sonnet-20241022",
         "claude-3-5-sonnet-new": "claude-3-5-sonnet-20241022",

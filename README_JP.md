@@ -221,7 +221,7 @@ markers <- FindAllMarkers(seurat_obj, only.pos = TRUE, min.pct = 0.25, logfc.thr
 consensus_results <- interactive_consensus_annotation(
   input = markers,
   tissue_name = "human PBMC",
-  models = c("gpt-4o", "claude-3-7-sonnet-20250219", "gemini-2.5-pro"),
+  models = c("gpt-4o", "claude-sonnet-4-20250514", "gemini-2.5-pro"),
   api_keys = list(
     openai = "your_openai_api_key",
     anthropic = "your_anthropic_api_key",
@@ -315,7 +315,7 @@ consensus_results <-
               "gemini-2.5-pro",
               "qwen-max-2025-01-25",
               "grok-3-latest",
-              "anthropic/claude-3-7-sonnet-20250219",
+              "anthropic/claude-sonnet-4",
               "openai/gpt-4o"),
     api_keys = api_keys,
     controversy_threshold = 0.6,
@@ -437,7 +437,7 @@ consensus_results = interactive_consensus_annotation(
     marker_genes=marker_genes,  # 各クラスターのマーカー遺伝子辞書
     species="human",            # 適切な細胞タイプアノテーションのために生物種を指定
     tissue="blood",            # より正確なアノテーションのために組織コンテキストを指定
-    models=["gpt-4o", "claude-3-7-sonnet-20250219", "gemini-2.5-pro", "qwen-max-2025-01-25"],  # コンセンサス用の複数LLM
+    models=["gpt-4o", "claude-sonnet-4-20250514", "gemini-2.5-pro", "qwen-max-2025-01-25"],  # コンセンサス用の複数LLM
     consensus_threshold=1,     # コンセンサス合意に必要な最小比率
     max_discussion_rounds=3    # 改善のためのモデル間議論ラウンド数
 )
@@ -679,7 +679,7 @@ pbmc_markers <- FindAllMarkers(pbmc,
 # サポートされている任意のプロバイダーからモデルを選択
 # サポートされているモデルには以下が含まれます：
 # - OpenAI: 'gpt-4o', 'gpt-4o-mini', 'gpt-4.1', 'gpt-4.1-mini', 'gpt-4.1-nano', 'gpt-4-turbo', 'gpt-3.5-turbo', 'o1', 'o1-mini', 'o1-preview', 'o1-pro'
-# - Anthropic: 'claude-3-7-sonnet-20250219', 'claude-3-5-sonnet-latest', 'claude-3-5-haiku-latest', 'claude-3-opus'
+# - Anthropic: 'claude-sonnet-4-20250514', 'claude-3-5-sonnet-latest', 'claude-3-5-haiku-latest', 'claude-3-opus'
 # - DeepSeek: 'deepseek-chat', 'deepseek-reasoner'
 # - Google: 'gemini-2.5-pro', 'gemini-2.5-flash', 'gemini-2.0-flash', 'gemini-1.5-pro', 'gemini-1.5-flash'
 # - Qwen: 'qwen-max-2025-01-25'
@@ -689,7 +689,7 @@ pbmc_markers <- FindAllMarkers(pbmc,
 # - Grok: 'grok-3', 'grok-3-latest', 'grok-3-fast', 'grok-3-fast-latest', 'grok-3-mini', 'grok-3-mini-latest', 'grok-3-mini-fast', 'grok-3-mini-fast-latest'
 # - OpenRouter: 単一APIで複数のモデルにアクセス。形式: 'provider/model-name'
 #   - OpenAIモデル: 'openai/gpt-4o', 'openai/gpt-4o-mini', 'openai/gpt-4-turbo', 'openai/gpt-4', 'openai/gpt-3.5-turbo'
-#   - Anthropicモデル: 'anthropic/claude-3-7-sonnet-20250219', 'anthropic/claude-3-5-sonnet-latest', 'anthropic/claude-3-5-haiku-latest', 'anthropic/claude-3-opus'
+#   - Anthropicモデル: 'anthropic/claude-sonnet-4', 'anthropic/claude-3-5-sonnet-latest', 'anthropic/claude-3-5-haiku-latest', 'anthropic/claude-3-opus'
 #   - Metaモデル: 'meta-llama/llama-3-70b-instruct', 'meta-llama/llama-3-8b-instruct', 'meta-llama/llama-2-70b-chat'
 #   - Googleモデル: 'google/gemini-2.5-pro', 'google/gemini-2.5-flash', 'google/gemini-1.5-pro-latest', 'google/gemini-1.5-flash'
 #   - Mistralモデル: 'mistralai/mistral-large', 'mistralai/mistral-medium', 'mistralai/mistral-small'
@@ -699,7 +699,7 @@ pbmc_markers <- FindAllMarkers(pbmc,
 single_model_results <- annotate_cell_types(
   input = pbmc_markers,
   tissue_name = "human PBMC",  # 組織のコンテキストを提供
-  model = "claude-3-7-sonnet-20250219",  # 単一モデルを指定
+  model = "claude-sonnet-4-20250514",  # 単一モデルを指定
   api_key = "your-anthropic-key",  # APIキーを直接提供
   top_gene_count = 10
 )
@@ -726,7 +726,7 @@ DimPlot(pbmc, group.by = "cell_type", label = TRUE) +
 
 ```r
 # 異なるモデルを使用してアノテーションを行う
-models <- c("claude-3-7-sonnet-20250219", "gpt-4o", "gemini-2.5-pro", "qwen-max-2025-01-25", "grok-3")
+models <- c("claude-sonnet-4-20250514", "gpt-4o", "gemini-2.5-pro", "qwen-max-2025-01-25", "grok-3")
 api_keys <- c("your-anthropic-key", "your-openai-key", "your-google-key", "your-qwen-key", "your-xai-key")
 
 # 各モデルの結果を格納する列を作成
@@ -751,7 +751,7 @@ for (i in 1:length(models)) {
 }
 
 # 異なるモデルの結果を可視化
-p1 <- DimPlot(pbmc, group.by = "cell_type_claude_3_7_sonnet_20250219", label = TRUE) + ggtitle("Claude 3.7")
+p1 <- DimPlot(pbmc, group.by = "cell_type_claude_3_7_sonnet_20250219", label = TRUE) + ggtitle("Claude 4")
 p2 <- DimPlot(pbmc, group.by = "cell_type_gpt_4o", label = TRUE) + ggtitle("GPT-4o")
 p3 <- DimPlot(pbmc, group.by = "cell_type_gemini_2_0_pro", label = TRUE) + ggtitle("Gemini 2.0 Pro")
 p4 <- DimPlot(pbmc, group.by = "cell_type_qwen_max_2025_01_25", label = TRUE) + ggtitle("Qwen Max")
@@ -776,7 +776,7 @@ cowplot::plot_grid(p1, p2, p3, p4, p5, ncol = 3)
 
 1. **Anthropic Claudeモデル**（最高推奨）
    - `claude-opus-4-20250514` - 全体的に最高のパフォーマンス
-   - `claude-3-7-sonnet-20250219` - パフォーマンスと速度の優れたバランス
+   - `claude-sonnet-4-20250514` - Claude 4 は優れたパフォーマンスと理解力を提供
    - `claude-3-5-sonnet-20241022` - より高速な応答での良好なパフォーマンス
 
 2. **OpenAIモデル**
@@ -800,7 +800,7 @@ cowplot::plot_grid(p1, p2, p3, p4, p5, ncol = 3)
 consensus_results <- interactive_consensus_annotation(
   input = marker_genes_list,
   tissue_name = "human brain",
-  models = c("gpt-4o", "claude-3-7-sonnet-20250219", "gemini-2.5-flash", "qwen-max-2025-01-25"),
+  models = c("gpt-4o", "claude-sonnet-4-20250514", "gemini-2.5-flash", "qwen-max-2025-01-25"),
   api_keys = api_keys,
   consensus_check_model = "claude-opus-4-20250514",  # 最も有能なモデルを使用
   controversy_threshold = 0.7,
@@ -813,7 +813,7 @@ consensus_results <- interactive_consensus_annotation(
   tissue_name = "mouse liver",
   models = c("gpt-4o", "gemini-2.5-flash", "qwen-max-2025-01-25"),
   api_keys = api_keys,
-  consensus_check_model = "claude-3-7-sonnet-20250219",  # 代替高パフォーマンスモデル
+  consensus_check_model = "claude-sonnet-4-20250514",  # 代替高パフォーマンスモデル
   controversy_threshold = 0.7,
   entropy_threshold = 1.0
 )
@@ -822,7 +822,7 @@ consensus_results <- interactive_consensus_annotation(
 consensus_results <- interactive_consensus_annotation(
   input = marker_genes_list,
   tissue_name = "human immune cells",
-  models = c("gpt-4o", "claude-3-7-sonnet-20250219", "gemini-2.5-flash"),
+  models = c("gpt-4o", "claude-sonnet-4-20250514", "gemini-2.5-flash"),
   api_keys = api_keys,
   consensus_check_model = "o1",  # OpenAIの高度推論モデル
   controversy_threshold = 0.7,
@@ -841,7 +841,7 @@ consensus_results = interactive_consensus_annotation(
     marker_genes=marker_genes,
     species="human",
     tissue="brain",
-    models=["gpt-4o", "claude-3-7-sonnet-20250219", "gemini-2.5-flash", "qwen-max-2025-01-25"],
+    models=["gpt-4o", "claude-sonnet-4-20250514", "gemini-2.5-flash", "qwen-max-2025-01-25"],
     consensus_model="claude-opus-4-20250514",  # 最も有能なモデルを使用
     consensus_threshold=0.7,
     entropy_threshold=1.0
@@ -853,7 +853,7 @@ consensus_results = interactive_consensus_annotation(
     species="mouse",
     tissue="liver",
     models=["gpt-4o", "gemini-2.5-flash", "qwen-max-2025-01-25"],
-    consensus_model={"provider": "anthropic", "model": "claude-3-7-sonnet-20250219"},
+    consensus_model={"provider": "anthropic", "model": "claude-sonnet-4-20250514"},
     consensus_threshold=0.7,
     entropy_threshold=1.0
 )
@@ -863,7 +863,7 @@ consensus_results = interactive_consensus_annotation(
     marker_genes=marker_genes,
     species="human",
     tissue="heart",
-    models=["gpt-4o", "claude-3-7-sonnet-20250219", "qwen-max-2025-01-25"],
+    models=["gpt-4o", "claude-sonnet-4-20250514", "qwen-max-2025-01-25"],
     consensus_model={"provider": "google", "model": "gemini-2.5-pro"},
     consensus_threshold=0.7,
     entropy_threshold=1.0
@@ -874,7 +874,7 @@ consensus_results = interactive_consensus_annotation(
     marker_genes=marker_genes,
     species="human",
     tissue="blood",
-    models=["gpt-4o", "claude-3-7-sonnet-20250219", "gemini-2.5-flash"],
+    models=["gpt-4o", "claude-sonnet-4-20250514", "gemini-2.5-flash"],
     # 指定しない場合、デフォルトでqwen-max-2025-01-25（高パフォーマンスモデル）を使用
     consensus_threshold=0.7,
     entropy_threshold=1.0
