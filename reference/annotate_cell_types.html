@@ -5,7 +5,7 @@ It implements a sophisticated annotation pipeline that leverages state-of-the-ar
 cell types based on marker gene expression patterns."><meta property="og:description" content="A comprehensive function for automated cell type annotation using multiple Large Language Models (LLMs).
 This function supports both Seurat's differential gene expression results and custom gene lists as input.
 It implements a sophisticated annotation pipeline that leverages state-of-the-art LLMs to identify
-cell types based on marker gene expression patterns."><meta property="og:image" content="https://cafferychen777.github.io/mLLMCelltype/reference/figures/social-card.png"><meta property="og:image:alt" content="mLLMCelltype - Cell Type Annotation Using Large Language Models"><meta name="twitter:card" content="summary_large_image"><meta name="twitter:creator" content="@ChenYang_cs"><meta name="twitter:site" content="@ChenYang_cs"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css"><style>
+cell types based on marker gene expression patterns."><meta property="og:image" content="https://cafferyang.com/mLLMCelltype/reference/figures/social-card.png"><meta property="og:image:alt" content="mLLMCelltype - Cell Type Annotation Using Large Language Models"><meta name="twitter:card" content="summary_large_image"><meta name="twitter:creator" content="@ChenYang_cs"><meta name="twitter:site" content="@ChenYang_cs"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css"><style>
   /* Fix for navbar overlapping main content */
   main {
     padding-top: 70px; /* Adjust this value as needed */
@@ -41,29 +41,29 @@ cell types based on marker gene expression patterns."><meta property="og:image" 
     </button>
 
     <div id="navbar" class="collapse navbar-collapse ms-3">
-      <ul class="navbar-nav me-auto"><li class="nav-item"><a class="nav-link" href="../articles/01-introduction.html">Introduction</a></li>
+      <ul class="navbar-nav me-auto"><li class="nav-item"><a class="nav-link" href="../articles/introduction.html">Introduction</a></li>
 <li class="active nav-item"><a class="nav-link" href="../reference/index.html">Function Reference</a></li>
 <li class="nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-articles"><li><a class="dropdown-item" href="../articles/index.html">All Articles</a></li>
     <li><hr class="dropdown-divider"></li>
     <li><h6 class="dropdown-header" data-toc-skip>Getting Started</h6></li>
-    <li><a class="dropdown-item" href="../articles/01-introduction.html">Introduction to mLLMCelltype</a></li>
-    <li><a class="dropdown-item" href="../articles/02-installation.html">Installation Guide</a></li>
-    <li><a class="dropdown-item" href="../articles/03-getting-started.html">Getting Started</a></li>
+    <li><a class="dropdown-item" href="../articles/introduction.html">Introduction to mLLMCelltype</a></li>
+    <li><a class="dropdown-item" href="../articles/installation.html">Installation Guide</a></li>
+    <li><a class="dropdown-item" href="../articles/getting-started.html">Getting Started</a></li>
     <li><hr class="dropdown-divider"></li>
     <li><h6 class="dropdown-header" data-toc-skip>Usage and Features</h6></li>
-    <li><a class="dropdown-item" href="../articles/04-usage-tutorial.html">Usage Tutorial</a></li>
-    <li><a class="dropdown-item" href="../articles/05-consensus-principles.html">Consensus Annotation Principles</a></li>
-    <li><a class="dropdown-item" href="../articles/06-visualization-guide.html">Visualization Guide</a></li>
+    <li><a class="dropdown-item" href="../articles/usage-tutorial.html">Usage Tutorial</a></li>
+    <li><a class="dropdown-item" href="../articles/consensus-principles.html">Consensus Annotation Principles</a></li>
+    <li><a class="dropdown-item" href="../articles/visualization-guide.html">Visualization Guide</a></li>
     <li><hr class="dropdown-divider"></li>
     <li><h6 class="dropdown-header" data-toc-skip>Advanced Topics</h6></li>
-    <li><a class="dropdown-item" href="../articles/07-faq.html">Frequently Asked Questions</a></li>
-    <li><a class="dropdown-item" href="../articles/08-advanced-features.html">Advanced Features &amp; Case Studies</a></li>
+    <li><a class="dropdown-item" href="../articles/faq.html">Frequently Asked Questions</a></li>
+    <li><a class="dropdown-item" href="../articles/advanced-features.html">Advanced Features &amp; Case Studies</a></li>
     <li><hr class="dropdown-divider"></li>
     <li><h6 class="dropdown-header" data-toc-skip>Development</h6></li>
-    <li><a class="dropdown-item" href="../articles/09-contributing-guide.html">Contributing Guide</a></li>
-    <li><a class="dropdown-item" href="../articles/10-version-history.html">Version History &amp; Changelog</a></li>
+    <li><a class="dropdown-item" href="../articles/contributing-guide.html">Contributing Guide</a></li>
+    <li><a class="dropdown-item" href="../articles/version-history.html">Version History &amp; Changelog</a></li>
   </ul></li>
 <li class="nav-item"><a class="nav-link" href="../news/index.html">Changelog</a></li>
       </ul><ul class="navbar-nav"><li class="nav-item"><a class="external-link nav-link" href="https://www.biorxiv.org/content/10.1101/2025.04.10.647852v1" aria-label="Paper"><span class="bi bi-file-earmark-text"></span></a></li>
@@ -223,8 +223,8 @@ when input is from Seurat's FindAllMarkers(). Default: 10</p></dd>
 <span class="r-in"><span>  model <span class="op">=</span> <span class="st">'gpt-4o'</span>,</span></span>
 <span class="r-in"><span>  api_key <span class="op">=</span> <span class="cn">NA</span>  <span class="co"># Returns prompt only without making API call</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> {"timestamp":"2025-06-27 20:59:12","session_id":"20250627_205912","level":"INFO","message":"Unified logger initialized","context":{"session_id":"20250627_205912","log_level":"INFO","log_dir":"logs"},"pid":10650} </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> {"timestamp":"2025-06-27 20:59:12","session_id":"20250627_205912","level":"INFO","message":"Processing input with model and provider","context":{"model":"gpt-4o","provider":"openai"},"pid":10650} </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> {"timestamp":"2025-06-28 13:28:07","session_id":"20250628_132807","level":"INFO","message":"Unified logger initialized","context":{"session_id":"20250628_132807","log_level":"INFO","log_dir":"logs"},"pid":10701} </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> {"timestamp":"2025-06-28 13:28:07","session_id":"20250628_132807","level":"INFO","message":"Processing input with model and provider","context":{"model":"gpt-4o","provider":"openai"},"pid":10701} </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> DEBUG: Formatted lines for prompt:</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "You are a cell type annotation expert. Below are marker genes for different cell clusters in human PBMC.\n\n\n\nFor each numbered cluster, provide only the cell type name in a new line, without any explanation."</span>
 <span class="r-in"><span></span></span>

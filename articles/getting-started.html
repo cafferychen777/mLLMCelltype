@@ -6,12 +6,11 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <title>Getting Started with mLLMCelltype • mLLMCelltype</title>
-<!-- favicons --><link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
-<link rel="icon" type="image/png" sizes="32x32" href="../favicon-32x32.png">
-<link rel="apple-touch-icon" type="image/png" sizes="180x180" href="../apple-touch-icon.png">
-<link rel="apple-touch-icon" type="image/png" sizes="120x120" href="../apple-touch-icon-120x120.png">
-<link rel="apple-touch-icon" type="image/png" sizes="76x76" href="../apple-touch-icon-76x76.png">
-<link rel="apple-touch-icon" type="image/png" sizes="60x60" href="../apple-touch-icon-60x60.png">
+<!-- favicons --><link rel="icon" type="image/png" sizes="96x96" href="../favicon-96x96.png">
+<link rel="icon" type="”image/svg+xml”" href="../favicon.svg">
+<link rel="apple-touch-icon" sizes="180x180" href="../apple-touch-icon.png">
+<link rel="icon" sizes="any" href="../favicon.ico">
+<link rel="manifest" href="../site.webmanifest">
 <script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <link href="../deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
 <script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="../deps/Roboto-0.4.10/font.css" rel="stylesheet">
@@ -52,7 +51,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">mLLMCelltype</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">1.2.6</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">1.2.9</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -61,7 +60,7 @@
 
     <div id="navbar" class="collapse navbar-collapse ms-3">
       <ul class="navbar-nav me-auto">
-<li class="nav-item"><a class="nav-link" href="../articles/01-introduction.html">Introduction</a></li>
+<li class="nav-item"><a class="nav-link" href="../articles/introduction.html">Introduction</a></li>
 <li class="nav-item"><a class="nav-link" href="../reference/index.html">Function Reference</a></li>
 <li class="active nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
@@ -69,22 +68,22 @@
 <li><a class="dropdown-item" href="../articles/index.html">All Articles</a></li>
     <li><hr class="dropdown-divider"></li>
     <li><h6 class="dropdown-header" data-toc-skip>Getting Started</h6></li>
-    <li><a class="dropdown-item" href="../articles/01-introduction.html">Introduction to mLLMCelltype</a></li>
-    <li><a class="dropdown-item" href="../articles/02-installation.html">Installation Guide</a></li>
-    <li><a class="dropdown-item" href="../articles/03-getting-started.html">Getting Started</a></li>
+    <li><a class="dropdown-item" href="../articles/introduction.html">Introduction to mLLMCelltype</a></li>
+    <li><a class="dropdown-item" href="../articles/installation.html">Installation Guide</a></li>
+    <li><a class="dropdown-item" href="../articles/getting-started.html">Getting Started</a></li>
     <li><hr class="dropdown-divider"></li>
     <li><h6 class="dropdown-header" data-toc-skip>Usage and Features</h6></li>
-    <li><a class="dropdown-item" href="../articles/04-usage-tutorial.html">Usage Tutorial</a></li>
-    <li><a class="dropdown-item" href="../articles/05-consensus-principles.html">Consensus Annotation Principles</a></li>
-    <li><a class="dropdown-item" href="../articles/06-visualization-guide.html">Visualization Guide</a></li>
+    <li><a class="dropdown-item" href="../articles/usage-tutorial.html">Usage Tutorial</a></li>
+    <li><a class="dropdown-item" href="../articles/consensus-principles.html">Consensus Annotation Principles</a></li>
+    <li><a class="dropdown-item" href="../articles/visualization-guide.html">Visualization Guide</a></li>
     <li><hr class="dropdown-divider"></li>
     <li><h6 class="dropdown-header" data-toc-skip>Advanced Topics</h6></li>
-    <li><a class="dropdown-item" href="../articles/07-faq.html">Frequently Asked Questions</a></li>
-    <li><a class="dropdown-item" href="../articles/08-advanced-features.html">Advanced Features &amp; Case Studies</a></li>
+    <li><a class="dropdown-item" href="../articles/faq.html">Frequently Asked Questions</a></li>
+    <li><a class="dropdown-item" href="../articles/advanced-features.html">Advanced Features &amp; Case Studies</a></li>
     <li><hr class="dropdown-divider"></li>
     <li><h6 class="dropdown-header" data-toc-skip>Development</h6></li>
-    <li><a class="dropdown-item" href="../articles/09-contributing-guide.html">Contributing Guide</a></li>
-    <li><a class="dropdown-item" href="../articles/10-version-history.html">Version History &amp; Changelog</a></li>
+    <li><a class="dropdown-item" href="../articles/contributing-guide.html">Contributing Guide</a></li>
+    <li><a class="dropdown-item" href="../articles/version-history.html">Version History &amp; Changelog</a></li>
   </ul>
 </li>
 <li class="nav-item"><a class="nav-link" href="../news/index.html">Changelog</a></li>
@@ -107,10 +106,10 @@
       <img src="../logo.png" class="logo" alt=""><h1>Getting Started with mLLMCelltype</h1>
                         <h4 data-toc-skip class="author">Chen Yang</h4>
             
-            <h4 data-toc-skip class="date">2025-06-14</h4>
+            <h4 data-toc-skip class="date">2025-06-28</h4>
       
-      <small class="dont-index">Source: <a href="https://github.com/cafferychen777/mLLMCelltype/blob/HEAD/vignettes/03-getting-started.Rmd" class="external-link"><code>vignettes/03-getting-started.Rmd</code></a></small>
-      <div class="d-none name"><code>03-getting-started.Rmd</code></div>
+      <small class="dont-index">Source: <a href="https://github.com/cafferychen777/mLLMCelltype/blob/main/vignettes/getting-started.Rmd" class="external-link"><code>vignettes/getting-started.Rmd</code></a></small>
+      <div class="d-none name"><code>getting-started.Rmd</code></div>
     </div>
 
     
@@ -147,7 +146,7 @@ object</li>
 </h3>
 <p>First, load the mLLMCelltype package:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://cafferychen777.github.io/mLLMCelltype/">mLLMCelltype</a></span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://cafferyang.com/mLLMCelltype/">mLLMCelltype</a></span><span class="op">)</span></span></code></pre></div>
 <div class="section level4">
 <h4 id="setting-up-api-keys">Setting Up API Keys<a class="anchor" aria-label="anchor" href="#setting-up-api-keys"></a>
 </h4>
@@ -159,9 +158,8 @@ providers you plan to use:</p>
 <span><span class="fu"><a href="https://rdrr.io/r/base/Sys.setenv.html" class="external-link">Sys.setenv</a></span><span class="op">(</span>OPENAI_API_KEY <span class="op">=</span> <span class="st">"your-openai-api-key"</span><span class="op">)</span>        <span class="co"># For GPT models</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/Sys.setenv.html" class="external-link">Sys.setenv</a></span><span class="op">(</span>GEMINI_API_KEY <span class="op">=</span> <span class="st">"your-gemini-api-key"</span><span class="op">)</span>        <span class="co"># For Gemini models</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/Sys.setenv.html" class="external-link">Sys.setenv</a></span><span class="op">(</span>OPENROUTER_API_KEY <span class="op">=</span> <span class="st">"your-openrouter-api-key"</span><span class="op">)</span> <span class="co"># For OpenRouter models</span></span></code></pre></div>
-<p>You can obtain API keys from: - Anthropic: <a href="https://console.anthropic.com/keys" class="external-link uri">https://console.anthropic.com/keys</a> - OpenAI: <a href="https://platform.openai.com/api-keys" class="external-link uri">https://platform.openai.com/api-keys</a> - Google (Gemini):
-<a href="https://ai.google.dev/" class="external-link uri">https://ai.google.dev/</a>
-- OpenRouter: <a href="https://openrouter.ai/keys" class="external-link uri">https://openrouter.ai/keys</a></p>
+<p>You can obtain API keys from: - Anthropic: <a href="https://console.anthropic.com/" class="external-link uri">https://console.anthropic.com/</a> - OpenAI: <a href="https://platform.openai.com/" class="external-link uri">https://platform.openai.com/</a> - Google (Gemini): <a href="https://ai.google.dev/" class="external-link uri">https://ai.google.dev/</a> -
+OpenRouter: <a href="https://openrouter.ai/keys" class="external-link uri">https://openrouter.ai/keys</a></p>
 <p>Alternatively, you can provide API keys directly in function
 calls:</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
@@ -440,8 +438,8 @@ a consensus:</p>
 <div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Plot UMAP with cell type annotations</span></span>
 <span><span class="fu"><a href="https://satijalab.org/seurat/reference/DimPlot.html" class="external-link">DimPlot</a></span><span class="op">(</span><span class="va">seurat_obj</span>, group.by <span class="op">=</span> <span class="st">"cell_type_consensus"</span>, label <span class="op">=</span> <span class="cn">TRUE</span>, repel <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu">ggtitle</span><span class="op">(</span><span class="st">"Cell Type Annotations"</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu">theme</span><span class="op">(</span>plot.title <span class="op">=</span> <span class="fu">element_text</span><span class="op">(</span>hjust <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">ggtitle</a></span><span class="op">(</span><span class="st">"Cell Type Annotations"</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme.html" class="external-link">theme</a></span><span class="op">(</span>plot.title <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html" class="external-link">element_text</a></span><span class="op">(</span>hjust <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="understanding-the-output">Understanding the Output<a class="anchor" aria-label="anchor" href="#understanding-the-output"></a>
@@ -596,7 +594,7 @@ an issue</a> on our GitHub repository.</p>
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.1. <br>© 2024 Chen Yang</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.3. <br>© 2024 Chen Yang</p>
 </div>
 
     </footer>

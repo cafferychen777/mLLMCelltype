@@ -60,7 +60,7 @@
 
     <div id="navbar" class="collapse navbar-collapse ms-3">
       <ul class="navbar-nav me-auto">
-<li class="nav-item"><a class="nav-link" href="../articles/01-introduction.html">Introduction</a></li>
+<li class="nav-item"><a class="nav-link" href="../articles/introduction.html">Introduction</a></li>
 <li class="nav-item"><a class="nav-link" href="../reference/index.html">Function Reference</a></li>
 <li class="active nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
@@ -68,22 +68,22 @@
 <li><a class="dropdown-item" href="../articles/index.html">All Articles</a></li>
     <li><hr class="dropdown-divider"></li>
     <li><h6 class="dropdown-header" data-toc-skip>Getting Started</h6></li>
-    <li><a class="dropdown-item" href="../articles/01-introduction.html">Introduction to mLLMCelltype</a></li>
-    <li><a class="dropdown-item" href="../articles/02-installation.html">Installation Guide</a></li>
-    <li><a class="dropdown-item" href="../articles/03-getting-started.html">Getting Started</a></li>
+    <li><a class="dropdown-item" href="../articles/introduction.html">Introduction to mLLMCelltype</a></li>
+    <li><a class="dropdown-item" href="../articles/installation.html">Installation Guide</a></li>
+    <li><a class="dropdown-item" href="../articles/getting-started.html">Getting Started</a></li>
     <li><hr class="dropdown-divider"></li>
     <li><h6 class="dropdown-header" data-toc-skip>Usage and Features</h6></li>
-    <li><a class="dropdown-item" href="../articles/04-usage-tutorial.html">Usage Tutorial</a></li>
-    <li><a class="dropdown-item" href="../articles/05-consensus-principles.html">Consensus Annotation Principles</a></li>
-    <li><a class="dropdown-item" href="../articles/06-visualization-guide.html">Visualization Guide</a></li>
+    <li><a class="dropdown-item" href="../articles/usage-tutorial.html">Usage Tutorial</a></li>
+    <li><a class="dropdown-item" href="../articles/consensus-principles.html">Consensus Annotation Principles</a></li>
+    <li><a class="dropdown-item" href="../articles/visualization-guide.html">Visualization Guide</a></li>
     <li><hr class="dropdown-divider"></li>
     <li><h6 class="dropdown-header" data-toc-skip>Advanced Topics</h6></li>
-    <li><a class="dropdown-item" href="../articles/07-faq.html">Frequently Asked Questions</a></li>
-    <li><a class="dropdown-item" href="../articles/08-advanced-features.html">Advanced Features &amp; Case Studies</a></li>
+    <li><a class="dropdown-item" href="../articles/faq.html">Frequently Asked Questions</a></li>
+    <li><a class="dropdown-item" href="../articles/advanced-features.html">Advanced Features &amp; Case Studies</a></li>
     <li><hr class="dropdown-divider"></li>
     <li><h6 class="dropdown-header" data-toc-skip>Development</h6></li>
-    <li><a class="dropdown-item" href="../articles/09-contributing-guide.html">Contributing Guide</a></li>
-    <li><a class="dropdown-item" href="../articles/10-version-history.html">Version History &amp; Changelog</a></li>
+    <li><a class="dropdown-item" href="../articles/contributing-guide.html">Contributing Guide</a></li>
+    <li><a class="dropdown-item" href="../articles/version-history.html">Version History &amp; Changelog</a></li>
   </ul>
 </li>
 <li class="nav-item"><a class="nav-link" href="../news/index.html">Changelog</a></li>
@@ -113,7 +113,7 @@
     
     
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://cafferychen777.github.io/mLLMCelltype/">mLLMCelltype</a></span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://cafferyang.com/mLLMCelltype/">mLLMCelltype</a></span><span class="op">)</span></span></code></pre></div>
 <div class="section level2">
 <h2 id="overview">Overview<a class="anchor" aria-label="anchor" href="#overview"></a>
 </h2>
@@ -121,7 +121,7 @@
 models (LLMs) for automated cell type annotation in single-cell RNA
 sequencing data. It implements a consensus-based approach where multiple
 LLMs collaborate to provide more reliable annotations. For more details,
-please refer to our paper: <a href="https://www.biorxiv.org/content/10.1101/2025.04.10.647852v1" class="external-link">https://www.biorxiv.org/content/10.1101/2025.04.10.647852v1</a>.</p>
+please refer to our paper (<a href="doi:10.1101/2025.04.10.647852" class="uri">doi:10.1101/2025.04.10.647852</a>).</p>
 </div>
 <div class="section level2">
 <h2 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
@@ -167,7 +167,7 @@ OpenAI, Anthropic, Google (Gemini), and X.AI (Grok).</p>
 Seurat object:</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Load required packages</span></span>
-<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://cafferychen777.github.io/mLLMCelltype/">mLLMCelltype</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://cafferyang.com/mLLMCelltype/">mLLMCelltype</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://satijalab.org/seurat" class="external-link">Seurat</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a></span><span class="op">)</span></span>
 <span></span>

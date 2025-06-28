@@ -2,18 +2,18 @@ pandoc: 3.1.11
 pkgdown: 2.1.3
 pkgdown_sha: ~
 articles:
-  01-introduction: 01-introduction.html
-  02-installation: 02-installation.html
-  03-getting-started: 03-getting-started.html
-  04-usage-tutorial: 04-usage-tutorial.html
-  05-consensus-principles: 05-consensus-principles.html
-  06-visualization-guide: 06-visualization-guide.html
-  07-faq: 07-faq.html
-  08-advanced-features: 08-advanced-features.html
-  09-contributing-guide: 09-contributing-guide.html
-  10-version-history: 10-version-history.html
+  advanced-features: advanced-features.html
+  consensus-principles: consensus-principles.html
+  contributing-guide: contributing-guide.html
+  faq: faq.html
+  getting-started: getting-started.html
+  installation: installation.html
+  introduction: introduction.html
   mLLMCelltype: mLLMCelltype.html
-last_built: 2025-06-27T20:59Z
+  usage-tutorial: usage-tutorial.html
+  version-history: version-history.html
+  visualization-guide: visualization-guide.html
+last_built: 2025-06-28T13:28Z
 urls:
-  reference: https://cafferychen777.github.io/mLLMCelltype/reference
-  article: https://cafferychen777.github.io/mLLMCelltype/articles
+  reference: https://cafferyang.com/mLLMCelltype/reference
+  article: https://cafferyang.com/mLLMCelltype/articles

@@ -6,12 +6,11 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <title>Installation Guide • mLLMCelltype</title>
-<!-- favicons --><link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
-<link rel="icon" type="image/png" sizes="32x32" href="../favicon-32x32.png">
-<link rel="apple-touch-icon" type="image/png" sizes="180x180" href="../apple-touch-icon.png">
-<link rel="apple-touch-icon" type="image/png" sizes="120x120" href="../apple-touch-icon-120x120.png">
-<link rel="apple-touch-icon" type="image/png" sizes="76x76" href="../apple-touch-icon-76x76.png">
-<link rel="apple-touch-icon" type="image/png" sizes="60x60" href="../apple-touch-icon-60x60.png">
+<!-- favicons --><link rel="icon" type="image/png" sizes="96x96" href="../favicon-96x96.png">
+<link rel="icon" type="”image/svg+xml”" href="../favicon.svg">
+<link rel="apple-touch-icon" sizes="180x180" href="../apple-touch-icon.png">
+<link rel="icon" sizes="any" href="../favicon.ico">
+<link rel="manifest" href="../site.webmanifest">
 <script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <link href="../deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
 <script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="../deps/Roboto-0.4.10/font.css" rel="stylesheet">
@@ -52,7 +51,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">mLLMCelltype</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">1.2.6</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">1.2.9</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -61,7 +60,7 @@
 
     <div id="navbar" class="collapse navbar-collapse ms-3">
       <ul class="navbar-nav me-auto">
-<li class="nav-item"><a class="nav-link" href="../articles/01-introduction.html">Introduction</a></li>
+<li class="nav-item"><a class="nav-link" href="../articles/introduction.html">Introduction</a></li>
 <li class="nav-item"><a class="nav-link" href="../reference/index.html">Function Reference</a></li>
 <li class="active nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
@@ -69,22 +68,22 @@
 <li><a class="dropdown-item" href="../articles/index.html">All Articles</a></li>
     <li><hr class="dropdown-divider"></li>
     <li><h6 class="dropdown-header" data-toc-skip>Getting Started</h6></li>
-    <li><a class="dropdown-item" href="../articles/01-introduction.html">Introduction to mLLMCelltype</a></li>
-    <li><a class="dropdown-item" href="../articles/02-installation.html">Installation Guide</a></li>
-    <li><a class="dropdown-item" href="../articles/03-getting-started.html">Getting Started</a></li>
+    <li><a class="dropdown-item" href="../articles/introduction.html">Introduction to mLLMCelltype</a></li>
+    <li><a class="dropdown-item" href="../articles/installation.html">Installation Guide</a></li>
+    <li><a class="dropdown-item" href="../articles/getting-started.html">Getting Started</a></li>
     <li><hr class="dropdown-divider"></li>
     <li><h6 class="dropdown-header" data-toc-skip>Usage and Features</h6></li>
-    <li><a class="dropdown-item" href="../articles/04-usage-tutorial.html">Usage Tutorial</a></li>
-    <li><a class="dropdown-item" href="../articles/05-consensus-principles.html">Consensus Annotation Principles</a></li>
-    <li><a class="dropdown-item" href="../articles/06-visualization-guide.html">Visualization Guide</a></li>
+    <li><a class="dropdown-item" href="../articles/usage-tutorial.html">Usage Tutorial</a></li>
+    <li><a class="dropdown-item" href="../articles/consensus-principles.html">Consensus Annotation Principles</a></li>
+    <li><a class="dropdown-item" href="../articles/visualization-guide.html">Visualization Guide</a></li>
     <li><hr class="dropdown-divider"></li>
     <li><h6 class="dropdown-header" data-toc-skip>Advanced Topics</h6></li>
-    <li><a class="dropdown-item" href="../articles/07-faq.html">Frequently Asked Questions</a></li>
-    <li><a class="dropdown-item" href="../articles/08-advanced-features.html">Advanced Features &amp; Case Studies</a></li>
+    <li><a class="dropdown-item" href="../articles/faq.html">Frequently Asked Questions</a></li>
+    <li><a class="dropdown-item" href="../articles/advanced-features.html">Advanced Features &amp; Case Studies</a></li>
     <li><hr class="dropdown-divider"></li>
     <li><h6 class="dropdown-header" data-toc-skip>Development</h6></li>
-    <li><a class="dropdown-item" href="../articles/09-contributing-guide.html">Contributing Guide</a></li>
-    <li><a class="dropdown-item" href="../articles/10-version-history.html">Version History &amp; Changelog</a></li>
+    <li><a class="dropdown-item" href="../articles/contributing-guide.html">Contributing Guide</a></li>
+    <li><a class="dropdown-item" href="../articles/version-history.html">Version History &amp; Changelog</a></li>
   </ul>
 </li>
 <li class="nav-item"><a class="nav-link" href="../news/index.html">Changelog</a></li>
@@ -107,10 +106,10 @@
       <img src="../logo.png" class="logo" alt=""><h1>Installation Guide</h1>
                         <h4 data-toc-skip class="author">Chen Yang</h4>
             
-            <h4 data-toc-skip class="date">2025-06-14</h4>
+            <h4 data-toc-skip class="date">2025-06-28</h4>
       
-      <small class="dont-index">Source: <a href="https://github.com/cafferychen777/mLLMCelltype/blob/HEAD/vignettes/02-installation.Rmd" class="external-link"><code>vignettes/02-installation.Rmd</code></a></small>
-      <div class="d-none name"><code>02-installation.Rmd</code></div>
+      <small class="dont-index">Source: <a href="https://github.com/cafferychen777/mLLMCelltype/blob/main/vignettes/installation.Rmd" class="external-link"><code>vignettes/installation.Rmd</code></a></small>
+      <div class="d-none name"><code>installation.Rmd</code></div>
     </div>
 
     
@@ -213,9 +212,7 @@ providers:</p>
 <li>
 <strong>OpenAI (GPT-4o/4.1)</strong>
 <ul>
-<li>Visit <a href="https://platform.openai.com/" class="external-link">OpenAI
-Platform</a>
-</li>
+<li>Visit OpenAI Platform</li>
 <li>Create an account or log in</li>
 <li>Navigate to API keys section</li>
 <li>Create a new API key</li>
@@ -224,9 +221,7 @@ Platform</a>
 <li>
 <strong>Anthropic (Claude-3.7/3.5)</strong>
 <ul>
-<li>Visit <a href="https://console.anthropic.com/" class="external-link">Anthropic
-Console</a>
-</li>
+<li>Visit Anthropic Console</li>
 <li>Create an account or log in</li>
 <li>Generate an API key</li>
 </ul>
@@ -281,7 +276,7 @@ API keys:</p>
 </h5>
 <p>You can directly provide API keys in function calls:</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://cafferychen777.github.io/mLLMCelltype/">mLLMCelltype</a></span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://cafferyang.com/mLLMCelltype/">mLLMCelltype</a></span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">results</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/annotate_cell_types.html">annotate_cell_types</a></span><span class="op">(</span></span>
 <span>  input <span class="op">=</span> <span class="va">your_marker_data</span>,</span>
@@ -308,7 +303,7 @@ API keys:</p>
 <p>To verify that mLLMCelltype is installed correctly and API keys are
 set up properly:</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://cafferychen777.github.io/mLLMCelltype/">mLLMCelltype</a></span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://cafferyang.com/mLLMCelltype/">mLLMCelltype</a></span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Check if the package is loaded correctly</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/packageDescription.html" class="external-link">packageVersion</a></span><span class="op">(</span><span class="st">"mLLMCelltype"</span><span class="op">)</span></span>
@@ -405,7 +400,7 @@ issue</a> on our GitHub repository.</p>
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.1. <br>© 2024 Chen Yang</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.3. <br>© 2024 Chen Yang</p>
 </div>
 
     </footer>
