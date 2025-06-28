@@ -11,7 +11,7 @@ utils::globalVariables(c("custom_models"))
 #' Supported providers and models include:
 #' \itemize{
 #'   \item OpenAI: 'gpt-4o', 'gpt-4o-mini', 'gpt-4.1', 'gpt-4.1-mini', 'gpt-4.1-nano', 'gpt-4-turbo', 'gpt-3.5-turbo', 'o1', 'o1-mini', 'o1-preview', 'o1-pro'
-#'   \item Anthropic: 'claude-sonnet-4-20250514', 'claude-opus-4-20250514', 'claude-3-7-sonnet-20250219', 'claude-3-5-sonnet-20241022', 'claude-3-5-haiku-20241022', 'claude-3-opus-20240229'
+#'   \item Anthropic: 'claude-opus-4-20250514', 'claude-sonnet-4-20250514', 'claude-3-7-sonnet-20250219', 'claude-3-5-sonnet-20241022', 'claude-3-5-haiku-20241022', 'claude-3-opus-20240229'
 #'   \item DeepSeek: 'deepseek-chat', 'deepseek-r1', 'deepseek-r1-zero', 'deepseek-reasoner'
 #'   \item Google: 'gemini-2.5-pro', 'gemini-2.5-flash', 'gemini-2.0-flash', 'gemini-2.0-flash-lite', 'gemini-1.5-pro-latest', 'gemini-1.5-flash-latest', 'gemini-1.5-flash-8b'
 #'   \item Qwen: 'qwen-max-2025-01-25', 'qwen3-72b'
@@ -22,7 +22,7 @@ utils::globalVariables(c("custom_models"))
 #'   \item OpenRouter: Provides access to models from multiple providers through a single API. Format: 'provider/model-name'
 #'     \itemize{
 #'       \item OpenAI models: 'openai/gpt-4o', 'openai/gpt-4o-mini', 'openai/gpt-4-turbo', 'openai/gpt-4', 'openai/gpt-3.5-turbo'
-#'       \item Anthropic models: 'anthropic/claude-sonnet-4', 'anthropic/claude-opus-4', 'anthropic/claude-3.7-sonnet',
+#'       \item Anthropic models: 'anthropic/claude-opus-4', 'anthropic/claude-sonnet-4', 'anthropic/claude-3.7-sonnet',
 #'         'anthropic/claude-3.5-sonnet', 'anthropic/claude-3.5-haiku', 'anthropic/claude-3-opus'
 #'       \item Meta models: 'meta-llama/llama-3-70b-instruct', 'meta-llama/llama-3-8b-instruct', 'meta-llama/llama-2-70b-chat'
 #'       \item Google models: 'google/gemini-2.5-pro', 'google/gemini-2.5-flash', 'google/gemini-2.0-flash', 'google/gemini-1.5-pro-latest', 'google/gemini-1.5-flash'
@@ -46,8 +46,10 @@ get_provider <- function(model) {
   # List of supported models for each provider (all in lowercase)
   openai_models <- c("gpt-4o", "gpt-4o-mini", "gpt-4.1", "gpt-4.1-mini", "gpt-4.1-nano", "gpt-4-turbo", "gpt-3.5-turbo", "o1", "o1-mini", "o1-preview", "o1-pro")
   anthropic_models <- c(
-    "claude-sonnet-4-20250514",
     "claude-opus-4-20250514",
+    "claude-opus-4",
+    "claude-sonnet-4-20250514",
+    "claude-sonnet-4",
     "claude-3-7-sonnet-20250219",
     "claude-3-5-sonnet-20241022",
     "claude-3-5-sonnet-20240620",
@@ -144,8 +146,8 @@ get_provider <- function(model) {
     "openai/o3-mini-high", "openai/o4-mini", "openai/o4-mini-high",
 
     # Anthropic models
-    "anthropic/claude-opus-4", "anthropic/claude-sonnet-4", "anthropic/claude-3.7-sonnet",
-    "anthropic/claude-3.7-sonnet:beta", "anthropic/claude-3.7-sonnet:thinking", 
+    "anthropic/claude-opus-4-20250514", "anthropic/claude-opus-4", "anthropic/claude-sonnet-4-20250514", "anthropic/claude-sonnet-4", 
+    "anthropic/claude-3.7-sonnet", "anthropic/claude-3.7-sonnet:beta", "anthropic/claude-3.7-sonnet:thinking", 
     "anthropic/claude-3.5-sonnet", "anthropic/claude-3.5-sonnet-20241022", "anthropic/claude-3.5-sonnet-20240620",
     "anthropic/claude-3.5-sonnet-20240620:beta", "anthropic/claude-3.5-sonnet:beta",
     "anthropic/claude-3.5-haiku", "anthropic/claude-3.5-haiku-20241022", "anthropic/claude-3.5-haiku-20241022:beta",

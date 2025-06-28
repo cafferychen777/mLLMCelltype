@@ -30,6 +30,11 @@ def process_anthropic(prompt: str, model: str, api_key: str) -> list[str]:
 
     # Handle old model names and map to the latest versions
     model_mapping = {
+        # Claude 4 series
+        "claude-opus-4-20250514": "claude-opus-4-20250514",
+        "claude-opus-4": "claude-opus-4-20250514",
+        "claude-sonnet-4-20250514": "claude-sonnet-4-20250514",
+        "claude-sonnet-4": "claude-sonnet-4-20250514",
         # Claude 3.7 series
         "claude-3-7-sonnet-20250219": "claude-3-7-sonnet-20250219",
         "claude-3-7-sonnet": "claude-3-7-sonnet-20250219",

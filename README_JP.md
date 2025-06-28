@@ -25,7 +25,7 @@
 
 # mLLMCelltype: 単一細胞 RNA シーケンシングのためのマルチ大規模言語モデルコンセンサスフレームワーク
 
-mLLMCelltypeは、単一細胞RNAシーケンシング(scRNA-seq)データにおける正確で信頼性の高い細胞タイプアノテーションのための高度な反復型マルチLLMコンセンサスフレームワークです。複数の大規模言語モデル（OpenAI GPT-4o/4.1、Anthropic Claude-3.7/3.5、Google Gemini-2.0、X.AI Grok-3、DeepSeek-V3、Alibaba Qwen2.5、Zhipu GLM-4、MiniMax、Stepfun、OpenRouterなど）の集合知能を活用することで、このフレームワークはアノテーションの精度を大幅に向上させながら、バイオインフォマティクスおよび計算生物学研究のための透明性のある不確実性の定量化を提供します。
+mLLMCelltypeは、単一細胞RNAシーケンシング(scRNA-seq)データにおける正確で信頼性の高い細胞タイプアノテーションのための高度な反復型マルチLLMコンセンサスフレームワークです。複数の大規模言語モデル（OpenAI GPT-4o/4.1、Anthropic Claude-4/3.7/3.5、Google Gemini-2.0、X.AI Grok-3、DeepSeek-V3、Alibaba Qwen2.5、Zhipu GLM-4、MiniMax、Stepfun、OpenRouterなど）の集合知能を活用することで、このフレームワークはアノテーションの精度を大幅に向上させながら、バイオインフォマティクスおよび計算生物学研究のための透明性のある不確実性の定量化を提供します。
 
 ## 概要
 

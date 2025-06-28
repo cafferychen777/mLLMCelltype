@@ -121,7 +121,7 @@ models = []
 if os.getenv("OPENAI_API_KEY"):
     models.append("gpt-4o")
 if os.getenv("ANTHROPIC_API_KEY"):
-    models.append("claude-3-5-sonnet-latest")
+    models.append("claude-opus-4-20250514")
 if os.getenv("GEMINI_API_KEY"):
     models.append("gemini-2.0-flash")
 if os.getenv("QWEN_API_KEY"):

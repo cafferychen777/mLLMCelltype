@@ -21,7 +21,7 @@ Single-cell RNA sequencing has revolutionized our understanding of cellular hete
 ### Multi-LLM Architecture
 - **Comprehensive Provider Support**:
   - OpenAI (GPT-4o, O1, etc.)
-  - Anthropic (Claude 3.7 Sonnet, Claude 3.5 Haiku, etc.)
+  - Anthropic (Claude 4 Opus, Claude 4 Sonnet, Claude 3.7 Sonnet, Claude 3.5 Haiku, etc.)
   - Google (Gemini 2.5 Pro, Gemini 2.5 Flash, Gemini 2.0 Flash, Gemini 1.5 Pro, etc.)
   - Alibaba (Qwen-Max-2025-01-25, Qwen-Plus, etc.)
   - DeepSeek (DeepSeek-Chat, DeepSeek-Reasoner)

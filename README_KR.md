@@ -25,7 +25,7 @@
 
 # mLLMCelltype: 단일세포 RNA 시퀀싱을 위한 다중 대형 언어 모델 합의 프레임워크
 
-mLLMCelltype는 단일 세포 RNA 시퀀싱(scRNA-seq) 데이터에서 정확하고 신뢰할 수 있는 세포 유형 주석을 위한 고급 반복적 다중 LLM 합의 프레임워크입니다. 여러 대형 언어 모델(OpenAI GPT-4o/4.1, Anthropic Claude-3.7/3.5, Google Gemini-2.0, X.AI Grok-3, DeepSeek-V3, Alibaba Qwen2.5, Zhipu GLM-4, MiniMax, Stepfun, OpenRouter 등)의 집단 지능을 활용함으로써, 이 프레임워크는 주석 정확도를 크게 향상시키면서 생물정보학 및 전산 생물학 연구를 위한 투명한 불확실성 정량화를 제공합니다.
+mLLMCelltype는 단일 세포 RNA 시퀀싱(scRNA-seq) 데이터에서 정확하고 신뢰할 수 있는 세포 유형 주석을 위한 고급 반복적 다중 LLM 합의 프레임워크입니다. 여러 대형 언어 모델(OpenAI GPT-4o/4.1, Anthropic Claude-4/3.7/3.5, Google Gemini-2.0, X.AI Grok-3, DeepSeek-V3, Alibaba Qwen2.5, Zhipu GLM-4, MiniMax, Stepfun, OpenRouter 등)의 집단 지능을 활용함으로써, 이 프레임워크는 주석 정확도를 크게 향상시키면서 생물정보학 및 전산 생물학 연구를 위한 투명한 불확실성 정량화를 제공합니다.
 
 ## 초록
 

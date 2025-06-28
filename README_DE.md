@@ -25,7 +25,7 @@
 
 # mLLMCelltype: Multi-Sprachmodell-Konsensus-Framework für die Zelltyp-Annotation
 
-mLLMCelltype ist ein fortschrittliches iteratives Multi-LLM-Konsensus-Framework für die präzise und zuverlässige Zelltyp-Annotation in Einzelzell-RNA-Sequenzierungsdaten (scRNA-seq). Durch die Nutzung der kollektiven Intelligenz mehrerer großer Sprachmodelle (OpenAI GPT-4o/4.1, Anthropic Claude-3.7/3.5, Google Gemini-2.0, X.AI Grok-3, DeepSeek-V3, Alibaba Qwen2.5, Zhipu GLM-4, MiniMax, Stepfun, und OpenRouter) verbessert dieses Framework die Annotationsgenauigkeit erheblich und bietet gleichzeitig eine transparente Quantifizierung der Unsicherheit für die Forschung in Bioinformatik und Computational Biology.
+mLLMCelltype ist ein fortschrittliches iteratives Multi-LLM-Konsensus-Framework für die präzise und zuverlässige Zelltyp-Annotation in Einzelzell-RNA-Sequenzierungsdaten (scRNA-seq). Durch die Nutzung der kollektiven Intelligenz mehrerer großer Sprachmodelle (OpenAI GPT-4o/4.1, Anthropic Claude-4/3.7/3.5, Google Gemini-2.0, X.AI Grok-3, DeepSeek-V3, Alibaba Qwen2.5, Zhipu GLM-4, MiniMax, Stepfun, und OpenRouter) verbessert dieses Framework die Annotationsgenauigkeit erheblich und bietet gleichzeitig eine transparente Quantifizierung der Unsicherheit für die Forschung in Bioinformatik und Computational Biology.
 
 ## Zusammenfassung
 

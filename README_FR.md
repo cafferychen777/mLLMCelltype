@@ -25,7 +25,7 @@
 
 # mLLMCelltype: Cadre de Consensus Multi-Modèles de Langage pour l'Annotation des Types Cellulaires
 
-mLLMCelltype est un cadre avancé de consensus multi-LLM itératif pour l'annotation précise et fiable des types cellulaires dans les données de séquençage d'ARN unicellulaire (scRNA-seq). En exploitant l'intelligence collective de plusieurs grands modèles de langage (OpenAI GPT-4o/4.1, Anthropic Claude-3.7/3.5, Google Gemini-2.0, X.AI Grok-3, DeepSeek-V3, Alibaba Qwen2.5, Zhipu GLM-4, MiniMax, Stepfun, et OpenRouter), ce cadre améliore considérablement la précision des annotations tout en fournissant une quantification transparente de l'incertitude pour la recherche en bio-informatique et en biologie computationnelle.
+mLLMCelltype est un cadre avancé de consensus multi-LLM itératif pour l'annotation précise et fiable des types cellulaires dans les données de séquençage d'ARN unicellulaire (scRNA-seq). En exploitant l'intelligence collective de plusieurs grands modèles de langage (OpenAI GPT-4o/4.1, Anthropic Claude-4/3.7/3.5, Google Gemini-2.0, X.AI Grok-3, DeepSeek-V3, Alibaba Qwen2.5, Zhipu GLM-4, MiniMax, Stepfun, et OpenRouter), ce cadre améliore considérablement la précision des annotations tout en fournissant une quantification transparente de l'incertitude pour la recherche en bio-informatique et en biologie computationnelle.
 
 ## Résumé
 
@@ -429,7 +429,7 @@ for i in range(len(adata.obs['leiden'].cat.categories)):
 # Configurer les clés API pour les grands modèles de langage utilisés dans l'annotation de consensus
 # Au moins une clé API est requise pour l'annotation de consensus multi-LLM
 os.environ["OPENAI_API_KEY"] = "your-openai-api-key"      # Pour les modèles GPT-4o/4.1 (recommandé)
-os.environ["ANTHROPIC_API_KEY"] = "your-anthropic-api-key"  # Pour les modèles Claude-3.7/3.5
+os.environ["ANTHROPIC_API_KEY"] = "your-anthropic-api-key"  # Pour les modèles Claude-4/3.7/3.5
 os.environ["GEMINI_API_KEY"] = "your-gemini-api-key"      # Pour les modèles Google Gemini-2.0
 os.environ["QWEN_API_KEY"] = "your-qwen-api-key"        # Pour les modèles Alibaba Qwen2.5
 # Fournisseurs LLM optionnels supplémentaires pour améliorer la diversité du consensus :
