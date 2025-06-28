@@ -19,6 +19,8 @@
   <img src="https://img.shields.io/github/issues/cafferychen777/mLLMCelltype" alt="问题">
   <img src="https://img.shields.io/github/v/release/cafferychen777/mLLMCelltype" alt="发布版本">
   <a href="https://www.biorxiv.org/content/10.1101/2025.04.10.647852v1"><img src="https://img.shields.io/badge/bioRxiv-2025.04.10.647852-blue" alt="bioRxiv"></a>
+  <a href="https://www.mllmcelltype.com/"><img src="https://img.shields.io/badge/Try%20Online-mLLMCelltype-brightgreen" alt="Try Online"></a>
+  <a href="https://colab.research.google.com/github/cafferychen777/mLLMCelltype/blob/main/examples/mLLMCelltype_tutorial.ipynb"><img src="https://img.shields.io/badge/Open%20in-Colab-F9AB00?logo=googlecolab&logoColor=white" alt="Open In Colab"></a>
 </div>
 
 # mLLMCelltype: 多大语言模型共识框架用于细胞类型注释
