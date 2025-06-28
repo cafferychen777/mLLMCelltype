@@ -48,7 +48,7 @@
 #' \dontrun{
 #' # Compare predictions using different models
 #' api_keys <- list(
-#'   "claude-3-5-sonnet-latest" = "your-anthropic-key",
+#'   "claude-sonnet-4-20250514" = "your-anthropic-key",
 #'   "deepseek-reasoner" = "your-deepseek-key",
 #'   "gemini-1.5-pro" = "your-gemini-key",
 #'   "qwen-max-2025-01-25" = "your-qwen-key"
@@ -247,13 +247,13 @@ compare_model_predictions <- function(input,
 #' @param api_keys Named list of API keys. Can be provided in two formats:
 #'   1. With provider names as keys: `list("openai" = "sk-...", "anthropic" = "sk-ant-...", "openrouter" = "sk-or-...")`
 #'   2. With model names as keys: `list("gpt-4o" = "sk-...", "claude-3-opus" = "sk-ant-...")`
-#' @param standardization_model Model to use for standardization (default: "claude-3-5-sonnet-latest")
+#' @param standardization_model Model to use for standardization (default: "claude-sonnet-4-20250514")
 #' @return List of standardized predictions with the same structure as the input
 #' @keywords internal
 standardize_cell_type_names <- function(predictions, 
                                        models, 
                                        api_keys, 
-                                       standardization_model = "claude-3-5-sonnet-latest") {
+                                       standardization_model = "claude-sonnet-4-20250514") {
   # Get API key for standardization model
   api_key <- get_api_key(standardization_model, api_keys)
   
