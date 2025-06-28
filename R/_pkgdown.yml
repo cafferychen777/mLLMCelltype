@@ -1,4 +1,4 @@
-url: https://cafferychen777.github.io/mLLMCelltype/
+url: https://cafferyang.com/mLLMCelltype/
 
 template:
   bootstrap: 5
@@ -54,7 +54,7 @@ navbar:
   components:
     intro:
       text: Introduction
-      href: articles/01-introduction.html
+      href: articles/introduction.html
     reference:
       text: Function Reference
       href: reference/index.html
@@ -66,31 +66,31 @@ navbar:
       - text: "---"
       - text: Getting Started
       - text: Introduction to mLLMCelltype
-        href: articles/01-introduction.html
+        href: articles/introduction.html
       - text: Installation Guide
-        href: articles/02-installation.html
+        href: articles/installation.html
       - text: Getting Started
-        href: articles/03-getting-started.html
+        href: articles/getting-started.html
       - text: "---"
       - text: Usage and Features
       - text: Usage Tutorial
-        href: articles/04-usage-tutorial.html
+        href: articles/usage-tutorial.html
       - text: Consensus Annotation Principles
-        href: articles/05-consensus-principles.html
+        href: articles/consensus-principles.html
       - text: Visualization Guide
-        href: articles/06-visualization-guide.html
+        href: articles/visualization-guide.html
       - text: "---"
       - text: Advanced Topics
       - text: Frequently Asked Questions
-        href: articles/07-faq.html
+        href: articles/faq.html
       - text: Advanced Features & Case Studies
-        href: articles/08-advanced-features.html
+        href: articles/advanced-features.html
       - text: "---"
       - text: Development
       - text: Contributing Guide
-        href: articles/09-contributing-guide.html
+        href: articles/contributing-guide.html
       - text: Version History & Changelog
-        href: articles/10-version-history.html
+        href: articles/version-history.html
     paper:
       icon: bi-file-earmark-text
       href: https://www.biorxiv.org/content/10.1101/2025.04.10.647852v1
@@ -208,22 +208,22 @@ articles:
   - title: Getting Started
     navbar: Getting Started
     contents:
-      - 01-introduction
-      - 02-installation
-      - 03-getting-started
+      - introduction
+      - installation
+      - getting-started
   - title: Usage and Features
     navbar: Usage and Features
     contents:
-      - 04-usage-tutorial
-      - 05-consensus-principles
-      - 06-visualization-guide
+      - usage-tutorial
+      - consensus-principles
+      - visualization-guide
   - title: Advanced Topics
     navbar: Advanced Topics
     contents:
-      - 07-faq
-      - 08-advanced-features
+      - faq
+      - advanced-features
   - title: Development
     navbar: Development
     contents:
-      - 09-contributing-guide
-      - 10-version-history
+      - contributing-guide
+      - version-history
