@@ -89,13 +89,13 @@ mLLMCelltype requires API keys to access different LLM providers. You will need 
 ### Obtaining API Keys
 
 1. **OpenAI (GPT-4o/4.1)**
-   - Visit [OpenAI Platform](https://platform.openai.com/)
+   - Visit OpenAI Platform
    - Create an account or log in
    - Navigate to API keys section
    - Create a new API key
 
 2. **Anthropic (Claude-3.7/3.5)**
-   - Visit [Anthropic Console](https://console.anthropic.com/)
+   - Visit Anthropic Console
    - Create an account or log in
    - Generate an API key
 

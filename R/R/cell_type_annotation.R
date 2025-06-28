@@ -68,16 +68,16 @@ utils::globalVariables(c("cluster", "avg_log2FC", "gene"))
 #' @param api_key Character string containing the API key for the selected model.
 #'   Each provider requires a specific API key format and authentication method:
 #'
-#'   - OpenAI: "sk-..." (obtain from https://platform.openai.com/api-keys)
-#'   - Anthropic: "sk-ant-..." (obtain from https://console.anthropic.com/keys)
-#'   - Google: A Google API key for Gemini models (obtain from https://ai.google.dev/)
+#'   - OpenAI: "sk-..." (obtain from OpenAI platform)
+#'   - Anthropic: "sk-ant-..." (obtain from Anthropic console)
+#'   - Google: A Google API key for Gemini models (obtain from Google AI)
 #'   - DeepSeek: API key from DeepSeek platform
 #'   - Qwen: API key from Alibaba Cloud
 #'   - Stepfun: API key from Stepfun AI
 #'   - Zhipu: API key from Zhipu AI
 #'   - MiniMax: API key from MiniMax
 #'   - X.AI: API key for Grok models
-#'   - OpenRouter: "sk-or-..." (obtain from https://openrouter.ai/keys)
+#'   - OpenRouter: "sk-or-..." (obtain from OpenRouter)
 #'     OpenRouter provides access to multiple models through a single API key
 #'
 #'   The API key can be provided directly or stored in environment variables:
@@ -222,12 +222,12 @@ annotate_cell_types <- function(input,
 
   # If debug mode is enabled, print more information
   if (debug) {
-    cat("\n==== DEBUG INFO ====\n")
-    cat("Gene lists structure:\n")
+    message("\n==== DEBUG INFO ====\n")
+    message("Gene lists structure:\n")
     utils::str(prompt_result$gene_lists)
-    cat("\nFormatted prompt (raw):\n")
-    cat(prompt, "\n")
-    cat("==== END DEBUG INFO ====\n\n")
+    message("\nFormatted prompt (raw):\n")
+    message(prompt)
+    message("==== END DEBUG INFO ====\n\n")
   }
 
   # Log gene lists

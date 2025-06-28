@@ -40,3 +40,15 @@
 ^LLMCelltype_.*\.tar\.gz$
 ^\.Rcheck-ignore$
 ^\.Rinstignore$
+^\.claude$
+^examples/cache
+^consensus_cache$
+^logs$
+^doc$
+^docs$
+^_pkgdown\.yml$
+^pkgdown$
+^index\.md$
+^mLLMCelltype_.*\.tar\.gz$
+^\.ruff_cache$
+^examples$

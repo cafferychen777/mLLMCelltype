@@ -413,13 +413,13 @@ process_controversial_clusters <- function(controversial_clusters, input, tissue
       cache_debug <- Sys.getenv("LLMCELLTYPE_DEBUG_CACHE") == "TRUE"
 
       if (cache_debug) {
-        cat(sprintf("[DEBUG] Cache check for cluster %s: ", char_cluster_id))
+        message(sprintf("[DEBUG] Cache check for cluster %s: ", char_cluster_id))
       }
 
       has_cache <- cache_manager$has_cache(cache_key)
 
       if (cache_debug) {
-        cat(sprintf("has_cache = %s\n", has_cache))
+        message(sprintf("has_cache = %s", has_cache))
       }
 
       if (has_cache) {
@@ -433,7 +433,7 @@ process_controversial_clusters <- function(controversial_clusters, input, tissue
         cached_result <- cache_manager$load_from_cache(cache_key)
 
         if (cache_debug) {
-          cat(sprintf("[INFO] Successfully loaded cached result for cluster %s\n", cluster_id))
+          message(sprintf("[INFO] Successfully loaded cached result for cluster %s", cluster_id))
         }
       }
     }

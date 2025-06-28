@@ -7,14 +7,14 @@ Maintainer: Chen Yang <cafferychen777@tamu.edu>
 Authors@R:
     person("Chen", "Yang", email = "cafferychen777@tamu.edu",
            role = c("aut", "cre"))
-Description: An R package that leverages various large language models (LLMs)
+Description: An R package that leverages various large language models (Large Language Models)
     for automated cell type annotation in single-cell RNA sequencing data.
-    Implements a consensus-based approach where multiple LLMs collaborate
+    Implements a consensus-based approach where multiple Large Language Models collaborate
     to provide more reliable annotations. For more details, please refer to
     our paper: <doi:10.1101/2025.04.10.647852>.
 License: MIT + file LICENSE
 BugReports: https://github.com/cafferychen777/mLLMCelltype/issues
-URL: https://cafferychen777.github.io/mLLMCelltype/
+URL: https://cafferyang.com/mLLMCelltype/
 Encoding: UTF-8
 Imports:
     dplyr,

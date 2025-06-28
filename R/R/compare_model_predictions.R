@@ -208,27 +208,27 @@ compare_model_predictions <- function(input,
   )
   
   # Print summary
-  cat("\nModel Comparison Summary:\n")
-  cat(sprintf("Total clusters analyzed: %d\n", summary_stats$total_clusters))
-  cat(sprintf("Clusters with consensus: %d (%.1f%%)\n", 
+  message("\nModel Comparison Summary:\n")
+  message(sprintf("Total clusters analyzed: %d\n", summary_stats$total_clusters))
+  message(sprintf("Clusters with consensus: %d (%.1f%%)\n", 
               summary_stats$consensus_reached,
               100 * summary_stats$consensus_reached / summary_stats$total_clusters))
-  cat(sprintf("Mean consensus proportion: %.2f\n", summary_stats$mean_consensus_proportion))
-  cat(sprintf("Mean entropy: %.2f\n", summary_stats$mean_entropy))
+  message(sprintf("Mean consensus proportion: %.2f\n", summary_stats$mean_consensus_proportion))
+  message(sprintf("Mean entropy: %.2f\n", summary_stats$mean_entropy))
   
-  cat("\nPairwise Model Agreement:\n")
+  message("\nPairwise Model Agreement:\n")
   print(model_agreement_matrix)
   
-  cat("\nDetailed Results:\n")
+  message("\nDetailed Results:\n")
   for (i in 1:n_clusters) {
-    cat(sprintf("\nCluster %d:\n", i))
+    message(sprintf("\nCluster %d:\n", i))
     for (model in successful_models) {
-      cat(sprintf("  %s: %s (Standardized: %s)\n", 
+      message(sprintf("  %s: %s (Standardized: %s)\n", 
                 model, 
                 all_predictions[[model]][i],
                 standardized_predictions[[model]][i]))
     }
-    cat(sprintf("  Consensus: %s (Consensus Proportion: %.2f, Entropy: %.2f)\n", 
+    message(sprintf("  Consensus: %s (Consensus Proportion: %.2f, Entropy: %.2f)\n", 
                 consensus_predictions[i], 
                 consensus_proportions[i],
                 entropies[i]))
@@ -348,9 +348,9 @@ standardize_cell_type_names <- function(predictions,
     }
     
     # Print standardization mapping for reference
-    cat("\nCell Type Standardization Mapping:\n")
+    message("\nCell Type Standardization Mapping:\n")
     for (original in names(mapping)) {
-      cat(sprintf("  %s -> %s\n", original, mapping[[original]]))
+      message(sprintf("  %s -> %s\n", original, mapping[[original]]))
     }
     
     return(standardized_predictions)
