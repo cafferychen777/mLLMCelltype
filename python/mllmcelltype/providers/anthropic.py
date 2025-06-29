@@ -28,6 +28,27 @@ def process_anthropic(prompt: str, model: str, api_key: str) -> list[str]:
         write_log(f"ERROR: {error_msg}")
         raise ValueError(error_msg)
 
+    # Check for deprecated models that will be retired on July 21, 2025
+    deprecated_models = {
+        "claude-2": "July 21, 2025",
+        "claude-2.0": "July 21, 2025",
+        "claude-2.1": "July 21, 2025",
+        "claude-3-sonnet": "July 21, 2025",  # Non-versioned
+        "claude-3-opus": "July 21, 2025",  # Non-versioned
+    }
+
+    if model in deprecated_models:
+        write_log(
+            f"WARNING: Model '{model}' will be retired on {deprecated_models[model]}. Please migrate to a newer model."
+        )
+        write_log("Recommended migrations:")
+        if model.startswith("claude-2"):
+            write_log("  - Use 'claude-sonnet-4-20250514' or 'claude-3-5-sonnet-20241022'")
+        elif model == "claude-3-sonnet":
+            write_log("  - Use 'claude-sonnet-4-20250514' or 'claude-3-7-sonnet-20250219'")
+        elif model == "claude-3-opus":
+            write_log("  - Use 'claude-opus-4-20250514' or 'claude-3-opus-20240229'")
+
     # Handle old model names and map to the latest versions
     model_mapping = {
         # Claude 4 series
@@ -53,6 +74,11 @@ def process_anthropic(prompt: str, model: str, api_key: str) -> list[str]:
         "claude-3-opus": "claude-3-opus-20240229",
         "claude-3-haiku-20240307": "claude-3-haiku-20240307",
         "claude-3-haiku": "claude-3-haiku-20240307",
+        # Deprecated models - mapping to recommended alternatives (will be retired July 21, 2025)
+        "claude-2": "claude-3-5-sonnet-20241022",
+        "claude-2.0": "claude-3-5-sonnet-20241022",
+        "claude-2.1": "claude-3-5-sonnet-20241022",
+        "claude-3-sonnet": "claude-3-7-sonnet-20250219",  # Non-versioned, map to versioned
     }
 
     # Map the model name to the latest version if necessary

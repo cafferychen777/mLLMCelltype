@@ -76,6 +76,21 @@ Google已经停用了几个Gemini 1.5模型，并将在2025年9月24日停用更
 
 **推荐迁移**：使用`gemini-2.0-flash`或`gemini-2.0-flash-lite`以获得更好的性能和持续支持。别名`gemini-1.5-pro`和`gemini-1.5-flash`将继续工作到2025年9月24日，因为它们指向-002版本。
 
+**📢 重要提示：Claude模型弃用（2025-07-21）**
+
+Anthropic将于2025年7月21日停用以下Claude模型：
+- **Claude 2**（所有版本）
+- **Claude 2.1**
+- **Claude 3 Sonnet**（非版本化）
+- **Claude 3 Opus**（非版本化）
+
+**推荐迁移**：
+- Claude 2/2.1 → 使用 `claude-sonnet-4-20250514` 或 `claude-3-5-sonnet-20241022`
+- Claude 3 Sonnet → 使用 `claude-sonnet-4-20250514` 或 `claude-3-7-sonnet-20250219`
+- Claude 3 Opus → 使用 `claude-opus-4-20250514` 或 `claude-3-opus-20240229`
+
+请在2025年7月21日之前更新您的代码以避免服务中断。
+
 🎉 **2025年4月**：我们非常高兴地宣布，在预印本发布仅两周的时间里，mLLMCelltype已经突破了200个GitHub星标！我们也看到了来自各种媒体和内容创作者的大量报道。我们向所有通过星标、分享和贡献支持这个项目的人表示衷心的感谢。您的热情推动着我们继续开发和改进mLLMCelltype。
 
 ## 主要特点

@@ -25,6 +25,20 @@ AnthropicProcessor <- R6::R6Class("AnthropicProcessor",
     #' @param api_key API key
     #' @return httr response object
     make_api_call = function(chunk_content, model, api_key) {
+      # Check for deprecated models that will be retired on July 21, 2025
+      deprecated_models <- c("claude-2", "claude-2.0", "claude-2.1", "claude-3-sonnet", "claude-3-opus")
+      if (model %in% deprecated_models) {
+        warning(sprintf("Model '%s' will be retired on July 21, 2025. Please migrate to a newer model.", model))
+        message("Recommended migrations:")
+        if (startsWith(model, "claude-2")) {
+          message("  - Use 'claude-sonnet-4-20250514' or 'claude-3-5-sonnet-20241022'")
+        } else if (model == "claude-3-sonnet") {
+          message("  - Use 'claude-sonnet-4-20250514' or 'claude-3-7-sonnet-20250219'")
+        } else if (model == "claude-3-opus") {
+          message("  - Use 'claude-opus-4-20250514' or 'claude-3-opus-20240229'")
+        }
+      }
+      
       # Prepare request body
       body <- list(
         model = model,

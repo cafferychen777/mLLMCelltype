@@ -67,6 +67,18 @@ Google a retiré plusieurs modèles Gemini 1.5 et en retirera davantage le 24 se
 
 **Migration recommandée** : Utilisez `gemini-2.5-pro` ou `gemini-2.5-flash` pour de meilleures performances et des capacités de raisonnement améliorées. Les alias `gemini-1.5-pro` et `gemini-1.5-flash` continueront à fonctionner jusqu'au 24 septembre 2025, car ils pointent vers les versions -002.
 
+**📢 Important : Dépréciation des Modèles Claude (21-07-2025)**
+
+Anthropic abandonnera plusieurs modèles Claude le 21 juillet 2025 :
+- **Modèles à abandonner** : Claude 2, Claude 2.1, Claude 3 Sonnet (non versionné), Claude 3 Opus (non versionné)
+
+**Migration recommandée** :
+- Claude 2/2.1 → `claude-sonnet-4-20250514` ou `claude-3-5-sonnet-20241022`
+- Claude 3 Sonnet → `claude-sonnet-4-20250514` ou `claude-3-7-sonnet-20250219`
+- Claude 3 Opus → `claude-opus-4-20250514` ou `claude-3-opus-20240229`
+
+Veuillez mettre à jour vos modèles avant le 21 juillet 2025 pour éviter toute interruption de service.
+
 🎉 **Avril 2025** : Nous sommes ravis d'annoncer que seulement deux semaines après la publication de notre préimpression, mLLMCelltype a dépassé les 200 étoiles sur GitHub ! Nous avons également constaté une couverture médiatique importante de la part de divers médias et créateurs de contenu. Nous exprimons notre profonde gratitude à tous ceux qui ont soutenu ce projet par des étoiles, des partages et des contributions. Votre enthousiasme stimule notre développement continu et l'amélioration de mLLMCelltype.
 
 ## Caractéristiques principales
