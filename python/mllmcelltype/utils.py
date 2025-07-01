@@ -138,6 +138,11 @@ def create_cache_key(prompt: str, model: str, provider: str) -> str:
     normalized_model = str(model).lower().strip()
     normalized_prompt = str(prompt).strip()
 
+    # For OpenRouter models (containing '/'), ensure provider is 'openrouter'
+    # This prevents cache key collisions between different providers
+    if "/" in normalized_model:
+        normalized_provider = "openrouter"
+
     # Create a string to hash with clear separators to avoid collisions
     hash_string = (
         f"provider:{normalized_provider}||model:{normalized_model}||prompt:{normalized_prompt}"
