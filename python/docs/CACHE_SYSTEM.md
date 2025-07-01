@@ -1,19 +1,19 @@
-# mLLMCelltype 缓存系统文档
+# mLLMCelltype Cache System Documentation
 
-## 问题描述
+## Problem Description
 
-用户在使用 `interactive_consensus_annotation` 函数切换不同模型时遇到缓存问题，具体表现为：
-- 切换到 OpenRouter 模型后，仍然返回之前模型的缓存结果
-- 不同的 API 调用失败，但系统继续使用旧的缓存数据
-- 缓存键没有正确区分不同的 provider
+Users encountered cache issues when switching between different models using the `interactive_consensus_annotation` function, specifically:
+- After switching to OpenRouter models, the system still returned cached results from previous models
+- Different API calls failed, but the system continued using old cached data
+- Cache keys did not properly distinguish between different providers
 
-## 根本原因
+## Root Cause
 
-缓存键生成时没有正确处理 OpenRouter 模型的特殊情况。OpenRouter 模型使用 "provider/model" 格式（如 "openai/gpt-4o-mini"），但缓存系统可能使用错误的 provider 信息生成缓存键。
+The cache key generation did not properly handle the special case of OpenRouter models. OpenRouter models use the "provider/model" format (e.g., "openai/gpt-4o-mini"), but the cache system might use incorrect provider information when generating cache keys.
 
-## 已实施的长期解决方案
+## Implemented Long-term Solution
 
-### 1. 修改缓存键生成逻辑 (utils.py)
+### 1. Modified Cache Key Generation Logic (utils.py)
 
 ```python
 def create_cache_key(prompt: str, model: str, provider: str) -> str:
@@ -37,131 +37,131 @@ def create_cache_key(prompt: str, model: str, provider: str) -> str:
     return hash_object.hexdigest()
 ```
 
-### 2. 测试验证
+### 2. Test Validation
 
-创建了完整的测试套件 `tests/test_cache_system.py`，验证：
-- ✅ 缓存键正确包含 provider 信息
-- ✅ OpenRouter 模型始终使用 "openrouter" 作为 provider
-- ✅ 不同 provider 的相同模型不会共享缓存
-- ✅ 真实场景测试通过
+Created a comprehensive test suite `tests/test_cache_system.py` to verify:
+- ✅ Cache keys correctly include provider information
+- ✅ OpenRouter models always use "openrouter" as provider
+- ✅ Same model from different providers do not share cache
+- ✅ Real-world scenario tests pass
 
-### 3. 缓存管理模块
+### 3. Cache Management Module
 
-提供了 `cache_manager` 模块，支持：
-- 查看缓存信息：`python -m mllmcelltype.cache_manager --info`
-- 清理缓存：`python -m mllmcelltype.cache_manager --clear`
-- 交互式管理：`python -m mllmcelltype.cache_manager`
+Provided `cache_manager` module supporting:
+- View cache info: `python -m mllmcelltype.cache_manager --info`
+- Clear cache: `python -m mllmcelltype.cache_manager --clear`
+- Interactive management: `python -m mllmcelltype.cache_manager`
 
-也可以在代码中使用：
+Also available in code:
 ```python
 from mllmcelltype import get_cache_info, clear_cache
 
-# 获取缓存信息
+# Get cache information
 info = get_cache_info()
-print(f"缓存文件数: {info['file_count']}")
-print(f"缓存大小: {info['size_mb']:.2f} MB")
+print(f"Cache files: {info['file_count']}")
+print(f"Cache size: {info['size_mb']:.2f} MB")
 
-# 清理缓存
+# Clear cache
 removed = clear_cache()
-print(f"清理了 {removed} 个缓存文件")
+print(f"Removed {removed} cache files")
 ```
 
-## 使用建议
+## Usage Recommendations
 
-### 1. 更新代码后清理缓存
+### 1. Clear Cache After Code Update
 ```bash
 python -m mllmcelltype.cache_manager --clear
 ```
 
-### 2. 正确指定模型
+### 2. Properly Specify Models
 ```python
-# OpenRouter 模型
+# OpenRouter models
 models = [
     {"provider": "openrouter", "model": "openai/gpt-4o-mini"},
     {"provider": "openrouter", "model": "anthropic/claude-3-opus"},
 ]
 
-# 或者让系统自动检测（推荐）
+# Or let the system auto-detect (recommended)
 models = [
-    "openai/gpt-4o-mini",  # 自动检测为 openrouter
-    "anthropic/claude-3-opus",  # 自动检测为 openrouter
-    "gpt-4o",  # 自动检测为 openai
-    "claude-3-opus",  # 自动检测为 anthropic
+    "openai/gpt-4o-mini",  # Auto-detected as openrouter
+    "anthropic/claude-3-opus",  # Auto-detected as openrouter
+    "gpt-4o",  # Auto-detected as openai
+    "claude-3-opus",  # Auto-detected as anthropic
 ]
 ```
 
-### 3. 临时禁用缓存（如果需要）
+### 3. Temporarily Disable Cache (if needed)
 ```python
 consensus_results = interactive_consensus_annotation(
     marker_genes=marker_genes,
     species="human",
     tissue="Hepatocellular carcinoma",
     models=models,
-    use_cache=False  # 临时禁用缓存
+    use_cache=False  # Temporarily disable cache
 )
 ```
 
-## 技术细节
+## Technical Details
 
-### 缓存键组成
-- Provider（标准化后的提供商名称）
-- Model（标准化后的模型名称）
-- Prompt（用户提供的提示）
+### Cache Key Components
+- Provider (normalized provider name)
+- Model (normalized model name)
+- Prompt (user-provided prompt)
 
-### 特殊处理
-- 包含 "/" 的模型名称自动归类为 OpenRouter
-- 所有输入都进行小写和空格标准化
-- 使用 SHA256 生成唯一缓存键
+### Special Handling
+- Model names containing "/" are automatically classified as OpenRouter
+- All inputs are normalized to lowercase and trimmed
+- SHA256 is used to generate unique cache keys
 
-### 缓存存储位置
-- 默认：`~/.llmcelltype/cache/`
-- 格式：JSON 文件，包含版本号和时间戳
+### Cache Storage Location
+- Default: `~/.llmcelltype/cache/`
+- Format: JSON files containing version and timestamp
 
-## 监控和维护
+## Monitoring and Maintenance
 
-### 查看缓存统计
+### View Cache Statistics
 ```python
 from mllmcelltype.utils import get_cache_stats
 stats = get_cache_stats()
-print(f"缓存文件数: {stats['count']}")
-print(f"缓存大小: {stats['size_readable']}")
+print(f"Cache files: {stats['count']}")
+print(f"Cache size: {stats['size_readable']}")
 ```
 
-### 定期清理旧缓存
+### Periodic Cache Cleanup
 ```python
 from mllmcelltype.utils import clear_cache
-# 清理超过 7 天的缓存
+# Clear cache older than 7 days
 removed = clear_cache(older_than=7*24*60*60)
-print(f"清理了 {removed} 个缓存文件")
+print(f"Removed {removed} cache files")
 ```
 
-## 验证修复效果
+## Verify Fix Effectiveness
 
-运行测试套件确认修复有效：
+Run the test suite to confirm the fix is working:
 ```bash
 cd tests
 python test_cache_system.py
 ```
 
-预期输出：
+Expected output:
 ```
 ✅ ALL TESTS PASSED!
 The cache fix is working correctly.
 ```
 
-## 后续建议
+## Future Recommendations
 
-1. **版本控制**：在未来的版本中考虑缓存版本控制，便于升级时自动清理不兼容的缓存
-2. **缓存过期**：考虑添加缓存过期时间设置
-3. **缓存大小限制**：考虑添加缓存大小限制，自动清理最旧的缓存
+1. **Version Control**: Consider cache versioning in future releases for automatic cleanup of incompatible caches during upgrades
+2. **Cache Expiration**: Consider adding cache expiration time settings
+3. **Cache Size Limits**: Consider adding cache size limits with automatic cleanup of oldest entries
 
-## 相关文件
+## Related Files
 
-- `/mllmcelltype/utils.py` - 包含修复后的缓存键生成逻辑
-- `/mllmcelltype/cache_manager.py` - 缓存管理模块
-- `/tests/test_cache_system.py` - 完整的测试套件
-- `/docs/CACHE_SYSTEM.md` - 本文档
+- `/mllmcelltype/utils.py` - Contains the fixed cache key generation logic
+- `/mllmcelltype/cache_manager.py` - Cache management module
+- `/tests/test_cache_system.py` - Comprehensive test suite
+- `/docs/CACHE_SYSTEM.md` - This document
 
-## 问题追踪
+## Issue Tracking
 
 GitHub Issue: https://github.com/cafferychen777/mLLMCelltype/issues/65
