@@ -19,10 +19,7 @@ except ImportError:
     MATPLOTLIB_AVAILABLE = False
     print("Warning: matplotlib not available. Plots will be skipped.")
 
-import shutil
 
-import numpy as np
-import pandas as pd
 import scanpy as sc
 from dotenv import load_dotenv
 
@@ -159,7 +156,7 @@ if len(models) < 2:
             sc.pl.umap(
                 adata, color="cell_type", legend_loc="on data", save="_single_model_annotation.png"
             )
-            print(f"Results saved as figures/umap_single_model_annotation.png")
+            print("Results saved as figures/umap_single_model_annotation.png")
         else:
             print("Skipping visualization (matplotlib not available)")
 

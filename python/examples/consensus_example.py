@@ -3,17 +3,15 @@
 Test script for LLM consensus annotation functionality.
 """
 
-import json
 import os
 import sys
-from typing import Dict, List
+from typing import Dict
 
 # Add the package directory to the path
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "python"))
 
 from mllmcelltype.consensus import check_consensus
-from mllmcelltype.prompts import create_consensus_check_prompt
-from mllmcelltype.utils import clean_annotation, find_agreement
+from mllmcelltype.utils import find_agreement
 
 # Sample data for testing
 test_predictions = {

@@ -4,12 +4,10 @@ Test suite for mLLMCelltype cache system.
 Tests cache key generation, provider detection, and cache isolation.
 """
 
-import json
 import os
 import shutil
 import sys
 import tempfile
-from pathlib import Path
 
 # Add the package to Python path
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
@@ -53,7 +51,7 @@ class TestCacheSystem:
             ("Test prompt", "meta-llama/llama-3.1-405b", "openrouter", "openrouter"),
         ]
 
-        for prompt, model, provider, expected_provider in test_cases:
+        for prompt, model, provider, _expected_provider in test_cases:
             key = create_cache_key(prompt, model, provider)
 
             # Verify that different providers produce different keys
@@ -231,8 +229,6 @@ def test_real_scenario():
     print("\n" + "=" * 50)
     print("Testing Real-World Scenario")
     print("=" * 50)
-
-    from mllmcelltype.annotate import get_model_response
 
     # Create a temporary cache directory
     temp_cache = tempfile.mkdtemp()

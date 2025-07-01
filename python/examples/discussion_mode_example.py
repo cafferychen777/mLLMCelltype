@@ -5,11 +5,9 @@ Test the discussion mode functionality of LLMCelltype.
 Force trigger discussion mode by setting a high consensus threshold.
 """
 
+import logging
 import os
 import sys
-
-import numpy as np
-import pandas as pd
 
 # Try to import matplotlib for visualization (optional)
 try:
@@ -23,7 +21,6 @@ except ImportError:
     MATPLOTLIB_AVAILABLE = False
     print("Warning: matplotlib not available. Plots will be skipped.")
 
-import shutil
 
 import scanpy as sc
 from dotenv import load_dotenv
@@ -68,7 +65,6 @@ else:
     print("No .env file found. Please set API keys as environment variables.")
 
 # Set up logging
-import logging
 
 logging.basicConfig(level=logging.INFO)
 

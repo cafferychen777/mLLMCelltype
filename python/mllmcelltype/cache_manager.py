@@ -11,7 +11,6 @@ Functions:
 
 import os
 import shutil
-from pathlib import Path
 
 
 def clear_mllmcelltype_cache():

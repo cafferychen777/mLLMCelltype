@@ -9,10 +9,8 @@ This example shows how to:
 """
 
 from mllmcelltype import (
-    clear_cache,
     get_cache_info,
     get_cache_stats,
-    interactive_consensus_annotation,
 )
 
 
@@ -50,12 +48,12 @@ def demonstrate_proper_model_usage():
 
     print("\n=== Proper Model Usage ===\n")
 
-    # Example marker genes
-    marker_genes = {
-        "0": ["CD3D", "CD3E", "CD4", "IL7R"],
-        "1": ["CD8A", "CD8B", "GZMK", "CCL5"],
-        "2": ["MS4A1", "CD79A", "CD79B", "CD19"],
-    }
+    # Example marker genes (just for demonstration purposes)
+    # marker_genes = {
+    #     "0": ["CD3D", "CD3E", "CD4", "IL7R"],
+    #     "1": ["CD8A", "CD8B", "GZMK", "CCL5"],
+    #     "2": ["MS4A1", "CD79A", "CD79B", "CD19"],
+    # }
 
     print("1. Using regular models (auto-detected providers):")
     models_regular = [

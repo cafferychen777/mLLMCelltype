@@ -12,6 +12,11 @@ exclude = [
     ".env",
     ".venv",
     "docs",
+    "temp_test_files",
+    "test_cache_simple.py",
+    "test_cache_comprehensive.py",
+    "test_real_scenario.py",
+    "github_issue_response.md",
 ]
 
 # 行长度设置
