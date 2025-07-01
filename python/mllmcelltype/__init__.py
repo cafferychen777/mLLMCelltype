@@ -38,7 +38,7 @@ from .utils import (
     validate_cache,
 )
 
-__version__ = "1.2.9"
+__version__ = "1.2.10"
 
 __all__ = [
     # Core annotation
