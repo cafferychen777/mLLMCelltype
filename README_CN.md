@@ -108,6 +108,27 @@ Anthropic将于2025年7月21日停用以下Claude模型：
 
 ## 最新更新
 
+### v1.3.0 (2025-07-15)
+
+#### 🎉 重大新功能
+- **Per-Provider Base URL 支持**：为每个 API 提供商配置自定义端点
+- **Qwen 智能端点选择**：自动在国际版/国内版端点间选择最佳连接
+- **代理支持**：通过 base_urls 参数实现完整的代理功能
+- **企业级支持**：支持内部 API 网关和企业代理环境
+
+#### 新增功能
+- 添加了 `base_urls` 参数到 `annotate_cell_types()` 和 `interactive_consensus_annotation()` 函数
+- 实现了 BaseAPIProcessor 架构，支持所有 10 个 API 提供商的自定义端点
+- 添加了 URL 工具函数用于提供商特定的端点解析
+- 修复了 Qwen API 格式问题（parameters 字段和响应解析）
+- 增强了中文文档，包含详细的 base_url 使用示例
+
+#### 特别适用场景
+- 🇨🇳 **中国用户**：通过代理服务器访问国际 API
+- 🏢 **企业用户**：使用内部 API 网关
+- 🔧 **开发测试**：连接本地或测试环境的 API 端点
+- 🌐 **网络受限环境**：自定义路由解决方案
+
 ### v1.2.3 (2025-05-10)
 
 #### Bug修复
@@ -427,40 +448,67 @@ free_consensus_results <- interactive_consensus_annotation(
 
 如果您需要访问国际模型，且遇到网络连接问题，以下是一些配置建议：
 
-#### 自定义 base_url 功能（即将推出）
+#### 🎉 自定义 base_url 功能（v1.3.0 新增）
 
-我们正在开发对 mLLMCelltype 的自定义 base_url 功能支持，这将对中国大陆用户特别有用，可以连接到替代 API 端点。该功能将在下一版本中推出，实现后将支持以下用法：
+**好消息！** mLLMCelltype v1.3.0 已经支持自定义 base_url 功能，这对中国大陆用户特别有用，可以连接到代理服务器或替代 API 端点。
 
 ```r
-# R 中使用自定义 base_url（即将推出的功能）
+# R 中使用自定义 base_url
 library(mLLMCelltype)
 
-# 使用替代端点进行注释
+# 单个代理端点应用于所有提供商
 results <- annotate_cell_types(
   input = pbmc_markers,
   tissue_name = "human PBMC",
   model = "gpt-4o",
   api_key = "your-openai-key",
-  base_url = "https://your-alternative-endpoint.com/v1"  # 替代 API 端点
+  base_urls = "https://api.your-proxy.com/v1"  # 代理端点
+)
+
+# 为不同提供商指定不同的代理端点
+results <- annotate_cell_types(
+  input = pbmc_markers,
+  tissue_name = "human PBMC",
+  model = "gpt-4o",
+  api_key = "your-openai-key",
+  base_urls = list(
+    openai = "https://openai-proxy.com/v1",
+    anthropic = "https://anthropic-proxy.com/v1",
+    qwen = "https://dashscope-intl.aliyuncs.com/api/v1/services/aigc/text-generation/generation"
+  )
+)
+
+# 在共识注释中使用代理
+consensus_results <- interactive_consensus_annotation(
+  input = pbmc_markers,
+  tissue_name = "human PBMC",
+  models = c("gpt-4o", "claude-3-opus", "qwen-max"),
+  api_keys = list(
+    openai = "your-openai-key",
+    anthropic = "your-anthropic-key",
+    qwen = "your-qwen-key"
+  ),
+  base_urls = list(
+    openai = "https://openai-proxy.com/v1",
+    anthropic = "https://anthropic-proxy.com/v1"
+    # qwen 使用默认端点（智能选择国际版/国内版）
+  )
 )
 ```
 
 ```python
-# Python 中使用自定义 base_url（即将推出的功能）
-from mllmcelltype import annotate_cell_types
-
-# 使用替代端点进行注释
-results = annotate_cell_types(
-    marker_genes=marker_genes,
-    species="human",
-    tissue="blood",
-    model="gpt-4o",
-    api_key="your-openai-key",
-    base_url="https://your-alternative-endpoint.com/v1"  # 替代 API 端点
-)
+# Python 中使用自定义 base_url（计划在未来版本中支持）
+# 目前 Python 版本尚未支持 base_urls 参数
+# 请使用 R 版本获得完整的代理支持功能
 ```
 
-这个即将推出的功能将允许您使用各种兼容 OpenAI API 的替代服务，如 ellmer.tidyverse.org 等。我们正在积极开发这一功能，以便中国大陆用户能够更灵活地访问各种 LLM 服务。
+**功能特点：**
+- ✅ **灵活配置**：可以为每个 API 提供商设置不同的代理端点
+- ✅ **智能回退**：Qwen 模型支持国际版/国内版端点自动选择
+- ✅ **向后兼容**：不设置 base_urls 时使用默认官方端点
+- ✅ **企业友好**：支持内部 API 网关和企业代理
+
+这个功能允许您使用各种兼容的代理服务和替代端点，为中国大陆用户提供了更灵活的访问方式。
 
 #### R 中设置代理
 
