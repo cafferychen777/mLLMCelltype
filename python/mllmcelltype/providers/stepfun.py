@@ -2,19 +2,23 @@
 
 import json
 import time
+from typing import Optional
 
 import requests
 
 from ..logger import write_log
 
 
-def process_stepfun(prompt: str, model: str, api_key: str) -> list[str]:
+def process_stepfun(
+    prompt: str, model: str, api_key: str, base_url: Optional[str] = None
+) -> list[str]:
     """Process request using StepFun models.
 
     Args:
         prompt: The prompt to send to the API
         model: The model name (e.g., 'step-1-8k', 'step-2-16k', 'step-1-flash')
         api_key: StepFun API key
+        base_url: Optional custom base URL
 
     Returns:
         List[str]: Processed responses, one per cluster
@@ -28,8 +32,20 @@ def process_stepfun(prompt: str, model: str, api_key: str) -> list[str]:
         write_log(f"ERROR: {error_msg}")
         raise ValueError(error_msg)
 
-    # StepFun API endpoint (OpenAI compatible)
-    url = "https://api.stepfun.com/v1/chat/completions"
+    # 使用自定义URL或默认URL
+    if base_url:
+        from ..url_utils import validate_base_url
+
+        if not validate_base_url(base_url):
+            raise ValueError(f"Invalid base URL: {base_url}")
+        url = base_url
+        write_log(f"Using custom base URL: {url}")
+    else:
+        from ..url_utils import get_default_api_url
+
+        url = get_default_api_url("stepfun")
+        write_log(f"Using default URL: {url}")
+
     write_log(f"Using model: {model}")
 
     # Process all input at once instead of chunks

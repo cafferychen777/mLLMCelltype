@@ -2,19 +2,23 @@
 
 import json
 import time
+from typing import Optional
 
 import requests
 
 from ..logger import write_log
 
 
-def process_anthropic(prompt: str, model: str, api_key: str) -> list[str]:
+def process_anthropic(
+    prompt: str, model: str, api_key: str, base_url: Optional[str] = None
+) -> list[str]:
     """Process request using Anthropic Claude models.
 
     Args:
         prompt: The prompt to send to the API
         model: The model name (e.g., 'claude-3-opus', 'claude-3-sonnet')
         api_key: Anthropic API key
+        base_url: Optional custom base URL
 
     Returns:
         List[str]: Processed responses, one per cluster
@@ -87,6 +91,11 @@ def process_anthropic(prompt: str, model: str, api_key: str) -> list[str]:
 
     write_log(f"Using model: {model}")
 
+    # If base_url is provided, use direct API method
+    if base_url:
+        write_log("Using direct API method due to custom base_url")
+        return process_anthropic_direct(prompt, model, api_key, base_url)
+
     try:
         # Try to import Anthropic client
         try:
@@ -141,16 +150,29 @@ def process_anthropic(prompt: str, model: str, api_key: str) -> list[str]:
         write_log(f"Error during Anthropic API call: {str(e)}", level="error")
 
         # Try alternative method with direct REST API if SDK fails
-        return process_anthropic_direct(prompt, model, api_key)
+        return process_anthropic_direct(prompt, model, api_key, base_url)
 
 
-def process_anthropic_direct(prompt: str, model: str, api_key: str) -> list[str]:
+def process_anthropic_direct(
+    prompt: str, model: str, api_key: str, base_url: Optional[str] = None
+) -> list[str]:
     """Fallback method using direct API calls if the SDK fails"""
 
     write_log("Falling back to direct API calls for Anthropic")
 
-    # Anthropic API endpoint
-    url = "https://api.anthropic.com/v1/messages"
+    # 使用自定义URL或默认URL
+    if base_url:
+        from ..url_utils import validate_base_url
+
+        if not validate_base_url(base_url):
+            raise ValueError(f"Invalid base URL: {base_url}")
+        url = base_url
+        write_log(f"Using custom base URL: {url}")
+    else:
+        from ..url_utils import get_default_api_url
+
+        url = get_default_api_url("anthropic")
+        write_log(f"Using default URL: {url}")
 
     # Process all input at once
     input_lines = prompt.split("\n")

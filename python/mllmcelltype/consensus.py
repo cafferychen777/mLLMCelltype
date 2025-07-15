@@ -67,6 +67,7 @@ def _call_llm_with_retry(
     fallback_provider: str = "anthropic",
     fallback_model: str = "claude-3-5-sonnet-latest",
     api_keys: Optional[dict[str, str]] = None,
+    base_urls: Optional[Union[str, dict[str, str]]] = None,
 ) -> Optional[str]:
     """Call LLM with retry logic and fallback provider.
 
@@ -83,6 +84,11 @@ def _call_llm_with_retry(
     Returns:
         Optional[str]: LLM response or None if all attempts failed
     """
+    from .url_utils import resolve_provider_base_url
+
+    # 解析base URL
+    primary_base_url = resolve_provider_base_url(provider, base_urls)
+
     # First try with primary provider
     for attempt in range(max_retries):
         try:
@@ -92,6 +98,7 @@ def _call_llm_with_retry(
                     provider=provider,
                     model=model,
                     api_key=api_key,
+                    base_url=primary_base_url,
                 )
                 write_log(f"Successfully got response from {provider} on attempt {attempt + 1}")
                 return response
@@ -114,12 +121,15 @@ def _call_llm_with_retry(
     if api_keys:
         fallback_api_key = _get_api_key(fallback_provider, api_keys)
         if fallback_api_key:
+            # 解析fallback provider的base URL
+            fallback_base_url = resolve_provider_base_url(fallback_provider, base_urls)
             try:
                 response = get_model_response(
                     prompt=prompt,
                     provider=fallback_provider,
                     model=fallback_model,
                     api_key=fallback_api_key,
+                    base_url=fallback_base_url,
                 )
                 write_log(f"Successfully got response from {fallback_provider} as fallback")
                 return response
@@ -429,6 +439,7 @@ def process_controversial_clusters(
     entropy_threshold: float = 1.0,
     use_cache: bool = True,
     cache_dir: Optional[str] = None,
+    base_urls: Optional[Union[str, dict[str, str]]] = None,
 ) -> tuple[dict[str, str], dict[str, list[str]], dict[str, float], dict[str, float]]:
     """Process controversial clusters by facilitating a discussion between models.
 
@@ -458,6 +469,10 @@ def process_controversial_clusters(
     """
 
     from .prompts import create_consensus_check_prompt
+    from .url_utils import resolve_provider_base_url
+
+    # 解析base URL
+    base_url = resolve_provider_base_url(provider, base_urls)
 
     results = {}
     discussion_history = {}
@@ -515,6 +530,7 @@ def process_controversial_clusters(
             api_key,
             use_cache,
             cache_dir,
+            base_url,
         )
 
         # Parse response to get consensus metrics
@@ -579,7 +595,7 @@ def process_controversial_clusters(
 
                 # Get response for this round
                 response = get_model_response(
-                    prompt, provider, discussion_model, api_key, use_cache, cache_dir
+                    prompt, provider, discussion_model, api_key, use_cache, cache_dir, base_url
                 )
 
                 # Extract potential decision from this round
@@ -606,6 +622,7 @@ def process_controversial_clusters(
                         api_key,
                         use_cache,
                         cache_dir,
+                        base_url,
                     )
 
                     # Add consensus checker result to history
@@ -910,6 +927,7 @@ def interactive_consensus_annotation(
     cache_dir: Optional[str] = None,
     verbose: bool = False,
     consensus_model: Optional[Union[str, dict[str, str]]] = None,
+    base_urls: Optional[Union[str, dict[str, str]]] = None,
 ) -> dict[str, Any]:
     """Perform consensus annotation of cell types using multiple LLMs and interactive resolution.
 
@@ -930,6 +948,9 @@ def interactive_consensus_annotation(
             Can be a string (model name) or dict with 'provider' and 'model' keys.
             If not provided, defaults to Qwen for consensus checking and selects from
             input models for discussion.
+        base_urls: Custom base URLs for API endpoints. Can be:
+                  - str: Single URL applied to all providers
+                  - dict: Provider-specific URLs
 
     Returns:
         dict[str, Any]: Dictionary containing consensus results and metadata
@@ -1025,6 +1046,7 @@ def interactive_consensus_annotation(
                 additional_context=additional_context,
                 use_cache=use_cache,
                 cache_dir=cache_dir,
+                base_urls=base_urls,
             )
 
             model_results[model_name] = results
@@ -1132,6 +1154,7 @@ def interactive_consensus_annotation(
                     entropy_threshold=entropy_threshold,
                     use_cache=use_cache,
                     cache_dir=cache_dir,
+                    base_urls=base_urls,
                 )
 
                 # Update consensus proportion and entropy for resolved clusters
@@ -1292,6 +1315,7 @@ def facilitate_cluster_discussion(
     model: Optional[str] = None,
     api_key: Optional[str] = None,
     use_cache: bool = True,
+    base_url: Optional[str] = None,
 ) -> str:
     """Facilitate a discussion between different model predictions for a controversial cluster.
 
@@ -1322,7 +1346,7 @@ def facilitate_cluster_discussion(
     )
 
     # Get response
-    response = get_model_response(prompt, provider, model, api_key, use_cache)
+    response = get_model_response(prompt, provider, model, api_key, use_cache, base_url=base_url)
 
     # Extract final decision
     cell_type = extract_cell_type_from_discussion(response)

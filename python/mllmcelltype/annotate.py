@@ -33,6 +33,7 @@ def annotate_clusters(
     cache_dir: Optional[str] = None,
     log_dir: Optional[str] = None,
     log_level: str = "INFO",
+    base_urls: Optional[Union[str, dict[str, str]]] = None,
 ) -> dict[str, str]:
     """Annotate cell clusters using LLM.
 
@@ -50,6 +51,9 @@ def annotate_clusters(
         cache_dir: Directory to store cache files
         log_dir: Directory to store log files
         log_level: Logging level
+        base_urls: Custom base URLs for API endpoints. Can be:
+                  - str: Single URL applied to all providers
+                  - dict: Provider-specific URLs (e.g., {'openai': 'https://proxy.com/v1'})
 
     Returns:
         Dict[str, str]: Dictionary mapping cluster names to annotations
@@ -97,6 +101,11 @@ def annotate_clusters(
             write_log("Using cached results")
             return format_results(cached_results, clusters)
 
+    # 解析base URL
+    from .url_utils import resolve_provider_base_url
+
+    base_url = resolve_provider_base_url(provider, base_urls)
+
     # Get provider function
     provider_func = PROVIDER_FUNCTIONS.get(provider.lower())
     if not provider_func:
@@ -109,8 +118,8 @@ def annotate_clusters(
         write_log(f"Processing request with {provider} using model {model}")
         start_time = time.time()
 
-        # Call provider function
-        results = provider_func(prompt, model, api_key)
+        # Call provider function with base_url
+        results = provider_func(prompt, model, api_key, base_url)
 
         end_time = time.time()
         write_log(f"Request processed in {end_time - start_time:.2f} seconds")
@@ -141,6 +150,7 @@ def batch_annotate_clusters(
     cache_dir: Optional[str] = None,
     log_dir: Optional[str] = None,
     log_level: str = "INFO",
+    base_urls: Optional[Union[str, dict[str, str]]] = None,
 ) -> list[dict[str, str]]:
     """Batch annotate multiple sets of cell clusters using LLM.
 
@@ -158,6 +168,9 @@ def batch_annotate_clusters(
         cache_dir: Directory to store cache files
         log_dir: Directory to store log files
         log_level: Logging level
+        base_urls: Custom base URLs for API endpoints. Can be:
+                  - str: Single URL applied to all providers
+                  - dict: Provider-specific URLs (e.g., {'openai': 'https://proxy.com/v1'})
 
     Returns:
         List[Dict[str, str]]: List of dictionaries mapping cluster names to annotations
@@ -221,6 +234,11 @@ def batch_annotate_clusters(
                 start_idx = end_idx
             return result_sets
 
+    # 解析base URL
+    from .url_utils import resolve_provider_base_url
+
+    base_url = resolve_provider_base_url(provider, base_urls)
+
     # Get provider function
     provider_func = PROVIDER_FUNCTIONS.get(provider.lower())
     if not provider_func:
@@ -233,8 +251,8 @@ def batch_annotate_clusters(
         write_log(f"Processing batch request with {provider} using model {model}")
         start_time = time.time()
 
-        # Call provider function
-        results = provider_func(prompt, model, api_key)
+        # Call provider function with base_url
+        results = provider_func(prompt, model, api_key, base_url)
 
         end_time = time.time()
         write_log(f"Batch request processed in {end_time - start_time:.2f} seconds")
@@ -415,6 +433,7 @@ def get_model_response(
     api_key: Optional[str] = None,
     use_cache: bool = True,
     cache_dir: Optional[str] = None,
+    base_url: Optional[str] = None,
 ) -> str:
     """Get response from a model for a given prompt.
 
@@ -425,6 +444,7 @@ def get_model_response(
         api_key: The API key for the provider. If None, loads from environment.
         use_cache: Whether to use cache
         cache_dir: The cache directory
+        base_url: Optional custom base URL
 
     Returns:
         str: The model response
@@ -472,7 +492,7 @@ def get_model_response(
     # Call provider function
     try:
         write_log(f"Requesting response from {provider} ({model})")
-        result = provider_func(prompt, model, api_key)
+        result = provider_func(prompt, model, api_key, base_url)
 
         # Save to cache
         if use_cache:

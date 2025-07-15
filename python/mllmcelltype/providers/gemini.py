@@ -1,6 +1,7 @@
 """Gemini provider module for LLMCellType."""
 
 import time
+from typing import Optional
 
 from google import genai
 from google.genai import types
@@ -8,13 +9,16 @@ from google.genai import types
 from ..logger import write_log
 
 
-def process_gemini(prompt: str, model: str, api_key: str) -> list[str]:
+def process_gemini(
+    prompt: str, model: str, api_key: str, base_url: Optional[str] = None
+) -> list[str]:
     """Process request using Google Gemini models.
 
     Args:
         prompt: The prompt to send to the API
         model: The model name (e.g., 'gemini-2.5-pro', 'gemini-2.0-flash', 'gemini-2.0-flash-lite')
         api_key: Google API key
+        base_url: Optional custom base URL (Note: Gemini uses SDK, base_url may not be applicable)
 
     Returns:
         List[str]: Processed responses, one per cluster

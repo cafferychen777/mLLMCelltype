@@ -24,6 +24,11 @@ from .prompts import (
     create_json_prompt,
     create_prompt,
 )
+from .url_utils import (
+    get_default_api_url,
+    resolve_provider_base_url,
+    validate_base_url,
+)
 from .utils import (
     clean_annotation,
     clear_cache,
@@ -38,7 +43,7 @@ from .utils import (
     validate_cache,
 )
 
-__version__ = "1.2.10"
+__version__ = "1.3.0"
 
 __all__ = [
     # Core annotation
@@ -79,4 +84,8 @@ __all__ = [
     "print_consensus_summary",
     "facilitate_cluster_discussion",
     "summarize_discussion",
+    # URL utilities
+    "resolve_provider_base_url",
+    "get_default_api_url",
+    "validate_base_url",
 ]

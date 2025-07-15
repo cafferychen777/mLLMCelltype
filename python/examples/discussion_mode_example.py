@@ -223,7 +223,7 @@ def main():
         for cluster, logs in discussion_logs.items():
             print(f"\nCluster {cluster} discussion:")
             for round_num, log in enumerate(logs):
-                print(f"  Round {round_num+1}:")
+                print(f"  Round {round_num + 1}:")
                 print(f"  {log[:100]}...")  # Only print the first 100 characters
     else:
         print("No discussion logs found.")
@@ -241,7 +241,7 @@ def main():
         for cluster, logs in discussion_logs.items():
             f.write(f"\nCluster {cluster} discussion:\n")
             for round_num, log in enumerate(logs):
-                f.write(f"Round {round_num+1}:\n{log}\n")
+                f.write(f"Round {round_num + 1}:\n{log}\n")
 
     print(f"\nDetailed results saved to {result_file}")
     print("\nTest completed successfully!")

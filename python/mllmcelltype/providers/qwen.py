@@ -2,20 +2,23 @@
 
 import json
 import time
+from typing import Optional
 
 import requests
 
 from ..logger import write_log
 
 
-def process_qwen(prompt: str, model: str, api_key: str) -> list[str]:
-    """
-    Process request using Alibaba Qwen models.
+def process_qwen(
+    prompt: str, model: str, api_key: str, base_url: Optional[str] = None
+) -> list[str]:
+    """Process request using Alibaba Qwen models with smart endpoint selection.
 
     Args:
         prompt: The prompt to send to the API
         model: The model name (e.g., 'qwen-plus', 'qwen-max-2025-01-25')
         api_key: DashScope API key
+        base_url: Optional custom base URL (overrides smart selection)
 
     Returns:
         List[str]: Processed responses, one per cluster
@@ -28,8 +31,20 @@ def process_qwen(prompt: str, model: str, api_key: str) -> list[str]:
         write_log(f"ERROR: {error_msg}")
         raise ValueError(error_msg)
 
-    # Qwen API endpoint (OpenAI compatible)
-    url = "https://dashscope-intl.aliyuncs.com/compatible-mode/v1/chat/completions"
+    # 使用自定义URL或智能选择
+    if base_url:
+        from ..url_utils import validate_base_url
+
+        if not validate_base_url(base_url):
+            raise ValueError(f"Invalid base URL: {base_url}")
+        url = base_url
+        write_log(f"Using custom base URL: {url}")
+    else:
+        from ..url_utils import get_working_qwen_endpoint
+
+        url = get_working_qwen_endpoint(api_key)
+        write_log(f"Using smart-selected endpoint: {url}")
+
     write_log(f"Using model: {model}")
 
     # Process all input at once instead of chunks

@@ -1,22 +1,24 @@
 """MiniMax provider module for LLMCellType."""
 
 import json
-import os
 import time
+from typing import Optional
 
 import requests
 
 from ..logger import write_log
 
 
-def process_minimax(prompt: str, model: str, api_key: str, group_id: str = None) -> list[str]:
+def process_minimax(
+    prompt: str, model: str, api_key: str, base_url: Optional[str] = None
+) -> list[str]:
     """Process request using MiniMax models.
 
     Args:
         prompt: The prompt to send to the API
         model: The model name (e.g., 'minimax-text-02', 'abab6-chat', 'abab5.5-chat')
         api_key: MiniMax API key
-        group_id: MiniMax group ID (required for authentication)
+        base_url: Optional custom base URL
 
     Returns:
         List[str]: Processed responses, one per cluster
@@ -30,12 +32,20 @@ def process_minimax(prompt: str, model: str, api_key: str, group_id: str = None)
         write_log(f"ERROR: {error_msg}")
         raise ValueError(error_msg)
 
-    # Group ID is no longer required for the new API
-    # If provided, use it; otherwise, it's not needed
-    group_id = group_id or os.getenv("MINIMAX_GROUP_ID")
+    # 使用自定义URL或默认URL
+    if base_url:
+        from ..url_utils import validate_base_url
 
-    # MiniMax API endpoint - use the same endpoint as in R version
-    url = "https://api.minimaxi.chat/v1/text/chatcompletion_v2"
+        if not validate_base_url(base_url):
+            raise ValueError(f"Invalid base URL: {base_url}")
+        url = base_url
+        write_log(f"Using custom base URL: {url}")
+    else:
+        from ..url_utils import get_default_api_url
+
+        url = get_default_api_url("minimax")
+        write_log(f"Using default URL: {url}")
+
     write_log(f"Using model: {model}")
     write_log(f"API URL: {url}")
 
@@ -71,10 +81,6 @@ def process_minimax(prompt: str, model: str, api_key: str, group_id: str = None)
             "Content-Type": "application/json",
             "Authorization": f"Bearer {api_key}",
         }
-
-        # Add group_id to headers if it exists
-        if group_id:
-            headers["X-Minimax-Group-Id"] = group_id
 
         max_retries = 3
         retry_delay = 2

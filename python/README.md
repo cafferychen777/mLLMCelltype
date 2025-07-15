@@ -45,6 +45,8 @@ Single-cell RNA sequencing has revolutionized our understanding of cellular hete
 
 ### Technical Features
 - **Unified API**: Consistent interface across all LLM providers
+- **Custom Base URL Support**: Configure custom API endpoints for proxy servers, enterprise gateways, or alternative endpoints
+- **Smart Endpoint Selection**: Automatic fallback between international and domestic endpoints (e.g., Qwen)
 - **Intelligent Caching**: Avoids redundant API calls to reduce costs and improve performance
 - **Comprehensive Logging**: Captures full deliberation process for transparency and debugging
 - **Structured JSON Responses**: Standardized output format with confidence scores
@@ -140,6 +142,99 @@ from mllmcelltype import load_api_key
 
 # Load from .env file or custom config
 load_api_key(provider='openai', path='.env')
+```
+
+## Custom Base URL Configuration
+
+mLLMCelltype v1.3.0+ supports custom base URLs for API endpoints, enabling usage with proxy servers, enterprise API gateways, or alternative endpoints. This is particularly useful for users in regions with API access restrictions or organizations with custom API infrastructure.
+
+### Single Base URL for All Providers
+
+```python
+from mllmcelltype import annotate_clusters
+
+# Use a single proxy URL for all providers
+annotations = annotate_clusters(
+    marker_genes=marker_genes,
+    species='human',
+    provider='openai',
+    model='gpt-4o',
+    api_key='your-api-key',
+    base_urls='https://your-proxy.com/v1/chat/completions'  # Single URL for all
+)
+```
+
+### Provider-Specific Base URLs
+
+```python
+from mllmcelltype import interactive_consensus_annotation
+
+# Configure different base URLs for different providers
+base_urls = {
+    'openai': 'https://openai-proxy.com/v1/chat/completions',
+    'anthropic': 'https://anthropic-proxy.com/v1/messages',
+    'qwen': 'https://qwen-proxy.com/compatible-mode/v1/chat/completions'
+    # Other providers will use default endpoints
+}
+
+consensus_results = interactive_consensus_annotation(
+    marker_genes=marker_genes,
+    species='human',
+    models=['gpt-4o', 'claude-3-opus', 'qwen-max'],
+    api_keys={
+        'openai': 'your-openai-key',
+        'anthropic': 'your-anthropic-key',
+        'qwen': 'your-qwen-key'
+    },
+    base_urls=base_urls
+)
+```
+
+### Smart Endpoint Selection (Qwen)
+
+For Qwen models, mLLMCelltype automatically tests endpoint connectivity and selects the best available endpoint:
+
+```python
+# Qwen automatically selects between international and domestic endpoints
+annotations = annotate_clusters(
+    marker_genes=marker_genes,
+    species='human',
+    provider='qwen',
+    model='qwen-max-2025-01-25',
+    api_key='your-qwen-key'
+    # No base_urls needed - automatic endpoint selection
+)
+```
+
+### Configuration for Chinese Users
+
+Chinese users can benefit from custom base URLs to access international APIs:
+
+```python
+# Recommended configuration for Chinese users
+china_base_urls = {
+    # International APIs through proxy
+    'openai': 'https://your-openai-proxy.com/v1/chat/completions',
+    'anthropic': 'https://your-anthropic-proxy.com/v1/messages',
+    'gemini': 'https://your-gemini-proxy.com/v1beta/models',
+
+    # Domestic APIs use default endpoints (no proxy needed)
+    # 'qwen', 'deepseek', 'zhipu' automatically use optimal endpoints
+}
+
+consensus_results = interactive_consensus_annotation(
+    marker_genes=marker_genes,
+    species='human',
+    models=[
+        'gpt-4o',           # Through proxy
+        'claude-3-opus',    # Through proxy
+        'qwen-max',         # Direct access with smart endpoint selection
+        'deepseek-chat',    # Direct access
+        'glm-4-plus'        # Direct access
+    ],
+    api_keys=your_api_keys,
+    base_urls=china_base_urls
+)
 ```
 
 ## Advanced Usage
