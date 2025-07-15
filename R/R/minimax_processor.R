@@ -9,13 +9,18 @@ MinimaxProcessor <- R6::R6Class("MinimaxProcessor",
   inherit = BaseAPIProcessor,
   
   public = list(
-    #' @field api_url Minimax API endpoint URL
-    api_url = "https://api.minimax.chat/v1/text/chatcompletion_v2",
-    
     #' @description
     #' Initialize Minimax processor
-    initialize = function() {
-      super$initialize("minimax")
+    #' @param base_url Optional custom base URL for Minimax API
+    initialize = function(base_url = NULL) {
+      super$initialize("minimax", base_url)
+    },
+
+    #' @description
+    #' Get default Minimax API URL
+    #' @return Default Minimax API endpoint URL
+    get_default_api_url = function() {
+      return("https://api.minimax.chat/v1/text/chatcompletion_v2")
     },
     
     #' @description
@@ -41,7 +46,7 @@ MinimaxProcessor <- R6::R6Class("MinimaxProcessor",
       
       # Make the API request
       response <- httr::POST(
-        url = self$api_url,
+        url = self$get_api_url(),
         httr::add_headers(
           "Authorization" = paste("Bearer", api_key),
           "Content-Type" = "application/json"

@@ -10,18 +10,23 @@ BaseAPIProcessor <- R6::R6Class("BaseAPIProcessor",
   public = list(
     #' @field provider_name Name of the API provider
     provider_name = NULL,
-    
+
     #' @field logger Unified logger instance
     logger = NULL,
-    
+
+    #' @field base_url Custom base URL for API endpoints
+    base_url = NULL,
+
     #' @description
     #' Initialize the base API processor
     #' @param provider_name Name of the API provider (e.g., "openai", "anthropic")
-    initialize = function(provider_name) {
+    #' @param base_url Optional custom base URL for API endpoints
+    initialize = function(provider_name, base_url = NULL) {
       self$provider_name <- provider_name
+      self$base_url <- base_url
       self$logger <- get_logger()
-      self$logger$info(sprintf("Initialized %s processor", provider_name), 
-                      list(provider = provider_name))
+      self$logger$info(sprintf("Initialized %s processor", provider_name),
+                      list(provider = provider_name, custom_url = !is.null(base_url)))
     },
     
     #' @description
@@ -63,7 +68,26 @@ BaseAPIProcessor <- R6::R6Class("BaseAPIProcessor",
         stop(sprintf("%s API request failed: %s", self$provider_name, e$message))
       })
     },
-    
+
+    #' @description
+    #' Get the API URL to use for requests
+    #' @return API URL string
+    get_api_url = function() {
+      if (!is.null(self$base_url)) {
+        self$logger$debug("Using custom base URL",
+                         list(provider = self$provider_name, url = self$base_url))
+        return(self$base_url)
+      }
+      return(self$get_default_api_url())
+    },
+
+    #' @description
+    #' Abstract method to be implemented by subclasses for getting default API URL
+    #' @return Default API URL string
+    get_default_api_url = function() {
+      stop("get_default_api_url must be implemented by subclass")
+    },
+
     #' @description
     #' Abstract method to be implemented by subclasses for making the actual API call
     #' @param chunk_content Content for this chunk

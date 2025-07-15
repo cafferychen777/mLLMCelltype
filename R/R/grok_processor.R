@@ -9,13 +9,18 @@ GrokProcessor <- R6::R6Class("GrokProcessor",
   inherit = BaseAPIProcessor,
   
   public = list(
-    #' @field api_url Grok API endpoint URL
-    api_url = "https://api.x.ai/v1/chat/completions",
-    
     #' @description
     #' Initialize Grok processor
-    initialize = function() {
-      super$initialize("grok")
+    #' @param base_url Optional custom base URL for Grok API
+    initialize = function(base_url = NULL) {
+      super$initialize("grok", base_url)
+    },
+
+    #' @description
+    #' Get default Grok API URL
+    #' @return Default Grok API endpoint URL
+    get_default_api_url = function() {
+      return("https://api.x.ai/v1/chat/completions")
     },
     
     #' @description
@@ -41,7 +46,7 @@ GrokProcessor <- R6::R6Class("GrokProcessor",
       
       # Make the API request
       response <- httr::POST(
-        url = self$api_url,
+        url = self$get_api_url(),
         httr::add_headers(
           "Authorization" = paste("Bearer", api_key),
           "Content-Type" = "application/json"

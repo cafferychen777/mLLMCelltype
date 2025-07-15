@@ -1377,6 +1377,136 @@ consensus_results <- interactive_consensus_annotation(
 # 因为这可能会显著降低注释准确性
 ```
 
+#### 自定义API端点（base_urls参数）
+
+**新功能**：mLLMCelltype现在支持为每个模型提供商配置自定义API端点，这对中国大陆用户和企业用户特别有用。
+
+##### 使用场景
+
+1. **中国大陆用户**：通过代理服务器访问国际API
+2. **企业用户**：使用内部API网关
+3. **开发测试**：连接本地或测试环境的API端点
+4. **Qwen模型**：选择国际版或国内版API端点
+
+##### 基本用法
+
+```r
+# 单个注释示例 - 使用代理端点
+result <- annotate_cell_types(
+  input = marker_genes_list,
+  tissue_name = "human PBMC",
+  model = "gpt-4o",
+  api_key = "your-api-key",
+  base_urls = "https://api.openai-proxy.com/v1"  # 所有提供商使用相同代理
+)
+
+# 为不同提供商指定不同的端点
+result <- annotate_cell_types(
+  input = marker_genes_list,
+  tissue_name = "human PBMC",
+  model = "gpt-4o",
+  api_key = "your-api-key",
+  base_urls = list(
+    openai = "https://openai-proxy.com/v1",
+    anthropic = "https://anthropic-proxy.com/v1",
+    qwen = "https://dashscope-intl.aliyuncs.com/api/v1/services/aigc/text-generation/generation"  # 国际版
+  )
+)
+```
+
+##### 共识注释中的使用
+
+```r
+# 在共识注释中使用自定义端点
+consensus_results <- interactive_consensus_annotation(
+  input = marker_genes_list,
+  tissue_name = "human PBMC",
+  models = c("gpt-4o", "claude-3-opus", "qwen-max-2025-01-25"),
+  api_keys = list(
+    openai = Sys.getenv("OPENAI_API_KEY"),
+    anthropic = Sys.getenv("ANTHROPIC_API_KEY"),
+    qwen = Sys.getenv("QWEN_API_KEY")
+  ),
+  base_urls = list(
+    openai = "https://openai-proxy.com/v1",
+    anthropic = "https://anthropic-proxy.com/v1",
+    qwen = "https://dashscope-intl.aliyuncs.com/api/v1/services/aigc/text-generation/generation"
+  )
+)
+```
+
+##### Qwen模型的智能端点选择
+
+**新功能**：Qwen模型现在支持智能端点选择，自动检测最佳可用端点！
+
+Qwen有两个API端点：
+- **国际版**：`https://dashscope-intl.aliyuncs.com/api/v1/services/aigc/text-generation/generation`
+- **国内版**：`https://dashscope.aliyuncs.com/api/v1/services/aigc/text-generation/generation`
+
+**智能选择机制**：
+1. 🔍 首先尝试国际版端点
+2. 🔄 如果国际版无法访问，自动切换到国内版
+3. 💾 缓存工作的端点，避免重复检测
+4. ⚡ 后续调用直接使用已验证的端点
+
+```r
+# 🚀 推荐用法：让系统自动选择最佳端点
+result <- annotate_cell_types(
+  input = marker_genes_list,
+  tissue_name = "human PBMC",
+  model = "qwen-max-2025-01-25",
+  api_key = "your-qwen-api-key"
+  # 无需配置base_urls，系统自动选择最佳端点
+)
+
+# 🎯 共识注释中的智能端点选择
+consensus_results <- interactive_consensus_annotation(
+  input = marker_genes_list,
+  tissue_name = "human PBMC",
+  models = c("gpt-4o", "claude-3-opus", "qwen-max-2025-01-25"),
+  api_keys = list(
+    openai = "your-openai-key",
+    anthropic = "your-anthropic-key",
+    qwen = "your-qwen-key"
+  )
+  # Qwen会自动选择最佳端点，其他模型使用默认端点
+)
+
+# 🔧 手动指定端点（如果需要）
+result <- annotate_cell_types(
+  input = marker_genes_list,
+  tissue_name = "human PBMC",
+  model = "qwen-max-2025-01-25",
+  api_key = "your-qwen-api-key",
+  base_urls = list(qwen = "https://dashscope.aliyuncs.com/api/v1/services/aigc/text-generation/generation")  # 强制使用国内版
+)
+```
+
+**优势**：
+- ✅ **零配置**：无需手动选择端点
+- ✅ **自动适应**：根据网络环境自动选择
+- ✅ **高效缓存**：避免重复检测
+- ✅ **向后兼容**：支持手动指定端点
+
+##### 常用代理配置示例
+
+```r
+# 中国用户常用代理配置
+china_proxy_urls <- list(
+  openai = "https://api.openai-proxy.com/v1",
+  anthropic = "https://api.anthropic-proxy.com/v1",
+  deepseek = "https://api.deepseek.com/v1",  # DeepSeek通常可直接访问
+  gemini = "https://generativelanguage-proxy.googleapis.com/v1beta/models"
+  # qwen 默认使用国际版，通常无需代理
+)
+
+# 企业内部网关配置
+enterprise_urls <- list(
+  openai = "https://internal-gateway.company.com/openai/v1",
+  anthropic = "https://internal-gateway.company.com/anthropic/v1"
+)
+```
+
 #### Python包使用
 
 ```python

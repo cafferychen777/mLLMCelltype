@@ -9,13 +9,18 @@ OpenAIProcessor <- R6::R6Class("OpenAIProcessor",
   inherit = BaseAPIProcessor,
   
   public = list(
-    #' @field api_url OpenAI API endpoint URL
-    api_url = "https://api.openai.com/v1/chat/completions",
-    
     #' @description
     #' Initialize OpenAI processor
-    initialize = function() {
-      super$initialize("openai")
+    #' @param base_url Optional custom base URL for OpenAI API
+    initialize = function(base_url = NULL) {
+      super$initialize("openai", base_url)
+    },
+
+    #' @description
+    #' Get default OpenAI API URL
+    #' @return Default OpenAI API endpoint URL
+    get_default_api_url = function() {
+      return("https://api.openai.com/v1/chat/completions")
     },
     
     #' @description
@@ -42,7 +47,7 @@ OpenAIProcessor <- R6::R6Class("OpenAIProcessor",
       
       # Make the API request
       response <- httr::POST(
-        url = self$api_url,
+        url = self$get_api_url(),
         httr::add_headers(
           "Content-Type" = "application/json",
           "Authorization" = paste("Bearer", api_key)

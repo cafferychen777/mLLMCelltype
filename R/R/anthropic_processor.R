@@ -9,13 +9,18 @@ AnthropicProcessor <- R6::R6Class("AnthropicProcessor",
   inherit = BaseAPIProcessor,
   
   public = list(
-    #' @field api_url Anthropic API endpoint URL
-    api_url = "https://api.anthropic.com/v1/messages",
-    
     #' @description
     #' Initialize Anthropic processor
-    initialize = function() {
-      super$initialize("anthropic")
+    #' @param base_url Optional custom base URL for Anthropic API
+    initialize = function(base_url = NULL) {
+      super$initialize("anthropic", base_url)
+    },
+
+    #' @description
+    #' Get default Anthropic API URL
+    #' @return Default Anthropic API endpoint URL
+    get_default_api_url = function() {
+      return("https://api.anthropic.com/v1/messages")
     },
     
     #' @description
@@ -56,7 +61,7 @@ AnthropicProcessor <- R6::R6Class("AnthropicProcessor",
       
       # Make the API request
       response <- httr::POST(
-        url = self$api_url,
+        url = self$get_api_url(),
         httr::add_headers(
           "x-api-key" = api_key,
           "anthropic-version" = "2023-06-01",

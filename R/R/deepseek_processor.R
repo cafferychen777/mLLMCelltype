@@ -9,13 +9,18 @@ DeepSeekProcessor <- R6::R6Class("DeepSeekProcessor",
   inherit = BaseAPIProcessor,
   
   public = list(
-    #' @field api_url DeepSeek API endpoint URL
-    api_url = "https://api.deepseek.com/v1/chat/completions",
-    
     #' @description
     #' Initialize DeepSeek processor
-    initialize = function() {
-      super$initialize("deepseek")
+    #' @param base_url Optional custom base URL for DeepSeek API
+    initialize = function(base_url = NULL) {
+      super$initialize("deepseek", base_url)
+    },
+
+    #' @description
+    #' Get default DeepSeek API URL
+    #' @return Default DeepSeek API endpoint URL
+    get_default_api_url = function() {
+      return("https://api.deepseek.com/v1/chat/completions")
     },
     
     #' @description
@@ -46,7 +51,7 @@ DeepSeekProcessor <- R6::R6Class("DeepSeekProcessor",
       
       # Make the API request
       response <- httr::POST(
-        url = self$api_url,
+        url = self$get_api_url(),
         httr::add_headers(
           "Content-Type" = "application/json",
           "Authorization" = paste("Bearer", api_key)

@@ -9,13 +9,18 @@ ZhipuProcessor <- R6::R6Class("ZhipuProcessor",
   inherit = BaseAPIProcessor,
   
   public = list(
-    #' @field api_url Zhipu API endpoint URL
-    api_url = "https://open.bigmodel.cn/api/paas/v4/chat/completions",
-    
     #' @description
     #' Initialize Zhipu processor
-    initialize = function() {
-      super$initialize("zhipu")
+    #' @param base_url Optional custom base URL for Zhipu API
+    initialize = function(base_url = NULL) {
+      super$initialize("zhipu", base_url)
+    },
+
+    #' @description
+    #' Get default Zhipu API URL
+    #' @return Default Zhipu API endpoint URL
+    get_default_api_url = function() {
+      return("https://open.bigmodel.cn/api/paas/v4/chat/completions")
     },
     
     #' @description
@@ -41,7 +46,7 @@ ZhipuProcessor <- R6::R6Class("ZhipuProcessor",
       
       # Make the API request
       response <- httr::POST(
-        url = self$api_url,
+        url = self$get_api_url(),
         httr::add_headers(
           "Authorization" = paste("Bearer", api_key),
           "Content-Type" = "application/json"

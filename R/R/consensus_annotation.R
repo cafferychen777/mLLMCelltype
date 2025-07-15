@@ -98,9 +98,10 @@ NULL
 #' @param models Vector of model names to use
 #' @param api_keys Named list of API keys
 #' @param top_gene_count Number of top differential genes to use
+#' @param base_urls Optional custom base URLs for API endpoints
 #' @return A list containing individual predictions and successful models
 #' @keywords internal
-get_initial_predictions <- function(input, tissue_name, models, api_keys, top_gene_count) {
+get_initial_predictions <- function(input, tissue_name, models, api_keys, top_gene_count, base_urls = NULL) {
   log_info("Phase 1: Getting initial predictions from all models...", list(
     models_count = length(models),
     models = models
@@ -129,7 +130,8 @@ get_initial_predictions <- function(input, tissue_name, models, api_keys, top_ge
         tissue_name = tissue_name,
         model = model,
         api_key = api_key,
-        top_gene_count = top_gene_count
+        top_gene_count = top_gene_count,
+        base_urls = base_urls
       )
       individual_predictions[[model]] <- predictions
       successful_models <- c(successful_models, model)
@@ -721,6 +723,14 @@ combine_results <- function(initial_results, controversy_results, discussion_res
 #' @param log_dir Directory for storing logs
 #' @param cache_dir Directory for storing cache
 #' @param use_cache Whether to use cached results
+#' @param base_urls Optional custom base URLs for API endpoints. Can be:
+#'   - A single character string: Applied to all providers (e.g., "https://api.proxy.com/v1")
+#'   - A named list: Provider-specific URLs (e.g., list(openai = "https://openai-proxy.com/v1",
+#'     anthropic = "https://anthropic-proxy.com/v1")). This is useful for:
+#'     * Chinese users accessing international APIs through proxies
+#'     * Enterprise users with internal API gateways
+#'     * Development/testing with local or alternative endpoints
+#'   If NULL (default), uses official API endpoints for each provider.
 #' @return A list containing consensus results, logs, and annotations
 #' @export
 interactive_consensus_annotation <- function(input,
@@ -742,7 +752,8 @@ interactive_consensus_annotation <- function(input,
                                            consensus_check_model = NULL,
                                            log_dir = "logs",
                                            cache_dir = "consensus_cache",
-                                           use_cache = TRUE) {
+                                           use_cache = TRUE,
+                                           base_urls = NULL) {
 
   # Check if there are enough models for discussion (at least 2)
   if (length(models) < 2) {
@@ -808,7 +819,8 @@ interactive_consensus_annotation <- function(input,
     tissue_name = tissue_name,
     models = models,
     api_keys = api_keys,
-    top_gene_count = top_gene_count
+    top_gene_count = top_gene_count,
+    base_urls = base_urls
   )
 
   # Phase 2: Identify controversial clusters

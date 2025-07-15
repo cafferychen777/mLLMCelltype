@@ -99,8 +99,16 @@ utils::globalVariables(c("cluster", "avg_log2FC", "gene"))
 #'   If NA, returns the generated prompt without making an API call, which is useful for
 #'   reviewing the prompt before sending it to the API.
 #' @param top_gene_count Integer specifying the number of top marker genes to use per cluster.
-#' @param debug Logical. If TRUE, prints additional debugging information during execution.
 #'   when input is from Seurat's FindAllMarkers(). Default: 10
+#' @param debug Logical. If TRUE, prints additional debugging information during execution.
+#' @param base_urls Optional custom base URLs for API endpoints. Can be:
+#'   - A single character string: Applied to all providers (e.g., "https://api.proxy.com/v1")
+#'   - A named list: Provider-specific URLs (e.g., list(openai = "https://openai-proxy.com/v1",
+#'     anthropic = "https://anthropic-proxy.com/v1")). This is useful for:
+#'     * Chinese users accessing international APIs through proxies
+#'     * Enterprise users with internal API gateways
+#'     * Development/testing with local or alternative endpoints
+#'   If NULL (default), uses official API endpoints for each provider.
 
 #' @import httr
 #' @import jsonlite
@@ -203,7 +211,8 @@ annotate_cell_types <- function(input,
                                model = 'gpt-4o',
                                api_key = NA,
                                top_gene_count = 10,
-                               debug = FALSE) {
+                               debug = FALSE,
+                               base_urls = NULL) {
 
   # Check if tissue_name is provided
   if (is.null(tissue_name)) {
@@ -213,8 +222,11 @@ annotate_cell_types <- function(input,
   # Determine provider from model name
   provider <- get_provider(model)
 
+  # Resolve provider-specific base URL
+  provider_base_url <- resolve_provider_base_url(provider, base_urls)
+
   # Log model and provider information
-  log_info("Processing input with model and provider", list(model = model, provider = provider))
+  log_info("Processing input with model and provider", list(model = model, provider = provider, custom_url = !is.null(provider_base_url)))
 
   # Generate prompt using the dedicated function
   prompt_result <- create_annotation_prompt(input, tissue_name, top_gene_count)
@@ -246,16 +258,16 @@ annotate_cell_types <- function(input,
 
   # Process based on provider
   result <- switch(provider,
-    "openai" = process_openai(prompt, model, api_key),
-    "anthropic" = process_anthropic(prompt, model, api_key),
-    "deepseek" = process_deepseek(prompt, model, api_key),
-    "gemini" = process_gemini(prompt, model, api_key),
-    "qwen" = process_qwen(prompt, model, api_key),
-    "stepfun" = process_stepfun(prompt, model, api_key),
-    "zhipu" = process_zhipu(prompt, model, api_key),
-    "minimax" = process_minimax(prompt, model, api_key),
-    "grok" = process_grok(prompt, model, api_key),
-    "openrouter" = process_openrouter(prompt, model, api_key)
+    "openai" = process_openai(prompt, model, api_key, provider_base_url),
+    "anthropic" = process_anthropic(prompt, model, api_key, provider_base_url),
+    "deepseek" = process_deepseek(prompt, model, api_key, provider_base_url),
+    "gemini" = process_gemini(prompt, model, api_key, provider_base_url),
+    "qwen" = process_qwen(prompt, model, api_key, provider_base_url),
+    "stepfun" = process_stepfun(prompt, model, api_key, provider_base_url),
+    "zhipu" = process_zhipu(prompt, model, api_key, provider_base_url),
+    "minimax" = process_minimax(prompt, model, api_key, provider_base_url),
+    "grok" = process_grok(prompt, model, api_key, provider_base_url),
+    "openrouter" = process_openrouter(prompt, model, api_key, provider_base_url)
   )
 
   log_info("Model response received", list(response = result))

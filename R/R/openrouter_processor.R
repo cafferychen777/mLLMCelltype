@@ -9,13 +9,18 @@ OpenRouterProcessor <- R6::R6Class("OpenRouterProcessor",
   inherit = BaseAPIProcessor,
   
   public = list(
-    #' @field api_url OpenRouter API endpoint URL
-    api_url = "https://openrouter.ai/api/v1/chat/completions",
-    
     #' @description
     #' Initialize OpenRouter processor
-    initialize = function() {
-      super$initialize("openrouter")
+    #' @param base_url Optional custom base URL for OpenRouter API
+    initialize = function(base_url = NULL) {
+      super$initialize("openrouter", base_url)
+    },
+
+    #' @description
+    #' Get default OpenRouter API URL
+    #' @return Default OpenRouter API endpoint URL
+    get_default_api_url = function() {
+      return("https://openrouter.ai/api/v1/chat/completions")
     },
     
     #' @description
@@ -41,7 +46,7 @@ OpenRouterProcessor <- R6::R6Class("OpenRouterProcessor",
       
       # Make the API request
       response <- httr::POST(
-        url = self$api_url,
+        url = self$get_api_url(),
         httr::add_headers(
           "Authorization" = paste("Bearer", api_key),
           "Content-Type" = "application/json"

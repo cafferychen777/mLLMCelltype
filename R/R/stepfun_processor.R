@@ -9,13 +9,18 @@ StepFunProcessor <- R6::R6Class("StepFunProcessor",
   inherit = BaseAPIProcessor,
   
   public = list(
-    #' @field api_url StepFun API endpoint URL
-    api_url = "https://api.stepfun.com/v1/chat/completions",
-    
     #' @description
     #' Initialize StepFun processor
-    initialize = function() {
-      super$initialize("stepfun")
+    #' @param base_url Optional custom base URL for StepFun API
+    initialize = function(base_url = NULL) {
+      super$initialize("stepfun", base_url)
+    },
+
+    #' @description
+    #' Get default StepFun API URL
+    #' @return Default StepFun API endpoint URL
+    get_default_api_url = function() {
+      return("https://api.stepfun.com/v1/chat/completions")
     },
     
     #' @description
@@ -41,7 +46,7 @@ StepFunProcessor <- R6::R6Class("StepFunProcessor",
       
       # Make the API request
       response <- httr::POST(
-        url = self$api_url,
+        url = self$get_api_url(),
         httr::add_headers(
           "Authorization" = paste("Bearer", api_key),
           "Content-Type" = "application/json"
