@@ -128,9 +128,9 @@ clusters with low agreement. The process includes:</p><ol><li><p>Initial voting 
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">interactive_consensus_annotation</span><span class="op">(</span></span>
 <span>  <span class="va">input</span>,</span>
 <span>  tissue_name <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  models <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"claude-3-7-sonnet-20250219"</span>, <span class="st">"claude-3-5-sonnet-latest"</span>,</span>
-<span>    <span class="st">"claude-3-5-haiku-latest"</span>, <span class="st">"gemini-2.0-flash"</span>, <span class="st">"gemini-1.5-pro"</span>,</span>
-<span>    <span class="st">"qwen-max-2025-01-25"</span>, <span class="st">"gpt-4o"</span>, <span class="st">"grok-3-latest"</span><span class="op">)</span>,</span>
+<span>  models <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"claude-sonnet-4-20250514"</span>, <span class="st">"claude-3-7-sonnet-20250219"</span>,</span>
+<span>    <span class="st">"claude-3-5-sonnet-20241022"</span>, <span class="st">"claude-3-5-haiku-20241022"</span>, <span class="st">"gemini-2.0-flash"</span>,</span>
+<span>    <span class="st">"gemini-1.5-pro"</span>, <span class="st">"qwen-max-2025-01-25"</span>, <span class="st">"gpt-4o"</span>, <span class="st">"grok-3-latest"</span><span class="op">)</span>,</span>
 <span>  <span class="va">api_keys</span>,</span>
 <span>  top_gene_count <span class="op">=</span> <span class="fl">10</span>,</span>
 <span>  controversy_threshold <span class="op">=</span> <span class="fl">0.7</span>,</span>
@@ -139,7 +139,10 @@ clusters with low agreement. The process includes:</p><ol><li><p>Initial voting 
 <span>  consensus_check_model <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  log_dir <span class="op">=</span> <span class="st">"logs"</span>,</span>
 <span>  cache_dir <span class="op">=</span> <span class="st">"consensus_cache"</span>,</span>
-<span>  use_cache <span class="op">=</span> <span class="cn">TRUE</span></span>
+<span>  use_cache <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  base_urls <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  clusters_to_analyze <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  force_rerun <span class="op">=</span> <span class="cn">FALSE</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -230,6 +233,34 @@ Example:</p>
 
 <dt id="arg-use-cache">use_cache<a class="anchor" aria-label="anchor" href="#arg-use-cache"></a></dt>
 <dd><p>Whether to use cached results</p></dd>
+
+
+<dt id="arg-base-urls">base_urls<a class="anchor" aria-label="anchor" href="#arg-base-urls"></a></dt>
+<dd><p>Optional custom base URLs for API endpoints. Can be:</p><ul><li><p>A single character string: Applied to all providers (e.g., "https://api.proxy.com/v1")</p></li>
+<li><p>A named list: Provider-specific URLs (e.g., list(openai = "https://openai-proxy.com/v1",
+anthropic = "https://anthropic-proxy.com/v1")). This is useful for:</p><ul><li><p>Chinese users accessing international APIs through proxies</p></li>
+<li><p>Enterprise users with internal API gateways</p></li>
+<li><p>Development/testing with local or alternative endpoints
+If NULL (default), uses official API endpoints for each provider.</p></li>
+</ul></li>
+</ul></dd>
+
+
+<dt id="arg-clusters-to-analyze">clusters_to_analyze<a class="anchor" aria-label="anchor" href="#arg-clusters-to-analyze"></a></dt>
+<dd><p>Optional vector of cluster IDs to analyze.
+If NULL (default), all clusters in the input will be analyzed.
+Must be character or numeric values that match the cluster IDs in your input.
+Examples:</p><ul><li><p>For numeric clusters: c(0, 2, 5) or c("0", "2", "5")</p></li>
+<li><p>This is useful when you want to focus on specific clusters without filtering the input data</p></li>
+<li><p>Non-existent cluster IDs will be ignored with a warning</p></li>
+</ul></dd>
+
+
+<dt id="arg-force-rerun">force_rerun<a class="anchor" aria-label="anchor" href="#arg-force-rerun"></a></dt>
+<dd><p>Logical. If TRUE, ignore cached results and force re-analysis
+of all specified clusters. Useful when you want to re-analyze clusters with
+different context or for subtype identification. Default is FALSE.
+Note: This parameter only affects the discussion phase for controversial clusters.</p></dd>
 
 </dl></div>
     <div class="section level2">
