@@ -1092,6 +1092,125 @@ Using a less capable model for these critical tasks can lead to:
 - Poor resolution of disagreements between models
 - Ultimately, less accurate cell type annotations
 
+### Advanced Features: Cluster Selection and Cache Control (v1.3.1)
+
+mLLMCelltype v1.3.1 introduces two powerful parameters that give you fine-grained control over the annotation process:
+
+#### 1. **clusters_to_analyze** - Selective Cluster Analysis
+
+This parameter allows you to specify exactly which clusters to analyze without manually filtering your input data:
+
+```r
+# Example: Focus on specific clusters for T cell subtyping
+consensus_results <- interactive_consensus_annotation(
+  input = pbmc_markers,
+  tissue_name = "human PBMC - T cell subtypes",
+  models = c("gpt-4o", "claude-sonnet-4-20250514"),
+  api_keys = api_keys,
+  clusters_to_analyze = c(0, 1, 7),  # Only analyze T cell clusters
+  controversy_threshold = 0.7
+)
+
+# Example: Re-analyze controversial clusters with different context
+consensus_results <- interactive_consensus_annotation(
+  input = pbmc_markers,
+  tissue_name = "activated immune cells",
+  models = c("gpt-4o", "claude-sonnet-4-20250514", "gemini-2.5-pro"),
+  api_keys = api_keys,
+  clusters_to_analyze = c("3", "5"),  # Focus on specific clusters
+  cache_dir = "consensus_cache"
+)
+```
+
+**Benefits:**
+- No need to subset your data manually
+- Maintains original cluster numbering
+- Reduces API calls and costs by only analyzing relevant clusters
+- Perfect for iterative refinement of specific cell populations
+
+#### 2. **force_rerun** - Bypass Cache for Fresh Analysis
+
+This parameter forces re-analysis of controversial clusters, bypassing cached results:
+
+```r
+# Example: Initial broad analysis
+initial_results <- interactive_consensus_annotation(
+  input = markers,
+  tissue_name = "human brain",
+  models = c("gpt-4o", "claude-sonnet-4-20250514"),
+  api_keys = api_keys,
+  use_cache = TRUE
+)
+
+# Example: Re-analyze with specific subtype context
+subtype_results <- interactive_consensus_annotation(
+  input = markers,
+  tissue_name = "human brain - neuronal subtypes",
+  models = c("gpt-4o", "claude-sonnet-4-20250514"),
+  api_keys = api_keys,
+  clusters_to_analyze = c(2, 3, 5),  # Neuronal clusters
+  force_rerun = TRUE,  # Force fresh analysis despite cache
+  use_cache = TRUE     # Still benefit from cache for non-controversial clusters
+)
+```
+
+**Important Notes:**
+- `force_rerun` only affects controversial clusters requiring LLM discussion
+- Non-controversial clusters still use cache for performance
+- Useful when changing tissue context or focusing on subtypes
+- Combines well with `clusters_to_analyze` for targeted re-analysis
+
+#### Common Use Cases
+
+1. **Iterative Subtyping Workflow:**
+```r
+# Step 1: General cell type annotation
+general_types <- interactive_consensus_annotation(
+  input = data,
+  tissue_name = "human PBMC",
+  models = models,
+  api_keys = api_keys
+)
+
+# Step 2: Focus on T cells with subtype context
+t_cell_subtypes <- interactive_consensus_annotation(
+  input = data,
+  tissue_name = "human T lymphocytes",
+  models = models,
+  api_keys = api_keys,
+  clusters_to_analyze = c(0, 1, 4, 7),  # T cell clusters from step 1
+  force_rerun = TRUE  # Fresh analysis with T cell context
+)
+
+# Step 3: Further refine CD8+ T cells
+cd8_subtypes <- interactive_consensus_annotation(
+  input = data,
+  tissue_name = "human CD8+ T cells - activation states",
+  models = models,
+  api_keys = api_keys,
+  clusters_to_analyze = c(1, 4),  # CD8+ clusters
+  force_rerun = TRUE
+)
+```
+
+2. **Cost-Effective Re-analysis:**
+```r
+# Only re-analyze clusters that were controversial
+controversial <- initial_results$controversial_clusters
+
+refined_results <- interactive_consensus_annotation(
+  input = data,
+  tissue_name = "human PBMC - refined",
+  models = c("gpt-4o", "claude-opus-4-20250514", "gemini-2.5-pro"),
+  api_keys = api_keys,
+  clusters_to_analyze = controversial,  # Only controversial ones
+  force_rerun = TRUE,
+  consensus_check_model = "claude-opus-4-20250514"  # Use best model
+)
+```
+
+These features significantly enhance the flexibility and efficiency of mLLMCelltype, making it easier to perform detailed, iterative cell type annotation workflows while managing API costs effectively.
+
 ## Visualization Examples
 
 ### Cell Type Annotation Visualization

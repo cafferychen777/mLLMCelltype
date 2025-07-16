@@ -1,5 +1,35 @@
 # mLLMCelltype Changelog
 
+## 1.3.1 (2025-07-16)
+
+### New Features: Enhanced Cluster Analysis Control
+
+#### 🎯 **Selective Cluster Analysis**
+* **New parameter `clusters_to_analyze`**: Allows users to specify exactly which clusters to analyze
+  - No need to manually filter input data
+  - Maintains original cluster numbering
+  - Reduces API calls and costs by focusing on relevant clusters
+  - Perfect for iterative refinement and subtyping workflows
+
+#### 🔄 **Cache Control for Re-analysis**
+* **New parameter `force_rerun`**: Forces fresh analysis of controversial clusters
+  - Bypasses cache when you need new analysis with different context
+  - Essential for subtype identification with tissue-specific context
+  - Non-controversial clusters still benefit from cache performance
+  - Combines perfectly with `clusters_to_analyze` for targeted workflows
+
+#### 💡 **Use Cases**
+* **Iterative Subtyping**: Analyze broad cell types first, then focus on specific populations
+* **Cost-Effective Re-analysis**: Only re-analyze controversial or specific clusters
+* **Context-Specific Analysis**: Re-run with different tissue contexts without cache interference
+* **Targeted Refinement**: Focus computational resources on clusters of interest
+
+#### 🛠️ **Implementation**
+* Full backward compatibility maintained
+* Comprehensive input validation and error handling
+* Extensive testing with real API keys across multiple scenarios
+* Updated documentation with detailed examples
+
 ## 1.2.9 (2025-06-24)
 
 ### Major Enhancement: Consensus Check Optimization
