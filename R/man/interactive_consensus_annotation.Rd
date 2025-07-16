@@ -7,9 +7,9 @@
 interactive_consensus_annotation(
   input,
   tissue_name = NULL,
-  models = c("claude-3-7-sonnet-20250219", "claude-3-5-sonnet-latest",
-    "claude-3-5-haiku-latest", "gemini-2.0-flash", "gemini-1.5-pro",
-    "qwen-max-2025-01-25", "gpt-4o", "grok-3-latest"),
+  models = c("claude-sonnet-4-20250514", "claude-3-7-sonnet-20250219",
+    "claude-3-5-sonnet-20241022", "claude-3-5-haiku-20241022", "gemini-2.0-flash",
+    "gemini-1.5-pro", "qwen-max-2025-01-25", "gpt-4o", "grok-3-latest"),
   api_keys,
   top_gene_count = 10,
   controversy_threshold = 0.7,
@@ -18,7 +18,10 @@ interactive_consensus_annotation(
   consensus_check_model = NULL,
   log_dir = "logs",
   cache_dir = "consensus_cache",
-  use_cache = TRUE
+  use_cache = TRUE,
+  base_urls = NULL,
+  clusters_to_analyze = NULL,
+  force_rerun = FALSE
 )
 }
 \arguments{
@@ -96,6 +99,34 @@ Example:
 \item{cache_dir}{Directory for storing cache}
 
 \item{use_cache}{Whether to use cached results}
+
+\item{base_urls}{Optional custom base URLs for API endpoints. Can be:
+\itemize{
+\item A single character string: Applied to all providers (e.g., "https://api.proxy.com/v1")
+\item A named list: Provider-specific URLs (e.g., list(openai = "https://openai-proxy.com/v1",
+anthropic = "https://anthropic-proxy.com/v1")). This is useful for:
+\itemize{
+\item Chinese users accessing international APIs through proxies
+\item Enterprise users with internal API gateways
+\item Development/testing with local or alternative endpoints
+If NULL (default), uses official API endpoints for each provider.
+}
+}}
+
+\item{clusters_to_analyze}{Optional vector of cluster IDs to analyze.
+If NULL (default), all clusters in the input will be analyzed.
+Must be character or numeric values that match the cluster IDs in your input.
+Examples:
+\itemize{
+\item For numeric clusters: c(0, 2, 5) or c("0", "2", "5")
+\item This is useful when you want to focus on specific clusters without filtering the input data
+\item Non-existent cluster IDs will be ignored with a warning
+}}
+
+\item{force_rerun}{Logical. If TRUE, ignore cached results and force re-analysis
+of all specified clusters. Useful when you want to re-analyze clusters with
+different context or for subtype identification. Default is FALSE.
+Note: This parameter only affects the discussion phase for controversial clusters.}
 }
 \value{
 A list containing consensus results, logs, and annotations

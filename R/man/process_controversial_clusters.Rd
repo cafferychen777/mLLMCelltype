@@ -17,7 +17,8 @@ process_controversial_clusters(
   max_discussion_rounds,
   cache_manager,
   use_cache,
-  consensus_check_model = NULL
+  consensus_check_model = NULL,
+  force_rerun = FALSE
 )
 }
 \arguments{
@@ -42,6 +43,10 @@ process_controversial_clusters(
 \item{cache_manager}{Cache manager object}
 
 \item{use_cache}{Whether to use cached results}
+
+\item{consensus_check_model}{Model to use for consensus checking}
+
+\item{force_rerun}{Whether to force re-analysis, ignoring cache}
 }
 \value{
 A list containing discussion logs and final annotations

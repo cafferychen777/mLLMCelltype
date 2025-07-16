@@ -79,6 +79,17 @@
 #' @param log_dir Directory for storing logs
 #' @param cache_dir Directory for storing cache
 #' @param use_cache Whether to use cached results
+#' @param clusters_to_analyze Optional vector of cluster IDs to analyze. 
+#'   If NULL (default), all clusters in the input will be analyzed.
+#'   Must be character or numeric values that match the cluster IDs in your input.
+#'   Examples:
+#'   - For numeric clusters: c(0, 2, 5) or c("0", "2", "5")
+#'   - This is useful when you want to focus on specific clusters without filtering the input data
+#'   - Non-existent cluster IDs will be ignored with a warning
+#' @param force_rerun Logical. If TRUE, ignore cached results and force re-analysis 
+#'   of all specified clusters. Useful when you want to re-analyze clusters with 
+#'   different context or for subtype identification. Default is FALSE.
+#'   Note: This parameter only affects the discussion phase for controversial clusters.
 #' @return A list containing consensus results, logs, and annotations
 #' @name interactive_consensus_annotation
 #' @export
@@ -373,12 +384,14 @@ select_best_prediction <- function(consensus_result, valid_predictions) {
 #' @param max_discussion_rounds Maximum number of discussion rounds for controversial clusters
 #' @param cache_manager Cache manager object
 #' @param use_cache Whether to use cached results
+#' @param consensus_check_model Model to use for consensus checking
+#' @param force_rerun Whether to force re-analysis, ignoring cache
 #' @return A list containing discussion logs and final annotations
 #' @keywords internal
 process_controversial_clusters <- function(controversial_clusters, input, tissue_name,
                                           successful_models, api_keys, individual_predictions,
                                           top_gene_count, controversy_threshold, entropy_threshold, max_discussion_rounds,
-                                          cache_manager, use_cache, consensus_check_model = NULL) {
+                                          cache_manager, use_cache, consensus_check_model = NULL, force_rerun = FALSE) {
 
   if (length(controversial_clusters) == 0) {
     log_info("No controversial clusters found. All clusters have reached consensus.")
@@ -410,7 +423,7 @@ process_controversial_clusters <- function(controversial_clusters, input, tissue
 
     # Check cache
     cached_result <- NULL
-    if (use_cache) {
+    if (use_cache && !force_rerun) {
       cache_key <- cache_manager$generate_key(input, successful_models, char_cluster_id)
       cache_debug <- Sys.getenv("LLMCELLTYPE_DEBUG_CACHE") == "TRUE"
 
@@ -438,6 +451,8 @@ process_controversial_clusters <- function(controversial_clusters, input, tissue
           message(sprintf("[INFO] Successfully loaded cached result for cluster %s", cluster_id))
         }
       }
+    } else if (force_rerun) {
+      log_info(sprintf("Force rerun enabled, skipping cache for cluster %s", char_cluster_id))
     }
 
     # Use cached results or perform discussion
@@ -731,6 +746,17 @@ combine_results <- function(initial_results, controversy_results, discussion_res
 #'     * Enterprise users with internal API gateways
 #'     * Development/testing with local or alternative endpoints
 #'   If NULL (default), uses official API endpoints for each provider.
+#' @param clusters_to_analyze Optional vector of cluster IDs to analyze. 
+#'   If NULL (default), all clusters in the input will be analyzed.
+#'   Must be character or numeric values that match the cluster IDs in your input.
+#'   Examples:
+#'   - For numeric clusters: c(0, 2, 5) or c("0", "2", "5")
+#'   - This is useful when you want to focus on specific clusters without filtering the input data
+#'   - Non-existent cluster IDs will be ignored with a warning
+#' @param force_rerun Logical. If TRUE, ignore cached results and force re-analysis 
+#'   of all specified clusters. Useful when you want to re-analyze clusters with 
+#'   different context or for subtype identification. Default is FALSE.
+#'   Note: This parameter only affects the discussion phase for controversial clusters.
 #' @return A list containing consensus results, logs, and annotations
 #' @export
 interactive_consensus_annotation <- function(input,
@@ -753,11 +779,15 @@ interactive_consensus_annotation <- function(input,
                                            log_dir = "logs",
                                            cache_dir = "consensus_cache",
                                            use_cache = TRUE,
-                                           base_urls = NULL) {
+                                           base_urls = NULL,
+                                           clusters_to_analyze = NULL,
+                                           force_rerun = FALSE) {
 
   # Check if there are enough models for discussion (at least 2)
   if (length(models) < 2) {
-    stop("At least 2 models are required for LLM discussion and consensus building. Please provide more models or use annotate_cell_types() function for single-model annotation.")
+    stop(paste0("At least 2 models are required for LLM discussion and consensus ",
+                "building. Please provide more models or use annotate_cell_types() ",
+                "function for single-model annotation."))
   }
 
   # Check if input is a list with named elements (clusters)
@@ -804,13 +834,61 @@ interactive_consensus_annotation <- function(input,
   cache_manager <- CacheManager$new(cache_dir)
 
   # Log cache settings
-  if (use_cache) {
+  if (use_cache && !force_rerun) {
     cache_msg <- sprintf("Cache enabled. Using cache directory: %s", cache_dir)
     log_info(cache_msg, list(cache_dir = cache_dir))
     message(cache_msg)
+  } else if (force_rerun) {
+    log_info("Force rerun enabled, cache will be ignored for controversial clusters")
+    message("Force rerun enabled. Cache will be ignored for controversial clusters.")
   } else {
     log_info("Cache disabled")
     message("Cache disabled.")
+  }
+
+  # Filter clusters if clusters_to_analyze is specified
+  if (!is.null(clusters_to_analyze)) {
+    # Convert to character for consistent comparison
+    clusters_to_analyze <- as.character(clusters_to_analyze)
+    
+    # Get all available clusters
+    available_clusters <- if (is.list(input) && !is.data.frame(input)) {
+      names(input)
+    } else {
+      as.character(unique(input$cluster))
+    }
+    
+    # Check which requested clusters exist
+    valid_clusters <- clusters_to_analyze[clusters_to_analyze %in% available_clusters]
+    invalid_clusters <- clusters_to_analyze[!clusters_to_analyze %in% available_clusters]
+    
+    # Warn about non-existent clusters
+    if (length(invalid_clusters) > 0) {
+      warning(sprintf("The following cluster IDs were not found in the input: %s",
+                     paste(invalid_clusters, collapse = ", ")))
+    }
+    
+    # Stop if no valid clusters
+    if (length(valid_clusters) == 0) {
+      stop("None of the specified clusters exist in the input data.")
+    }
+    
+    # Filter input based on type
+    if (is.list(input) && !is.data.frame(input)) {
+      # For list input, subset by names
+      input <- input[valid_clusters]
+    } else {
+      # For dataframe input, filter rows
+      input <- input[input$cluster %in% valid_clusters, ]
+    }
+    
+    # Log the filtering
+    log_info(sprintf("Filtered to analyze %d clusters: %s", 
+                    length(valid_clusters), 
+                    paste(valid_clusters, collapse = ", ")))
+    message(sprintf("Analyzing %d specified clusters: %s", 
+                   length(valid_clusters), 
+                   paste(valid_clusters, collapse = ", ")))
   }
 
   # Phase 1: Get initial predictions from all models
@@ -857,7 +935,8 @@ interactive_consensus_annotation <- function(input,
     # No logger parameter needed,
     cache_manager = cache_manager,
     use_cache = use_cache,
-    consensus_check_model = consensus_check_model
+    consensus_check_model = consensus_check_model,
+    force_rerun = force_rerun
   )
 
   # Combine results from all phases
