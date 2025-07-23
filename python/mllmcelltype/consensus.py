@@ -598,7 +598,13 @@ def process_controversial_clusters(
 
                 # Get response for this round
                 response = get_model_response(
-                    prompt, provider, discussion_model, api_key, use_cache and not force_rerun, cache_dir, base_url
+                    prompt,
+                    provider,
+                    discussion_model,
+                    api_key,
+                    use_cache and not force_rerun,
+                    cache_dir,
+                    base_url,
                 )
 
                 # Extract potential decision from this round
@@ -981,36 +987,42 @@ def interactive_consensus_annotation(
     if clusters_to_analyze is not None:
         # Convert to list of strings for consistent comparison
         clusters_to_analyze = [str(cluster_id) for cluster_id in clusters_to_analyze]
-        
+
         # Get all available clusters
         available_clusters = list(marker_genes.keys())
-        
+
         # Check which requested clusters exist
-        valid_clusters = [cluster_id for cluster_id in clusters_to_analyze if cluster_id in available_clusters]
-        invalid_clusters = [cluster_id for cluster_id in clusters_to_analyze if cluster_id not in available_clusters]
-        
+        valid_clusters = [
+            cluster_id for cluster_id in clusters_to_analyze if cluster_id in available_clusters
+        ]
+        invalid_clusters = [
+            cluster_id for cluster_id in clusters_to_analyze if cluster_id not in available_clusters
+        ]
+
         # Warn about non-existent clusters
         if invalid_clusters:
             warning_msg = f"The following cluster IDs were not found in the input: {', '.join(invalid_clusters)}"
             write_log(warning_msg, level="warning")
             if verbose:
                 print(f"Warning: {warning_msg}")
-        
+
         # Stop if no valid clusters
         if not valid_clusters:
             error_msg = "None of the specified clusters exist in the input data."
             write_log(error_msg, level="error")
             raise ValueError(error_msg)
-        
+
         # Filter marker_genes to only include specified clusters
         original_marker_genes = marker_genes.copy()
         marker_genes = {cluster_id: marker_genes[cluster_id] for cluster_id in valid_clusters}
-        
+
         # Log the filtering
         log_msg = f"Filtered to analyze {len(valid_clusters)} clusters: {', '.join(valid_clusters)}"
         write_log(log_msg)
         if verbose:
-            print(f"Info: Analyzing {len(valid_clusters)} specified clusters: {', '.join(valid_clusters)}")
+            print(
+                f"Info: Analyzing {len(valid_clusters)} specified clusters: {', '.join(valid_clusters)}"
+            )
 
     # Make sure we have API keys
     if api_keys is None:

@@ -12,7 +12,7 @@ except FileNotFoundError:
 
 setup(
     name="mllmcelltype",
-    version="1.3.0",
+    version="1.3.2",
     packages=find_packages(),
     description="A Python module for cell type annotation using various LLMs.",
     long_description=long_description,
