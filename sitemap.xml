@@ -90,9 +90,12 @@
 <url><loc>https://cafferyang.com/mLLMCelltype/reference/process_zhipu.html</loc></url>
 <url><loc>https://cafferyang.com/mLLMCelltype/reference/register_custom_model.html</loc></url>
 <url><loc>https://cafferyang.com/mLLMCelltype/reference/register_custom_provider.html</loc></url>
+<url><loc>https://cafferyang.com/mLLMCelltype/reference/resolve_provider_base_url.html</loc></url>
+<url><loc>https://cafferyang.com/mLLMCelltype/reference/sanitize_base_url.html</loc></url>
 <url><loc>https://cafferyang.com/mLLMCelltype/reference/select_best_prediction.html</loc></url>
 <url><loc>https://cafferyang.com/mLLMCelltype/reference/standardize_cell_type_names.html</loc></url>
 <url><loc>https://cafferyang.com/mLLMCelltype/reference/summarize_discussion.html</loc></url>
+<url><loc>https://cafferyang.com/mLLMCelltype/reference/validate_base_url.html</loc></url>
 <url><loc>https://cafferyang.com/mLLMCelltype/reference/write_log.html</loc></url>
 </urlset>
 
