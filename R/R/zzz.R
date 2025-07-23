@@ -4,8 +4,19 @@
   # Get package version
   version <- utils::packageDescription(pkgname, fields = "Version")
   
+  # ASCII art logo
+  logo <- paste0(
+    "\n",
+    "┌─────────────────────────────────────────────────────────────────────────┐\n",
+    "│                             mLLMCelltype                               │\n",
+    "│                    Cell Type Annotation with LLMs                      │\n",
+    "└─────────────────────────────────────────────────────────────────────────┘\n"
+  )
+  
   # Create startup message
   msg <- paste0(
+    logo,
+    "\n",
     "mLLMCelltype v", version, " loaded successfully!\n",
     "For more information, please visit:\n",
     "- Documentation: https://cafferychen777.github.io/mLLMCelltype/\n",
