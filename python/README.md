@@ -263,6 +263,126 @@ for i, annotations in enumerate(batch_annotations):
         print(f"  Cluster {cluster}: {annotation}")
 ```
 
+### Targeted Analysis: New Enhanced Parameters
+
+mLLMCelltype v1.3.0+ introduces two powerful parameters for more precise control over cell type annotation:
+
+#### `clusters_to_analyze`: Focus on Specific Clusters
+
+This parameter allows you to analyze only specific clusters of interest, rather than processing all clusters in your dataset.
+
+```python
+from mllmcelltype import interactive_consensus_annotation
+
+# Example: Large dataset with 10 clusters, but only interested in immune cells
+all_marker_genes = {
+    "cluster_0": ["CD3D", "CD3E", "CD3G", "IL7R", "TCF7"],        # T cells
+    "cluster_1": ["CD79A", "CD79B", "MS4A1", "IGHM", "IGKC"],     # B cells
+    "cluster_2": ["CD14", "LYZ", "S100A8", "S100A9", "FCN1"],     # Monocytes  
+    "cluster_3": ["FCGR3A", "NCR1", "KLRD1", "GNLY", "PRF1"],     # NK cells
+    "cluster_4": ["EPCAM", "KRT8", "KRT18", "KRT19"],             # Epithelial cells
+    "cluster_5": ["COL1A1", "COL3A1", "FN1", "VIM"],             # Fibroblasts
+    "cluster_6": ["PECAM1", "VWF", "ENG", "CDH5"],               # Endothelial cells
+    "cluster_7": ["PPBP", "PF4", "TUBB1", "GP9", "ITGA2B"],      # Platelets
+    "cluster_8": ["HBB", "HBA1", "HBA2", "ALAS2"],               # Erythrocytes
+    "cluster_9": ["TPSAB1", "TPSB2", "CPA3", "MS4A2"]           # Mast cells
+}
+
+# Focus analysis only on immune cells (clusters 0, 1, 2, 3)
+result = interactive_consensus_annotation(
+    marker_genes=all_marker_genes,
+    species="human",
+    models=["gpt-4o", "claude-sonnet-4-20250514", "gemini-2.5-pro"],
+    clusters_to_analyze=["cluster_0", "cluster_1", "cluster_2", "cluster_3"],  # Only immune clusters
+    tissue="peripheral blood",
+    verbose=True
+)
+
+print("Analyzed clusters:", list(result['consensus'].keys()))
+# Output: ['cluster_0', 'cluster_1', 'cluster_2', 'cluster_3']
+```
+
+**Key Benefits:**
+- **Efficiency**: Save time and API costs by focusing on clusters of interest
+- **Targeted Analysis**: Perfect for specific research questions (e.g., "What are the immune cell subtypes?")
+- **Iterative Workflow**: Analyze different subsets in separate runs for different research objectives
+
+#### `force_rerun`: Fresh Analysis Bypassing Cache
+
+This parameter forces fresh analysis by ignoring cached results, useful for re-analyzing clusters with different contexts or parameters.
+
+```python
+# Scenario: Previous analysis might have been with limited context
+# Now you want fresh analysis with more specific context
+
+marker_genes = {
+    "cluster_0": ["CD3D", "CD3E", "CD8A", "PRF1", "GZMB"],  # Could be CD8+ T cells or NK cells
+    "cluster_1": ["CD19", "MS4A1", "CD79A", "IGHM", "CD27"] # B cells with memory markers
+}
+
+# First analysis with general context
+print("=== First Analysis (will be cached) ===")
+result1 = interactive_consensus_annotation(
+    marker_genes=marker_genes,
+    species="human",
+    models=["gpt-4o", "claude-sonnet-4-20250514"],
+    tissue="peripheral blood",  # General context
+    force_rerun=False,  # Use cache if available (default)
+    verbose=False
+)
+
+# Second analysis with specific disease context - force fresh analysis
+print("=== Second Analysis (force fresh analysis) ===")  
+result2 = interactive_consensus_annotation(
+    marker_genes=marker_genes,
+    species="human", 
+    models=["gpt-4o", "claude-sonnet-4-20250514"],
+    tissue="peripheral blood",
+    additional_context="Patient with autoimmune disease, focus on activated/memory cell states",
+    force_rerun=True,  # Force fresh analysis, ignore cache
+    verbose=False
+)
+
+print("Cached result:", result1['consensus'])
+print("Fresh result:", result2['consensus'])
+```
+
+**Key Benefits:**
+- **Context Refinement**: Re-analyze with better biological context or updated knowledge
+- **Parameter Exploration**: Test different consensus thresholds or model combinations
+- **Quality Control**: Verify consistent results across multiple runs
+
+#### Combined Usage: Maximum Flexibility
+
+Both parameters can be used together for ultimate control:
+
+```python
+# Scenario: You have a large dataset but want to re-analyze specific controversial clusters
+
+controversial_clusters = ["cluster_5", "cluster_8", "cluster_12"]  # Previously identified as uncertain
+
+result = interactive_consensus_annotation(
+    marker_genes=all_marker_genes,
+    species="human",
+    models=["gpt-4o", "claude-sonnet-4-20250514", "gemini-2.5-pro", "qwen-max-2025-01-25"],
+    clusters_to_analyze=controversial_clusters,  # Focus on specific clusters
+    force_rerun=True,                           # Force fresh analysis
+    tissue="brain",
+    additional_context="Focus on rare neuronal subtypes and glial cell distinctions",
+    consensus_threshold=0.8,  # Higher threshold for more stringent consensus
+    max_discussion_rounds=3,
+    verbose=True
+)
+
+print(f"Re-analyzed {len(controversial_clusters)} controversial clusters with fresh context")
+```
+
+**Use Cases:**
+- **Iterative Refinement**: Progressively improve annotations for challenging clusters
+- **Publication Preparation**: Ensure robust, well-contextualized annotations for important findings
+- **Method Comparison**: Compare different model combinations on the same clusters
+- **Quality Assurance**: Validate critical cell type assignments with multiple approaches
+
 ### Using OpenRouter
 
 OpenRouter provides a unified API for accessing models from multiple providers. Our comprehensive testing shows that OpenRouter integration works seamlessly in all scenarios, including complex cell types and multi-round discussions.
