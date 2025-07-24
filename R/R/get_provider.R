@@ -27,7 +27,9 @@ utils::globalVariables(c("custom_models"))
 #'       \item Meta models: 'meta-llama/llama-3-70b-instruct', 'meta-llama/llama-3-8b-instruct', 'meta-llama/llama-2-70b-chat'
 #'       \item Google models: 'google/gemini-2.5-pro', 'google/gemini-2.5-flash', 'google/gemini-2.0-flash', 'google/gemini-1.5-pro-latest', 'google/gemini-1.5-flash'
 #'       \item Mistral models: 'mistralai/mistral-large', 'mistralai/mistral-medium', 'mistralai/mistral-small'
-#'       \item Other models: 'microsoft/mai-ds-r1', 'perplexity/sonar-small-chat', 'cohere/command-r', 'deepseek/deepseek-chat', 'thudm/glm-z1-32b'
+#'       \item Qwen models: 'qwen/qwen3-coder:free', 'qwen/qwen3-235b-a22b-07-25:free', 'qwen/qwen2.5-72b-instruct:free'
+#'       \item DeepSeek models: 'deepseek/deepseek-r1:free', 'tngtech/deepseek-r1t2-chimera:free'
+#'       \item Other models: 'microsoft/mai-ds-r1:free', 'moonshotai/kimi-k2:free', 'tencent/hunyuan-a13b-instruct:free'
 #'     }
 #' }
 #' @importFrom utils adist
@@ -179,14 +181,14 @@ get_provider <- function(model) {
 
     # Mistral models
     "mistralai/codestral-2501", "mistralai/codestral-mamba", "mistralai/devstral-small",
-    "mistralai/devstral-small:free", "mistralai/ministral-3b", "mistralai/ministral-8b",
+    "mistralai/devstral-small:free", "mistralai/devstral-small-2505:free", "mistralai/ministral-3b", "mistralai/ministral-8b",
     "mistralai/mistral-7b-instruct", "mistralai/mistral-7b-instruct-v0.1", "mistralai/mistral-7b-instruct-v0.2",
     "mistralai/mistral-7b-instruct-v0.3", "mistralai/mistral-7b-instruct:free", "mistralai/mistral-large",
     "mistralai/mistral-large-2407", "mistralai/mistral-large-2411", "mistralai/mistral-medium",
     "mistralai/mistral-medium-3", "mistralai/mistral-nemo", "mistralai/mistral-nemo:free",
     "mistralai/mistral-saba", "mistralai/mistral-small", "mistralai/mistral-small-24b-instruct-2501",
     "mistralai/mistral-small-24b-instruct-2501:free", "mistralai/mistral-small-3.1-24b-instruct", "mistralai/mistral-small-3.1-24b-instruct:free",
-    "mistralai/mistral-tiny", "mistralai/mixtral-8x22b-instruct", "mistralai/mixtral-8x7b-instruct",
+    "mistralai/mistral-small-3.2-24b-instruct:free", "mistralai/mistral-tiny", "mistralai/mixtral-8x22b-instruct", "mistralai/mixtral-8x7b-instruct",
     "mistralai/pixtral-12b", "mistralai/pixtral-large-2411",
 
     # DeepSeek models
@@ -199,7 +201,7 @@ get_provider <- function(model) {
     "deepseek/deepseek-r1-distill-qwen-7b", "deepseek/deepseek-r1-distill-qwen-14b", 
     "deepseek/deepseek-r1-distill-qwen-14b:free", "deepseek/deepseek-r1-distill-qwen-32b",
     "deepseek/deepseek-r1-distill-qwen-32b:free", "deepseek/deepseek-r1-zero:free", "deepseek/deepseek-r1:free",
-    "deepseek/deepseek-v3-base:free", "tngtech/deepseek-r1t-chimera:free",
+    "deepseek/deepseek-v3-base:free", "tngtech/deepseek-r1t-chimera:free", "tngtech/deepseek-r1t2-chimera:free",
 
     # Qwen models
     "qwen/qwen-2-72b-instruct", "qwen/qwen-2.5-72b-instruct", "qwen/qwen-2.5-72b-instruct:free",
@@ -210,9 +212,10 @@ get_provider <- function(model) {
     "qwen/qwen2.5-vl-32b-instruct", "qwen/qwen2.5-vl-32b-instruct:free", "qwen/qwen2.5-vl-3b-instruct:free",
     "qwen/qwen2.5-vl-72b-instruct", "qwen/qwen2.5-vl-72b-instruct:free", "qwen/qwen3-14b",
     "qwen/qwen3-14b:free", "qwen/qwen3-235b-a22b", "qwen/qwen3-235b-a22b:free",
-    "qwen/qwen3-30b-a3b", "qwen/qwen3-30b-a3b:free", "qwen/qwen3-32b",
-    "qwen/qwen3-32b:free", "qwen/qwen3-8b", "qwen/qwen3-8b:free",
-    "qwen/qwq-32b", "qwen/qwq-32b-preview", "qwen/qwq-32b:free",
+    "qwen/qwen3-235b-a22b-07-25", "qwen/qwen3-235b-a22b-07-25:free", "qwen/qwen3-30b-a3b", 
+    "qwen/qwen3-30b-a3b:free", "qwen/qwen3-32b", "qwen/qwen3-32b:free", 
+    "qwen/qwen3-4b", "qwen/qwen3-4b:free", "qwen/qwen3-8b", "qwen/qwen3-8b:free",
+    "qwen/qwen3-coder", "qwen/qwen3-coder:free", "qwen/qwq-32b", "qwen/qwq-32b-preview", "qwen/qwq-32b:free",
 
     # GLM models
     "thudm/glm-4-32b", "thudm/glm-4-32b:free", "thudm/glm-z1-32b",
@@ -234,7 +237,8 @@ get_provider <- function(model) {
     "arcee-ai/arcee-blitz", "arcee-ai/caller-large", "arcee-ai/coder-large",
     "arcee-ai/maestro-reasoning", "arcee-ai/spotlight", "arcee-ai/virtuoso-large",
     "arcee-ai/virtuoso-medium-v2", "arliai/qwq-32b-arliai-rpr-v1:free", "cognitivecomputations/dolphin-mixtral-8x22b",
-    "cognitivecomputations/dolphin3.0-mistral-24b:free", "cognitivecomputations/dolphin3.0-r1-mistral-24b:free", "cohere/command",
+    "cognitivecomputations/dolphin-mistral-24b-venice-edition:free", "cognitivecomputations/dolphin3.0-mistral-24b:free", 
+    "cognitivecomputations/dolphin3.0-r1-mistral-24b:free", "cohere/command",
     "cohere/command-a", "cohere/command-r", "cohere/command-r-03-2024",
     "cohere/command-r-08-2024", "cohere/command-r-plus", "cohere/command-r-plus-04-2024",
     "cohere/command-r-plus-08-2024", "cohere/command-r7b-12-2024", "eleutherai/llemma_7b",
@@ -242,7 +246,8 @@ get_provider <- function(model) {
     "featherless/qwerky-72b:free", "gryphe/mythomax-l2-13b", "inception/mercury-coder-small-beta",
     "infermatic/mn-inferor-12b", "inflection/inflection-3-pi", "inflection/inflection-3-productivity",
     "liquid/lfm-3b", "liquid/lfm-40b", "liquid/lfm-7b",
-    "mancer/weaver", "minimax/minimax-01", "minimax/minimax-m1", "minimax/minimax-m1:extended", "moonshotai/kimi-vl-a3b-thinking:free",
+    "mancer/weaver", "minimax/minimax-01", "minimax/minimax-m1", "minimax/minimax-m1:extended", 
+    "moonshotai/kimi-dev-72b:free", "moonshotai/kimi-k2:free", "moonshotai/kimi-vl-a3b-thinking:free",
     "moonshotai/moonlight-16b-a3b-instruct:free", "neversleep/llama-3-lumimaid-70b", "neversleep/llama-3-lumimaid-8b",
     "neversleep/llama-3-lumimaid-8b:extended", "neversleep/llama-3.1-lumimaid-70b", "neversleep/llama-3.1-lumimaid-8b",
     "neversleep/noromaid-20b", "nothingiisreal/mn-celeste-12b", "nousresearch/deephermes-3-llama-3-8b-preview:free",
@@ -255,9 +260,9 @@ get_provider <- function(model) {
     "perplexity/sonar-pro", "perplexity/sonar-reasoning", "perplexity/sonar-reasoning-pro",
     "pygmalionai/mythalion-13b", "raifle/sorcererlm-8x22b", "rekaai/reka-flash-3:free",
     "sao10k/fimbulvetr-11b-v2", "sao10k/l3-euryale-70b", "sao10k/l3-lunaris-8b",
-    "sao10k/l3.1-euryale-70b", "sao10k/l3.3-euryale-70b", "sarvamai/sarvam-m",
+    "sao10k/l3.1-euryale-70b", "sao10k/l3.3-euryale-70b", "sarvamai/sarvam-m", "sarvamai/sarvam-m:free",
     "scb10x/llama3.1-typhoon2-70b-instruct", "scb10x/llama3.1-typhoon2-8b-instruct", "shisa-ai/shisa-v2-llama3.3-70b:free",
-    "sophosympatheia/midnight-rose-70b", "thedrummer/anubis-pro-105b-v1", "thedrummer/rocinante-12b",
+    "sophosympatheia/midnight-rose-70b", "tencent/hunyuan-a13b-instruct:free", "thedrummer/anubis-pro-105b-v1", "thedrummer/rocinante-12b",
     "thedrummer/skyfall-36b-v2", "thedrummer/unslopnemo-12b", "thedrummer/valkyrie-49b-v1",
     "tngtech/deepseek-r1t-chimera:free", "undi95/remm-slerp-l2-13b", "undi95/toppy-m-7b",
     "x-ai/grok-2-1212", "x-ai/grok-2-vision-1212", "x-ai/grok-3-beta",
