@@ -34,25 +34,24 @@ consensus_results = interactive_consensus_annotation(
 
 ## Recommended Free Models
 
-Here are some high-quality free models with large parameter counts that are currently available on OpenRouter:
+Here are some high-quality free models with large parameter counts that are currently available on OpenRouter (updated July 2025):
 
-### Large Language Models (Sorted by Size)
-- `nvidia/llama-3.1-nemotron-ultra-253b-v1:free` - 253B parameters, context: 131K
-- `bytedance-research/ui-tars-72b:free` - 72B parameters, context: 32K
-- `featherless/qwerky-72b:free` - 72B parameters, context: 32K
-- `shisa-ai/shisa-v2-llama3.3-70b:free` - 70B parameters, context: 32K
-- `thudm/glm-4-32b:free` - 32B parameters, context: 32K
-- `thudm/glm-z1-32b:free` - 32B parameters, context: 32K
-- `mistralai/mistral-small-3.1-24b-instruct:free` - 24B parameters, context: 96K
-- `agentica-org/deepcoder-14b-preview:free` - 14B parameters, context: 96K
+### Large Language Models (Sorted by Size/Features)
+- `qwen/qwen3-coder:free` - 480B parameters (35B active), context: 262K - Code generation model
+- `qwen/qwen3-235b-a22b-07-25:free` - 235B parameters (22B active), context: 262K - General purpose
+- `moonshotai/kimi-k2:free` - 1T parameters (32B active), context: 65K - MoE model with tool use
+- `tencent/hunyuan-a13b-instruct:free` - 80B parameters (13B active), context: 32K - MoE with reasoning
+- `tngtech/deepseek-r1t2-chimera:free` - 671B parameters, context: 163K - Reasoning model
+- `google/gemma-3n-e2b-it:free` - 6B parameters (2B effective), context: 8K - Multimodal
+- `cognitivecomputations/dolphin-mistral-24b-venice-edition:free` - 24B parameters, context: 32K - Uncensored
 
-### Models with Extra-Long Context Windows
-- `meta-llama/llama-4-scout:free` - 512K context window
-- `meta-llama/llama-4-maverick:free` - 256K context window
-- `deepseek/deepseek-chat-v3-0324:free` - 163K context window
-- `deepseek/deepseek-v3-base:free` - 163K context window
-- `tngtech/deepseek-r1t-chimera:free` - 163K context window
-- `microsoft/mai-ds-r1:free` - 163K context window
+### Latest Models (July 2025)
+- `qwen/qwen3-coder:free` - Latest code generation model (July 2025)
+- `qwen/qwen3-235b-a22b-07-25:free` - Latest general purpose model (July 2025)
+- `moonshotai/kimi-k2:free` - Advanced MoE model with tool capabilities (July 2025)
+- `tencent/hunyuan-a13b-instruct:free` - Reasoning-capable MoE model (July 2025)
+- `tngtech/deepseek-r1t2-chimera:free` - Second-generation reasoning model (July 2025)
+- `google/gemma-3n-e2b-it:free` - Latest multimodal Gemma model (July 2025)
 
 ## Checking Available Models
 
