@@ -66,6 +66,10 @@ We're excited to announce the launch of mLLMCelltype Web Application! Now you ca
 
 **⚠️ Beta Testing Phase**: The web application is currently in beta testing. We welcome your feedback and suggestions to help us improve the platform. Please report any issues or share your experience through our [GitHub Issues](https://github.com/cafferychen777/mLLMCelltype/issues) or [Discord community](https://discord.gg/pb2aZdG4).
 
+**📅 Important: CRAN Submission Update (2025-08-04)**
+
+The mLLMCelltype R package has been fully prepared and tested for CRAN submission, achieving 0 ERRORS, 0 WARNINGS, and only 1 NOTE (the expected "New submission" note). However, due to CRAN staff taking their annual summer vacation from August 1-18, 2025, the package review process may be delayed. The mLLMCelltype R package is expected to be available on CRAN by September 2025. In the meantime, the package can still be installed directly from GitHub using the standard devtools installation method.
+
 **📢 Important: Gemini Model Migration (2025-06-02)**
 
 Google has discontinued several Gemini 1.5 models and will discontinue more on September 24, 2025:
