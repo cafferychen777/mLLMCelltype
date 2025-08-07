@@ -10,7 +10,8 @@ annotate_cell_types(
   model = "gpt-4o",
   api_key = NA,
   top_gene_count = 10,
-  debug = FALSE
+  debug = FALSE,
+  base_urls = NULL
 )
 }
 \arguments{
@@ -55,7 +56,7 @@ markers$cluster <- id_mapping$numeric[match(markers$cluster, id_mapping$original
 \item{model}{Character string specifying the LLM model to use. Supported models:
 \itemize{
 \item OpenAI: 'gpt-4o', 'gpt-4o-mini', 'gpt-4.1', 'gpt-4.1-mini', 'gpt-4.1-nano', 'gpt-4-turbo', 'gpt-3.5-turbo', 'o1', 'o1-mini', 'o1-preview', 'o1-pro'
-\item Anthropic: 'claude-opus-4-20250514', 'claude-sonnet-4-20250514', 'claude-3-7-sonnet-20250219', 'claude-3-5-sonnet-20241022',
+\item Anthropic: 'claude-opus-4-1-20250805', 'claude-sonnet-4-20250514', 'claude-opus-4-20250514', 'claude-3-7-sonnet-20250219', 'claude-3-5-sonnet-20241022',
 'claude-3-5-haiku-20241022', 'claude-3-opus-20240229'
 \item DeepSeek: 'deepseek-chat', 'deepseek-r1', 'deepseek-r1-zero', 'deepseek-reasoner'
 \item Google: 'gemini-2.5-pro', 'gemini-2.5-flash', 'gemini-2.0-flash', 'gemini-2.0-flash-lite', 'gemini-1.5-pro-latest', 'gemini-1.5-flash-latest', 'gemini-1.5-flash-8b'
@@ -67,7 +68,7 @@ markers$cluster <- id_mapping$numeric[match(markers$cluster, id_mapping$original
 \item OpenRouter: Provides access to models from multiple providers through a single API. Format: 'provider/model-name'
 \itemize{
 \item OpenAI models: 'openai/gpt-4o', 'openai/gpt-4o-mini', 'openai/gpt-4-turbo', 'openai/gpt-4', 'openai/gpt-3.5-turbo'
-\item Anthropic models: 'anthropic/claude-opus-4', 'anthropic/claude-sonnet-4', 'anthropic/claude-3.7-sonnet',
+\item Anthropic models: 'anthropic/claude-opus-4.1', 'anthropic/claude-sonnet-4', 'anthropic/claude-opus-4', 'anthropic/claude-3.7-sonnet',
 'anthropic/claude-3.5-sonnet', 'anthropic/claude-3.5-haiku', 'anthropic/claude-3-opus'
 \item Meta models: 'meta-llama/llama-3-70b-instruct', 'meta-llama/llama-3-8b-instruct', 'meta-llama/llama-2-70b-chat'
 \item Google models: 'google/gemini-2.5-pro', 'google/gemini-2.5-flash', 'google/gemini-2.0-flash', 'google/gemini-1.5-pro-latest', 'google/gemini-1.5-flash'
@@ -79,16 +80,16 @@ markers$cluster <- id_mapping$numeric[match(markers$cluster, id_mapping$original
 \item{api_key}{Character string containing the API key for the selected model.
 Each provider requires a specific API key format and authentication method:
 \itemize{
-\item OpenAI: "sk-..." (obtain from https://platform.openai.com/api-keys)
-\item Anthropic: "sk-ant-..." (obtain from https://console.anthropic.com/keys)
-\item Google: A Google API key for Gemini models (obtain from https://ai.google.dev/)
+\item OpenAI: "sk-..." (obtain from OpenAI platform)
+\item Anthropic: "sk-ant-..." (obtain from Anthropic console)
+\item Google: A Google API key for Gemini models (obtain from Google AI)
 \item DeepSeek: API key from DeepSeek platform
 \item Qwen: API key from Alibaba Cloud
 \item Stepfun: API key from Stepfun AI
 \item Zhipu: API key from Zhipu AI
 \item MiniMax: API key from MiniMax
 \item X.AI: API key for Grok models
-\item OpenRouter: "sk-or-..." (obtain from https://openrouter.ai/keys)
+\item OpenRouter: "sk-or-..." (obtain from OpenRouter)
 OpenRouter provides access to multiple models through a single API key
 }
 
@@ -111,10 +112,23 @@ result <- annotate_cell_types(input, tissue_name, model="claude-3-opus",
 If NA, returns the generated prompt without making an API call, which is useful for
 reviewing the prompt before sending it to the API.}
 
-\item{top_gene_count}{Integer specifying the number of top marker genes to use per cluster.}
-
-\item{debug}{Logical. If TRUE, prints additional debugging information during execution.
+\item{top_gene_count}{Integer specifying the number of top marker genes to use per cluster.
 when input is from Seurat's FindAllMarkers(). Default: 10}
+
+\item{debug}{Logical. If TRUE, prints additional debugging information during execution.}
+
+\item{base_urls}{Optional custom base URLs for API endpoints. Can be:
+\itemize{
+\item A single character string: Applied to all providers (e.g., "https://api.proxy.com/v1")
+\item A named list: Provider-specific URLs (e.g., list(openai = "https://openai-proxy.com/v1",
+anthropic = "https://anthropic-proxy.com/v1")). This is useful for:
+\itemize{
+\item Chinese users accessing international APIs through proxies
+\item Enterprise users with internal API gateways
+\item Development/testing with local or alternative endpoints
+If NULL (default), uses official API endpoints for each provider.
+}
+}}
 }
 \value{
 A character vector containing:
