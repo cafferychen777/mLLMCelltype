@@ -95,7 +95,8 @@ cell types based on marker gene expression patterns.</p>
 <span>  model <span class="op">=</span> <span class="st">"gpt-4o"</span>,</span>
 <span>  api_key <span class="op">=</span> <span class="cn">NA</span>,</span>
 <span>  top_gene_count <span class="op">=</span> <span class="fl">10</span>,</span>
-<span>  debug <span class="op">=</span> <span class="cn">FALSE</span></span>
+<span>  debug <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  base_urls <span class="op">=</span> <span class="cn">NULL</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -137,7 +138,7 @@ original IDs and numeric IDs:</p>
 
 <dt id="arg-model">model<a class="anchor" aria-label="anchor" href="#arg-model"></a></dt>
 <dd><p>Character string specifying the LLM model to use. Supported models:</p><ul><li><p>OpenAI: 'gpt-4o', 'gpt-4o-mini', 'gpt-4.1', 'gpt-4.1-mini', 'gpt-4.1-nano', 'gpt-4-turbo', 'gpt-3.5-turbo', 'o1', 'o1-mini', 'o1-preview', 'o1-pro'</p></li>
-<li><p>Anthropic: 'claude-opus-4-20250514', 'claude-sonnet-4-20250514', 'claude-3-7-sonnet-20250219', 'claude-3-5-sonnet-20241022',
+<li><p>Anthropic: 'claude-opus-4-1-20250805', 'claude-sonnet-4-20250514', 'claude-opus-4-20250514', 'claude-3-7-sonnet-20250219', 'claude-3-5-sonnet-20241022',
 'claude-3-5-haiku-20241022', 'claude-3-opus-20240229'</p></li>
 <li><p>DeepSeek: 'deepseek-chat', 'deepseek-r1', 'deepseek-r1-zero', 'deepseek-reasoner'</p></li>
 <li><p>Google: 'gemini-2.5-pro', 'gemini-2.5-flash', 'gemini-2.0-flash', 'gemini-2.0-flash-lite', 'gemini-1.5-pro-latest', 'gemini-1.5-flash-latest', 'gemini-1.5-flash-8b'</p></li>
@@ -147,7 +148,7 @@ original IDs and numeric IDs:</p>
 <li><p>MiniMax: 'minimax-text-01'</p></li>
 <li><p>X.AI: 'grok-3-latest', 'grok-3', 'grok-3-fast', 'grok-3-fast-latest', 'grok-3-mini', 'grok-3-mini-latest', 'grok-3-mini-fast', 'grok-3-mini-fast-latest'</p></li>
 <li><p>OpenRouter: Provides access to models from multiple providers through a single API. Format: 'provider/model-name'</p><ul><li><p>OpenAI models: 'openai/gpt-4o', 'openai/gpt-4o-mini', 'openai/gpt-4-turbo', 'openai/gpt-4', 'openai/gpt-3.5-turbo'</p></li>
-<li><p>Anthropic models: 'anthropic/claude-opus-4', 'anthropic/claude-sonnet-4', 'anthropic/claude-3.7-sonnet',
+<li><p>Anthropic models: 'anthropic/claude-opus-4.1', 'anthropic/claude-sonnet-4', 'anthropic/claude-opus-4', 'anthropic/claude-3.7-sonnet',
 'anthropic/claude-3.5-sonnet', 'anthropic/claude-3.5-haiku', 'anthropic/claude-3-opus'</p></li>
 <li><p>Meta models: 'meta-llama/llama-3-70b-instruct', 'meta-llama/llama-3-8b-instruct', 'meta-llama/llama-2-70b-chat'</p></li>
 <li><p>Google models: 'google/gemini-2.5-pro', 'google/gemini-2.5-flash', 'google/gemini-2.0-flash', 'google/gemini-1.5-pro-latest', 'google/gemini-1.5-flash'</p></li>
@@ -159,16 +160,16 @@ original IDs and numeric IDs:</p>
 
 <dt id="arg-api-key">api_key<a class="anchor" aria-label="anchor" href="#arg-api-key"></a></dt>
 <dd><p>Character string containing the API key for the selected model.
-Each provider requires a specific API key format and authentication method:</p><ul><li><p>OpenAI: "sk-..." (obtain from https://platform.openai.com/api-keys)</p></li>
-<li><p>Anthropic: "sk-ant-..." (obtain from https://console.anthropic.com/keys)</p></li>
-<li><p>Google: A Google API key for Gemini models (obtain from https://ai.google.dev/)</p></li>
+Each provider requires a specific API key format and authentication method:</p><ul><li><p>OpenAI: "sk-..." (obtain from OpenAI platform)</p></li>
+<li><p>Anthropic: "sk-ant-..." (obtain from Anthropic console)</p></li>
+<li><p>Google: A Google API key for Gemini models (obtain from Google AI)</p></li>
 <li><p>DeepSeek: API key from DeepSeek platform</p></li>
 <li><p>Qwen: API key from Alibaba Cloud</p></li>
 <li><p>Stepfun: API key from Stepfun AI</p></li>
 <li><p>Zhipu: API key from Zhipu AI</p></li>
 <li><p>MiniMax: API key from MiniMax</p></li>
 <li><p>X.AI: API key for Grok models</p></li>
-<li><p>OpenRouter: "sk-or-..." (obtain from https://openrouter.ai/keys)
+<li><p>OpenRouter: "sk-or-..." (obtain from OpenRouter)
 OpenRouter provides access to multiple models through a single API key</p></li>
 </ul><p>The API key can be provided directly or stored in environment variables:</p>
 <p></p><div class="sourceCode r"><pre><code><span><span class="co"># Direct API key</span></span>
@@ -188,12 +189,23 @@ reviewing the prompt before sending it to the API.</p></dd>
 
 
 <dt id="arg-top-gene-count">top_gene_count<a class="anchor" aria-label="anchor" href="#arg-top-gene-count"></a></dt>
-<dd><p>Integer specifying the number of top marker genes to use per cluster.</p></dd>
+<dd><p>Integer specifying the number of top marker genes to use per cluster.
+when input is from Seurat's FindAllMarkers(). Default: 10</p></dd>
 
 
 <dt id="arg-debug">debug<a class="anchor" aria-label="anchor" href="#arg-debug"></a></dt>
-<dd><p>Logical. If TRUE, prints additional debugging information during execution.
-when input is from Seurat's FindAllMarkers(). Default: 10</p></dd>
+<dd><p>Logical. If TRUE, prints additional debugging information during execution.</p></dd>
+
+
+<dt id="arg-base-urls">base_urls<a class="anchor" aria-label="anchor" href="#arg-base-urls"></a></dt>
+<dd><p>Optional custom base URLs for API endpoints. Can be:</p><ul><li><p>A single character string: Applied to all providers (e.g., "https://api.proxy.com/v1")</p></li>
+<li><p>A named list: Provider-specific URLs (e.g., list(openai = "https://openai-proxy.com/v1",
+anthropic = "https://anthropic-proxy.com/v1")). This is useful for:</p><ul><li><p>Chinese users accessing international APIs through proxies</p></li>
+<li><p>Enterprise users with internal API gateways</p></li>
+<li><p>Development/testing with local or alternative endpoints
+If NULL (default), uses official API endpoints for each provider.</p></li>
+</ul></li>
+</ul></dd>
 
 </dl></div>
     <div class="section level2">
@@ -223,8 +235,8 @@ when input is from Seurat's FindAllMarkers(). Default: 10</p></dd>
 <span class="r-in"><span>  model <span class="op">=</span> <span class="st">'gpt-4o'</span>,</span></span>
 <span class="r-in"><span>  api_key <span class="op">=</span> <span class="cn">NA</span>  <span class="co"># Returns prompt only without making API call</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> {"timestamp":"2025-08-07 09:49:54","session_id":"20250807_094954","level":"INFO","message":"Unified logger initialized","context":{"session_id":"20250807_094954","log_level":"INFO","log_dir":"logs"},"pid":10757} </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> {"timestamp":"2025-08-07 09:49:54","session_id":"20250807_094954","level":"INFO","message":"Processing input with model and provider","context":{"model":"gpt-4o","provider":"openai","custom_url":false},"pid":10757} </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> {"timestamp":"2025-08-07 10:16:43","session_id":"20250807_101643","level":"INFO","message":"Unified logger initialized","context":{"session_id":"20250807_101643","log_level":"INFO","log_dir":"logs"},"pid":10804} </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> {"timestamp":"2025-08-07 10:16:43","session_id":"20250807_101643","level":"INFO","message":"Processing input with model and provider","context":{"model":"gpt-4o","provider":"openai","custom_url":false},"pid":10804} </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> DEBUG: Formatted lines for prompt:</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "You are a cell type annotation expert. Below are marker genes for different cell clusters in human PBMC.\n\n\n\nFor each numbered cluster, provide only the cell type name in a new line, without any explanation."</span>
 <span class="r-in"><span></span></span>
