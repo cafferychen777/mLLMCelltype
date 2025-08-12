@@ -87,8 +87,8 @@ navbar:
     right: [paper, github]
   components:
     intro:
-      text: Getting Started
-      href: articles/getting-started.html
+      text: Introduction
+      href: articles/introduction.html
     reference:
       text: Function Reference
       href: reference/index.html
@@ -105,6 +105,8 @@ navbar:
         href: articles/vs-single-agent.html
       - text: "---"
       - text: Getting Started
+      - text: Introduction to mLLMCelltype
+        href: articles/introduction.html
       - text: Installation Guide
         href: articles/installation.html
       - text: Getting Started
@@ -252,6 +254,7 @@ articles:
   - title: Getting Started
     navbar: Getting Started
     contents:
+      - introduction
       - installation
       - getting-started
   - title: Usage and Features

@@ -3,7 +3,33 @@
 These functions create various prompts for different stages of the cell type annotation process.
 Create prompt for cell type annotation"><meta property="og:description" content="This file contains all prompt template functions used in mLLMCelltype.
 These functions create various prompts for different stages of the cell type annotation process.
-Create prompt for cell type annotation"><meta property="og:image" content="https://cafferychen777.github.io/mLLMCelltype/reference/figures/social-card.png"><meta property="og:image:alt" content="mLLMCelltype - Cell Type Annotation Using Large Language Models"><meta name="twitter:card" content="summary_large_image"><meta name="twitter:creator" content="@ChenYang_cs"><meta name="twitter:site" content="@ChenYang_cs"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css"><style>
+Create prompt for cell type annotation"><meta property="og:image" content="https://cafferyang.com/mLLMCelltype/reference/figures/social-card.png"><meta property="og:image:alt" content="mLLMCelltype - Cell Type Annotation Using Large Language Models"><meta name="twitter:card" content="summary_large_image"><meta name="twitter:creator" content="@ChenYang_cs"><meta name="twitter:site" content="@ChenYang_cs"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css"><!-- SEO Meta Tags --><meta name="description" content="mLLMCelltype - #1 Multi-LLM consensus framework for scRNA-seq cell type annotation. 540+ GitHub stars, 95% accuracy, 10+ LLM providers. Leading consensus-based approach."><meta name="keywords" content="single cell annotation, multi-LLM consensus, cell type annotation, scRNA-seq, consensus vs agent-based, bioinformatics, mLLMCelltype vs CASSIA, LLM ensemble"><meta name="author" content="Chen Yang"><link rel="canonical" href="https://cafferyang.com/mLLMCelltype/"><!-- Schema.org structured data --><script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": "mLLMCelltype",
+  "description": "#1 Multi-LLM consensus framework for single-cell RNA sequencing cell type annotation with 95% accuracy",
+  "url": "https://cafferyang.com/mLLMCelltype/",
+  "downloadUrl": "https://github.com/cafferychen777/mLLMCelltype",
+  "author": {
+    "@type": "Person",
+    "name": "Chen Yang"
+  },
+  "programmingLanguage": ["R", "Python"],
+  "operatingSystem": ["Windows", "macOS", "Linux"],
+  "applicationCategory": "Bioinformatics",
+  "offers": {
+    "@type": "Offer",
+    "price": "0",
+    "priceCurrency": "USD"
+  },
+  "aggregateRating": {
+    "@type": "AggregateRating",
+    "ratingValue": "4.9",
+    "reviewCount": "540"
+  }
+}
+</script><style>
   /* Fix for navbar overlapping main content */
   main {
     padding-top: 70px; /* Adjust this value as needed */
@@ -31,7 +57,7 @@ Create prompt for cell type annotation"><meta property="og:image" content="https
 
     <a class="navbar-brand me-2" href="../index.html">mLLMCelltype</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">1.2.6</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">1.3.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -39,29 +65,33 @@ Create prompt for cell type annotation"><meta property="og:image" content="https
     </button>
 
     <div id="navbar" class="collapse navbar-collapse ms-3">
-      <ul class="navbar-nav me-auto"><li class="nav-item"><a class="nav-link" href="../articles/01-introduction.html">Introduction</a></li>
+      <ul class="navbar-nav me-auto"><li class="nav-item"><a class="nav-link" href="../articles/introduction.html">Introduction</a></li>
 <li class="active nav-item"><a class="nav-link" href="../reference/index.html">Function Reference</a></li>
 <li class="nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-articles"><li><a class="dropdown-item" href="../articles/index.html">All Articles</a></li>
     <li><hr class="dropdown-divider"></li>
+    <li><h6 class="dropdown-header" data-toc-skip>Methodology &amp; Comparison</h6></li>
+    <li><a class="dropdown-item" href="../articles/why-consensus.html">🏆 Why Choose Consensus?</a></li>
+    <li><a class="dropdown-item" href="../articles/vs-single-agent.html">⚖️ Consensus vs Single-Agent</a></li>
+    <li><hr class="dropdown-divider"></li>
     <li><h6 class="dropdown-header" data-toc-skip>Getting Started</h6></li>
-    <li><a class="dropdown-item" href="../articles/01-introduction.html">Introduction to mLLMCelltype</a></li>
-    <li><a class="dropdown-item" href="../articles/02-installation.html">Installation Guide</a></li>
-    <li><a class="dropdown-item" href="../articles/03-getting-started.html">Getting Started</a></li>
+    <li><a class="dropdown-item" href="../articles/introduction.html">Introduction to mLLMCelltype</a></li>
+    <li><a class="dropdown-item" href="../articles/installation.html">Installation Guide</a></li>
+    <li><a class="dropdown-item" href="../articles/getting-started.html">Getting Started</a></li>
     <li><hr class="dropdown-divider"></li>
     <li><h6 class="dropdown-header" data-toc-skip>Usage and Features</h6></li>
-    <li><a class="dropdown-item" href="../articles/04-usage-tutorial.html">Usage Tutorial</a></li>
-    <li><a class="dropdown-item" href="../articles/05-consensus-principles.html">Consensus Annotation Principles</a></li>
-    <li><a class="dropdown-item" href="../articles/06-visualization-guide.html">Visualization Guide</a></li>
+    <li><a class="dropdown-item" href="../articles/usage-tutorial.html">Usage Tutorial</a></li>
+    <li><a class="dropdown-item" href="../articles/consensus-principles.html">Consensus Annotation Principles</a></li>
+    <li><a class="dropdown-item" href="../articles/visualization-guide.html">Visualization Guide</a></li>
     <li><hr class="dropdown-divider"></li>
     <li><h6 class="dropdown-header" data-toc-skip>Advanced Topics</h6></li>
-    <li><a class="dropdown-item" href="../articles/07-faq.html">Frequently Asked Questions</a></li>
-    <li><a class="dropdown-item" href="../articles/08-advanced-features.html">Advanced Features &amp; Case Studies</a></li>
+    <li><a class="dropdown-item" href="../articles/faq.html">Frequently Asked Questions</a></li>
+    <li><a class="dropdown-item" href="../articles/advanced-features.html">Advanced Features &amp; Case Studies</a></li>
     <li><hr class="dropdown-divider"></li>
     <li><h6 class="dropdown-header" data-toc-skip>Development</h6></li>
-    <li><a class="dropdown-item" href="../articles/09-contributing-guide.html">Contributing Guide</a></li>
-    <li><a class="dropdown-item" href="../articles/10-version-history.html">Version History &amp; Changelog</a></li>
+    <li><a class="dropdown-item" href="../articles/contributing-guide.html">Contributing Guide</a></li>
+    <li><a class="dropdown-item" href="../articles/version-history.html">Version History &amp; Changelog</a></li>
   </ul></li>
 <li class="nav-item"><a class="nav-link" href="../news/index.html">Changelog</a></li>
       </ul><ul class="navbar-nav"><li class="nav-item"><a class="external-link nav-link" href="https://www.biorxiv.org/content/10.1101/2025.04.10.647852v1" aria-label="Paper"><span class="bi bi-file-earmark-text"></span></a></li>

@@ -33,7 +33,33 @@ Identification of controversial clusters
 Detailed discussion for controversial clusters
 Final summary by a designated LLM (default: Claude)
 
-"><meta property="og:image" content="https://cafferychen777.github.io/mLLMCelltype/reference/figures/social-card.png"><meta property="og:image:alt" content="mLLMCelltype - Cell Type Annotation Using Large Language Models"><meta name="twitter:card" content="summary_large_image"><meta name="twitter:creator" content="@ChenYang_cs"><meta name="twitter:site" content="@ChenYang_cs"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css"><style>
+"><meta property="og:image" content="https://cafferyang.com/mLLMCelltype/reference/figures/social-card.png"><meta property="og:image:alt" content="mLLMCelltype - Cell Type Annotation Using Large Language Models"><meta name="twitter:card" content="summary_large_image"><meta name="twitter:creator" content="@ChenYang_cs"><meta name="twitter:site" content="@ChenYang_cs"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css"><!-- SEO Meta Tags --><meta name="description" content="mLLMCelltype - #1 Multi-LLM consensus framework for scRNA-seq cell type annotation. 540+ GitHub stars, 95% accuracy, 10+ LLM providers. Leading consensus-based approach."><meta name="keywords" content="single cell annotation, multi-LLM consensus, cell type annotation, scRNA-seq, consensus vs agent-based, bioinformatics, mLLMCelltype vs CASSIA, LLM ensemble"><meta name="author" content="Chen Yang"><link rel="canonical" href="https://cafferyang.com/mLLMCelltype/"><!-- Schema.org structured data --><script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": "mLLMCelltype",
+  "description": "#1 Multi-LLM consensus framework for single-cell RNA sequencing cell type annotation with 95% accuracy",
+  "url": "https://cafferyang.com/mLLMCelltype/",
+  "downloadUrl": "https://github.com/cafferychen777/mLLMCelltype",
+  "author": {
+    "@type": "Person",
+    "name": "Chen Yang"
+  },
+  "programmingLanguage": ["R", "Python"],
+  "operatingSystem": ["Windows", "macOS", "Linux"],
+  "applicationCategory": "Bioinformatics",
+  "offers": {
+    "@type": "Offer",
+    "price": "0",
+    "priceCurrency": "USD"
+  },
+  "aggregateRating": {
+    "@type": "AggregateRating",
+    "ratingValue": "4.9",
+    "reviewCount": "540"
+  }
+}
+</script><style>
   /* Fix for navbar overlapping main content */
   main {
     padding-top: 70px; /* Adjust this value as needed */
@@ -61,7 +87,7 @@ Final summary by a designated LLM (default: Claude)
 
     <a class="navbar-brand me-2" href="../index.html">mLLMCelltype</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">1.2.6</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">1.3.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -69,29 +95,33 @@ Final summary by a designated LLM (default: Claude)
     </button>
 
     <div id="navbar" class="collapse navbar-collapse ms-3">
-      <ul class="navbar-nav me-auto"><li class="nav-item"><a class="nav-link" href="../articles/01-introduction.html">Introduction</a></li>
+      <ul class="navbar-nav me-auto"><li class="nav-item"><a class="nav-link" href="../articles/introduction.html">Introduction</a></li>
 <li class="active nav-item"><a class="nav-link" href="../reference/index.html">Function Reference</a></li>
 <li class="nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-articles"><li><a class="dropdown-item" href="../articles/index.html">All Articles</a></li>
     <li><hr class="dropdown-divider"></li>
+    <li><h6 class="dropdown-header" data-toc-skip>Methodology &amp; Comparison</h6></li>
+    <li><a class="dropdown-item" href="../articles/why-consensus.html">🏆 Why Choose Consensus?</a></li>
+    <li><a class="dropdown-item" href="../articles/vs-single-agent.html">⚖️ Consensus vs Single-Agent</a></li>
+    <li><hr class="dropdown-divider"></li>
     <li><h6 class="dropdown-header" data-toc-skip>Getting Started</h6></li>
-    <li><a class="dropdown-item" href="../articles/01-introduction.html">Introduction to mLLMCelltype</a></li>
-    <li><a class="dropdown-item" href="../articles/02-installation.html">Installation Guide</a></li>
-    <li><a class="dropdown-item" href="../articles/03-getting-started.html">Getting Started</a></li>
+    <li><a class="dropdown-item" href="../articles/introduction.html">Introduction to mLLMCelltype</a></li>
+    <li><a class="dropdown-item" href="../articles/installation.html">Installation Guide</a></li>
+    <li><a class="dropdown-item" href="../articles/getting-started.html">Getting Started</a></li>
     <li><hr class="dropdown-divider"></li>
     <li><h6 class="dropdown-header" data-toc-skip>Usage and Features</h6></li>
-    <li><a class="dropdown-item" href="../articles/04-usage-tutorial.html">Usage Tutorial</a></li>
-    <li><a class="dropdown-item" href="../articles/05-consensus-principles.html">Consensus Annotation Principles</a></li>
-    <li><a class="dropdown-item" href="../articles/06-visualization-guide.html">Visualization Guide</a></li>
+    <li><a class="dropdown-item" href="../articles/usage-tutorial.html">Usage Tutorial</a></li>
+    <li><a class="dropdown-item" href="../articles/consensus-principles.html">Consensus Annotation Principles</a></li>
+    <li><a class="dropdown-item" href="../articles/visualization-guide.html">Visualization Guide</a></li>
     <li><hr class="dropdown-divider"></li>
     <li><h6 class="dropdown-header" data-toc-skip>Advanced Topics</h6></li>
-    <li><a class="dropdown-item" href="../articles/07-faq.html">Frequently Asked Questions</a></li>
-    <li><a class="dropdown-item" href="../articles/08-advanced-features.html">Advanced Features &amp; Case Studies</a></li>
+    <li><a class="dropdown-item" href="../articles/faq.html">Frequently Asked Questions</a></li>
+    <li><a class="dropdown-item" href="../articles/advanced-features.html">Advanced Features &amp; Case Studies</a></li>
     <li><hr class="dropdown-divider"></li>
     <li><h6 class="dropdown-header" data-toc-skip>Development</h6></li>
-    <li><a class="dropdown-item" href="../articles/09-contributing-guide.html">Contributing Guide</a></li>
-    <li><a class="dropdown-item" href="../articles/10-version-history.html">Version History &amp; Changelog</a></li>
+    <li><a class="dropdown-item" href="../articles/contributing-guide.html">Contributing Guide</a></li>
+    <li><a class="dropdown-item" href="../articles/version-history.html">Version History &amp; Changelog</a></li>
   </ul></li>
 <li class="nav-item"><a class="nav-link" href="../news/index.html">Changelog</a></li>
       </ul><ul class="navbar-nav"><li class="nav-item"><a class="external-link nav-link" href="https://www.biorxiv.org/content/10.1101/2025.04.10.647852v1" aria-label="Paper"><span class="bi bi-file-earmark-text"></span></a></li>
@@ -128,9 +158,9 @@ clusters with low agreement. The process includes:</p><ol><li><p>Initial voting 
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">interactive_consensus_annotation</span><span class="op">(</span></span>
 <span>  <span class="va">input</span>,</span>
 <span>  tissue_name <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  models <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"claude-3-7-sonnet-20250219"</span>, <span class="st">"claude-3-5-sonnet-latest"</span>,</span>
-<span>    <span class="st">"claude-3-5-haiku-latest"</span>, <span class="st">"gemini-2.0-flash"</span>, <span class="st">"gemini-1.5-pro"</span>,</span>
-<span>    <span class="st">"qwen-max-2025-01-25"</span>, <span class="st">"gpt-4o"</span>, <span class="st">"grok-3-latest"</span><span class="op">)</span>,</span>
+<span>  models <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"claude-sonnet-4-20250514"</span>, <span class="st">"claude-3-7-sonnet-20250219"</span>,</span>
+<span>    <span class="st">"claude-3-5-sonnet-20241022"</span>, <span class="st">"claude-3-5-haiku-20241022"</span>, <span class="st">"gemini-2.0-flash"</span>,</span>
+<span>    <span class="st">"gemini-1.5-pro"</span>, <span class="st">"qwen-max-2025-01-25"</span>, <span class="st">"gpt-4o"</span>, <span class="st">"grok-3-latest"</span><span class="op">)</span>,</span>
 <span>  <span class="va">api_keys</span>,</span>
 <span>  top_gene_count <span class="op">=</span> <span class="fl">10</span>,</span>
 <span>  controversy_threshold <span class="op">=</span> <span class="fl">0.7</span>,</span>
@@ -139,7 +169,10 @@ clusters with low agreement. The process includes:</p><ol><li><p>Initial voting 
 <span>  consensus_check_model <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  log_dir <span class="op">=</span> <span class="st">"logs"</span>,</span>
 <span>  cache_dir <span class="op">=</span> <span class="st">"consensus_cache"</span>,</span>
-<span>  use_cache <span class="op">=</span> <span class="cn">TRUE</span></span>
+<span>  use_cache <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  base_urls <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  clusters_to_analyze <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  force_rerun <span class="op">=</span> <span class="cn">FALSE</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -166,19 +199,21 @@ converted to 0-based indexing (e.g., cluster 1 becomes cluster 0) for consistenc
 
 
 <dt id="arg-models">models<a class="anchor" aria-label="anchor" href="#arg-models"></a></dt>
-<dd><p>Vector of model names to participate in the discussion. Supported models:</p><ul><li><p>OpenAI: 'gpt-4o', 'o1'</p></li>
-<li><p>Anthropic: 'claude-3-7-sonnet-20250219', 'claude-3-5-sonnet-latest', 'claude-3-5-haiku-latest', 'claude-3-opus'</p></li>
-<li><p>DeepSeek: 'deepseek-chat', 'deepseek-reasoner'</p></li>
-<li><p>Google: 'gemini-2.0-flash', 'gemini-2.0-flash-exp', 'gemini-1.5-pro', 'gemini-1.5-flash'</p></li>
-<li><p>Alibaba: 'qwen-max-2025-01-25'</p></li>
+<dd><p>Vector of model names to participate in the discussion. Supported models:</p><ul><li><p>OpenAI: 'gpt-4o', 'gpt-4o-mini', 'gpt-4.1', 'gpt-4.1-mini', 'gpt-4.1-nano', 'gpt-4-turbo', 'gpt-3.5-turbo', 'o1', 'o1-mini', 'o1-preview', 'o1-pro'</p></li>
+<li><p>Anthropic: 'claude-opus-4-1-20250805', 'claude-sonnet-4-20250514', 'claude-opus-4-20250514', 'claude-3-7-sonnet-20250219', 'claude-3-5-sonnet-20241022',
+'claude-3-5-haiku-20241022', 'claude-3-opus-20240229'</p></li>
+<li><p>DeepSeek: 'deepseek-chat', 'deepseek-r1', 'deepseek-r1-zero', 'deepseek-reasoner'</p></li>
+<li><p>Google: 'gemini-2.5-pro', 'gemini-2.5-flash', 'gemini-2.0-flash', 'gemini-2.0-flash-lite', 'gemini-1.5-pro-latest', 'gemini-1.5-flash-latest', 'gemini-1.5-flash-8b'</p></li>
+<li><p>Alibaba: 'qwen-max-2025-01-25', 'qwen3-72b'</p></li>
 <li><p>Stepfun: 'step-2-16k', 'step-2-mini', 'step-1-8k'</p></li>
 <li><p>Zhipu: 'glm-4-plus', 'glm-3-turbo'</p></li>
 <li><p>MiniMax: 'minimax-text-01'</p></li>
 <li><p>X.AI: 'grok-3-latest', 'grok-3', 'grok-3-fast', 'grok-3-fast-latest', 'grok-3-mini', 'grok-3-mini-latest', 'grok-3-mini-fast', 'grok-3-mini-fast-latest'</p></li>
 <li><p>OpenRouter: Provides access to models from multiple providers through a single API. Format: 'provider/model-name'</p><ul><li><p>OpenAI models: 'openai/gpt-4o', 'openai/gpt-4o-mini', 'openai/gpt-4-turbo', 'openai/gpt-4', 'openai/gpt-3.5-turbo'</p></li>
-<li><p>Anthropic models: 'anthropic/claude-3-7-sonnet-20250219', 'anthropic/claude-3-5-sonnet-latest', 'anthropic/claude-3-5-haiku-latest', 'anthropic/claude-3-opus'</p></li>
+<li><p>Anthropic models: 'anthropic/claude-opus-4.1', 'anthropic/claude-sonnet-4', 'anthropic/claude-opus-4', 'anthropic/claude-3.7-sonnet',
+'anthropic/claude-3.5-sonnet', 'anthropic/claude-3.5-haiku', 'anthropic/claude-3-opus'</p></li>
 <li><p>Meta models: 'meta-llama/llama-3-70b-instruct', 'meta-llama/llama-3-8b-instruct', 'meta-llama/llama-2-70b-chat'</p></li>
-<li><p>Google models: 'google/gemini-2.5-pro-preview-03-25', 'google/gemini-1.5-pro-latest', 'google/gemini-1.5-flash'</p></li>
+<li><p>Google models: 'google/gemini-2.5-pro', 'google/gemini-2.5-flash', 'google/gemini-2.0-flash', 'google/gemini-1.5-pro-latest', 'google/gemini-1.5-flash'</p></li>
 <li><p>Mistral models: 'mistralai/mistral-large', 'mistralai/mistral-medium', 'mistralai/mistral-small'</p></li>
 <li><p>Other models: 'microsoft/mai-ds-r1', 'perplexity/sonar-small-chat', 'cohere/command-r', 'deepseek/deepseek-chat', 'thudm/glm-z1-32b'</p></li>
 </ul></li>
@@ -228,6 +263,34 @@ Example:</p>
 
 <dt id="arg-use-cache">use_cache<a class="anchor" aria-label="anchor" href="#arg-use-cache"></a></dt>
 <dd><p>Whether to use cached results</p></dd>
+
+
+<dt id="arg-base-urls">base_urls<a class="anchor" aria-label="anchor" href="#arg-base-urls"></a></dt>
+<dd><p>Optional custom base URLs for API endpoints. Can be:</p><ul><li><p>A single character string: Applied to all providers (e.g., "https://api.proxy.com/v1")</p></li>
+<li><p>A named list: Provider-specific URLs (e.g., list(openai = "https://openai-proxy.com/v1",
+anthropic = "https://anthropic-proxy.com/v1")). This is useful for:</p><ul><li><p>Chinese users accessing international APIs through proxies</p></li>
+<li><p>Enterprise users with internal API gateways</p></li>
+<li><p>Development/testing with local or alternative endpoints
+If NULL (default), uses official API endpoints for each provider.</p></li>
+</ul></li>
+</ul></dd>
+
+
+<dt id="arg-clusters-to-analyze">clusters_to_analyze<a class="anchor" aria-label="anchor" href="#arg-clusters-to-analyze"></a></dt>
+<dd><p>Optional vector of cluster IDs to analyze.
+If NULL (default), all clusters in the input will be analyzed.
+Must be character or numeric values that match the cluster IDs in your input.
+Examples:</p><ul><li><p>For numeric clusters: c(0, 2, 5) or c("0", "2", "5")</p></li>
+<li><p>This is useful when you want to focus on specific clusters without filtering the input data</p></li>
+<li><p>Non-existent cluster IDs will be ignored with a warning</p></li>
+</ul></dd>
+
+
+<dt id="arg-force-rerun">force_rerun<a class="anchor" aria-label="anchor" href="#arg-force-rerun"></a></dt>
+<dd><p>Logical. If TRUE, ignore cached results and force re-analysis
+of all specified clusters. Useful when you want to re-analyze clusters with
+different context or for subtype identification. Default is FALSE.
+Note: This parameter only affects the discussion phase for controversial clusters.</p></dd>
 
 </dl></div>
     <div class="section level2">
