@@ -4,7 +4,7 @@
 \alias{process_openrouter}
 \title{Process request using OpenRouter models}
 \usage{
-process_openrouter(prompt, model, api_key)
+process_openrouter(prompt, model, api_key, base_url = NULL)
 }
 \arguments{
 \item{prompt}{Input prompt text}
@@ -12,6 +12,8 @@ process_openrouter(prompt, model, api_key)
 \item{model}{Model identifier}
 
 \item{api_key}{OpenRouter API key}
+
+\item{base_url}{Optional custom base URL for OpenRouter API}
 }
 \value{
 Processed response as character vector

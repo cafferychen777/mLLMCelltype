@@ -52,3 +52,4 @@
 ^mLLMCelltype_.*\.tar\.gz$
 ^\.ruff_cache$
 ^examples$
+^awesome-compbio-chatgpt$

@@ -8,7 +8,7 @@ standardize_cell_type_names(
   predictions,
   models,
   api_keys,
-  standardization_model = "claude-3-5-sonnet-latest"
+  standardization_model = "claude-sonnet-4-20250514"
 )
 }
 \arguments{
@@ -22,7 +22,7 @@ standardize_cell_type_names(
 \item With model names as keys: \code{list("gpt-4o" = "sk-...", "claude-3-opus" = "sk-ant-...")}
 }}
 
-\item{standardization_model}{Model to use for standardization (default: "claude-3-5-sonnet-latest")}
+\item{standardization_model}{Model to use for standardization (default: "claude-sonnet-4-20250514")}
 }
 \value{
 List of standardized predictions with the same structure as the input

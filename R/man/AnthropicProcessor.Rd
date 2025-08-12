@@ -15,17 +15,11 @@ Handles Anthropic-specific API calls, authentication, and response parsing.
 \section{Super class}{
 \code{\link[mLLMCelltype:BaseAPIProcessor]{mLLMCelltype::BaseAPIProcessor}} -> \code{AnthropicProcessor}
 }
-\section{Public fields}{
-\if{html}{\out{<div class="r6-fields">}}
-\describe{
-\item{\code{api_url}}{Anthropic API endpoint URL}
-}
-\if{html}{\out{</div>}}
-}
 \section{Methods}{
 \subsection{Public methods}{
 \itemize{
 \item \href{#method-AnthropicProcessor-new}{\code{AnthropicProcessor$new()}}
+\item \href{#method-AnthropicProcessor-get_default_api_url}{\code{AnthropicProcessor$get_default_api_url()}}
 \item \href{#method-AnthropicProcessor-make_api_call}{\code{AnthropicProcessor$make_api_call()}}
 \item \href{#method-AnthropicProcessor-extract_response_content}{\code{AnthropicProcessor$extract_response_content()}}
 \item \href{#method-AnthropicProcessor-clone}{\code{AnthropicProcessor$clone()}}
@@ -34,6 +28,7 @@ Handles Anthropic-specific API calls, authentication, and response parsing.
 \if{html}{\out{
 <details open><summary>Inherited methods</summary>
 <ul>
+<li><span class="pkg-link" data-pkg="mLLMCelltype" data-topic="BaseAPIProcessor" data-id="get_api_url"><a href='../../mLLMCelltype/html/BaseAPIProcessor.html#method-BaseAPIProcessor-get_api_url'><code>mLLMCelltype::BaseAPIProcessor$get_api_url()</code></a></span></li>
 <li><span class="pkg-link" data-pkg="mLLMCelltype" data-topic="BaseAPIProcessor" data-id="process_request"><a href='../../mLLMCelltype/html/BaseAPIProcessor.html#method-BaseAPIProcessor-process_request'><code>mLLMCelltype::BaseAPIProcessor$process_request()</code></a></span></li>
 </ul>
 </details>
@@ -44,9 +39,29 @@ Handles Anthropic-specific API calls, authentication, and response parsing.
 \subsection{Method \code{new()}}{
 Initialize Anthropic processor
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{AnthropicProcessor$new()}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{AnthropicProcessor$new(base_url = NULL)}\if{html}{\out{</div>}}
 }
 
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{base_url}}{Optional custom base URL for Anthropic API}
+}
+\if{html}{\out{</div>}}
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-AnthropicProcessor-get_default_api_url"></a>}}
+\if{latex}{\out{\hypertarget{method-AnthropicProcessor-get_default_api_url}{}}}
+\subsection{Method \code{get_default_api_url()}}{
+Get default Anthropic API URL
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{AnthropicProcessor$get_default_api_url()}\if{html}{\out{</div>}}
+}
+
+\subsection{Returns}{
+Default Anthropic API endpoint URL
+}
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-AnthropicProcessor-make_api_call"></a>}}

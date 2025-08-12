@@ -4,7 +4,7 @@
 \alias{process_qwen}
 \title{Process request using Qwen models}
 \usage{
-process_qwen(prompt, model, api_key)
+process_qwen(prompt, model, api_key, base_url = NULL)
 }
 \arguments{
 \item{prompt}{Input prompt text}
@@ -12,6 +12,8 @@ process_qwen(prompt, model, api_key)
 \item{model}{Model identifier}
 
 \item{api_key}{Qwen API key}
+
+\item{base_url}{Optional custom base URL for Qwen API}
 }
 \value{
 Processed response as character vector

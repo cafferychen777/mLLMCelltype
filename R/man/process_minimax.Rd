@@ -4,7 +4,7 @@
 \alias{process_minimax}
 \title{Process request using Minimax models}
 \usage{
-process_minimax(prompt, model, api_key)
+process_minimax(prompt, model, api_key, base_url = NULL)
 }
 \arguments{
 \item{prompt}{Input prompt text}
@@ -12,6 +12,8 @@ process_minimax(prompt, model, api_key)
 \item{model}{Model identifier}
 
 \item{api_key}{Minimax API key}
+
+\item{base_url}{Optional custom base URL for Minimax API}
 }
 \value{
 Processed response as character vector

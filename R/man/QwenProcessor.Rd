@@ -11,21 +11,23 @@ Qwen API Processor
 \details{
 Concrete implementation of BaseAPIProcessor for Qwen models.
 Handles Qwen-specific API calls, authentication, and response parsing.
+
+Qwen has two API endpoints:
+\itemize{
+\item International: https://dashscope-intl.aliyuncs.com/api/v1/services/aigc/text-generation/generation (preferred)
+\item Domestic (China): https://dashscope.aliyuncs.com/api/v1/services/aigc/text-generation/generation (fallback)
+The processor automatically tries international first, then falls back to domestic if needed.
+}
 }
 \section{Super class}{
 \code{\link[mLLMCelltype:BaseAPIProcessor]{mLLMCelltype::BaseAPIProcessor}} -> \code{QwenProcessor}
-}
-\section{Public fields}{
-\if{html}{\out{<div class="r6-fields">}}
-\describe{
-\item{\code{api_url}}{Qwen API endpoint URL}
-}
-\if{html}{\out{</div>}}
 }
 \section{Methods}{
 \subsection{Public methods}{
 \itemize{
 \item \href{#method-QwenProcessor-new}{\code{QwenProcessor$new()}}
+\item \href{#method-QwenProcessor-get_default_api_url}{\code{QwenProcessor$get_default_api_url()}}
+\item \href{#method-QwenProcessor-get_working_api_url}{\code{QwenProcessor$get_working_api_url()}}
 \item \href{#method-QwenProcessor-make_api_call}{\code{QwenProcessor$make_api_call()}}
 \item \href{#method-QwenProcessor-extract_response_content}{\code{QwenProcessor$extract_response_content()}}
 \item \href{#method-QwenProcessor-clone}{\code{QwenProcessor$clone()}}
@@ -34,6 +36,7 @@ Handles Qwen-specific API calls, authentication, and response parsing.
 \if{html}{\out{
 <details open><summary>Inherited methods</summary>
 <ul>
+<li><span class="pkg-link" data-pkg="mLLMCelltype" data-topic="BaseAPIProcessor" data-id="get_api_url"><a href='../../mLLMCelltype/html/BaseAPIProcessor.html#method-BaseAPIProcessor-get_api_url'><code>mLLMCelltype::BaseAPIProcessor$get_api_url()</code></a></span></li>
 <li><span class="pkg-link" data-pkg="mLLMCelltype" data-topic="BaseAPIProcessor" data-id="process_request"><a href='../../mLLMCelltype/html/BaseAPIProcessor.html#method-BaseAPIProcessor-process_request'><code>mLLMCelltype::BaseAPIProcessor$process_request()</code></a></span></li>
 </ul>
 </details>
@@ -42,11 +45,61 @@ Handles Qwen-specific API calls, authentication, and response parsing.
 \if{html}{\out{<a id="method-QwenProcessor-new"></a>}}
 \if{latex}{\out{\hypertarget{method-QwenProcessor-new}{}}}
 \subsection{Method \code{new()}}{
+Test if an endpoint is accessible
+
+
 Initialize Qwen processor
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{QwenProcessor$new()}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{QwenProcessor$new(base_url = NULL)}\if{html}{\out{</div>}}
 }
 
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{base_url}}{Optional custom base URL for Qwen API}
+
+\item{\code{url}}{The endpoint URL to test}
+
+\item{\code{api_key}}{API key for authentication}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+TRUE if accessible, FALSE otherwise
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-QwenProcessor-get_default_api_url"></a>}}
+\if{latex}{\out{\hypertarget{method-QwenProcessor-get_default_api_url}{}}}
+\subsection{Method \code{get_default_api_url()}}{
+Get default Qwen API URL with intelligent endpoint selection
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{QwenProcessor$get_default_api_url()}\if{html}{\out{</div>}}
+}
+
+\subsection{Returns}{
+Default Qwen API endpoint URL
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-QwenProcessor-get_working_api_url"></a>}}
+\if{latex}{\out{\hypertarget{method-QwenProcessor-get_working_api_url}{}}}
+\subsection{Method \code{get_working_api_url()}}{
+Get working Qwen API URL with automatic endpoint detection
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{QwenProcessor$get_working_api_url(api_key)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{api_key}}{API key for testing endpoints}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+Working Qwen API endpoint URL
+}
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-QwenProcessor-make_api_call"></a>}}

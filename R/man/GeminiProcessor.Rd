@@ -15,17 +15,12 @@ Handles Gemini-specific API calls, authentication, and response parsing.
 \section{Super class}{
 \code{\link[mLLMCelltype:BaseAPIProcessor]{mLLMCelltype::BaseAPIProcessor}} -> \code{GeminiProcessor}
 }
-\section{Public fields}{
-\if{html}{\out{<div class="r6-fields">}}
-\describe{
-\item{\code{api_url_template}}{Gemini API endpoint URL template}
-}
-\if{html}{\out{</div>}}
-}
 \section{Methods}{
 \subsection{Public methods}{
 \itemize{
 \item \href{#method-GeminiProcessor-new}{\code{GeminiProcessor$new()}}
+\item \href{#method-GeminiProcessor-get_default_api_url}{\code{GeminiProcessor$get_default_api_url()}}
+\item \href{#method-GeminiProcessor-get_api_url_for_model}{\code{GeminiProcessor$get_api_url_for_model()}}
 \item \href{#method-GeminiProcessor-make_api_call}{\code{GeminiProcessor$make_api_call()}}
 \item \href{#method-GeminiProcessor-extract_response_content}{\code{GeminiProcessor$extract_response_content()}}
 \item \href{#method-GeminiProcessor-clone}{\code{GeminiProcessor$clone()}}
@@ -34,6 +29,7 @@ Handles Gemini-specific API calls, authentication, and response parsing.
 \if{html}{\out{
 <details open><summary>Inherited methods</summary>
 <ul>
+<li><span class="pkg-link" data-pkg="mLLMCelltype" data-topic="BaseAPIProcessor" data-id="get_api_url"><a href='../../mLLMCelltype/html/BaseAPIProcessor.html#method-BaseAPIProcessor-get_api_url'><code>mLLMCelltype::BaseAPIProcessor$get_api_url()</code></a></span></li>
 <li><span class="pkg-link" data-pkg="mLLMCelltype" data-topic="BaseAPIProcessor" data-id="process_request"><a href='../../mLLMCelltype/html/BaseAPIProcessor.html#method-BaseAPIProcessor-process_request'><code>mLLMCelltype::BaseAPIProcessor$process_request()</code></a></span></li>
 </ul>
 </details>
@@ -44,9 +40,49 @@ Handles Gemini-specific API calls, authentication, and response parsing.
 \subsection{Method \code{new()}}{
 Initialize Gemini processor
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{GeminiProcessor$new()}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{GeminiProcessor$new(base_url = NULL)}\if{html}{\out{</div>}}
 }
 
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{base_url}}{Optional custom base URL for Gemini API}
+}
+\if{html}{\out{</div>}}
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-GeminiProcessor-get_default_api_url"></a>}}
+\if{latex}{\out{\hypertarget{method-GeminiProcessor-get_default_api_url}{}}}
+\subsection{Method \code{get_default_api_url()}}{
+Get default Gemini API URL template
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{GeminiProcessor$get_default_api_url()}\if{html}{\out{</div>}}
+}
+
+\subsection{Returns}{
+Default Gemini API endpoint URL template
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-GeminiProcessor-get_api_url_for_model"></a>}}
+\if{latex}{\out{\hypertarget{method-GeminiProcessor-get_api_url_for_model}{}}}
+\subsection{Method \code{get_api_url_for_model()}}{
+Get API URL for specific model
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{GeminiProcessor$get_api_url_for_model(model)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{model}}{Model identifier}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+Complete API URL for the model
+}
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-GeminiProcessor-make_api_call"></a>}}

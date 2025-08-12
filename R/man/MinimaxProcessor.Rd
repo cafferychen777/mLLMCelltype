@@ -15,17 +15,11 @@ Handles Minimax-specific API calls, authentication, and response parsing.
 \section{Super class}{
 \code{\link[mLLMCelltype:BaseAPIProcessor]{mLLMCelltype::BaseAPIProcessor}} -> \code{MinimaxProcessor}
 }
-\section{Public fields}{
-\if{html}{\out{<div class="r6-fields">}}
-\describe{
-\item{\code{api_url}}{Minimax API endpoint URL}
-}
-\if{html}{\out{</div>}}
-}
 \section{Methods}{
 \subsection{Public methods}{
 \itemize{
 \item \href{#method-MinimaxProcessor-new}{\code{MinimaxProcessor$new()}}
+\item \href{#method-MinimaxProcessor-get_default_api_url}{\code{MinimaxProcessor$get_default_api_url()}}
 \item \href{#method-MinimaxProcessor-make_api_call}{\code{MinimaxProcessor$make_api_call()}}
 \item \href{#method-MinimaxProcessor-extract_response_content}{\code{MinimaxProcessor$extract_response_content()}}
 \item \href{#method-MinimaxProcessor-clone}{\code{MinimaxProcessor$clone()}}
@@ -34,6 +28,7 @@ Handles Minimax-specific API calls, authentication, and response parsing.
 \if{html}{\out{
 <details open><summary>Inherited methods</summary>
 <ul>
+<li><span class="pkg-link" data-pkg="mLLMCelltype" data-topic="BaseAPIProcessor" data-id="get_api_url"><a href='../../mLLMCelltype/html/BaseAPIProcessor.html#method-BaseAPIProcessor-get_api_url'><code>mLLMCelltype::BaseAPIProcessor$get_api_url()</code></a></span></li>
 <li><span class="pkg-link" data-pkg="mLLMCelltype" data-topic="BaseAPIProcessor" data-id="process_request"><a href='../../mLLMCelltype/html/BaseAPIProcessor.html#method-BaseAPIProcessor-process_request'><code>mLLMCelltype::BaseAPIProcessor$process_request()</code></a></span></li>
 </ul>
 </details>
@@ -44,9 +39,29 @@ Handles Minimax-specific API calls, authentication, and response parsing.
 \subsection{Method \code{new()}}{
 Initialize Minimax processor
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{MinimaxProcessor$new()}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{MinimaxProcessor$new(base_url = NULL)}\if{html}{\out{</div>}}
 }
 
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{base_url}}{Optional custom base URL for Minimax API}
+}
+\if{html}{\out{</div>}}
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-MinimaxProcessor-get_default_api_url"></a>}}
+\if{latex}{\out{\hypertarget{method-MinimaxProcessor-get_default_api_url}{}}}
+\subsection{Method \code{get_default_api_url()}}{
+Get default Minimax API URL
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{MinimaxProcessor$get_default_api_url()}\if{html}{\out{</div>}}
+}
+
+\subsection{Returns}{
+Default Minimax API endpoint URL
+}
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-MinimaxProcessor-make_api_call"></a>}}

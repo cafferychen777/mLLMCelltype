@@ -19,6 +19,8 @@ This eliminates code duplication across all provider-specific processors.
 \item{\code{provider_name}}{Name of the API provider}
 
 \item{\code{logger}}{Unified logger instance}
+
+\item{\code{base_url}}{Custom base URL for API endpoints}
 }
 \if{html}{\out{</div>}}
 }
@@ -27,6 +29,8 @@ This eliminates code duplication across all provider-specific processors.
 \itemize{
 \item \href{#method-BaseAPIProcessor-new}{\code{BaseAPIProcessor$new()}}
 \item \href{#method-BaseAPIProcessor-process_request}{\code{BaseAPIProcessor$process_request()}}
+\item \href{#method-BaseAPIProcessor-get_api_url}{\code{BaseAPIProcessor$get_api_url()}}
+\item \href{#method-BaseAPIProcessor-get_default_api_url}{\code{BaseAPIProcessor$get_default_api_url()}}
 \item \href{#method-BaseAPIProcessor-make_api_call}{\code{BaseAPIProcessor$make_api_call()}}
 \item \href{#method-BaseAPIProcessor-extract_response_content}{\code{BaseAPIProcessor$extract_response_content()}}
 \item \href{#method-BaseAPIProcessor-clone}{\code{BaseAPIProcessor$clone()}}
@@ -38,13 +42,15 @@ This eliminates code duplication across all provider-specific processors.
 \subsection{Method \code{new()}}{
 Initialize the base API processor
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{BaseAPIProcessor$new(provider_name)}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{BaseAPIProcessor$new(provider_name, base_url = NULL)}\if{html}{\out{</div>}}
 }
 
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
 \item{\code{provider_name}}{Name of the API provider (e.g., "openai", "anthropic")}
+
+\item{\code{base_url}}{Optional custom base URL for API endpoints}
 }
 \if{html}{\out{</div>}}
 }
@@ -71,6 +77,32 @@ Main entry point for processing API requests
 }
 \subsection{Returns}{
 Processed response as character vector
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-BaseAPIProcessor-get_api_url"></a>}}
+\if{latex}{\out{\hypertarget{method-BaseAPIProcessor-get_api_url}{}}}
+\subsection{Method \code{get_api_url()}}{
+Get the API URL to use for requests
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{BaseAPIProcessor$get_api_url()}\if{html}{\out{</div>}}
+}
+
+\subsection{Returns}{
+API URL string
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-BaseAPIProcessor-get_default_api_url"></a>}}
+\if{latex}{\out{\hypertarget{method-BaseAPIProcessor-get_default_api_url}{}}}
+\subsection{Method \code{get_default_api_url()}}{
+Abstract method to be implemented by subclasses for getting default API URL
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{BaseAPIProcessor$get_default_api_url()}\if{html}{\out{</div>}}
+}
+
+\subsection{Returns}{
+Default API URL string
 }
 }
 \if{html}{\out{<hr>}}

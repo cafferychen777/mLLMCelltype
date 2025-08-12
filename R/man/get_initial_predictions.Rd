@@ -4,7 +4,14 @@
 \alias{get_initial_predictions}
 \title{Get initial predictions from all models}
 \usage{
-get_initial_predictions(input, tissue_name, models, api_keys, top_gene_count)
+get_initial_predictions(
+  input,
+  tissue_name,
+  models,
+  api_keys,
+  top_gene_count,
+  base_urls = NULL
+)
 }
 \arguments{
 \item{input}{Either the differential gene table or a list of genes}
@@ -16,6 +23,8 @@ get_initial_predictions(input, tissue_name, models, api_keys, top_gene_count)
 \item{api_keys}{Named list of API keys}
 
 \item{top_gene_count}{Number of top differential genes to use}
+
+\item{base_urls}{Optional custom base URLs for API endpoints}
 }
 \value{
 A list containing individual predictions and successful models

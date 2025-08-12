@@ -1,9 +1,9 @@
 ---
 name: Bug Report
-about: Report a bug in mLLMCelltype
-title: '[BUG] '
-labels: bug
-assignees: ''
+about: Report a bug in mLLMCelltype - Multi-LLM Consensus Framework
+title: '[BUG] mLLMCelltype: '
+labels: bug, help-wanted, consensus-framework
+assignees: 'cafferychen777'
 ---
 
 ## Bug Description

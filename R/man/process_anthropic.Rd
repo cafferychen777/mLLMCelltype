@@ -4,7 +4,7 @@
 \alias{process_anthropic}
 \title{Process request using Anthropic models}
 \usage{
-process_anthropic(prompt, model, api_key)
+process_anthropic(prompt, model, api_key, base_url = NULL)
 }
 \arguments{
 \item{prompt}{Input prompt text}
@@ -12,6 +12,8 @@ process_anthropic(prompt, model, api_key)
 \item{model}{Model identifier}
 
 \item{api_key}{Anthropic API key}
+
+\item{base_url}{Optional custom base URL for Anthropic API}
 }
 \value{
 Processed response as character vector

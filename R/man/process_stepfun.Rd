@@ -4,7 +4,7 @@
 \alias{process_stepfun}
 \title{Process request using StepFun models}
 \usage{
-process_stepfun(prompt, model, api_key)
+process_stepfun(prompt, model, api_key, base_url = NULL)
 }
 \arguments{
 \item{prompt}{Input prompt text}
@@ -12,6 +12,8 @@ process_stepfun(prompt, model, api_key)
 \item{model}{Model identifier}
 
 \item{api_key}{StepFun API key}
+
+\item{base_url}{Optional custom base URL for StepFun API}
 }
 \value{
 Processed response as character vector

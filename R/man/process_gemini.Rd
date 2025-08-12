@@ -4,7 +4,7 @@
 \alias{process_gemini}
 \title{Process request using Gemini models}
 \usage{
-process_gemini(prompt, model, api_key)
+process_gemini(prompt, model, api_key, base_url = NULL)
 }
 \arguments{
 \item{prompt}{Input prompt text}
@@ -12,6 +12,8 @@ process_gemini(prompt, model, api_key)
 \item{model}{Model identifier}
 
 \item{api_key}{Gemini API key}
+
+\item{base_url}{Optional custom base URL for Gemini API}
 }
 \value{
 Processed response as character vector

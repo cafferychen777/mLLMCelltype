@@ -4,7 +4,7 @@
 \alias{process_zhipu}
 \title{Process request using Zhipu models}
 \usage{
-process_zhipu(prompt, model, api_key)
+process_zhipu(prompt, model, api_key, base_url = NULL)
 }
 \arguments{
 \item{prompt}{Input prompt text}
@@ -12,6 +12,8 @@ process_zhipu(prompt, model, api_key)
 \item{model}{Model identifier}
 
 \item{api_key}{Zhipu API key}
+
+\item{base_url}{Optional custom base URL for Zhipu API}
 }
 \value{
 Processed response as character vector

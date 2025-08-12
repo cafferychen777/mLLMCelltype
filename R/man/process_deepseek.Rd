@@ -4,7 +4,7 @@
 \alias{process_deepseek}
 \title{Process request using DeepSeek models}
 \usage{
-process_deepseek(prompt, model, api_key)
+process_deepseek(prompt, model, api_key, base_url = NULL)
 }
 \arguments{
 \item{prompt}{Input prompt text}
@@ -12,6 +12,8 @@ process_deepseek(prompt, model, api_key)
 \item{model}{Model identifier}
 
 \item{api_key}{DeepSeek API key}
+
+\item{base_url}{Optional custom base URL for DeepSeek API}
 }
 \value{
 Processed response as character vector

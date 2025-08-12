@@ -26,15 +26,9 @@ Imports:
     utils
 Suggests:
     Seurat,
-    testthat (>= 3.0.0),
-    mockery,
     dotenv,
     devtools,
-    withr (>= 2.4.0),
-    knitr,
-    rmarkdown,
     pkgdown (>= 2.0.0)
-Config/testthat/edition: 3
 RoxygenNote: 7.3.2
 Roxygen: list(markdown = TRUE)
-VignetteBuilder: knitr
+Config/build/clean-inst-doc: FALSE
