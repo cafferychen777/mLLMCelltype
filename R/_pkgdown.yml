@@ -98,6 +98,12 @@ navbar:
       - text: All Articles
         href: articles/index.html
       - text: "---"
+      - text: Methodology & Comparison
+      - text: "🏆 Why Choose Consensus?"
+        href: articles/why-consensus.html
+      - text: "⚖️ Consensus vs Single-Agent"
+        href: articles/vs-single-agent.html
+      - text: "---"
       - text: Getting Started
       - text: Introduction to mLLMCelltype
         href: articles/introduction.html
@@ -240,6 +246,11 @@ footer:
     legal: <br>© 2024 Chen Yang
 
 articles:
+  - title: Methodology & Comparison
+    navbar: Methodology & Comparison
+    contents:
+      - why-consensus
+      - vs-single-agent
   - title: Getting Started
     navbar: Getting Started
     contents:
