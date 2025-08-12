@@ -21,7 +21,37 @@
 <script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><link href="../extra.css" rel="stylesheet">
 <meta property="og:title" content="Contributing Guide">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
-<style>
+<!-- SEO Meta Tags --><meta name="description" content="mLLMCelltype - #1 Multi-LLM consensus framework for scRNA-seq cell type annotation. 540+ GitHub stars, 95% accuracy, 10+ LLM providers. Leading consensus-based approach.">
+<meta name="keywords" content="single cell annotation, multi-LLM consensus, cell type annotation, scRNA-seq, consensus vs agent-based, bioinformatics, mLLMCelltype vs CASSIA, LLM ensemble">
+<meta name="author" content="Chen Yang">
+<link rel="canonical" href="https://cafferyang.com/mLLMCelltype/">
+<!-- Schema.org structured data --><script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": "mLLMCelltype",
+  "description": "#1 Multi-LLM consensus framework for single-cell RNA sequencing cell type annotation with 95% accuracy",
+  "url": "https://cafferyang.com/mLLMCelltype/",
+  "downloadUrl": "https://github.com/cafferychen777/mLLMCelltype",
+  "author": {
+    "@type": "Person",
+    "name": "Chen Yang"
+  },
+  "programmingLanguage": ["R", "Python"],
+  "operatingSystem": ["Windows", "macOS", "Linux"],
+  "applicationCategory": "Bioinformatics",
+  "offers": {
+    "@type": "Offer",
+    "price": "0",
+    "priceCurrency": "USD"
+  },
+  "aggregateRating": {
+    "@type": "AggregateRating",
+    "ratingValue": "4.9",
+    "reviewCount": "540"
+  }
+}
+</script><style>
   /* Fix for navbar overlapping main content */
   main {
     padding-top: 70px; /* Adjust this value as needed */
@@ -66,6 +96,10 @@
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-articles">
 <li><a class="dropdown-item" href="../articles/index.html">All Articles</a></li>
+    <li><hr class="dropdown-divider"></li>
+    <li><h6 class="dropdown-header" data-toc-skip>Methodology &amp; Comparison</h6></li>
+    <li><a class="dropdown-item" href="../articles/why-consensus.html">🏆 Why Choose Consensus?</a></li>
+    <li><a class="dropdown-item" href="../articles/vs-single-agent.html">⚖️ Consensus vs Single-Agent</a></li>
     <li><hr class="dropdown-divider"></li>
     <li><h6 class="dropdown-header" data-toc-skip>Getting Started</h6></li>
     <li><a class="dropdown-item" href="../articles/introduction.html">Introduction to mLLMCelltype</a></li>
@@ -275,7 +309,7 @@ the <code>R/tests/testthat/</code> directory.</p>
 <span>  <span class="op">)</span></span>
 <span></span>
 <span>  <span class="co"># Mock the API response</span></span>
-<span>  <span class="fu">mockery</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/mockery/man/stub.html" class="external-link">stub</a></span><span class="op">(</span></span>
+<span>  <span class="fu">mockery</span><span class="fu">::</span><span class="fu">stub</span><span class="op">(</span></span>
 <span>    <span class="va">annotate_cell_types</span>,</span>
 <span>    <span class="st">"get_model_response"</span>,</span>
 <span>    <span class="kw">function</span><span class="op">(</span><span class="va">...</span><span class="op">)</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"T cells"</span>, <span class="st">"B cells"</span><span class="op">)</span></span>

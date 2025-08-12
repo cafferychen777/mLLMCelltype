@@ -13,7 +13,9 @@ articles:
   usage-tutorial: usage-tutorial.html
   version-history: version-history.html
   visualization-guide: visualization-guide.html
-last_built: 2025-08-12T01:23Z
+  vs-single-agent: vs-single-agent.html
+  why-consensus: why-consensus.html
+last_built: 2025-08-12T02:13Z
 urls:
   reference: https://cafferyang.com/mLLMCelltype/reference
   article: https://cafferyang.com/mLLMCelltype/articles

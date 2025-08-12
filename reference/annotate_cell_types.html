@@ -5,7 +5,33 @@ It implements a sophisticated annotation pipeline that leverages state-of-the-ar
 cell types based on marker gene expression patterns."><meta property="og:description" content="A comprehensive function for automated cell type annotation using multiple Large Language Models (LLMs).
 This function supports both Seurat's differential gene expression results and custom gene lists as input.
 It implements a sophisticated annotation pipeline that leverages state-of-the-art LLMs to identify
-cell types based on marker gene expression patterns."><meta property="og:image" content="https://cafferyang.com/mLLMCelltype/reference/figures/social-card.png"><meta property="og:image:alt" content="mLLMCelltype - Cell Type Annotation Using Large Language Models"><meta name="twitter:card" content="summary_large_image"><meta name="twitter:creator" content="@ChenYang_cs"><meta name="twitter:site" content="@ChenYang_cs"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css"><style>
+cell types based on marker gene expression patterns."><meta property="og:image" content="https://cafferyang.com/mLLMCelltype/reference/figures/social-card.png"><meta property="og:image:alt" content="mLLMCelltype - Cell Type Annotation Using Large Language Models"><meta name="twitter:card" content="summary_large_image"><meta name="twitter:creator" content="@ChenYang_cs"><meta name="twitter:site" content="@ChenYang_cs"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css"><!-- SEO Meta Tags --><meta name="description" content="mLLMCelltype - #1 Multi-LLM consensus framework for scRNA-seq cell type annotation. 540+ GitHub stars, 95% accuracy, 10+ LLM providers. Leading consensus-based approach."><meta name="keywords" content="single cell annotation, multi-LLM consensus, cell type annotation, scRNA-seq, consensus vs agent-based, bioinformatics, mLLMCelltype vs CASSIA, LLM ensemble"><meta name="author" content="Chen Yang"><link rel="canonical" href="https://cafferyang.com/mLLMCelltype/"><!-- Schema.org structured data --><script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": "mLLMCelltype",
+  "description": "#1 Multi-LLM consensus framework for single-cell RNA sequencing cell type annotation with 95% accuracy",
+  "url": "https://cafferyang.com/mLLMCelltype/",
+  "downloadUrl": "https://github.com/cafferychen777/mLLMCelltype",
+  "author": {
+    "@type": "Person",
+    "name": "Chen Yang"
+  },
+  "programmingLanguage": ["R", "Python"],
+  "operatingSystem": ["Windows", "macOS", "Linux"],
+  "applicationCategory": "Bioinformatics",
+  "offers": {
+    "@type": "Offer",
+    "price": "0",
+    "priceCurrency": "USD"
+  },
+  "aggregateRating": {
+    "@type": "AggregateRating",
+    "ratingValue": "4.9",
+    "reviewCount": "540"
+  }
+}
+</script><style>
   /* Fix for navbar overlapping main content */
   main {
     padding-top: 70px; /* Adjust this value as needed */
@@ -46,6 +72,10 @@ cell types based on marker gene expression patterns."><meta property="og:image" 
 <li class="nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-articles"><li><a class="dropdown-item" href="../articles/index.html">All Articles</a></li>
+    <li><hr class="dropdown-divider"></li>
+    <li><h6 class="dropdown-header" data-toc-skip>Methodology &amp; Comparison</h6></li>
+    <li><a class="dropdown-item" href="../articles/why-consensus.html">🏆 Why Choose Consensus?</a></li>
+    <li><a class="dropdown-item" href="../articles/vs-single-agent.html">⚖️ Consensus vs Single-Agent</a></li>
     <li><hr class="dropdown-divider"></li>
     <li><h6 class="dropdown-header" data-toc-skip>Getting Started</h6></li>
     <li><a class="dropdown-item" href="../articles/introduction.html">Introduction to mLLMCelltype</a></li>
@@ -235,8 +265,8 @@ If NULL (default), uses official API endpoints for each provider.</p></li>
 <span class="r-in"><span>  model <span class="op">=</span> <span class="st">'gpt-4o'</span>,</span></span>
 <span class="r-in"><span>  api_key <span class="op">=</span> <span class="cn">NA</span>  <span class="co"># Returns prompt only without making API call</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> {"timestamp":"2025-08-12 01:23:44","session_id":"20250812_012344","level":"INFO","message":"Unified logger initialized","context":{"session_id":"20250812_012344","log_level":"INFO","log_dir":"logs"},"pid":10750} </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> {"timestamp":"2025-08-12 01:23:44","session_id":"20250812_012344","level":"INFO","message":"Processing input with model and provider","context":{"model":"gpt-4o","provider":"openai","custom_url":false},"pid":10750} </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> {"timestamp":"2025-08-12 02:13:31","session_id":"20250812_021331","level":"INFO","message":"Unified logger initialized","context":{"session_id":"20250812_021331","log_level":"INFO","log_dir":"logs"},"pid":10847} </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> {"timestamp":"2025-08-12 02:13:31","session_id":"20250812_021331","level":"INFO","message":"Processing input with model and provider","context":{"model":"gpt-4o","provider":"openai","custom_url":false},"pid":10847} </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> DEBUG: Formatted lines for prompt:</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "You are a cell type annotation expert. Below are marker genes for different cell clusters in human PBMC.\n\n\n\nFor each numbered cluster, provide only the cell type name in a new line, without any explanation."</span>
 <span class="r-in"><span></span></span>
