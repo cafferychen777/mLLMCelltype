@@ -1,0 +1,65 @@
+title: "🏆 Benchmark Request: [Dataset/Model Name]"
+labels: ["benchmark", "performance", "evaluation"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        ## 📊 Benchmark mLLMCelltype Against Other Tools
+        
+        Help us demonstrate mLLMCelltype's superior consensus methodology! Share your benchmark results comparing mLLMCelltype with other cell annotation tools.
+        
+  - type: input
+    id: dataset
+    attributes:
+      label: "Dataset Information"
+      description: "What dataset are you benchmarking on?"
+      placeholder: "e.g., Human PBMC 10k cells, Mouse brain atlas, etc."
+    validations:
+      required: true
+      
+  - type: checkboxes
+    id: tools_compared
+    attributes:
+      label: "Tools Compared"
+      description: "Which tools did you compare against mLLMCelltype?"
+      options:
+        - label: "Single-agent LLM approaches (specify which)"
+        - label: "Traditional methods (SingleR, CellTypist, etc.)"
+        - label: "Other multi-LLM frameworks"
+        - label: "Manual annotation (gold standard)"
+        
+  - type: textarea
+    id: metrics
+    attributes:
+      label: "Performance Metrics"
+      description: "Share your benchmark results"
+      placeholder: |
+        Tool | Accuracy | Time | Cost | Notes
+        mLLMCelltype | X% | Xmin | $X | 
+        Other Tool | Y% | Ymin | $Y |
+    validations:
+      required: true
+      
+  - type: textarea
+    id: consensus_advantage
+    attributes:
+      label: "Consensus Methodology Benefits"
+      description: "What specific advantages did you observe with mLLMCelltype's consensus approach?"
+      placeholder: "e.g., Better handling of rare cell types, improved uncertainty quantification, etc."
+      
+  - type: input
+    id: models_used
+    attributes:
+      label: "LLM Models Used"
+      description: "Which models did you use in the consensus?"
+      placeholder: "e.g., GPT-4o, Claude-3.5-Sonnet, Gemini-1.5-Pro"
+      
+  - type: checkboxes
+    id: share_results
+    attributes:
+      label: "Result Sharing"
+      options:
+        - label: "I'm willing to share detailed results publicly"
+        - label: "I'd like to collaborate on a joint publication"
+        - label: "These results can be featured in mLLMCelltype marketing"
+        - label: "I can provide the dataset for community benchmarking"

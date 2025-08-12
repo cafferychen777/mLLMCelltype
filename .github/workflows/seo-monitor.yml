@@ -1,0 +1,123 @@
+name: SEO Performance Monitoring
+
+on:
+  schedule:
+    - cron: '0 6 * * 1'  # Weekly on Monday 6 AM UTC
+  workflow_dispatch:
+
+jobs:
+  seo-metrics:
+    runs-on: ubuntu-latest
+    name: Monitor SEO Performance & Competition
+    
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+      
+    - name: Check GitHub ranking metrics
+      id: github-metrics
+      run: |
+        # Get current repository metrics
+        STARS=$(curl -s https://api.github.com/repos/cafferychen777/mLLMCelltype | jq '.stargazers_count')
+        FORKS=$(curl -s https://api.github.com/repos/cafferychen777/mLLMCelltype | jq '.forks_count')
+        WATCHERS=$(curl -s https://api.github.com/repos/cafferychen777/mLLMCelltype | jq '.subscribers_count')
+        
+        # Get competitor metrics for comparison
+        CASSIA_STARS=$(curl -s https://api.github.com/repos/ElliotXie/CASSIA | jq '.stargazers_count')
+        
+        echo "stars=$STARS" >> $GITHUB_OUTPUT
+        echo "forks=$FORKS" >> $GITHUB_OUTPUT
+        echo "watchers=$WATCHERS" >> $GITHUB_OUTPUT
+        echo "cassia_stars=$CASSIA_STARS" >> $GITHUB_OUTPUT
+        
+        # Calculate competitive advantage
+        ADVANTAGE=$((STARS - CASSIA_STARS))
+        echo "advantage=$ADVANTAGE" >> $GITHUB_OUTPUT
+        
+    - name: Check search result positioning
+      id: search-check
+      run: |
+        # Check if our repository appears in GitHub search results
+        SEARCH_RESULTS=$(curl -s "https://api.github.com/search/repositories?q=multi+LLM+cell+annotation&sort=stars&order=desc" | jq '.items[].full_name' | head -5)
+        echo "search_results<<EOF" >> $GITHUB_OUTPUT
+        echo "$SEARCH_RESULTS" >> $GITHUB_OUTPUT
+        echo "EOF" >> $GITHUB_OUTPUT
+        
+    - name: Generate SEO report
+      run: |
+        cat > seo-report.md << EOF
+        # Weekly SEO Performance Report - $(date +%Y-%m-%d)
+        
+        ## 📊 Repository Metrics
+        - **Stars**: ${{ steps.github-metrics.outputs.stars }} (+${{ steps.github-metrics.outputs.advantage }} vs CASSIA)
+        - **Forks**: ${{ steps.github-metrics.outputs.forks }}
+        - **Watchers**: ${{ steps.github-metrics.outputs.watchers }}
+        
+        ## 🎯 Competitive Position
+        - **mLLMCelltype**: ${{ steps.github-metrics.outputs.stars }} stars
+        - **CASSIA**: ${{ steps.github-metrics.outputs.cassia_stars }} stars
+        - **Lead**: ${{ steps.github-metrics.outputs.advantage }} stars (${{ steps.github-metrics.outputs.advantage }}x advantage)
+        
+        ## 🔍 Search Visibility
+        Top repositories for "multi LLM cell annotation":
+        ${{ steps.search-check.outputs.search_results }}
+        
+        ## 🎯 Action Items
+        - Continue community engagement to maintain growth
+        - Monitor for new competitors entering the space
+        - Track keyword ranking improvements
+        
+        ---
+        Generated automatically by GitHub Actions
+        EOF
+        
+    - name: Create issue if metrics drop
+      if: steps.github-metrics.outputs.advantage < 400
+      uses: actions/github-script@v7
+      with:
+        script: |
+          github.rest.issues.create({
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            title: '⚠️ SEO Alert: Competitive Advantage Declining',
+            body: `## SEO Performance Alert
+            
+            Our competitive advantage has dropped below 400 stars vs CASSIA.
+            
+            **Current Status:**
+            - mLLMCelltype: ${{ steps.github-metrics.outputs.stars }} stars
+            - CASSIA: ${{ steps.github-metrics.outputs.cassia_stars }} stars
+            - Advantage: ${{ steps.github-metrics.outputs.advantage }} stars
+            
+            **Recommended Actions:**
+            - Review recent community engagement
+            - Increase marketing and outreach efforts
+            - Check for new competitor activities
+            - Consider feature announcements or releases
+            
+            This issue was automatically created by the SEO monitoring workflow.`,
+            labels: ['seo', 'monitoring', 'competitive-analysis']
+          })
+          
+    - name: Update metrics badge if needed
+      if: steps.github-metrics.outputs.stars != '540'
+      run: |
+        # Update README with current star count
+        sed -i "s/540+ ⭐/${{ steps.github-metrics.outputs.stars }}+ ⭐/g" README.md
+        
+        # Check if changes were made
+        if [[ -n $(git status --porcelain) ]]; then
+          git config --local user.email "action@github.com"
+          git config --local user.name "SEO Monitor Bot"
+          git add README.md
+          git commit -m "chore: Update star count to ${{ steps.github-metrics.outputs.stars }}+ in README
+
+          🤖 Automated SEO metrics update
+          
+          - Updated GitHub stars from 540+ to ${{ steps.github-metrics.outputs.stars }}+
+          - Maintaining accurate competitive positioning
+          - Current advantage: ${{ steps.github-metrics.outputs.advantage }} stars vs CASSIA
+          
+          Co-Authored-By: SEO Monitor <action@github.com>"
+          git push
+        fi
