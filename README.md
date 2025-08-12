@@ -1,5 +1,5 @@
 <div align="center">
-  <img src="assets/mLLMCelltype_logo.png" alt="mLLMCelltype - Multi-LLM Consensus Framework for Cell Type Annotation in scRNA-seq" width="300"/>
+  <img src="assets/mLLMCelltype_logo.png" alt="mLLMCelltype logo - Leading multi-LLM consensus framework for single-cell RNA sequencing cell type annotation with 95% accuracy and 540+ GitHub stars" width="300"/>
 </div>
 
 <div align="center">
@@ -7,20 +7,20 @@
 </div>
 
 <div align="center">
-  <a href="https://twitter.com/intent/tweet?text=Check%20out%20mLLMCelltype%3A%20A%20multi-LLM%20consensus%20framework%20for%20cell%20type%20annotation%20in%20scRNA-seq%20data%21&url=https%3A%2F%2Fgithub.com%2Fcafferychen777%2FmLLMCelltype"><img src="https://img.shields.io/twitter/url?style=social&url=https%3A%2F%2Fgithub.com%2Fcafferychen777%2FmLLMCelltype" alt="Tweet"></a>
-  <a href="https://github.com/cafferychen777/mLLMCelltype/stargazers"><img src="https://img.shields.io/github/stars/cafferychen777/mLLMCelltype?style=social" alt="Stars"></a>
-  <a href="https://github.com/cafferychen777/mLLMCelltype/network/members"><img src="https://img.shields.io/github/forks/cafferychen777/mLLMCelltype?style=social" alt="Forks"></a>
-  <a href="https://discord.gg/pb2aZdG4"><img src="https://img.shields.io/badge/Discord-Join%20Chat-7289da?logo=discord&logoColor=white" alt="Discord"></a>
+  <a href="https://twitter.com/intent/tweet?text=Check%20out%20mLLMCelltype%3A%20A%20multi-LLM%20consensus%20framework%20for%20cell%20type%20annotation%20in%20scRNA-seq%20data%21&url=https%3A%2F%2Fgithub.com%2Fcafferychen777%2FmLLMCelltype"><img src="https://img.shields.io/twitter/url?style=social&url=https%3A%2F%2Fgithub.com%2Fcafferychen777%2FmLLMCelltype" alt="Share mLLMCelltype on Twitter - Multi-LLM consensus cell annotation framework"></a>
+  <a href="https://github.com/cafferychen777/mLLMCelltype/stargazers"><img src="https://img.shields.io/github/stars/cafferychen777/mLLMCelltype?style=social" alt="mLLMCelltype GitHub stars - 540+ community members supporting the leading consensus framework"></a>
+  <a href="https://github.com/cafferychen777/mLLMCelltype/network/members"><img src="https://img.shields.io/github/forks/cafferychen777/mLLMCelltype?style=social" alt="mLLMCelltype GitHub forks - Community contributions to consensus-based cell annotation"></a>
+  <a href="https://discord.gg/pb2aZdG4"><img src="https://img.shields.io/badge/Discord-Join%20Chat-7289da?logo=discord&logoColor=white" alt="Join mLLMCelltype Discord community - Get support for multi-LLM consensus annotation"></a>
 </div>
 
 <div align="center">
-  <img src="https://img.shields.io/github/license/cafferychen777/mLLMCelltype" alt="License">
-  <img src="https://img.shields.io/github/last-commit/cafferychen777/mLLMCelltype" alt="Last Commit">
-  <img src="https://img.shields.io/github/issues/cafferychen777/mLLMCelltype" alt="Issues">
-  <img src="https://img.shields.io/github/v/release/cafferychen777/mLLMCelltype" alt="Release">
-  <a href="https://www.biorxiv.org/content/10.1101/2025.04.10.647852v1"><img src="https://img.shields.io/badge/bioRxiv-2025.04.10.647852-blue" alt="bioRxiv"></a>
-  <a href="https://www.mllmcelltype.com/"><img src="https://img.shields.io/badge/Try%20Online-mLLMCelltype-brightgreen" alt="Try Online"></a>
-  <a href="https://colab.research.google.com/github/cafferychen777/mLLMCelltype/blob/main/notebooks/mLLMCelltype_Tutorial.ipynb"><img src="https://img.shields.io/badge/Open%20in-Colab-F9AB00?logo=googlecolab&logoColor=white" alt="Open In Colab"></a>
+  <img src="https://img.shields.io/github/license/cafferychen777/mLLMCelltype" alt="mLLMCelltype open source license - Free multi-LLM consensus framework for research">
+  <img src="https://img.shields.io/github/last-commit/cafferychen777/mLLMCelltype" alt="mLLMCelltype last commit - Active development of consensus-based annotation">
+  <img src="https://img.shields.io/github/issues/cafferychen777/mLLMCelltype" alt="mLLMCelltype GitHub issues - Community support and feature requests">
+  <img src="https://img.shields.io/github/v/release/cafferychen777/mLLMCelltype" alt="mLLMCelltype latest release - Production-ready consensus framework version">
+  <a href="https://www.biorxiv.org/content/10.1101/2025.04.10.647852v1"><img src="https://img.shields.io/badge/bioRxiv-2025.04.10.647852-blue" alt="mLLMCelltype bioRxiv preprint - Scientific publication on multi-LLM consensus for cell annotation"></a>
+  <a href="https://www.mllmcelltype.com/"><img src="https://img.shields.io/badge/Try%20Online-mLLMCelltype-brightgreen" alt="Try mLLMCelltype online - Web application for consensus-based cell type annotation"></a>
+  <a href="https://colab.research.google.com/github/cafferychen777/mLLMCelltype/blob/main/notebooks/mLLMCelltype_Tutorial.ipynb"><img src="https://img.shields.io/badge/Open%20in-Colab-F9AB00?logo=googlecolab&logoColor=white" alt="Open mLLMCelltype tutorial in Google Colab - Interactive consensus annotation walkthrough"></a>
 </div>
 
 # mLLMCelltype: Multi-LLM Consensus Framework for Cell Type Annotation
@@ -58,7 +58,7 @@ mLLMCelltype is an open-source tool for single-cell transcriptomics analysis tha
 
 <div align="center">
   <a href="https://star-history.com/#cafferychen777/mLLMCelltype">
-    <img src="https://api.star-history.com/svg?repos=cafferychen777/mLLMCelltype&type=Date" alt="Star History Chart" width="600"/>
+    <img src="https://api.star-history.com/svg?repos=cafferychen777/mLLMCelltype&type=Date" alt="mLLMCelltype GitHub Star History Chart - Community growth of the leading multi-LLM consensus framework from launch to 540+ stars" width="600"/>
   </a>
   <p><em>Figure 1: mLLMCelltype GitHub star history showing community adoption and growth over time.</em></p>
 </div>

@@ -199,7 +199,7 @@ home:
   description: |
     <div class="row">
       <div class="col-md-3">
-        <img src="man/figures/logo.png" alt="mLLMCelltype - Leading multi-LLM consensus framework" class="img-fluid" style="max-width: 100%; margin-bottom: 15px;">
+        <img src="man/figures/logo.png" alt="mLLMCelltype logo - Leading multi-LLM consensus framework for scRNA-seq cell type annotation with 95% accuracy and superior performance over single-agent systems" class="img-fluid" style="max-width: 100%; margin-bottom: 15px;">
       </div>
       <div class="col-md-9">
         <h4>🏆 Leading Multi-LLM Consensus Framework | 540+ ⭐ | 95% Accuracy</h4>

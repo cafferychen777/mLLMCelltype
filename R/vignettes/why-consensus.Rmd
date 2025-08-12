@@ -151,6 +151,13 @@ For controversial clusters:
 - **Computational constraints**: Very limited API budget
 - **Proof-of-concept work**: Early-stage investigations
 
+## Visualizing the Consensus Advantage
+
+<div align="center">
+<img src="../man/figures/logo.png" alt="mLLMCelltype consensus framework workflow diagram showing multi-LLM collaboration, uncertainty quantification, and superior accuracy over single-agent approaches" width="400" style="margin: 20px 0;"/>
+<p><em>mLLMCelltype employs a sophisticated consensus mechanism that combines multiple LLM perspectives for more accurate cell type annotation than any single model approach.</em></p>
+</div>
+
 ## Getting Started with Consensus Annotation
 
 ### 🚀 **Quick Start Example**

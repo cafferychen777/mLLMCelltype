@@ -1,5 +1,5 @@
 <div align="center">
-  <img src="assets/mLLMCelltype_logo.png" alt="mLLMCelltype - 单细胞 RNA 测序数据的多大语言模型细胞类型注释框架" width="300"/>
+  <img src="assets/mLLMCelltype_logo.png" alt="mLLMCelltype标志 - 领先的多大语言模型共识框架，用于单细胞RNA测序细胞类型注释，具有95%准确率和540+GitHub星标" width="300"/>
 </div>
 
 <div align="center">
@@ -7,10 +7,10 @@
 </div>
 
 <div align="center">
-  <a href="https://twitter.com/intent/tweet?text=推荐使用%20mLLMCelltype%3A%20一个用于单细胞%20RNA%20测序数据细胞类型注释的多模型共识框架%21&url=https%3A%2F%2Fgithub.com%2Fcafferychen777%2FmLLMCelltype"><img src="https://img.shields.io/twitter/url?style=social&url=https%3A%2F%2Fgithub.com%2Fcafferychen777%2FmLLMCelltype" alt="分享到推特"></a>
-  <a href="https://github.com/cafferychen777/mLLMCelltype/stargazers"><img src="https://img.shields.io/github/stars/cafferychen777/mLLMCelltype?style=social" alt="星标数"></a>
-  <a href="https://github.com/cafferychen777/mLLMCelltype/network/members"><img src="https://img.shields.io/github/forks/cafferychen777/mLLMCelltype?style=social" alt="分支数"></a>
-  <a href="https://discord.gg/pb2aZdG4"><img src="https://img.shields.io/badge/Discord-加入聊天-7289da?logo=discord&logoColor=white" alt="Discord"></a>
+  <a href="https://twitter.com/intent/tweet?text=推荐使用%20mLLMCelltype%3A%20一个用于单细胞%20RNA%20测序数据细胞类型注释的多模型共识框架%21&url=https%3A%2F%2Fgithub.com%2Fcafferychen777%2FmLLMCelltype"><img src="https://img.shields.io/twitter/url?style=social&url=https%3A%2F%2Fgithub.com%2Fcafferychen777%2FmLLMCelltype" alt="在推特分享mLLMCelltype - 多大语言模型共识细胞注释框架"></a>
+  <a href="https://github.com/cafferychen777/mLLMCelltype/stargazers"><img src="https://img.shields.io/github/stars/cafferychen777/mLLMCelltype?style=social" alt="mLLMCelltype GitHub星标 - 540+社区成员支持的领先共识框架"></a>
+  <a href="https://github.com/cafferychen777/mLLMCelltype/network/members"><img src="https://img.shields.io/github/forks/cafferychen777/mLLMCelltype?style=social" alt="mLLMCelltype GitHub分支 - 社区对共识细胞注释的贡献"></a>
+  <a href="https://discord.gg/pb2aZdG4"><img src="https://img.shields.io/badge/Discord-加入聊天-7289da?logo=discord&logoColor=white" alt="加入mLLMCelltype Discord社区 - 获得多大语言模型共识注释支持"></a>
 </div>
 
 <div align="center">
