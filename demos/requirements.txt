@@ -1,0 +1,48 @@
+# LangExtract Demo Requirements
+# Core dependency for language extraction
+langextract>=1.0.8
+
+# Data processing and analysis
+pandas>=1.3.0
+numpy>=1.20.0
+
+# JSON and YAML handling
+pyyaml>=6.0
+
+# Environment variable management
+python-dotenv>=0.19.0
+
+# HTTP requests for API calls
+requests>=2.25.0
+aiohttp>=3.8.0
+
+# Progress bars and UI
+tqdm>=4.64.0
+
+# Logging and debugging
+colorlog>=6.0.0
+
+# Testing and validation
+pytest>=6.0.0
+pytest-asyncio>=0.18.0
+
+# Type hints and validation
+pydantic>=1.8.0
+typing-extensions>=4.0.0
+
+# Optional: For advanced analysis
+matplotlib>=3.5.0
+seaborn>=0.11.0
+plotly>=5.0.0
+
+# Optional: For notebook support
+jupyter>=1.0.0
+ipykernel>=6.0.0
+
+# Optional: Enhanced text processing
+regex>=2023.0.0
+textstat>=0.7.0
+
+# For benchmarking and performance analysis
+psutil>=5.8.0
+memory-profiler>=0.60.0
