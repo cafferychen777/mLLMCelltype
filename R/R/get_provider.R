@@ -10,7 +10,7 @@ utils::globalVariables(c("custom_models"))
 #' @details
 #' Supported providers and models include:
 #' \itemize{
-#'   \item OpenAI: 'gpt-4o', 'gpt-4o-mini', 'gpt-4.1', 'gpt-4.1-mini', 'gpt-4.1-nano', 'gpt-4-turbo', 'gpt-3.5-turbo', 'o1', 'o1-mini', 'o1-preview', 'o1-pro'
+#'   \item OpenAI: 'chatgpt-4o-latest', 'gpt-3.5-turbo', 'gpt-4', 'gpt-4-turbo', 'gpt-4.1', 'gpt-4.1-mini', 'gpt-4.1-nano', 'gpt-4o', 'gpt-4o-mini', 'gpt-5', 'gpt-5-mini', 'gpt-5-nano', 'o1', 'o1-mini', 'o1-pro', 'o3', 'o3-mini', 'o4-mini' and more with date variants
 #'   \item Anthropic: 'claude-opus-4-1-20250805', 'claude-opus-4-20250514', 'claude-sonnet-4-20250514', 'claude-3-7-sonnet-20250219', 'claude-3-5-sonnet-20241022', 'claude-3-5-haiku-20241022', 'claude-3-opus-20240229'
 #'   \item DeepSeek: 'deepseek-chat', 'deepseek-reasoner'
 #'   \item Google: 'gemini-2.5-pro', 'gemini-2.5-flash', 'gemini-2.0-flash', 'gemini-2.0-flash-lite', 'gemini-1.5-pro-latest', 'gemini-1.5-flash-latest', 'gemini-1.5-flash-8b'
@@ -46,7 +46,65 @@ get_provider <- function(model) {
   }
 
   # List of supported models for each provider (all in lowercase)
-  openai_models <- c("gpt-4o", "gpt-4o-mini", "gpt-4.1", "gpt-4.1-mini", "gpt-4.1-nano", "gpt-4-turbo", "gpt-3.5-turbo", "o1", "o1-mini", "o1-preview", "o1-pro")
+  openai_models <- c(
+    "chatgpt-4o-latest",
+    "gpt-3.5-turbo",
+    "gpt-3.5-turbo-0125",
+    "gpt-3.5-turbo-1106",
+    "gpt-3.5-turbo-16k",
+    "gpt-3.5-turbo-instruct",
+    "gpt-3.5-turbo-instruct-0914",
+    "gpt-4",
+    "gpt-4-0125-preview",
+    "gpt-4-0613",
+    "gpt-4-1106-preview",
+    "gpt-4-turbo",
+    "gpt-4-turbo-2024-04-09",
+    "gpt-4-turbo-preview",
+    "gpt-4.1",
+    "gpt-4.1-2025-04-14",
+    "gpt-4.1-mini",
+    "gpt-4.1-mini-2025-04-14",
+    "gpt-4.1-nano",
+    "gpt-4.1-nano-2025-04-14",
+    "gpt-4o",
+    "gpt-4o-2024-05-13",
+    "gpt-4o-2024-08-06",
+    "gpt-4o-2024-11-20",
+    "gpt-4o-audio-preview",
+    "gpt-4o-audio-preview-2024-10-01",
+    "gpt-4o-audio-preview-2024-12-17",
+    "gpt-4o-audio-preview-2025-06-03",
+    "gpt-4o-mini",
+    "gpt-4o-mini-2024-07-18",
+    "gpt-4o-mini-audio-preview",
+    "gpt-4o-mini-audio-preview-2024-12-17",
+    "gpt-4o-mini-search-preview",
+    "gpt-4o-mini-search-preview-2025-03-11",
+    "gpt-4o-search-preview",
+    "gpt-4o-search-preview-2025-03-11",
+    "gpt-5",
+    "gpt-5-2025-08-07",
+    "gpt-5-chat-latest",
+    "gpt-5-mini",
+    "gpt-5-mini-2025-08-07",
+    "gpt-5-nano",
+    "gpt-5-nano-2025-08-07",
+    "o1",
+    "o1-2024-12-17",
+    "o1-mini",
+    "o1-mini-2024-09-12",
+    "o1-pro",
+    "o1-pro-2025-03-19",
+    "o3",
+    "o3-2025-04-16",
+    "o3-mini",
+    "o3-mini-2025-01-31",
+    "o4-mini",
+    "o4-mini-2025-04-16",
+    "o4-mini-deep-research",
+    "o4-mini-deep-research-2025-06-26"
+  )
   anthropic_models <- c(
     "claude-opus-4-1-20250805",
     "claude-opus-4-20250514",
