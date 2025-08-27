@@ -105,8 +105,9 @@ def get_working_qwen_endpoint(api_key: str) -> str:
 
             response = requests.post(endpoint, headers=headers, json=test_body, timeout=timeout)
 
-            # 如果返回200或者是认证/模型相关错误（说明端点可达），则认为连通
-            return response.status_code in [200, 400, 401, 403]
+            # 只有返回200或者是模型相关错误（400）才认为端点可达
+            # 401和403是认证失败，说明端点不适用于此API key
+            return response.status_code in [200, 400]
 
         except Exception:
             return False

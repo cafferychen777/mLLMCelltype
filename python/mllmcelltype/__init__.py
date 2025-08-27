@@ -43,7 +43,28 @@ from .utils import (
     validate_cache,
 )
 
-__version__ = "1.3.2"
+# LangExtract components (simplified)
+
+# LangExtract parser module (optional dependency)
+try:
+    from .langextract_parser import (
+        BatchAnnotationResult,
+        CellTypeAnnotation,
+        ConsensusMetrics,
+        DiscussionAnalysis,
+        LangextractParser,
+        ParsingComplexity,
+        ParsingConfig,
+        analyze_consensus,
+        create_parser,
+        parse_cell_types,
+    )
+
+    LANGEXTRACT_AVAILABLE = True
+except ImportError:
+    LANGEXTRACT_AVAILABLE = False
+
+__version__ = "1.3.3"
 
 __all__ = [
     # Core annotation
@@ -88,4 +109,35 @@ __all__ = [
     "resolve_provider_base_url",
     "get_default_api_url",
     "validate_base_url",
+    # LangExtract configuration
+    "get_default_langextract_config",
+    "load_langextract_config",
+    "validate_langextract_config",
+    "merge_langextract_config",
+    "get_langextract_api_key",
+    "print_langextract_config",
+    "check_langextract_config_health",
+    "get_environment_variables_template",
+    "is_langextract_enabled",
+    "get_langextract_model",
+    "should_use_langextract",
 ]
+
+# Add LangExtract functionality if available
+if LANGEXTRACT_AVAILABLE:
+    __all__.extend(
+        [
+            # LangExtract Parser
+            "LangextractParser",
+            "ParsingConfig",
+            "CellTypeAnnotation",
+            "ConsensusMetrics",
+            "BatchAnnotationResult",
+            "DiscussionAnalysis",
+            "ParsingComplexity",
+            "create_parser",
+            "parse_cell_types",
+            "analyze_consensus",
+            "LANGEXTRACT_AVAILABLE",
+        ]
+    )
