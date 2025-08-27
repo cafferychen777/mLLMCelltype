@@ -27,6 +27,7 @@
     "  citation(\"mLLMCelltype\")"
   )
   
+  
   # Display the message
   packageStartupMessage(msg)
 }
@@ -42,6 +43,7 @@
   )
   toset <- !(names(op.mLLMCelltype) %in% names(op))
   if(any(toset)) options(op.mLLMCelltype[toset])
+  
   
   invisible()
 }

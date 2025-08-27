@@ -1,10 +1,11 @@
+#' @keywords internal
+"_PACKAGE"
+
 # Define global variables
 utils::globalVariables(c("cluster", "avg_log2FC", "gene"))
 
 #' @importFrom dplyr group_by top_n group_split slice_head pull
 #' @importFrom utils head
-#'
-#' @import mLLMCelltype
 
 #' @title Cell Type Annotation with Multi-LLM Framework
 #' @name annotate_cell_types
@@ -110,8 +111,8 @@ utils::globalVariables(c("cluster", "avg_log2FC", "gene"))
 #'     * Development/testing with local or alternative endpoints
 #'   If NULL (default), uses official API endpoints for each provider.
 
-#' @import httr
-#' @import jsonlite
+#' @importFrom httr POST add_headers content http_error status_code timeout
+#' @importFrom jsonlite toJSON
 #' @export
 #'
 #' @return A character vector containing:

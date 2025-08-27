@@ -25,9 +25,9 @@ It's used internally to determine which base_url to use from a list of provider-
 \details{
 Supported providers and models include:
 \itemize{
-\item OpenAI: 'gpt-4o', 'gpt-4o-mini', 'gpt-4.1', 'gpt-4.1-mini', 'gpt-4.1-nano', 'gpt-4-turbo', 'gpt-3.5-turbo', 'o1', 'o1-mini', 'o1-preview', 'o1-pro'
+\item OpenAI: 'chatgpt-4o-latest', 'gpt-3.5-turbo', 'gpt-4', 'gpt-4-turbo', 'gpt-4.1', 'gpt-4.1-mini', 'gpt-4.1-nano', 'gpt-4o', 'gpt-4o-mini', 'gpt-5', 'gpt-5-mini', 'gpt-5-nano', 'o1', 'o1-mini', 'o1-pro', 'o3', 'o3-mini', 'o4-mini' and more with date variants
 \item Anthropic: 'claude-opus-4-1-20250805', 'claude-opus-4-20250514', 'claude-sonnet-4-20250514', 'claude-3-7-sonnet-20250219', 'claude-3-5-sonnet-20241022', 'claude-3-5-haiku-20241022', 'claude-3-opus-20240229'
-\item DeepSeek: 'deepseek-chat', 'deepseek-r1', 'deepseek-r1-zero', 'deepseek-reasoner'
+\item DeepSeek: 'deepseek-chat', 'deepseek-reasoner'
 \item Google: 'gemini-2.5-pro', 'gemini-2.5-flash', 'gemini-2.0-flash', 'gemini-2.0-flash-lite', 'gemini-1.5-pro-latest', 'gemini-1.5-flash-latest', 'gemini-1.5-flash-8b'
 \item Qwen: 'qwen-max-2025-01-25', 'qwen3-72b'
 \item Stepfun: 'step-2-mini', 'step-2-16k', 'step-1-8k'
