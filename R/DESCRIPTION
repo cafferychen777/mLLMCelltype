@@ -2,16 +2,14 @@ Package: mLLMCelltype
 Type: Package
 Title: Cell Type Annotation Using Large Language Models
 Version: 1.3.1
-Author: Chen Yang [aut, cre]
-Maintainer: Chen Yang <cafferychen777@tamu.edu>
 Authors@R:
     person("Chen", "Yang", email = "cafferychen777@tamu.edu",
-           role = c("aut", "cre"))
-Description: An R package that leverages various large language models (Large Language Models)
-    for automated cell type annotation in single-cell RNA sequencing data.
-    Implements a consensus-based approach where multiple Large Language Models collaborate
-    to provide more reliable annotations. For more details, please refer to
-    our paper: <doi:10.1101/2025.04.10.647852>.
+           role = c("aut", "cre", "cph"))
+Description: Automated cell type annotation for single-cell RNA sequencing data 
+    using consensus predictions from multiple large language models. Integrates 
+    with Seurat objects and provides uncertainty quantification for annotations.
+    Supports various LLM providers including OpenAI, Anthropic, and Google.
+    For details see Yang et al. (2025) <doi:10.1101/2025.04.10.647852>.
 License: MIT + file LICENSE
 BugReports: https://github.com/cafferychen777/mLLMCelltype/issues
 URL: https://cafferyang.com/mLLMCelltype/
@@ -25,10 +23,10 @@ Imports:
     magrittr,
     utils
 Suggests:
-    Seurat,
-    dotenv,
-    devtools,
-    pkgdown (>= 2.0.0)
+    knitr,
+    rmarkdown,
+    Seurat
 RoxygenNote: 7.3.2
 Roxygen: list(markdown = TRUE)
 Config/build/clean-inst-doc: FALSE
+VignetteBuilder: knitr
