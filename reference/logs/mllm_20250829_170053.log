@@ -1,0 +1,2 @@
+{"timestamp":"2025-08-29 17:00:53","session_id":"20250829_170053","level":"INFO","message":"Unified logger initialized","context":{"session_id":"20250829_170053","log_level":"INFO","log_dir":"logs"},"pid":10802} 
+{"timestamp":"2025-08-29 17:00:53","session_id":"20250829_170053","level":"INFO","message":"Processing input with model and provider","context":{"model":"gpt-4o","provider":"openai","custom_url":false},"pid":10802} 
