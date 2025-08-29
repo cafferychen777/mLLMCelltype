@@ -190,7 +190,7 @@ def get_provider(model: str) -> str:
             "anthropic/claude-opus-4",
             "anthropic/claude-sonnet-4",
             "anthropic/claude-3.5-sonnet",
-            "openai/gpt-4o",
+            "openai/gpt-5",
             "openai/gpt-4.1",
             "openai/o1",
             "openai/o3",

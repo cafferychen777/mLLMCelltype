@@ -196,7 +196,7 @@ pip install git+https://github.com/cafferychen777/mLLMCelltype.git#subdirectory=
 mLLMCelltypeはモジュラー設計を採用しており、異なるLLMプロバイダーライブラリはオプションの依存関係となっています。使用予定のモデルに応じて、対応するパッケージをインストールする必要があります：
 
 ```bash
-# OpenAIモデル（GPT-4oなど）を使用する場合
+# OpenAIモデル（GPT-5など）を使用する場合
 pip install "mllmcelltype[openai]"
 
 # Anthropicモデル（Claude）を使用する場合
@@ -690,7 +690,7 @@ pbmc_markers <- FindAllMarkers(pbmc,
 
 # サポートされている任意のプロバイダーからモデルを選択
 # サポートされているモデルには以下が含まれます：
-# - OpenAI: 'gpt-4o', 'gpt-4o-mini', 'gpt-4.1', 'gpt-4.1-mini', 'gpt-4.1-nano', 'gpt-4-turbo', 'gpt-3.5-turbo', 'o1', 'o1-mini', 'o1-preview', 'o1-pro'
+# - OpenAI: 'gpt-5', 'gpt-5-mini', 'gpt-4.1', 'gpt-4.1-mini', 'gpt-4.1-nano', 'gpt-4-turbo', 'gpt-3.5-turbo', 'o1', 'o1-mini', 'o1-preview', 'o1-pro'
 # - Anthropic: 'claude-sonnet-4-20250514', 'claude-3-5-sonnet-latest', 'claude-3-5-haiku-latest', 'claude-3-opus'
 # - DeepSeek: 'deepseek-chat', 'deepseek-reasoner'
 # - Google: 'gemini-2.5-pro', 'gemini-2.5-flash', 'gemini-2.0-flash', 'gemini-1.5-pro', 'gemini-1.5-flash'
@@ -700,7 +700,7 @@ pbmc_markers <- FindAllMarkers(pbmc,
 # - MiniMax: 'minimax-text-01'
 # - Grok: 'grok-3', 'grok-3-latest', 'grok-3-fast', 'grok-3-fast-latest', 'grok-3-mini', 'grok-3-mini-latest', 'grok-3-mini-fast', 'grok-3-mini-fast-latest'
 # - OpenRouter: 単一APIで複数のモデルにアクセス。形式: 'provider/model-name'
-#   - OpenAIモデル: 'openai/gpt-4o', 'openai/gpt-4o-mini', 'openai/gpt-4-turbo', 'openai/gpt-4', 'openai/gpt-3.5-turbo'
+#   - OpenAIモデル: 'openai/gpt-5', 'openai/gpt-5-mini', 'openai/gpt-4-turbo', 'openai/gpt-4', 'openai/gpt-3.5-turbo'
 #   - Anthropicモデル: 'anthropic/claude-sonnet-4', 'anthropic/claude-3-5-sonnet-latest', 'anthropic/claude-3-5-haiku-latest', 'anthropic/claude-3-opus'
 #   - Metaモデル: 'meta-llama/llama-3-70b-instruct', 'meta-llama/llama-3-8b-instruct', 'meta-llama/llama-2-70b-chat'
 #   - Googleモデル: 'google/gemini-2.5-pro', 'google/gemini-2.5-flash', 'google/gemini-1.5-pro-latest', 'google/gemini-1.5-flash'

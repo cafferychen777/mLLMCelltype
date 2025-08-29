@@ -739,7 +739,7 @@ The `consensus_model` parameter in `interactive_consensus_annotation` allows you
 
 2. **OpenAI Models**
    - `o1` / `o1-pro` - Advanced reasoning capabilities
-   - `gpt-4o` - Strong performance across various cell types
+   - `gpt-5` - Strong performance across various cell types
    - `gpt-4.1` - Latest GPT-4 variant
 
 3. **Google Gemini Models**

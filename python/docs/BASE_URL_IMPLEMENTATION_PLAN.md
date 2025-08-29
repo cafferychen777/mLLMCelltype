@@ -134,7 +134,7 @@ def process_openai(prompt: str, model: str, api_key: str, base_url: Optional[str
     
     Args:
         prompt: The prompt to send to the API
-        model: The model name (e.g., 'gpt-4o', 'o1')
+        model: The model name (e.g., 'gpt-5', 'o1')
         api_key: OpenAI API key
         base_url: Optional custom base URL
         
@@ -538,7 +538,7 @@ result = annotate_clusters(
     marker_genes=marker_genes,
     species="human",
     provider="openai",
-    model="gpt-4o",
+    model="gpt-5",
     base_urls="https://api.your-proxy.com/v1"  # 所有provider使用相同代理
 )
 
@@ -547,7 +547,7 @@ result = annotate_clusters(
     marker_genes=marker_genes,
     species="human",
     provider="openai",
-    model="gpt-4o",
+    model="gpt-5",
     base_urls={
         "openai": "https://openai-proxy.com/v1",
         "anthropic": "https://anthropic-proxy.com/v1"
@@ -558,7 +558,7 @@ result = annotate_clusters(
 consensus_results = interactive_consensus_annotation(
     marker_genes=marker_genes,
     species="human",
-    models=["gpt-4o", "claude-3-opus", "qwen-max"],
+    models=["gpt-5", "claude-3-opus", "qwen-max"],
     api_keys={
         "openai": "your-openai-key",
         "anthropic": "your-anthropic-key",

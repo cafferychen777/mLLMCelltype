@@ -16,8 +16,8 @@ interactive_consensus_annotation(
   entropy_threshold = 1,
   max_discussion_rounds = 3,
   consensus_check_model = NULL,
-  log_dir = "logs",
-  cache_dir = "consensus_cache",
+  log_dir = NULL,
+  cache_dir = NULL,
   use_cache = TRUE,
   base_urls = NULL,
   clusters_to_analyze = NULL,
@@ -94,9 +94,9 @@ Example:
 
 \item{consensus_check_model}{Model to use for consensus checking}
 
-\item{log_dir}{Directory for storing logs}
+\item{log_dir}{Directory for storing logs (defaults to tempdir())}
 
-\item{cache_dir}{Directory for storing cache}
+\item{cache_dir}{Directory for storing cache (defaults to tempdir())}
 
 \item{use_cache}{Whether to use cached results}
 

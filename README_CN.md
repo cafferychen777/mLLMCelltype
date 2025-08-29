@@ -246,7 +246,7 @@ pip install git+https://github.com/cafferychen777/mLLMCelltype.git#subdirectory=
 mLLMCelltype采用模块化设计，不同的LLM提供商库作为可选依赖。根据您计划使用的模型，您需要安装相应的包：
 
 ```bash
-# 使用OpenAI模型(GPT-4o等)
+# 使用OpenAI模型(GPT-5等)
 pip install "mllmcelltype[openai]"
 
 # 使用Anthropic模型(Claude)
@@ -321,7 +321,7 @@ pip install google-genai
 
 以下模型可能需要特殊网络设置才能在中国大陆访问：
 
-- **OpenAI**：GPT-4o、GPT-4.1 等系列模型
+- **OpenAI**：GPT-5、GPT-4.1 等系列模型
 - **Anthropic**：Claude-3.7-Sonnet、Claude-3.5-Haiku 等系列模型
 - **Google**：Gemini-2.5-Pro、Gemini-2.0-Flash、Gemini-2.0-Flash-Lite 等系列模型
 - **X.AI**：Grok-3、Grok-3-Mini 等系列模型
@@ -452,7 +452,7 @@ free_consensus_results <- interactive_consensus_annotation(
 
 > ⚠️ **重要警告** ⚠️
 >
-> **即使通过 OpenRouter 访问，OpenAI 的模型（如 gpt-4o、gpt-4-turbo 等）和 X.AI 的 Grok 模型仍可能受到 IP 限制。**
+> **即使通过 OpenRouter 访问，OpenAI 的模型（如 gpt-5、gpt-4-turbo 等）和 X.AI 的 Grok 模型仍可能受到 IP 限制。**
 >
 > **如果您在中国大陆访问，这些模型可能无法正常工作。您有以下选择：**
 >
