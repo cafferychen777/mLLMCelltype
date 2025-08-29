@@ -125,3 +125,9 @@ docs/test_reports/
 docs/api_tests/
 **/LANGEXTRACT_TEST_REPORT.md
 **/API_TEST_*.md
+
+# Demo and development directories
+demos/
+examples/
+test_scripts/
+dev_tools/
