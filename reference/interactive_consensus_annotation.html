@@ -168,8 +168,8 @@ clusters with low agreement. The process includes:</p><ol><li><p>Initial voting 
 <span>  entropy_threshold <span class="op">=</span> <span class="fl">1</span>,</span>
 <span>  max_discussion_rounds <span class="op">=</span> <span class="fl">3</span>,</span>
 <span>  consensus_check_model <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  log_dir <span class="op">=</span> <span class="st">"logs"</span>,</span>
-<span>  cache_dir <span class="op">=</span> <span class="st">"consensus_cache"</span>,</span>
+<span>  log_dir <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  cache_dir <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  use_cache <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  base_urls <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  clusters_to_analyze <span class="op">=</span> <span class="cn">NULL</span>,</span>
@@ -255,11 +255,11 @@ Example:</p>
 
 
 <dt id="arg-log-dir">log_dir<a class="anchor" aria-label="anchor" href="#arg-log-dir"></a></dt>
-<dd><p>Directory for storing logs</p></dd>
+<dd><p>Directory for storing logs (defaults to tempdir())</p></dd>
 
 
 <dt id="arg-cache-dir">cache_dir<a class="anchor" aria-label="anchor" href="#arg-cache-dir"></a></dt>
-<dd><p>Directory for storing cache</p></dd>
+<dd><p>Directory for storing cache (defaults to tempdir())</p></dd>
 
 
 <dt id="arg-use-cache">use_cache<a class="anchor" aria-label="anchor" href="#arg-use-cache"></a></dt>
