@@ -82,3 +82,46 @@ mllmcelltype-web/
 **/secrets.*
 **/*_key.*
 **/*_secret.*
+**/token.*
+**/*token*
+**/.env.*
+!**/.env.example
+!**/.env.template
+**/config/local.*
+**/credentials.*
+
+# API Key patterns (comprehensive)
+*sk-*
+*sk_*
+*api_key_*
+*apikey*
+*API_KEY*
+*OPENAI_API_KEY*
+*ANTHROPIC_API_KEY*
+*GOOGLE_API_KEY*
+*GEMINI_API_KEY*
+*QWEN_API_KEY*
+*GROK_API_KEY*
+*OPENROUTER_API_KEY*
+*DEEPSEEK_API_KEY*
+*MINIMAX_API_KEY*
+*ZHIPU_API_KEY*
+*STEPFUN_API_KEY*
+
+# Files that might contain API keys
+**/test_report*.md
+**/test_results*.json
+**/langextract_test*.json
+**/*_test_report.md
+**/*_test_results.json
+**/api_test*.py
+**/api_test*.R
+**/test_api*.py
+**/test_api*.R
+
+# Archive and documentation that might contain sensitive info
+archive/
+docs/test_reports/
+docs/api_tests/
+**/LANGEXTRACT_TEST_REPORT.md
+**/API_TEST_*.md

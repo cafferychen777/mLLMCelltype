@@ -1,0 +1,34 @@
+# Git attributes for mLLMCelltype
+
+# Ensure consistent line endings
+* text=auto
+*.md text
+*.py text
+*.R text
+*.json text
+*.yml text
+*.yaml text
+
+# Binary files
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.pdf binary
+*.rds binary
+*.RData binary
+
+# Files that should never be committed (additional safety)
+**/api_keys.* filter=remove-sensitive
+**/secrets.* filter=remove-sensitive
+**/*_key.* filter=remove-sensitive
+**/*_secret.* filter=remove-sensitive
+**/credentials.* filter=remove-sensitive
+**/*test_report*.md filter=remove-sensitive
+**/*test_results*.json filter=remove-sensitive
+
+# Archive directory (if it gets recreated)
+archive/** filter=remove-sensitive
+
+# Language-specific settings
+*.py diff=python
+*.R diff=r
