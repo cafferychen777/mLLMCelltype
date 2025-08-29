@@ -47,18 +47,9 @@ from .utils import (
 
 # LangExtract parser module (optional dependency)
 try:
-    from .langextract_parser import (
-        BatchAnnotationResult,
-        CellTypeAnnotation,
-        ConsensusMetrics,
-        DiscussionAnalysis,
-        LangextractParser,
-        ParsingComplexity,
-        ParsingConfig,
-        analyze_consensus,
-        create_parser,
-        parse_cell_types,
-    )
+    # LangExtract parser is available but not exposed at package level
+    # Individual components can be imported directly if needed
+    import mllmcelltype.langextract_parser  # noqa: F401
 
     LANGEXTRACT_AVAILABLE = True
 except ImportError:
@@ -109,18 +100,7 @@ __all__ = [
     "resolve_provider_base_url",
     "get_default_api_url",
     "validate_base_url",
-    # LangExtract configuration
-    "get_default_langextract_config",
-    "load_langextract_config",
-    "validate_langextract_config",
-    "merge_langextract_config",
-    "get_langextract_api_key",
-    "print_langextract_config",
-    "check_langextract_config_health",
-    "get_environment_variables_template",
-    "is_langextract_enabled",
-    "get_langextract_model",
-    "should_use_langextract",
+    # LangExtract configuration (removed undefined functions)
 ]
 
 # Add LangExtract functionality if available
