@@ -141,7 +141,7 @@
       <h1>Installation Guide</h1>
                         <h4 data-toc-skip class="author">Chen Yang</h4>
             
-            <h4 data-toc-skip class="date">2025-08-29</h4>
+            <h4 data-toc-skip class="date">2025-09-03</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/cafferychen777/mLLMCelltype/blob/main/vignettes/installation.Rmd" class="external-link"><code>vignettes/installation.Rmd</code></a></small>
       <div class="d-none name"><code>installation.Rmd</code></div>
@@ -178,27 +178,35 @@ providers</li>
 <h3 id="installing-the-r-package">Installing the R Package<a class="anchor" aria-label="anchor" href="#installing-the-r-package"></a>
 </h3>
 <div class="section level4">
-<h4 id="installation-from-github">Installation from GitHub<a class="anchor" aria-label="anchor" href="#installation-from-github"></a>
+<h4 id="installation-from-cran-recommended">Installation from CRAN (Recommended)<a class="anchor" aria-label="anchor" href="#installation-from-cran-recommended"></a>
 </h4>
-<p>The recommended way to install mLLMCelltype is directly from GitHub
-using the <code>devtools</code> package:</p>
+<p>mLLMCelltype is now available on CRAN. You can install it directly
+using:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Install from CRAN</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"mLLMCelltype"</span><span class="op">)</span></span></code></pre></div>
+<p>This will install the stable version of mLLMCelltype with all
+required dependencies.</p>
+</div>
+<div class="section level4">
+<h4 id="installation-from-github-development-version">Installation from GitHub (Development Version)<a class="anchor" aria-label="anchor" href="#installation-from-github-development-version"></a>
+</h4>
+<p>To install the latest development version from GitHub:</p>
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Install devtools if not already installed</span></span>
 <span><span class="kw">if</span> <span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/ns-load.html" class="external-link">requireNamespace</a></span><span class="op">(</span><span class="st">"devtools"</span>, quietly <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"devtools"</span><span class="op">)</span></span>
 <span><span class="op">}</span></span>
 <span></span>
-<span><span class="co"># Install mLLMCelltype</span></span>
+<span><span class="co"># Install mLLMCelltype development version</span></span>
 <span><span class="fu">devtools</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html" class="external-link">install_github</a></span><span class="op">(</span><span class="st">"cafferychen777/mLLMCelltype"</span>, subdir <span class="op">=</span> <span class="st">"R"</span><span class="op">)</span></span></code></pre></div>
-<p>This will install the latest development version of mLLMCelltype with
-all the required dependencies.</p>
 </div>
 <div class="section level4">
 <h4 id="installation-from-a-local-source">Installation from a Local Source<a class="anchor" aria-label="anchor" href="#installation-from-a-local-source"></a>
 </h4>
 <p>If you have downloaded the source code or need to install from a
 local copy:</p>
-<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Assuming the package is in the current working directory</span></span>
 <span><span class="fu">devtools</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_local.html" class="external-link">install_local</a></span><span class="op">(</span><span class="st">"path/to/mLLMCelltype/R"</span><span class="op">)</span></span></code></pre></div>
 </div>
@@ -302,7 +310,7 @@ API keys:</p>
 <span><span class="va">GROK_API_KEY</span><span class="op">=</span><span class="va">your</span><span class="op">-</span><span class="va">grok</span><span class="op">-</span><span class="va">key</span></span>
 <span><span class="va">OPENROUTER_API_KEY</span><span class="op">=</span><span class="va">your</span><span class="op">-</span><span class="va">openrouter</span><span class="op">-</span><span class="va">key</span></span></code></pre>
 <p>Then load the environment variables in your R script:</p>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/gaborcsardi/dotenv" class="external-link">dotenv</a></span><span class="op">)</span></span>
 <span><span class="fu">dotenv</span><span class="fu">::</span><span class="fu">load_dot_env</span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 </div>
@@ -310,7 +318,7 @@ API keys:</p>
 <h5 id="direct-specification-in-function-calls">2. Direct Specification in Function Calls<a class="anchor" aria-label="anchor" href="#direct-specification-in-function-calls"></a>
 </h5>
 <p>You can directly provide API keys in function calls:</p>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://cafferyang.com/mLLMCelltype/">mLLMCelltype</a></span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">results</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/annotate_cell_types.html">annotate_cell_types</a></span><span class="op">(</span></span>
@@ -325,7 +333,7 @@ API keys:</p>
 <h5 id="r-environment-variables">3. R Environment Variables<a class="anchor" aria-label="anchor" href="#r-environment-variables"></a>
 </h5>
 <p>Set API keys as R environment variables:</p>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/Sys.setenv.html" class="external-link">Sys.setenv</a></span><span class="op">(</span>OPENAI_API_KEY <span class="op">=</span> <span class="st">"your-openai-key"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/Sys.setenv.html" class="external-link">Sys.setenv</a></span><span class="op">(</span>ANTHROPIC_API_KEY <span class="op">=</span> <span class="st">"your-anthropic-key"</span><span class="op">)</span></span>
 <span><span class="co"># Set other API keys as needed</span></span></code></pre></div>
@@ -337,7 +345,7 @@ API keys:</p>
 </h3>
 <p>To verify that mLLMCelltype is installed correctly and API keys are
 set up properly:</p>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://cafferyang.com/mLLMCelltype/">mLLMCelltype</a></span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Check if the package is loaded correctly</span></span>
@@ -386,7 +394,7 @@ internet connection</li>
 <strong>Proxy settings</strong>: If you’re behind a proxy, configure
 R to use your proxy settings</li>
 </ol>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Example of setting proxy for httr</span></span>
 <span><span class="fu">httr</span><span class="fu">::</span><span class="fu"><a href="https://httr.r-lib.org/reference/set_config.html" class="external-link">set_config</a></span><span class="op">(</span><span class="fu">httr</span><span class="fu">::</span><span class="fu"><a href="https://httr.r-lib.org/reference/use_proxy.html" class="external-link">use_proxy</a></span><span class="op">(</span>url <span class="op">=</span> <span class="st">"proxy_url"</span>, port <span class="op">=</span> <span class="va">proxy_port</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 </div>
