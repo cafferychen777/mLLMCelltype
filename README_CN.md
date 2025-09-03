@@ -14,6 +14,8 @@
 </div>
 
 <div align="center">
+  <a href="https://CRAN.R-project.org/package=mLLMCelltype"><img src="https://www.r-pkg.org/badges/version/mLLMCelltype" alt="CRAN版本"></a>
+  <a href="https://CRAN.R-project.org/package=mLLMCelltype"><img src="https://cranlogs.r-pkg.org/badges/grand-total/mLLMCelltype" alt="CRAN下载量"></a>
   <img src="https://img.shields.io/github/license/cafferychen777/mLLMCelltype" alt="许可证">
   <img src="https://img.shields.io/github/last-commit/cafferychen777/mLLMCelltype" alt="最近提交">
   <img src="https://img.shields.io/github/issues/cafferychen777/mLLMCelltype" alt="问题">
@@ -217,7 +219,10 @@ results <- interactive_consensus_annotation(
 ### R版本
 
 ```r
-# 从GitHub安装
+# 从CRAN安装（推荐）
+install.packages("mLLMCelltype")
+
+# 或从GitHub安装开发版本
 devtools::install_github("cafferychen777/mLLMCelltype", subdir = "R")
 ```
 

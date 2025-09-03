@@ -14,6 +14,8 @@
 </div>
 
 <div align="center">
+  <a href="https://CRAN.R-project.org/package=mLLMCelltype"><img src="https://www.r-pkg.org/badges/version/mLLMCelltype" alt="CRAN 버전"></a>
+  <a href="https://CRAN.R-project.org/package=mLLMCelltype"><img src="https://cranlogs.r-pkg.org/badges/grand-total/mLLMCelltype" alt="CRAN 다운로드"></a>
   <img src="https://img.shields.io/github/license/cafferychen777/mLLMCelltype" alt="License">
   <img src="https://img.shields.io/github/last-commit/cafferychen777/mLLMCelltype" alt="Last Commit">
   <img src="https://img.shields.io/github/issues/cafferychen777/mLLMCelltype" alt="Issues">
@@ -188,7 +190,10 @@ Anthropic은 2025년 7월 21일에 여러 Claude 모델을 중단할 예정입�
 ### R 버전
 
 ```r
-# GitHub에서 설치
+# CRAN에서 설치 (권장)
+install.packages("mLLMCelltype")
+
+# 또는 GitHub에서 개발 버전 설치
 devtools::install_github("cafferychen777/mLLMCelltype", subdir = "R")
 ```
 

@@ -14,6 +14,8 @@
 </div>
 
 <div align="center">
+  <a href="https://CRAN.R-project.org/package=mLLMCelltype"><img src="https://www.r-pkg.org/badges/version/mLLMCelltype" alt="Version CRAN"></a>
+  <a href="https://CRAN.R-project.org/package=mLLMCelltype"><img src="https://cranlogs.r-pkg.org/badges/grand-total/mLLMCelltype" alt="Téléchargements CRAN"></a>
   <img src="https://img.shields.io/github/license/cafferychen777/mLLMCelltype" alt="License">
   <img src="https://img.shields.io/github/last-commit/cafferychen777/mLLMCelltype" alt="Last Commit">
   <img src="https://img.shields.io/github/issues/cafferychen777/mLLMCelltype" alt="Issues">
@@ -173,7 +175,10 @@ Consultez [NEWS.md](R/NEWS.md) pour un changelog complet.
 ### Version R
 
 ```r
-# Installation depuis GitHub
+# Installation depuis CRAN (recommandé)
+install.packages("mLLMCelltype")
+
+# Ou installer la version de développement depuis GitHub
 devtools::install_github("cafferychen777/mLLMCelltype", subdir = "R")
 ```
 

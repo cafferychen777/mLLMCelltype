@@ -40,9 +40,20 @@ Before installing mLLMCelltype, ensure your system meets the following requireme
 
 ## Installing the R Package
 
-### Installation from GitHub
+### Installation from CRAN (Recommended)
 
-The recommended way to install mLLMCelltype is directly from GitHub using the `devtools` package:
+mLLMCelltype is now available on CRAN. You can install it directly using:
+
+```{r}
+# Install from CRAN
+install.packages("mLLMCelltype")
+```
+
+This will install the stable version of mLLMCelltype with all required dependencies.
+
+### Installation from GitHub (Development Version)
+
+To install the latest development version from GitHub:
 
 ```{r}
 # Install devtools if not already installed
@@ -50,11 +61,9 @@ if (!requireNamespace("devtools", quietly = TRUE)) {
   install.packages("devtools")
 }
 
-# Install mLLMCelltype
+# Install mLLMCelltype development version
 devtools::install_github("cafferychen777/mLLMCelltype", subdir = "R")
 ```
-
-This will install the latest development version of mLLMCelltype with all the required dependencies.
 
 ### Installation from a Local Source
 

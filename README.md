@@ -14,6 +14,8 @@
 </div>
 
 <div align="center">
+  <a href="https://CRAN.R-project.org/package=mLLMCelltype"><img src="https://www.r-pkg.org/badges/version/mLLMCelltype" alt="CRAN version"></a>
+  <a href="https://CRAN.R-project.org/package=mLLMCelltype"><img src="https://cranlogs.r-pkg.org/badges/grand-total/mLLMCelltype" alt="CRAN downloads"></a>
   <img src="https://img.shields.io/github/license/cafferychen777/mLLMCelltype" alt="mLLMCelltype open source license - Free multi-LLM consensus framework for research">
   <img src="https://img.shields.io/github/last-commit/cafferychen777/mLLMCelltype" alt="mLLMCelltype last commit - Active development of consensus-based annotation">
   <img src="https://img.shields.io/github/issues/cafferychen777/mLLMCelltype" alt="mLLMCelltype GitHub issues - Community support and feature requests">
@@ -30,25 +32,23 @@
 
 # mLLMCelltype: Multi-LLM Consensus Framework for Cell Type Annotation
 
-**🏆 #1 Multi-LLM Cell Annotation Framework | 540+ ⭐ | 95% Accuracy | 10+ LLM Providers**
+mLLMCelltype is a multi-LLM consensus framework for automated cell type annotation in single-cell RNA sequencing (scRNA-seq) data. The framework integrates multiple large language models including OpenAI GPT-5/4.1, Anthropic Claude-4/3.7/3.5, Google Gemini-2.0, X.AI Grok-3, DeepSeek-V3, Alibaba Qwen2.5, Zhipu GLM-4, MiniMax, Stepfun, and OpenRouter to improve annotation accuracy through consensus-based predictions.
 
-mLLMCelltype is the first iterative multi-LLM consensus framework designed for accurate and reliable cell type annotation in single-cell RNA sequencing (scRNA-seq) data. By leveraging the collective intelligence of multiple large language models including OpenAI GPT-5/4.1, Anthropic Claude-4/3.7/3.5, Google Gemini-2.0, X.AI Grok-3, DeepSeek-V3, Alibaba Qwen2.5, Zhipu GLM-4, MiniMax, Stepfun, and OpenRouter, this framework significantly improves annotation accuracy while providing transparent uncertainty quantification for bioinformatics and computational biology research.
-
-**🔬 Why Choose Consensus Over Single-Model Approaches?**
-- **Higher Accuracy**: 95% annotation accuracy through multi-model agreement
-- **Bias Reduction**: Collective intelligence minimizes individual model limitations  
-- **Cost Optimization**: 70-80% API cost reduction through smart consensus
-- **Transparency**: Complete uncertainty quantification and reasoning chains
+**Key Advantages:**
+- **Improved Accuracy**: Achieves 95% annotation accuracy through multi-model consensus
+- **Reduced Bias**: Multiple model integration minimizes individual model limitations  
+- **Cost Efficiency**: 70-80% API cost reduction through optimized consensus algorithms
+- **Uncertainty Quantification**: Provides metrics for annotation confidence assessment
 
 ## Abstract
 
-mLLMCelltype is an open-source tool for single-cell transcriptomics analysis that uses multiple large language models to identify cell types from gene expression data. The software implements a consensus approach where multiple models analyze the same data and their predictions are combined, which helps reduce errors and provides uncertainty metrics. This consensus-based methodology offers advantages over single-agent approaches by leveraging collective intelligence for more robust annotation decisions. mLLMCelltype integrates with popular single-cell analysis platforms such as Scanpy and Seurat, allowing researchers to incorporate it into existing bioinformatics workflows. Unlike some traditional methods, it does not require reference datasets for annotation.
+mLLMCelltype is an open-source tool for single-cell transcriptomics analysis that uses multiple large language models to identify cell types from gene expression data. The software implements a consensus approach where multiple models analyze the same data and their predictions are combined, which helps reduce errors and provides uncertainty metrics. This methodology offers advantages over single-model approaches through integration of multiple model predictions. mLLMCelltype integrates with single-cell analysis platforms such as Scanpy and Seurat, allowing researchers to incorporate it into existing workflows. The method does not require reference datasets for annotation.
 
-**🔍 Quick Comparison with Other LLM Tools:**
-- **Consensus vs Agent-based**: mLLMCelltype's multi-model consensus provides more reliable results than specialized agent systems
-- **Model Diversity**: Supports 10+ LLM providers compared to limited options in other tools  
-- **Performance**: Achieved 95% accuracy in benchmark studies with transparent uncertainty metrics
-- **Community Leadership**: 540+ GitHub stars demonstrating strong community adoption and trust
+**Comparison with Other Methods:**
+- **Consensus-based approach**: Multi-model consensus provides improved reliability compared to single-model systems
+- **Model Support**: Compatible with 10+ LLM providers  
+- **Performance**: 95% accuracy in benchmark studies with uncertainty quantification
+- **Community Adoption**: 540+ GitHub stars
 
 ## Table of Contents
 - [News](#news)
@@ -85,9 +85,15 @@ We're excited to announce the launch of mLLMCelltype Web Application! Now you ca
 
 **⚠️ Beta Testing Phase**: The web application is currently in beta testing. We welcome your feedback and suggestions to help us improve the platform. Please report any issues or share your experience through our [GitHub Issues](https://github.com/cafferychen777/mLLMCelltype/issues) or [Discord community](https://discord.gg/pb2aZdG4).
 
-**📅 Important: CRAN Submission Update (2025-08-04)**
+**CRAN Release (2025-09-02)**
 
-The mLLMCelltype R package has been fully prepared and tested for CRAN submission, achieving 0 ERRORS, 0 WARNINGS, and only 1 NOTE (the expected "New submission" note). However, due to CRAN staff taking their annual summer vacation from August 1-18, 2025, the package review process may be delayed. The mLLMCelltype R package is expected to be available on CRAN by September 2025. In the meantime, the package can still be installed directly from GitHub using the standard devtools installation method.
+mLLMCelltype is now available on CRAN. Install the package using:
+```R
+install.packages("mLLMCelltype")
+```
+
+- **CRAN page**: https://CRAN.R-project.org/package=mLLMCelltype
+- **DOI**: 10.32614/CRAN.package.mLLMCelltype
 
 **📢 Important: Gemini Model Migration (2025-06-02)**
 
@@ -112,25 +118,23 @@ Anthropic will retire the following Claude models on July 21, 2025:
 
 Please update your code before July 21, 2025 to avoid service disruption.
 
-🎉 **August 2025**: We're thrilled to announce that mLLMCelltype has surpassed 540+ GitHub stars with rapidly growing community adoption! We've also seen tremendous coverage from various media outlets and content creators. We extend our heartfelt gratitude to everyone who has supported this project through stars, shares, and contributions. Your enthusiasm drives our continued development and improvement of mLLMCelltype.
+**August 2025**: mLLMCelltype has reached 540+ GitHub stars with growing community adoption. We thank all contributors and users who have supported this project.
 
 ## Key Features
 
-🌟 **Why mLLMCelltype Leads the Field:**
-
-- **Multi-LLM Consensus Architecture**: Harnesses collective intelligence from diverse LLMs to overcome single-model limitations and biases
-- **Industry-Leading Model Support**: 10+ LLM providers vs competitors' limited options
-- **Proven 95% Accuracy**: Validated through rigorous benchmarking on diverse datasets  
-- **Cost-Optimized**: 70-80% API cost reduction through intelligent consensus algorithms
-- **Structured Deliberation Process**: Enables LLMs to share reasoning, evaluate evidence, and refine annotations through multiple rounds of collaborative discussion
-- **Transparent Uncertainty Quantification**: Provides quantitative metrics (Consensus Proportion and Shannon Entropy) to identify ambiguous cell populations requiring expert review
-- **Hallucination Reduction**: Cross-model deliberation actively suppresses inaccurate or unsupported predictions through critical evaluation
-- **Robust to Input Noise**: Maintains high accuracy even with imperfect marker gene lists through collective error correction
-- **Hierarchical Annotation Support**: Optional extension for multi-resolution analysis with parent-child consistency
-- **No Reference Dataset Required**: Performs accurate annotation without pre-training or reference data
-- **Complete Reasoning Chains**: Documents the full deliberation process for transparent decision-making
-- **Seamless Integration**: Works directly with standard Scanpy/Seurat workflows and marker gene outputs
-- **Modular Design**: Easily incorporate new LLMs as they become available
+- **Multi-LLM Consensus**: Integrates predictions from multiple LLMs to reduce single-model limitations and biases
+- **Model Support**: Compatible with 10+ LLM providers including OpenAI, Anthropic, Google, and others
+- **Accuracy**: 95% accuracy validated through benchmarking on multiple datasets  
+- **Cost Efficiency**: 70-80% API cost reduction through consensus optimization
+- **Iterative Discussion**: LLMs evaluate evidence and refine annotations through multiple rounds of discussion
+- **Uncertainty Quantification**: Provides Consensus Proportion and Shannon Entropy metrics to identify uncertain annotations
+- **Error Reduction**: Cross-model validation reduces incorrect predictions
+- **Noise Tolerance**: Maintains accuracy with imperfect marker gene lists
+- **Hierarchical Annotation**: Supports multi-resolution analysis with consistency checks
+- **Reference-Free**: Performs annotation without pre-training or reference datasets
+- **Documentation**: Records complete reasoning process for transparency
+- **Integration**: Compatible with Scanpy/Seurat workflows and marker gene outputs
+- **Extensibility**: Supports addition of new LLMs as they become available
 
 ## Recent Updates
 
@@ -195,7 +199,10 @@ See [NEWS.md](R/NEWS.md) for a complete changelog.
 ### R Version
 
 ```r
-# Install from GitHub
+# Install from CRAN (recommended)
+install.packages("mLLMCelltype")
+
+# Or install development version from GitHub
 devtools::install_github("cafferychen777/mLLMCelltype", subdir = "R")
 ```
 

@@ -1,5 +1,25 @@
 # mLLMCelltype Changelog
 
+## 1.3.2 (2025-09-02) - CRAN Release
+
+### Official CRAN Release
+* mLLMCelltype is now available on CRAN: `install.packages("mLLMCelltype")`
+* CRAN page: https://CRAN.R-project.org/package=mLLMCelltype
+* DOI: 10.32614/CRAN.package.mLLMCelltype
+
+### Installation
+* Standard R package installation from CRAN repository
+* Package has passed CRAN checks for reliability and compatibility
+* Tested across R versions and platforms (Windows, macOS, Linux)
+
+### Features
+* Automated cell type annotation using consensus from multiple LLMs
+* Support for OpenAI, Anthropic, Google, and other providers through OpenRouter
+* Integration with Seurat workflows
+* Uncertainty quantification for annotations
+* Caching system for API cost reduction
+* Interactive consensus building with multi-model discussion
+
 ## 1.3.1 (2025-07-16)
 
 ### New Features: Enhanced Cluster Analysis Control
