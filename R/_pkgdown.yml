@@ -169,6 +169,8 @@ reference:
       - get_logger
       - starts_with("log_")
       - CacheManager
+      - mllmcelltype_cache_dir
+      - mllmcelltype_clear_cache
       - create_annotation_prompt
 
 home:
