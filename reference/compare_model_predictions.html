@@ -55,7 +55,7 @@ It provides both individual predictions and a consensus analysis."><meta propert
 
     <a class="navbar-brand me-2" href="../index.html">mLLMCelltype</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">1.3.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">1.3.3</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -131,15 +131,36 @@ It provides both individual predictions and a consensus analysis.</p>
 
 
 <dl><dt id="arg-input">input<a class="anchor" aria-label="anchor" href="#arg-input"></a></dt>
-<dd><p>Either the differential gene table returned by Seurat FindAllMarkers() function, or a list of genes.</p></dd>
+<dd><p>Either a data frame from Seurat's FindAllMarkers() containing columns 'cluster', 'gene', and 'avg_log2FC', or a list with 'genes' field for each cluster</p></dd>
 
 
 <dt id="arg-tissue-name">tissue_name<a class="anchor" aria-label="anchor" href="#arg-tissue-name"></a></dt>
-<dd><p>Required. The tissue type or cell source (e.g., 'human PBMC', 'mouse brain', etc.).</p></dd>
+<dd><p>Tissue context (e.g., 'human PBMC', 'mouse brain') for more accurate annotations</p></dd>
 
 
 <dt id="arg-models">models<a class="anchor" aria-label="anchor" href="#arg-models"></a></dt>
-<dd><p>Vector of model names to compare. Default includes one model from each provider.
+<dd><p>Vector of model names to use for comparison. Default includes top models from each provider</p></dd>
+
+
+<dt id="arg-api-keys">api_keys<a class="anchor" aria-label="anchor" href="#arg-api-keys"></a></dt>
+<dd><p>Named list of API keys for the models, with provider or model names as keys</p></dd>
+
+
+<dt id="arg-top-gene-count">top_gene_count<a class="anchor" aria-label="anchor" href="#arg-top-gene-count"></a></dt>
+<dd><p>Number of top genes to use per cluster when input is from Seurat. Default: 10</p></dd>
+
+
+<dt id="arg-consensus-threshold">consensus_threshold<a class="anchor" aria-label="anchor" href="#arg-consensus-threshold"></a></dt>
+<dd><p>Minimum agreement threshold for consensus (0-1). Default: 0.5</p></dd>
+
+</dl></div>
+    <div class="section level2">
+    <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
+    <p>List containing individual model predictions and consensus analysis</p>
+    </div>
+    <div class="section level2">
+    <h2 id="note">Note<a class="anchor" aria-label="anchor" href="#note"></a></h2>
+    <p>This function uses create_standardization_prompt from prompt_templates.R
 Supported models:</p><ul><li><p>OpenAI: 'gpt-4o', 'gpt-4o-mini', 'gpt-4.1', 'gpt-4.1-mini', 'gpt-4.1-nano', 'gpt-4-turbo', 'gpt-3.5-turbo', 'o1', 'o1-mini', 'o1-preview', 'o1-pro'</p></li>
 <li><p>Anthropic: 'claude-opus-4-1-20250805', 'claude-sonnet-4-20250514', 'claude-opus-4-20250514', 'claude-3-7-sonnet-20250219', 'claude-3-5-sonnet-20241022',
 'claude-3-5-haiku-20241022', 'claude-3-opus-20240229'</p></li>
@@ -158,11 +179,7 @@ Supported models:</p><ul><li><p>OpenAI: 'gpt-4o', 'gpt-4o-mini', 'gpt-4.1', 'gpt
 <li><p>Mistral models: 'mistralai/mistral-large', 'mistralai/mistral-medium', 'mistralai/mistral-small'</p></li>
 <li><p>Other models: 'microsoft/mai-ds-r1', 'perplexity/sonar-small-chat', 'cohere/command-r', 'deepseek/deepseek-chat', 'thudm/glm-z1-32b'</p></li>
 </ul></li>
-</ul></dd>
-
-
-<dt id="arg-api-keys">api_keys<a class="anchor" aria-label="anchor" href="#arg-api-keys"></a></dt>
-<dd><p>Named list of API keys. Can be provided in two formats:</p><ol><li><p>With provider names as keys: <code>list("openai" = "sk-...", "anthropic" = "sk-ant-...", "openrouter" = "sk-or-...")</code></p></li>
+</ul><ol><li><p>With provider names as keys: <code>list("openai" = "sk-...", "anthropic" = "sk-ant-...", "openrouter" = "sk-or-...")</code></p></li>
 <li><p>With model names as keys: <code>list("gpt-4o" = "sk-...", "claude-3-opus" = "sk-ant-...")</code></p></li>
 </ol><p>The system first tries to find the API key using the provider name. If not found, it then tries using the model name.
 Example:</p>
@@ -171,24 +188,7 @@ Example:</p>
 <span>  <span class="st">"anthropic"</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Sys.getenv.html" class="external-link">Sys.getenv</a></span><span class="op">(</span><span class="st">"ANTHROPIC_API_KEY"</span><span class="op">)</span>,</span>
 <span>  <span class="st">"openrouter"</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Sys.getenv.html" class="external-link">Sys.getenv</a></span><span class="op">(</span><span class="st">"OPENROUTER_API_KEY"</span><span class="op">)</span>,</span>
 <span>  <span class="st">"claude-3-opus"</span> <span class="op">=</span> <span class="st">"sk-ant-api03-specific-key-for-opus"</span></span>
-<span><span class="op">)</span></span></code></pre><p></p></div></dd>
-
-
-<dt id="arg-top-gene-count">top_gene_count<a class="anchor" aria-label="anchor" href="#arg-top-gene-count"></a></dt>
-<dd><p>Number of top differential genes to be used if input is Seurat differential genes.</p></dd>
-
-
-<dt id="arg-consensus-threshold">consensus_threshold<a class="anchor" aria-label="anchor" href="#arg-consensus-threshold"></a></dt>
-<dd><p>Minimum proportion of models that must agree for a consensus (default 0.5).</p></dd>
-
-</dl></div>
-    <div class="section level2">
-    <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
-    <p>A list containing individual predictions, consensus results, and agreement statistics.</p>
-    </div>
-    <div class="section level2">
-    <h2 id="note">Note<a class="anchor" aria-label="anchor" href="#note"></a></h2>
-    <p>This function uses create_standardization_prompt from prompt_templates.R</p>
+<span><span class="op">)</span></span></code></pre><p></p></div>
     </div>
 
     <div class="section level2">

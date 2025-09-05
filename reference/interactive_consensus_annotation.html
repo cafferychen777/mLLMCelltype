@@ -7,25 +7,7 @@ Identification of controversial clusters
 Detailed discussion for controversial clusters
 Final summary by a designated LLM (default: Claude)
 
-
-This function implements an interactive voting and discussion mechanism where multiple LLMs
-collaborate to reach a consensus on cell type annotations, particularly focusing on
-clusters with low agreement. The process includes:
-Initial voting by all LLMs
-Identification of controversial clusters
-Detailed discussion for controversial clusters
-Final summary by a designated LLM (default: Claude)
-
 "><meta property="og:description" content="This function implements an interactive voting and discussion mechanism where multiple LLMs
-collaborate to reach a consensus on cell type annotations, particularly focusing on
-clusters with low agreement. The process includes:
-Initial voting by all LLMs
-Identification of controversial clusters
-Detailed discussion for controversial clusters
-Final summary by a designated LLM (default: Claude)
-
-
-This function implements an interactive voting and discussion mechanism where multiple LLMs
 collaborate to reach a consensus on cell type annotations, particularly focusing on
 clusters with low agreement. The process includes:
 Initial voting by all LLMs
@@ -87,7 +69,7 @@ Final summary by a designated LLM (default: Claude)
 
     <a class="navbar-brand me-2" href="../index.html">mLLMCelltype</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">1.3.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">1.3.3</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -146,12 +128,6 @@ clusters with low agreement. The process includes:</p><ol><li><p>Initial voting 
 <li><p>Identification of controversial clusters</p></li>
 <li><p>Detailed discussion for controversial clusters</p></li>
 <li><p>Final summary by a designated LLM (default: Claude)</p></li>
-</ol><p>This function implements an interactive voting and discussion mechanism where multiple LLMs
-collaborate to reach a consensus on cell type annotations, particularly focusing on
-clusters with low agreement. The process includes:</p><ol><li><p>Initial voting by all LLMs</p></li>
-<li><p>Identification of controversial clusters</p></li>
-<li><p>Detailed discussion for controversial clusters</p></li>
-<li><p>Final summary by a designated LLM (default: Claude)</p></li>
 </ol></div>
 
     <div class="section level2">
@@ -168,7 +144,7 @@ clusters with low agreement. The process includes:</p><ol><li><p>Initial voting 
 <span>  entropy_threshold <span class="op">=</span> <span class="fl">1</span>,</span>
 <span>  max_discussion_rounds <span class="op">=</span> <span class="fl">3</span>,</span>
 <span>  consensus_check_model <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  log_dir <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  log_dir <span class="op">=</span> <span class="st">"logs"</span>,</span>
 <span>  cache_dir <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  use_cache <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  base_urls <span class="op">=</span> <span class="cn">NULL</span>,</span>
@@ -182,123 +158,90 @@ clusters with low agreement. The process includes:</p><ol><li><p>Initial voting 
 
 
 <dl><dt id="arg-input">input<a class="anchor" aria-label="anchor" href="#arg-input"></a></dt>
-<dd><p>One of the following:</p><ul><li><p>A data frame from Seurat's FindAllMarkers() function containing differential gene expression results
-(must have columns: 'cluster', 'gene', and 'avg_log2FC'). The function will select the top genes
-based on avg_log2FC for each cluster.</p></li>
-<li><p>A list where each element has a 'genes' field containing marker genes for a cluster.
-This can be in one of these formats:</p><ul><li><p>Named with cluster IDs: list("0" = list(genes = c(...)), "1" = list(genes = c(...)))</p></li>
-<li><p>Named with cell type names: list(t_cells = list(genes = c(...)), b_cells = list(genes = c(...)))</p></li>
-<li><p>Unnamed list: list(list(genes = c(...)), list(genes = c(...)))</p></li>
-</ul></li>
-<li><p>For both input types, if cluster IDs are numeric and start from 1, they will be automatically
-converted to 0-based indexing (e.g., cluster 1 becomes cluster 0) for consistency.</p></li>
-</ul></dd>
+<dd><p>Either a data frame from Seurat's FindAllMarkers() function containing
+differential gene expression results (must have columns: 'cluster', 'gene',
+and 'avg_log2FC'), or a list where each element has a 'genes' field containing
+marker genes for a cluster. Cluster IDs must be numeric starting from 0.</p></dd>
 
 
 <dt id="arg-tissue-name">tissue_name<a class="anchor" aria-label="anchor" href="#arg-tissue-name"></a></dt>
-<dd><p>Optional input of tissue name</p></dd>
+<dd><p>Character string specifying the tissue type for context-aware
+cell type annotation. If NULL, generic cell type annotation will be performed.</p></dd>
 
 
 <dt id="arg-models">models<a class="anchor" aria-label="anchor" href="#arg-models"></a></dt>
-<dd><p>Vector of model names to participate in the discussion. Supported models:</p><ul><li><p>OpenAI: 'gpt-4o', 'gpt-4o-mini', 'gpt-4.1', 'gpt-4.1-mini', 'gpt-4.1-nano', 'gpt-4-turbo', 'gpt-3.5-turbo', 'o1', 'o1-mini', 'o1-preview', 'o1-pro'</p></li>
-<li><p>Anthropic: 'claude-opus-4-1-20250805', 'claude-sonnet-4-20250514', 'claude-opus-4-20250514', 'claude-3-7-sonnet-20250219', 'claude-3-5-sonnet-20241022',
-'claude-3-5-haiku-20241022', 'claude-3-opus-20240229'</p></li>
-<li><p>DeepSeek: 'deepseek-chat', 'deepseek-r1', 'deepseek-r1-zero', 'deepseek-reasoner'</p></li>
-<li><p>Google: 'gemini-2.5-pro', 'gemini-2.5-flash', 'gemini-2.0-flash', 'gemini-2.0-flash-lite', 'gemini-1.5-pro-latest', 'gemini-1.5-flash-latest', 'gemini-1.5-flash-8b'</p></li>
-<li><p>Alibaba: 'qwen-max-2025-01-25', 'qwen3-72b'</p></li>
-<li><p>Stepfun: 'step-2-16k', 'step-2-mini', 'step-1-8k'</p></li>
-<li><p>Zhipu: 'glm-4-plus', 'glm-3-turbo'</p></li>
-<li><p>MiniMax: 'minimax-text-01'</p></li>
-<li><p>X.AI: 'grok-3-latest', 'grok-3', 'grok-3-fast', 'grok-3-fast-latest', 'grok-3-mini', 'grok-3-mini-latest', 'grok-3-mini-fast', 'grok-3-mini-fast-latest'</p></li>
-<li><p>OpenRouter: Provides access to models from multiple providers through a single API. Format: 'provider/model-name'</p><ul><li><p>OpenAI models: 'openai/gpt-4o', 'openai/gpt-4o-mini', 'openai/gpt-4-turbo', 'openai/gpt-4', 'openai/gpt-3.5-turbo'</p></li>
-<li><p>Anthropic models: 'anthropic/claude-opus-4.1', 'anthropic/claude-sonnet-4', 'anthropic/claude-opus-4', 'anthropic/claude-3.7-sonnet',
-'anthropic/claude-3.5-sonnet', 'anthropic/claude-3.5-haiku', 'anthropic/claude-3-opus'</p></li>
-<li><p>Meta models: 'meta-llama/llama-3-70b-instruct', 'meta-llama/llama-3-8b-instruct', 'meta-llama/llama-2-70b-chat'</p></li>
-<li><p>Google models: 'google/gemini-2.5-pro', 'google/gemini-2.5-flash', 'google/gemini-2.0-flash', 'google/gemini-1.5-pro-latest', 'google/gemini-1.5-flash'</p></li>
-<li><p>Mistral models: 'mistralai/mistral-large', 'mistralai/mistral-medium', 'mistralai/mistral-small'</p></li>
-<li><p>Other models: 'microsoft/mai-ds-r1', 'perplexity/sonar-small-chat', 'cohere/command-r', 'deepseek/deepseek-chat', 'thudm/glm-z1-32b'</p></li>
-</ul></li>
-</ul></dd>
+<dd><p>Character vector of model names to use for consensus annotation.
+Minimum 2 models required. Supports models from OpenAI, Anthropic, DeepSeek,
+Google, Alibaba, Stepfun, Zhipu, MiniMax, X.AI, and OpenRouter.</p></dd>
 
 
 <dt id="arg-api-keys">api_keys<a class="anchor" aria-label="anchor" href="#arg-api-keys"></a></dt>
-<dd><p>Named list of API keys. Can be provided in two formats:</p><ol><li><p>With provider names as keys: <code>list("openai" = "sk-...", "anthropic" = "sk-ant-...", "openrouter" = "sk-or-...")</code></p></li>
-<li><p>With model names as keys: <code>list("gpt-4o" = "sk-...", "claude-3-opus" = "sk-ant-...")</code></p></li>
-</ol><p>The system first tries to find the API key using the provider name. If not found, it then tries using the model name.
-Example:</p>
-<p></p><div class="sourceCode r"><pre><code><span><span class="va">api_keys</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
-<span>  <span class="st">"openai"</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Sys.getenv.html" class="external-link">Sys.getenv</a></span><span class="op">(</span><span class="st">"OPENAI_API_KEY"</span><span class="op">)</span>,</span>
-<span>  <span class="st">"anthropic"</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Sys.getenv.html" class="external-link">Sys.getenv</a></span><span class="op">(</span><span class="st">"ANTHROPIC_API_KEY"</span><span class="op">)</span>,</span>
-<span>  <span class="st">"openrouter"</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Sys.getenv.html" class="external-link">Sys.getenv</a></span><span class="op">(</span><span class="st">"OPENROUTER_API_KEY"</span><span class="op">)</span>,</span>
-<span>  <span class="st">"claude-3-opus"</span> <span class="op">=</span> <span class="st">"sk-ant-api03-specific-key-for-opus"</span></span>
-<span><span class="op">)</span></span></code></pre><p></p></div></dd>
+<dd><p>Named list of API keys. Can use provider names as keys
+(e.g., "openai", "anthropic") or model names as keys (e.g., "gpt-4o").</p></dd>
 
 
 <dt id="arg-top-gene-count">top_gene_count<a class="anchor" aria-label="anchor" href="#arg-top-gene-count"></a></dt>
-<dd><p>Number of top differential genes to use</p></dd>
+<dd><p>Integer specifying the number of top marker genes to use
+for annotation per cluster (default: 10).</p></dd>
 
 
 <dt id="arg-controversy-threshold">controversy_threshold<a class="anchor" aria-label="anchor" href="#arg-controversy-threshold"></a></dt>
-<dd><p>Consensus proportion threshold (default: 0.7). Clusters with consensus proportion below this value will be marked as controversial</p></dd>
+<dd><p>Numeric value between 0 and 1 for consensus proportion
+threshold. Clusters below this threshold are considered controversial (default: 0.7).</p></dd>
 
 
 <dt id="arg-entropy-threshold">entropy_threshold<a class="anchor" aria-label="anchor" href="#arg-entropy-threshold"></a></dt>
-<dd><p>Entropy threshold for identifying controversial clusters (default: 1.0)</p></dd>
+<dd><p>Numeric value for entropy threshold. Higher entropy
+indicates more disagreement among models (default: 1.0).</p></dd>
 
 
 <dt id="arg-max-discussion-rounds">max_discussion_rounds<a class="anchor" aria-label="anchor" href="#arg-max-discussion-rounds"></a></dt>
-<dd><p>Maximum number of discussion rounds for controversial clusters (default: 3)</p></dd>
+<dd><p>Integer specifying maximum number of discussion rounds
+for controversial clusters (default: 3).</p></dd>
 
 
 <dt id="arg-consensus-check-model">consensus_check_model<a class="anchor" aria-label="anchor" href="#arg-consensus-check-model"></a></dt>
-<dd><p>Model to use for consensus checking</p></dd>
+<dd><p>Character string specifying which model to use for
+consensus checking. If NULL, uses the first model from the models list.</p></dd>
 
 
 <dt id="arg-log-dir">log_dir<a class="anchor" aria-label="anchor" href="#arg-log-dir"></a></dt>
-<dd><p>Directory for storing logs (defaults to tempdir())</p></dd>
+<dd><p>Character string specifying directory for log files (default: "logs").</p></dd>
 
 
 <dt id="arg-cache-dir">cache_dir<a class="anchor" aria-label="anchor" href="#arg-cache-dir"></a></dt>
-<dd><p>Directory for storing cache (defaults to tempdir())</p></dd>
+<dd><p>Character string or NULL. Cache directory for storing results.
+NULL uses system cache, "local" uses current directory, "temp" uses temporary
+directory, or specify custom path.</p></dd>
 
 
 <dt id="arg-use-cache">use_cache<a class="anchor" aria-label="anchor" href="#arg-use-cache"></a></dt>
-<dd><p>Whether to use cached results</p></dd>
+<dd><p>Logical indicating whether to use caching (default: TRUE).</p></dd>
 
 
 <dt id="arg-base-urls">base_urls<a class="anchor" aria-label="anchor" href="#arg-base-urls"></a></dt>
-<dd><p>Optional custom base URLs for API endpoints. Can be:</p><ul><li><p>A single character string: Applied to all providers (e.g., "https://api.proxy.com/v1")</p></li>
-<li><p>A named list: Provider-specific URLs (e.g., list(openai = "https://openai-proxy.com/v1",
-anthropic = "https://anthropic-proxy.com/v1")). This is useful for:</p><ul><li><p>Chinese users accessing international APIs through proxies</p></li>
-<li><p>Enterprise users with internal API gateways</p></li>
-<li><p>Development/testing with local or alternative endpoints
-If NULL (default), uses official API endpoints for each provider.</p></li>
-</ul></li>
-</ul></dd>
+<dd><p>Named list or character string specifying custom API base URLs.
+Useful for proxies or alternative endpoints. If NULL, uses official endpoints.</p></dd>
 
 
 <dt id="arg-clusters-to-analyze">clusters_to_analyze<a class="anchor" aria-label="anchor" href="#arg-clusters-to-analyze"></a></dt>
-<dd><p>Optional vector of cluster IDs to analyze.
-If NULL (default), all clusters in the input will be analyzed.
-Must be character or numeric values that match the cluster IDs in your input.
-Examples:</p><ul><li><p>For numeric clusters: c(0, 2, 5) or c("0", "2", "5")</p></li>
-<li><p>This is useful when you want to focus on specific clusters without filtering the input data</p></li>
-<li><p>Non-existent cluster IDs will be ignored with a warning</p></li>
-</ul></dd>
+<dd><p>Character or numeric vector specifying which clusters
+to analyze. If NULL (default), all clusters are analyzed.</p></dd>
 
 
 <dt id="arg-force-rerun">force_rerun<a class="anchor" aria-label="anchor" href="#arg-force-rerun"></a></dt>
-<dd><p>Logical. If TRUE, ignore cached results and force re-analysis
-of all specified clusters. Useful when you want to re-analyze clusters with
-different context or for subtype identification. Default is FALSE.
-Note: This parameter only affects the discussion phase for controversial clusters.</p></dd>
+<dd><p>Logical indicating whether to force rerun of all specified
+clusters, ignoring cache. Only affects controversial cluster discussions
+(default: FALSE).</p></dd>
 
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
-    <p>A list containing consensus results, logs, and annotations</p>
-<p>A list containing consensus results, logs, and annotations</p>
-    </div>
+    <p>A list containing:</p><ul><li><p><code>voting_results</code>: Initial voting results from all models</p></li>
+<li><p><code>controversial_clusters</code>: Clusters identified as controversial</p></li>
+<li><p><code>discussion_results</code>: Detailed discussion results for controversial clusters</p></li>
+<li><p><code>final_consensus</code>: Final consensus annotations for all clusters</p></li>
+</ul></div>
 
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside></div>

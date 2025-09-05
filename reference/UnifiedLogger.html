@@ -55,7 +55,7 @@ Unified Logger for mLLMCelltype Package"><meta property="og:image" content="http
 
     <a class="navbar-brand me-2" href="../index.html">mLLMCelltype</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">1.3.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">1.3.3</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -188,34 +188,6 @@ log rotation, and performance monitoring capabilities.</p>
 <span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
 
-<div class="section">
-<h4 id="arguments">Arguments<a class="anchor" aria-label="anchor" href="#arguments"></a></h4>
-<p></p><div class="arguments"><dl><dt><code>base_dir</code></dt>
-<dd><p>Base directory for logs (default: "logs")</p></dd>
-
-
-<dt><code>level</code></dt>
-<dd><p>Logging level: DEBUG, INFO, WARN, ERROR (default: "INFO")</p></dd>
-
-
-<dt><code>max_size</code></dt>
-<dd><p>Maximum log file size in MB (default: 10)</p></dd>
-
-
-<dt><code>max_files</code></dt>
-<dd><p>Maximum number of log files to keep (default: 5)</p></dd>
-
-
-<dt><code>console_output</code></dt>
-<dd><p>Whether to output to console (default: TRUE)</p></dd>
-
-
-<dt><code>json_format</code></dt>
-<dd><p>Whether to use JSON format (default: TRUE)</p></dd>
-
-
-</dl><p></p></div>
-</div>
 
 </div><p></p><hr><a id="method-UnifiedLogger-debug"></a><div class="section">
 <h3 id="method-debug-">Method <code><a href="https://rdrr.io/r/base/debug.html" class="external-link">debug()</a></code><a class="anchor" aria-label="anchor" href="#method-debug-"></a></h3>
@@ -224,18 +196,6 @@ log rotation, and performance monitoring capabilities.</p>
 <p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">UnifiedLogger</span><span class="op">$</span><span class="fu">debug</span><span class="op">(</span><span class="va">message</span>, context <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
 
-<div class="section">
-<h4 id="arguments-1">Arguments<a class="anchor" aria-label="anchor" href="#arguments-1"></a></h4>
-<p></p><div class="arguments"><dl><dt><code>message</code></dt>
-<dd><p>Log message</p></dd>
-
-
-<dt><code>context</code></dt>
-<dd><p>Additional context (optional)</p></dd>
-
-
-</dl><p></p></div>
-</div>
 
 </div><p></p><hr><a id="method-UnifiedLogger-info"></a><div class="section">
 <h3 id="method-info-">Method <code>info()</code><a class="anchor" aria-label="anchor" href="#method-info-"></a></h3>
@@ -244,18 +204,6 @@ log rotation, and performance monitoring capabilities.</p>
 <p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">UnifiedLogger</span><span class="op">$</span><span class="fu">info</span><span class="op">(</span><span class="va">message</span>, context <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
 
-<div class="section">
-<h4 id="arguments-2">Arguments<a class="anchor" aria-label="anchor" href="#arguments-2"></a></h4>
-<p></p><div class="arguments"><dl><dt><code>message</code></dt>
-<dd><p>Log message</p></dd>
-
-
-<dt><code>context</code></dt>
-<dd><p>Additional context (optional)</p></dd>
-
-
-</dl><p></p></div>
-</div>
 
 </div><p></p><hr><a id="method-UnifiedLogger-warn"></a><div class="section">
 <h3 id="method-warn-">Method <code>warn()</code><a class="anchor" aria-label="anchor" href="#method-warn-"></a></h3>
@@ -264,18 +212,6 @@ log rotation, and performance monitoring capabilities.</p>
 <p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">UnifiedLogger</span><span class="op">$</span><span class="fu">warn</span><span class="op">(</span><span class="va">message</span>, context <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
 
-<div class="section">
-<h4 id="arguments-3">Arguments<a class="anchor" aria-label="anchor" href="#arguments-3"></a></h4>
-<p></p><div class="arguments"><dl><dt><code>message</code></dt>
-<dd><p>Log message</p></dd>
-
-
-<dt><code>context</code></dt>
-<dd><p>Additional context (optional)</p></dd>
-
-
-</dl><p></p></div>
-</div>
 
 </div><p></p><hr><a id="method-UnifiedLogger-error"></a><div class="section">
 <h3 id="method-error-">Method <code>error()</code><a class="anchor" aria-label="anchor" href="#method-error-"></a></h3>
@@ -284,18 +220,6 @@ log rotation, and performance monitoring capabilities.</p>
 <p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">UnifiedLogger</span><span class="op">$</span><span class="fu">error</span><span class="op">(</span><span class="va">message</span>, context <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
 
-<div class="section">
-<h4 id="arguments-4">Arguments<a class="anchor" aria-label="anchor" href="#arguments-4"></a></h4>
-<p></p><div class="arguments"><dl><dt><code>message</code></dt>
-<dd><p>Log message</p></dd>
-
-
-<dt><code>context</code></dt>
-<dd><p>Additional context (optional)</p></dd>
-
-
-</dl><p></p></div>
-</div>
 
 </div><p></p><hr><a id="method-UnifiedLogger-log_api_call"></a><div class="section">
 <h3 id="method-log-api-call-">Method <code>log_api_call()</code><a class="anchor" aria-label="anchor" href="#method-log-api-call-"></a></h3>
@@ -310,30 +234,6 @@ log rotation, and performance monitoring capabilities.</p>
 <span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
 
-<div class="section">
-<h4 id="arguments-5">Arguments<a class="anchor" aria-label="anchor" href="#arguments-5"></a></h4>
-<p></p><div class="arguments"><dl><dt><code>provider</code></dt>
-<dd><p>API provider name</p></dd>
-
-
-<dt><code>model</code></dt>
-<dd><p>Model name</p></dd>
-
-
-<dt><code>duration</code></dt>
-<dd><p>Duration in seconds</p></dd>
-
-
-<dt><code>success</code></dt>
-<dd><p>Whether the call was successful</p></dd>
-
-
-<dt><code>tokens</code></dt>
-<dd><p>Number of tokens used (optional)</p></dd>
-
-
-</dl><p></p></div>
-</div>
 
 </div><p></p><hr><a id="method-UnifiedLogger-log_api_request_response"></a><div class="section">
 <h3 id="method-log-api-request-response-">Method <code>log_api_request_response()</code><a class="anchor" aria-label="anchor" href="#method-log-api-request-response-"></a></h3>
@@ -349,34 +249,6 @@ log rotation, and performance monitoring capabilities.</p>
 <span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
 
-<div class="section">
-<h4 id="arguments-6">Arguments<a class="anchor" aria-label="anchor" href="#arguments-6"></a></h4>
-<p></p><div class="arguments"><dl><dt><code>provider</code></dt>
-<dd><p>API provider name</p></dd>
-
-
-<dt><code>model</code></dt>
-<dd><p>Model name</p></dd>
-
-
-<dt><code>prompt_content</code></dt>
-<dd><p>The complete prompt sent to the API</p></dd>
-
-
-<dt><code>response_content</code></dt>
-<dd><p>The complete response received from the API</p></dd>
-
-
-<dt><code>request_metadata</code></dt>
-<dd><p>Additional request metadata (optional)</p></dd>
-
-
-<dt><code>response_metadata</code></dt>
-<dd><p>Additional response metadata (optional)</p></dd>
-
-
-</dl><p></p></div>
-</div>
 
 </div><p></p><hr><a id="method-UnifiedLogger-log_cache_operation"></a><div class="section">
 <h3 id="method-log-cache-operation-">Method <code>log_cache_operation()</code><a class="anchor" aria-label="anchor" href="#method-log-cache-operation-"></a></h3>
@@ -385,22 +257,6 @@ log rotation, and performance monitoring capabilities.</p>
 <p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">UnifiedLogger</span><span class="op">$</span><span class="fu">log_cache_operation</span><span class="op">(</span><span class="va">operation</span>, <span class="va">key</span>, size <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
 
-<div class="section">
-<h4 id="arguments-7">Arguments<a class="anchor" aria-label="anchor" href="#arguments-7"></a></h4>
-<p></p><div class="arguments"><dl><dt><code>operation</code></dt>
-<dd><p>Operation type: "hit", "miss", "store", "clear"</p></dd>
-
-
-<dt><code>key</code></dt>
-<dd><p>Cache key</p></dd>
-
-
-<dt><code>size</code></dt>
-<dd><p>Size of cached data (optional)</p></dd>
-
-
-</dl><p></p></div>
-</div>
 
 </div><p></p><hr><a id="method-UnifiedLogger-log_cluster_progress"></a><div class="section">
 <h3 id="method-log-cluster-progress-">Method <code>log_cluster_progress()</code><a class="anchor" aria-label="anchor" href="#method-log-cluster-progress-"></a></h3>
@@ -409,22 +265,6 @@ log rotation, and performance monitoring capabilities.</p>
 <p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">UnifiedLogger</span><span class="op">$</span><span class="fu">log_cluster_progress</span><span class="op">(</span><span class="va">cluster_id</span>, <span class="va">stage</span>, progress <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
 
-<div class="section">
-<h4 id="arguments-8">Arguments<a class="anchor" aria-label="anchor" href="#arguments-8"></a></h4>
-<p></p><div class="arguments"><dl><dt><code>cluster_id</code></dt>
-<dd><p>Cluster identifier</p></dd>
-
-
-<dt><code>stage</code></dt>
-<dd><p>Current stage</p></dd>
-
-
-<dt><code>progress</code></dt>
-<dd><p>Progress information</p></dd>
-
-
-</dl><p></p></div>
-</div>
 
 </div><p></p><hr><a id="method-UnifiedLogger-log_discussion"></a><div class="section">
 <h3 id="method-log-discussion-">Method <code>log_discussion()</code><a class="anchor" aria-label="anchor" href="#method-log-discussion-"></a></h3>
@@ -433,22 +273,6 @@ log rotation, and performance monitoring capabilities.</p>
 <p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">UnifiedLogger</span><span class="op">$</span><span class="fu">log_discussion</span><span class="op">(</span><span class="va">cluster_id</span>, <span class="va">event_type</span>, data <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
 
-<div class="section">
-<h4 id="arguments-9">Arguments<a class="anchor" aria-label="anchor" href="#arguments-9"></a></h4>
-<p></p><div class="arguments"><dl><dt><code>cluster_id</code></dt>
-<dd><p>Cluster identifier</p></dd>
-
-
-<dt><code>event_type</code></dt>
-<dd><p>Type of event (start, prediction, consensus, end)</p></dd>
-
-
-<dt><code>data</code></dt>
-<dd><p>Event data</p></dd>
-
-
-</dl><p></p></div>
-</div>
 
 </div><p></p><hr><a id="method-UnifiedLogger-get_performance_summary"></a><div class="section">
 <h3 id="method-get-performance-summary-">Method <code>get_performance_summary()</code><a class="anchor" aria-label="anchor" href="#method-get-performance-summary-"></a></h3>
@@ -457,10 +281,6 @@ log rotation, and performance monitoring capabilities.</p>
 <p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">UnifiedLogger</span><span class="op">$</span><span class="fu">get_performance_summary</span><span class="op">(</span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
 
-<div class="section">
-<h4 id="returns">Returns<a class="anchor" aria-label="anchor" href="#returns"></a></h4>
-<p>List of performance statistics</p>
-</div>
 
 </div><p></p><hr><a id="method-UnifiedLogger-cleanup_logs"></a><div class="section">
 <h3 id="method-cleanup-logs-">Method <code>cleanup_logs()</code><a class="anchor" aria-label="anchor" href="#method-cleanup-logs-"></a></h3>
@@ -469,14 +289,6 @@ log rotation, and performance monitoring capabilities.</p>
 <p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">UnifiedLogger</span><span class="op">$</span><span class="fu">cleanup_logs</span><span class="op">(</span>force <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
 
-<div class="section">
-<h4 id="arguments-10">Arguments<a class="anchor" aria-label="anchor" href="#arguments-10"></a></h4>
-<p></p><div class="arguments"><dl><dt><code>force</code></dt>
-<dd><p>Force cleanup even if within file limits</p></dd>
-
-
-</dl><p></p></div>
-</div>
 
 </div><p></p><hr><a id="method-UnifiedLogger-set_level"></a><div class="section">
 <h3 id="method-set-level-">Method <code>set_level()</code><a class="anchor" aria-label="anchor" href="#method-set-level-"></a></h3>
@@ -485,14 +297,6 @@ log rotation, and performance monitoring capabilities.</p>
 <p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">UnifiedLogger</span><span class="op">$</span><span class="fu">set_level</span><span class="op">(</span><span class="va">level</span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
 
-<div class="section">
-<h4 id="arguments-11">Arguments<a class="anchor" aria-label="anchor" href="#arguments-11"></a></h4>
-<p></p><div class="arguments"><dl><dt><code>level</code></dt>
-<dd><p>New logging level: DEBUG, INFO, WARN, ERROR</p></dd>
-
-
-</dl><p></p></div>
-</div>
 
 </div><p></p><hr><a id="method-UnifiedLogger-clone"></a><div class="section">
 <h3 id="method-clone-">Method <code>clone()</code><a class="anchor" aria-label="anchor" href="#method-clone-"></a></h3>
@@ -502,7 +306,7 @@ log rotation, and performance monitoring capabilities.</p>
 </div>
 
 <div class="section">
-<h4 id="arguments-12">Arguments<a class="anchor" aria-label="anchor" href="#arguments-12"></a></h4>
+<h4 id="arguments">Arguments<a class="anchor" aria-label="anchor" href="#arguments"></a></h4>
 <p></p><div class="arguments"><dl><dt><code>deep</code></dt>
 <dd><p>Whether to make a deep clone.</p></dd>
 

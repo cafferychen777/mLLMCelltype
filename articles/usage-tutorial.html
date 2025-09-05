@@ -81,7 +81,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">mLLMCelltype</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">1.3.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">1.3.3</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -141,7 +141,7 @@
       <h1>Usage Tutorial</h1>
                         <h4 data-toc-skip class="author">Chen Yang</h4>
             
-            <h4 data-toc-skip class="date">2025-09-03</h4>
+            <h4 data-toc-skip class="date">2025-09-05</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/cafferychen777/mLLMCelltype/blob/main/vignettes/usage-tutorial.Rmd" class="external-link"><code>vignettes/usage-tutorial.Rmd</code></a></small>
       <div class="d-none name"><code>usage-tutorial.Rmd</code></div>
@@ -193,7 +193,7 @@ through interactive discussion:</p>
 <span>  max_discussion_rounds <span class="op">=</span> <span class="fl">3</span>,  <span class="co"># Maximum discussion rounds</span></span>
 <span>  consensus_check_model <span class="op">=</span> <span class="cn">NULL</span>,  <span class="co"># Model to use for consensus checking (see recommendations below)</span></span>
 <span>  log_dir <span class="op">=</span> <span class="st">"logs"</span>,     <span class="co"># Directory for logs</span></span>
-<span>  cache_dir <span class="op">=</span> <span class="st">"consensus_cache"</span>,  <span class="co"># Directory for cache</span></span>
+<span>  cache_dir <span class="op">=</span> <span class="cn">NULL</span>,  <span class="co"># Uses default system cache directory</span></span>
 <span>  use_cache <span class="op">=</span> <span class="cn">TRUE</span>      <span class="co"># Whether to use cache</span></span>
 <span><span class="op">)</span></span></code></pre></div>
 <p><strong>Important Note on
@@ -521,8 +521,9 @@ time</li>
 <code>deepseek/deepseek-chat-v3-0324:free</code>: May occasionally
 return empty results</li>
 <li>
-<code>thudm/glm-z1-9b:free</code>: May return Chinese error messages
-(“非字符参数”) when used for consensus checking</li>
+<code>thudm/glm-z1-9b:free</code>: May return localized error
+messages (“non-character parameter”) when used for consensus
+checking</li>
 </ul>
 <p>These free models are accessed through OpenRouter and don’t consume
 credits, but may have limitations compared to paid models. Use the
@@ -792,13 +793,13 @@ restrictions</li>
 </ul>
 </div>
 <div class="section level4">
-<h4 id="chinese-error-messages">Chinese Error Messages<a class="anchor" aria-label="anchor" href="#chinese-error-messages"></a>
+<h4 id="non-english-model-error-messages">Non-English Model Error Messages<a class="anchor" aria-label="anchor" href="#non-english-model-error-messages"></a>
 </h4>
-<p>If you see “非字符参数” (non-character parameter) errors:</p>
+<p>If you see “non-character parameter” errors:</p>
 <ul>
-<li>This typically occurs when using Chinese models like
+<li>This typically occurs when using non-English language models like
 <code>thudm/glm-z1-9b:free</code> for consensus checking</li>
-<li>Switch to an English model like
+<li>Switch to an English-optimized model like
 <code>meta-llama/llama-4-maverick:free</code> for consensus
 checking</li>
 </ul>

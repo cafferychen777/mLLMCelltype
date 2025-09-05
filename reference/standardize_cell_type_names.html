@@ -55,7 +55,7 @@ nomenclature to ensure consistent naming across different models' outputs."><met
 
     <a class="navbar-brand me-2" href="../index.html">mLLMCelltype</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">1.3.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">1.3.3</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -123,31 +123,11 @@ nomenclature to ensure consistent naming across different models' outputs.</p>
     </div>
 
     <div class="section level2">
-    <h2 id="arguments">Arguments<a class="anchor" aria-label="anchor" href="#arguments"></a></h2>
+    <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
 
-
-<dl><dt id="arg-predictions">predictions<a class="anchor" aria-label="anchor" href="#arg-predictions"></a></dt>
-<dd><p>List of predictions from different models</p></dd>
-
-
-<dt id="arg-models">models<a class="anchor" aria-label="anchor" href="#arg-models"></a></dt>
-<dd><p>Vector of model names that successfully completed predictions</p></dd>
-
-
-<dt id="arg-api-keys">api_keys<a class="anchor" aria-label="anchor" href="#arg-api-keys"></a></dt>
-<dd><p>Named list of API keys. Can be provided in two formats:</p><ol><li><p>With provider names as keys: <code>list("openai" = "sk-...", "anthropic" = "sk-ant-...", "openrouter" = "sk-or-...")</code></p></li>
+<ol><li><p>With provider names as keys: <code>list("openai" = "sk-...", "anthropic" = "sk-ant-...", "openrouter" = "sk-or-...")</code></p></li>
 <li><p>With model names as keys: <code>list("gpt-4o" = "sk-...", "claude-3-opus" = "sk-ant-...")</code></p></li>
-</ol></dd>
-
-
-<dt id="arg-standardization-model">standardization_model<a class="anchor" aria-label="anchor" href="#arg-standardization-model"></a></dt>
-<dd><p>Model to use for standardization (default: "claude-sonnet-4-20250514")</p></dd>
-
-</dl></div>
-    <div class="section level2">
-    <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
-    <p>List of standardized predictions with the same structure as the input</p>
-    </div>
+</ol></div>
 
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside></div>

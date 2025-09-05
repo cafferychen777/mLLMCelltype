@@ -53,7 +53,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">mLLMCelltype</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">1.3.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">1.3.3</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -119,12 +119,11 @@
 
 
 <dl><dt id="arg-provider-name">provider_name<a class="anchor" aria-label="anchor" href="#arg-provider-name"></a></dt>
-<dd><p>Character string, unique identifier for the provider</p></dd>
+<dd><p>Unique name for the custom provider</p></dd>
 
 
 <dt id="arg-process-fn">process_fn<a class="anchor" aria-label="anchor" href="#arg-process-fn"></a></dt>
-<dd><p>Function that processes prompts and returns responses.
-Must accept parameters: prompt, model, api_key</p></dd>
+<dd><p>Function that processes LLM requests. Must accept parameters: prompt, model, api_key</p></dd>
 
 
 <dt id="arg-description">description<a class="anchor" aria-label="anchor" href="#arg-description"></a></dt>
@@ -133,7 +132,7 @@ Must accept parameters: prompt, model, api_key</p></dd>
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
-    <p>Invisibly returns TRUE if registration is successful</p>
+    <p>Invisible NULL</p>
     </div>
 
     <div class="section level2">

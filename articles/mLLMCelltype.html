@@ -81,7 +81,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">mLLMCelltype</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">1.3.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">1.3.3</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -215,9 +215,7 @@ Seurat object:</p>
 <span><span class="co">#                           min.pct = 0.25,</span></span>
 <span><span class="co">#                           logfc.threshold = 0.25)</span></span>
 <span></span>
-<span><span class="co"># Set up cache directory to speed up processing</span></span>
-<span><span class="va">cache_dir</span> <span class="op">&lt;-</span> <span class="st">"./mllmcelltype_cache"</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/files2.html" class="external-link">dir.create</a></span><span class="op">(</span><span class="va">cache_dir</span>, showWarnings <span class="op">=</span> <span class="cn">FALSE</span>, recursive <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span><span class="co"># Cache will be automatically managed using system cache directory</span></span>
 <span></span>
 <span><span class="co"># Run LLMCelltype annotation with multiple LLM models</span></span>
 <span><span class="va">consensus_results</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/interactive_consensus_annotation.html">interactive_consensus_annotation</a></span><span class="op">(</span></span>
@@ -237,7 +235,7 @@ Seurat object:</p>
 <span>  controversy_threshold <span class="op">=</span> <span class="fl">1.0</span>,</span>
 <span>  entropy_threshold <span class="op">=</span> <span class="fl">1.0</span>,</span>
 <span>  consensus_check_model <span class="op">=</span> <span class="st">"claude-3-7-sonnet-20250219"</span>,  <span class="co"># Use a reliable model for consensus checking</span></span>
-<span>  cache_dir <span class="op">=</span> <span class="va">cache_dir</span></span>
+<span>  cache_dir <span class="op">=</span> <span class="cn">NULL</span>  <span class="co"># Uses default system cache directory</span></span>
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Add annotations to Seurat object</span></span>
@@ -334,7 +332,7 @@ approach:</p>
 <span>  model <span class="op">=</span> <span class="st">"claude-3-7-sonnet-20250219"</span>,</span>
 <span>  api_key <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Sys.getenv.html" class="external-link">Sys.getenv</a></span><span class="op">(</span><span class="st">"ANTHROPIC_API_KEY"</span><span class="op">)</span>,</span>
 <span>  top_gene_count <span class="op">=</span> <span class="fl">10</span>,</span>
-<span>  cache_dir <span class="op">=</span> <span class="va">cache_dir</span></span>
+<span>  cache_dir <span class="op">=</span> <span class="cn">NULL</span>  <span class="co"># Uses default system cache directory</span></span>
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Add annotations to Seurat object</span></span>
@@ -367,7 +365,7 @@ approach:</p>
 <span>  entropy_threshold <span class="op">=</span> <span class="fl">0.7</span>,            <span class="co"># Entropy threshold for controversy detection</span></span>
 <span>  max_discussion_rounds <span class="op">=</span> <span class="fl">2</span>,          <span class="co"># Maximum rounds of discussion</span></span>
 <span>  consensus_check_model <span class="op">=</span> <span class="st">"claude-3-7-sonnet-20250219"</span>,  <span class="co"># Use a reliable model for consensus checking</span></span>
-<span>  cache_dir <span class="op">=</span> <span class="va">cache_dir</span></span>
+<span>  cache_dir <span class="op">=</span> <span class="cn">NULL</span>  <span class="co"># Uses default system cache directory</span></span>
 <span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level3">
