@@ -7,12 +7,12 @@
 get_api_key(model, api_keys)
 }
 \arguments{
-\item{model}{The name of the model to get the API key for}
+\item{model}{Model name to get API key for}
 
-\item{api_keys}{Named list of API keys}
+\item{api_keys}{Named list of API keys with provider or model names as keys}
 }
 \value{
-The API key if found, NULL otherwise
+API key string for the specified model
 }
 \description{
 This file contains utility functions for managing API keys and related operations.

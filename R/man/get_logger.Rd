@@ -6,9 +6,6 @@
 \usage{
 get_logger()
 }
-\value{
-UnifiedLogger instance
-}
 \description{
 Get the global logger instance
 }

@@ -11,24 +11,24 @@ ZhipuProcessor <- R6::R6Class("ZhipuProcessor",
   public = list(
     #' @description
     #' Initialize Zhipu processor
-    #' @param base_url Optional custom base URL for Zhipu API
+    #
     initialize = function(base_url = NULL) {
       super$initialize("zhipu", base_url)
     },
 
     #' @description
     #' Get default Zhipu API URL
-    #' @return Default Zhipu API endpoint URL
+    #
     get_default_api_url = function() {
       return("https://open.bigmodel.cn/api/paas/v4/chat/completions")
     },
     
     #' @description
     #' Make API call to Zhipu
-    #' @param chunk_content Content for this chunk
-    #' @param model Model identifier
-    #' @param api_key API key
-    #' @return httr response object
+    #
+    #
+    #
+    #
     make_api_call = function(chunk_content, model, api_key) {
       # Prepare request body
       body <- list(
@@ -78,9 +78,9 @@ ZhipuProcessor <- R6::R6Class("ZhipuProcessor",
     
     #' @description
     #' Extract response content from Zhipu API response
-    #' @param response httr response object
-    #' @param model Model identifier
-    #' @return Extracted text content
+    #
+    #
+    #
     extract_response_content = function(response, model) {
       self$logger$debug("Parsing Zhipu API response",
                        list(provider = self$provider_name, model = model))

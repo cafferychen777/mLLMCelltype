@@ -11,24 +11,24 @@ GrokProcessor <- R6::R6Class("GrokProcessor",
   public = list(
     #' @description
     #' Initialize Grok processor
-    #' @param base_url Optional custom base URL for Grok API
+    #
     initialize = function(base_url = NULL) {
       super$initialize("grok", base_url)
     },
 
     #' @description
     #' Get default Grok API URL
-    #' @return Default Grok API endpoint URL
+    #
     get_default_api_url = function() {
       return("https://api.x.ai/v1/chat/completions")
     },
     
     #' @description
     #' Make API call to Grok
-    #' @param chunk_content Content for this chunk
-    #' @param model Model identifier
-    #' @param api_key API key
-    #' @return httr response object
+    #
+    #
+    #
+    #
     make_api_call = function(chunk_content, model, api_key) {
       # Prepare request body
       body <- list(
@@ -78,9 +78,9 @@ GrokProcessor <- R6::R6Class("GrokProcessor",
     
     #' @description
     #' Extract response content from Grok API response
-    #' @param response httr response object
-    #' @param model Model identifier
-    #' @return Extracted text content
+    #
+    #
+    #
     extract_response_content = function(response, model) {
       self$logger$debug("Parsing Grok API response",
                        list(provider = self$provider_name, model = model))

@@ -17,9 +17,12 @@ log_warn(message, context = NULL)
 log_error(message, context = NULL)
 }
 \arguments{
-\item{message}{Log message}
+\item{message}{Log message string}
 
-\item{context}{Additional context (optional)}
+\item{context}{Optional context information (list or character)}
+}
+\value{
+Invisible NULL
 }
 \description{
 Convenience functions for logging

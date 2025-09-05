@@ -6,12 +6,6 @@
 \usage{
 calculate_simple_consensus(round_responses)
 }
-\arguments{
-\item{round_responses}{Vector of model responses}
-}
-\value{
-List with consensus_proportion, entropy, and majority_prediction
-}
 \description{
 Calculate simple consensus without LLM
 }

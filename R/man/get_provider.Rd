@@ -8,14 +8,6 @@ get_provider(model)
 
 get_provider(model)
 }
-\arguments{
-\item{model}{Model identifier}
-}
-\value{
-Character string with the provider name
-
-Provider name
-}
 \description{
 This function determines the appropriate provider (e.g., OpenAI, Anthropic, Google, OpenRouter) based on the model name.
 

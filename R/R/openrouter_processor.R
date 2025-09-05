@@ -11,24 +11,24 @@ OpenRouterProcessor <- R6::R6Class("OpenRouterProcessor",
   public = list(
     #' @description
     #' Initialize OpenRouter processor
-    #' @param base_url Optional custom base URL for OpenRouter API
+    #
     initialize = function(base_url = NULL) {
       super$initialize("openrouter", base_url)
     },
 
     #' @description
     #' Get default OpenRouter API URL
-    #' @return Default OpenRouter API endpoint URL
+    #
     get_default_api_url = function() {
       return("https://openrouter.ai/api/v1/chat/completions")
     },
     
     #' @description
     #' Make API call to OpenRouter
-    #' @param chunk_content Content for this chunk
-    #' @param model Model identifier
-    #' @param api_key API key
-    #' @return httr response object
+    #
+    #
+    #
+    #
     make_api_call = function(chunk_content, model, api_key) {
       # Prepare request body
       body <- list(
@@ -78,9 +78,9 @@ OpenRouterProcessor <- R6::R6Class("OpenRouterProcessor",
     
     #' @description
     #' Extract response content from OpenRouter API response
-    #' @param response httr response object
-    #' @param model Model identifier
-    #' @return Extracted text content
+    #
+    #
+    #
     extract_response_content = function(response, model) {
       self$logger$debug("Parsing OpenRouter API response",
                        list(provider = self$provider_name, model = model))

@@ -6,16 +6,6 @@
 \usage{
 combine_results(initial_results, controversy_results, discussion_results)
 }
-\arguments{
-\item{initial_results}{Results from initial prediction phase}
-
-\item{controversy_results}{Results from controversy identification phase}
-
-\item{discussion_results}{Results from discussion phase}
-}
-\value{
-Combined results
-}
 \description{
 Combine results from all phases of consensus annotation
 }

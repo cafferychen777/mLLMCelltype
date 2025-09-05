@@ -11,22 +11,22 @@ GeminiProcessor <- R6::R6Class("GeminiProcessor",
   public = list(
     #' @description
     #' Initialize Gemini processor
-    #' @param base_url Optional custom base URL for Gemini API
+    #
     initialize = function(base_url = NULL) {
       super$initialize("gemini", base_url)
     },
 
     #' @description
     #' Get default Gemini API URL template
-    #' @return Default Gemini API endpoint URL template
+    #
     get_default_api_url = function() {
       return("https://generativelanguage.googleapis.com/v1beta/models")
     },
 
     #' @description
     #' Get API URL for specific model
-    #' @param model Model identifier
-    #' @return Complete API URL for the model
+    #
+    #
     get_api_url_for_model = function(model) {
       base_url <- if (!is.null(self$base_url)) self$base_url else self$get_default_api_url()
       return(paste0(base_url, "/", model, ":generateContent"))
@@ -34,10 +34,10 @@ GeminiProcessor <- R6::R6Class("GeminiProcessor",
     
     #' @description
     #' Make API call to Gemini
-    #' @param chunk_content Content for this chunk
-    #' @param model Model identifier
-    #' @param api_key API key
-    #' @return httr response object
+    #
+    #
+    #
+    #
     make_api_call = function(chunk_content, model, api_key) {
       # Build API URL with model
       api_url <- self$get_api_url_for_model(model)
@@ -92,9 +92,9 @@ GeminiProcessor <- R6::R6Class("GeminiProcessor",
     
     #' @description
     #' Extract response content from Gemini API response
-    #' @param response httr response object
-    #' @param model Model identifier
-    #' @return Extracted text content
+    #
+    #
+    #
     extract_response_content = function(response, model) {
       self$logger$debug("Parsing Gemini API response",
                        list(provider = self$provider_name, model = model))

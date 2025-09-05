@@ -3,10 +3,12 @@
 #' This file contains all prompt template functions used in mLLMCelltype.
 #' These functions create various prompts for different stages of the cell type annotation process.
 #' Create prompt for cell type annotation
-#' @param input Either the differential gene table returned by Seurat FindAllMarkers() function, or a list of genes
-#' @param tissue_name The name of the tissue
-#' @param top_gene_count Number of top differential genes to use per cluster
-#' @return A list containing the prompt string and expected count of responses
+#'
+#' @param input Either a data frame from Seurat's FindAllMarkers() or a list with 'genes' field for each cluster
+#' @param tissue_name Tissue context for the annotation (e.g., 'human PBMC', 'mouse brain')
+#' @param top_gene_count Number of top genes to use per cluster when input is from Seurat. Default: 10
+#'
+#' @return Character string containing the formatted prompt
 #' @importFrom magrittr "%>%"
 #' @export
 create_annotation_prompt <- function(input, tissue_name, top_gene_count = 10) {
@@ -140,10 +142,10 @@ create_annotation_prompt <- function(input, tissue_name, top_gene_count = 10) {
 }
 
 #' Create prompt for checking consensus among model predictions
-#' @param round_responses A vector of cell type predictions from different models
-#' @param controversy_threshold Threshold for consensus proportion (default: 2/3)
-#' @param entropy_threshold Threshold for entropy (default: 1.0)
-#' @return A formatted prompt string for consensus checking
+#
+#
+#
+#
 #' @keywords internal
 create_consensus_check_prompt <- function(round_responses, controversy_threshold = 2/3, entropy_threshold = 1.0) {
   # Format the predictions for Claude
@@ -185,12 +187,12 @@ create_consensus_check_prompt <- function(round_responses, controversy_threshold
 }
 
 #' Create prompt for additional discussion rounds
-#' @param cluster_id The ID of the cluster being analyzed
-#' @param cluster_genes The marker genes for the cluster
-#' @param tissue_name The name of the tissue (optional)
-#' @param previous_rounds A list of previous discussion rounds
-#' @param round_number The current round number
-#' @return A formatted prompt string for additional discussion rounds
+#
+#
+#
+#
+#
+#
 #' @keywords internal
 create_discussion_prompt <- function(cluster_id,
                                      cluster_genes,
@@ -246,11 +248,11 @@ create_discussion_prompt <- function(cluster_id,
 }
 
 #' Create prompt for the initial round of discussion
-#' @param cluster_id The ID of the cluster being analyzed
-#' @param cluster_genes The marker genes for the cluster
-#' @param tissue_name The name of the tissue (optional)
-#' @param initial_predictions A list of initial model predictions
-#' @return A formatted prompt string for the initial discussion round
+#
+#
+#
+#
+#
 #' @keywords internal
 create_initial_discussion_prompt <- function(cluster_id,
                                              cluster_genes,
@@ -335,8 +337,8 @@ create_initial_discussion_prompt <- function(cluster_id,
 }
 
 #' Create prompt for standardizing cell type names
-#' @param all_cell_types A vector of cell type names to standardize
-#' @return A formatted prompt string for cell type standardization
+#
+#
 #' @keywords internal
 create_standardization_prompt <- function(all_cell_types) {
   paste0(

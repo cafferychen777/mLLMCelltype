@@ -42,13 +42,6 @@ Initialize Minimax processor
 \if{html}{\out{<div class="r">}}\preformatted{MinimaxProcessor$new(base_url = NULL)}\if{html}{\out{</div>}}
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{base_url}}{Optional custom base URL for Minimax API}
-}
-\if{html}{\out{</div>}}
-}
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-MinimaxProcessor-get_default_api_url"></a>}}
@@ -59,9 +52,6 @@ Get default Minimax API URL
 \if{html}{\out{<div class="r">}}\preformatted{MinimaxProcessor$get_default_api_url()}\if{html}{\out{</div>}}
 }
 
-\subsection{Returns}{
-Default Minimax API endpoint URL
-}
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-MinimaxProcessor-make_api_call"></a>}}
@@ -72,20 +62,6 @@ Make API call to Minimax
 \if{html}{\out{<div class="r">}}\preformatted{MinimaxProcessor$make_api_call(chunk_content, model, api_key)}\if{html}{\out{</div>}}
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{chunk_content}}{Content for this chunk}
-
-\item{\code{model}}{Model identifier}
-
-\item{\code{api_key}}{API key}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-httr response object
-}
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-MinimaxProcessor-extract_response_content"></a>}}
@@ -96,18 +72,6 @@ Extract response content from Minimax API response
 \if{html}{\out{<div class="r">}}\preformatted{MinimaxProcessor$extract_response_content(response, model)}\if{html}{\out{</div>}}
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{response}}{httr response object}
-
-\item{\code{model}}{Model identifier}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-Extracted text content
-}
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-MinimaxProcessor-clone"></a>}}

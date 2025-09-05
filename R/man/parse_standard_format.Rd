@@ -6,12 +6,6 @@
 \usage{
 parse_standard_format(result_lines)
 }
-\arguments{
-\item{result_lines}{Character vector of 4 lines}
-}
-\value{
-List with parsed values or NULL if not standard format
-}
 \description{
 Parse standard 4-line consensus response format
 }

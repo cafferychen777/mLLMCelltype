@@ -53,20 +53,6 @@ Initialize Qwen processor
 \if{html}{\out{<div class="r">}}\preformatted{QwenProcessor$new(base_url = NULL)}\if{html}{\out{</div>}}
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{base_url}}{Optional custom base URL for Qwen API}
-
-\item{\code{url}}{The endpoint URL to test}
-
-\item{\code{api_key}}{API key for authentication}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-TRUE if accessible, FALSE otherwise
-}
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-QwenProcessor-get_default_api_url"></a>}}
@@ -77,9 +63,6 @@ Get default Qwen API URL with intelligent endpoint selection
 \if{html}{\out{<div class="r">}}\preformatted{QwenProcessor$get_default_api_url()}\if{html}{\out{</div>}}
 }
 
-\subsection{Returns}{
-Default Qwen API endpoint URL
-}
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-QwenProcessor-get_working_api_url"></a>}}
@@ -90,16 +73,6 @@ Get working Qwen API URL with automatic endpoint detection
 \if{html}{\out{<div class="r">}}\preformatted{QwenProcessor$get_working_api_url(api_key)}\if{html}{\out{</div>}}
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{api_key}}{API key for testing endpoints}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-Working Qwen API endpoint URL
-}
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-QwenProcessor-make_api_call"></a>}}
@@ -110,20 +83,6 @@ Make API call to Qwen
 \if{html}{\out{<div class="r">}}\preformatted{QwenProcessor$make_api_call(chunk_content, model, api_key)}\if{html}{\out{</div>}}
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{chunk_content}}{Content for this chunk}
-
-\item{\code{model}}{Model identifier}
-
-\item{\code{api_key}}{API key}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-httr response object
-}
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-QwenProcessor-extract_response_content"></a>}}
@@ -134,18 +93,6 @@ Extract response content from Qwen API response
 \if{html}{\out{<div class="r">}}\preformatted{QwenProcessor$extract_response_content(response, model)}\if{html}{\out{</div>}}
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{response}}{httr response object}
-
-\item{\code{model}}{Model identifier}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-Extracted text content
-}
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-QwenProcessor-clone"></a>}}

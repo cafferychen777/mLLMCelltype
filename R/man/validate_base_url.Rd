@@ -6,12 +6,6 @@
 \usage{
 validate_base_url(url)
 }
-\arguments{
-\item{url}{URL to validate}
-}
-\value{
-TRUE if valid, FALSE otherwise
-}
 \description{
 Validate base URL format
 }

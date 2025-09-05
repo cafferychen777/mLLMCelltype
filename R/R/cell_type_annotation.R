@@ -16,7 +16,7 @@ utils::globalVariables(c("cluster", "avg_log2FC", "gene"))
 #' It implements a sophisticated annotation pipeline that leverages state-of-the-art LLMs to identify
 #' cell types based on marker gene expression patterns.
 #'
-#' @param input One of the following:
+#
 #'   - A data frame from Seurat's FindAllMarkers() function containing differential gene expression results
 #'     (must have columns: 'cluster', 'gene', and 'avg_log2FC'). The function will select the top genes
 #'     based on avg_log2FC for each cluster.
@@ -45,9 +45,9 @@ utils::globalVariables(c("cluster", "avg_log2FC", "gene"))
 #'      )
 #'      markers$cluster <- id_mapping$numeric[match(markers$cluster, id_mapping$original)]
 #'      ```
-#' @param tissue_name Character string specifying the tissue type or cell source (e.g., 'human PBMC',
+#
 #'   'mouse brain'). This helps provide context for more accurate annotations.
-#' @param model Character string specifying the LLM model to use. Supported models:
+#
 #'   - OpenAI: 'gpt-4o', 'gpt-4o-mini', 'gpt-4.1', 'gpt-4.1-mini', 'gpt-4.1-nano', 'gpt-4-turbo', 'gpt-3.5-turbo', 'o1', 'o1-mini', 'o1-preview', 'o1-pro'
 #'   - Anthropic: 'claude-opus-4-1-20250805', 'claude-sonnet-4-20250514', 'claude-opus-4-20250514', 'claude-3-7-sonnet-20250219', 'claude-3-5-sonnet-20241022',
 #'     'claude-3-5-haiku-20241022', 'claude-3-opus-20240229'
@@ -66,7 +66,7 @@ utils::globalVariables(c("cluster", "avg_log2FC", "gene"))
 #'     - Google models: 'google/gemini-2.5-pro', 'google/gemini-2.5-flash', 'google/gemini-2.0-flash', 'google/gemini-1.5-pro-latest', 'google/gemini-1.5-flash'
 #'     - Mistral models: 'mistralai/mistral-large', 'mistralai/mistral-medium', 'mistralai/mistral-small'
 #'     - Other models: 'microsoft/mai-ds-r1', 'perplexity/sonar-small-chat', 'cohere/command-r', 'deepseek/deepseek-chat', 'thudm/glm-z1-32b'
-#' @param api_key Character string containing the API key for the selected model.
+#
 #'   Each provider requires a specific API key format and authentication method:
 #'
 #'   - OpenAI: "sk-..." (obtain from OpenAI platform)
@@ -99,26 +99,30 @@ utils::globalVariables(c("cluster", "avg_log2FC", "gene"))
 #'
 #'   If NA, returns the generated prompt without making an API call, which is useful for
 #'   reviewing the prompt before sending it to the API.
-#' @param top_gene_count Integer specifying the number of top marker genes to use per cluster.
+#
 #'   when input is from Seurat's FindAllMarkers(). Default: 10
-#' @param debug Logical. If TRUE, prints additional debugging information during execution.
-#' @param base_urls Optional custom base URLs for API endpoints. Can be:
+#
+#
 #'   - A single character string: Applied to all providers (e.g., "https://api.proxy.com/v1")
 #'   - A named list: Provider-specific URLs (e.g., list(openai = "https://openai-proxy.com/v1",
 #'     anthropic = "https://anthropic-proxy.com/v1")). This is useful for:
-#'     * Chinese users accessing international APIs through proxies
+#'     * Users accessing international APIs through proxies
 #'     * Enterprise users with internal API gateways
 #'     * Development/testing with local or alternative endpoints
 #'   If NULL (default), uses official API endpoints for each provider.
-
+#'
+#' @param input Either a data frame from Seurat's FindAllMarkers() containing columns 'cluster', 'gene', and 'avg_log2FC', or a list with 'genes' field for each cluster
+#' @param tissue_name Optional tissue context (e.g., 'human PBMC', 'mouse brain') for more accurate annotations
+#' @param model Model name to use. Default: 'gpt-4o'. See details for supported models
+#' @param api_key API key for the selected model provider. If NA, returns prompt only
+#' @param top_gene_count Number of top genes to use per cluster when input is from Seurat. Default: 10
+#' @param debug Logical indicating whether to enable debug output. Default: FALSE
+#' @param base_urls Optional base URLs for API endpoints. Can be a string or named list for custom endpoints
+#'
+#' @return When api_key is provided: Vector of cell type annotations per cluster. When api_key is NA: The generated prompt string
+#'
 #' @importFrom httr POST add_headers content http_error status_code timeout
 #' @importFrom jsonlite toJSON
-#' @export
-#'
-#' @return A character vector containing:
-#'   - When api_key is provided: One cell type annotation per cluster, in the order of input clusters
-#'   - When api_key is NA: The generated prompt string that would be sent to the LLM
-#'
 #' @examples
 #' # Example 1: Using custom gene lists, returning prompt only (no API call)
 #' annotate_cell_types(
@@ -206,7 +210,7 @@ utils::globalVariables(c("cluster", "avg_log2FC", "gene"))
 #' * [Seurat::FindAllMarkers()]
 #' * [mLLMCelltype::get_provider()]
 #' * [mLLMCelltype::process_openai()]
-
+#' @export
 annotate_cell_types <- function(input,
                                tissue_name = NULL,
                                model = 'gpt-4o',

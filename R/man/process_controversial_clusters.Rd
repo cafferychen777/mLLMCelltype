@@ -21,36 +21,6 @@ process_controversial_clusters(
   force_rerun = FALSE
 )
 }
-\arguments{
-\item{controversial_clusters}{List of controversial cluster IDs}
-
-\item{input}{Either the differential gene table or a list of genes}
-
-\item{tissue_name}{The tissue type or cell source}
-
-\item{successful_models}{Vector of successful model names}
-
-\item{api_keys}{Named list of API keys}
-
-\item{individual_predictions}{List of predictions from each model}
-
-\item{top_gene_count}{Number of top differential genes to use}
-
-\item{controversy_threshold}{Threshold for marking clusters as controversial}
-
-\item{max_discussion_rounds}{Maximum number of discussion rounds for controversial clusters}
-
-\item{cache_manager}{Cache manager object}
-
-\item{use_cache}{Whether to use cached results}
-
-\item{consensus_check_model}{Model to use for consensus checking}
-
-\item{force_rerun}{Whether to force re-analysis, ignoring cache}
-}
-\value{
-A list containing discussion logs and final annotations
-}
 \description{
 Process controversial clusters through discussion
 }

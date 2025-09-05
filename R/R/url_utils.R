@@ -5,9 +5,9 @@
 
 #' Resolve provider-specific base URL
 #' 
-#' @param provider Provider name (e.g., "openai", "anthropic")
-#' @param base_urls User-provided base URLs (string or named list)
-#' @return Resolved base URL or NULL
+#
+#
+#
 #' @keywords internal
 resolve_provider_base_url <- function(provider, base_urls) {
   if (is.null(base_urls)) {
@@ -29,8 +29,8 @@ resolve_provider_base_url <- function(provider, base_urls) {
 
 #' Validate base URL format
 #' 
-#' @param url URL to validate
-#' @return TRUE if valid, FALSE otherwise
+#
+#
 #' @keywords internal
 validate_base_url <- function(url) {
   if (is.null(url) || !is.character(url) || length(url) != 1) {
@@ -53,8 +53,8 @@ validate_base_url <- function(url) {
 
 #' Sanitize base URL
 #' 
-#' @param url URL to sanitize
-#' @return Sanitized URL
+#
+#
 #' @keywords internal
 sanitize_base_url <- function(url) {
   if (is.null(url)) {
@@ -72,8 +72,8 @@ sanitize_base_url <- function(url) {
 #' This is a helper function that extracts the provider name from a model identifier.
 #' It's used internally to determine which base_url to use from a list of provider-specific URLs.
 #' 
-#' @param model Model identifier
-#' @return Provider name
+#
+#
 #' @keywords internal
 get_provider <- function(model) {
   # OpenAI models

@@ -1,100 +1,3 @@
-#' Interactive consensus building for cell type annotation
-#'
-#' This function implements an interactive voting and discussion mechanism where multiple LLMs
-#' collaborate to reach a consensus on cell type annotations, particularly focusing on
-#' clusters with low agreement. The process includes:
-#' 1. Initial voting by all LLMs
-#' 2. Identification of controversial clusters
-#' 3. Detailed discussion for controversial clusters
-#' 4. Final summary by a designated LLM (default: Claude)
-#'
-#' @param input One of the following:
-#'   - A data frame from Seurat's FindAllMarkers() function containing differential gene expression results
-#'     (must have columns: 'cluster', 'gene', and 'avg_log2FC'). The function will select the top genes
-#'     based on avg_log2FC for each cluster.
-#'   - A list where each element has a 'genes' field containing marker genes for a cluster.
-#'     This can be in one of these formats:
-#'     * Named with numeric cluster IDs: list("0" = list(genes = c(...)), "1" = list(genes = c(...)))
-#'     * Unnamed list: list(list(genes = c(...)), list(genes = c(...)))
-#'   - For both input types, if cluster IDs are numeric and start from 1, they will be automatically
-#'     converted to 0-based indexing (e.g., cluster 1 becomes cluster 0) for consistency.
-#'
-#'   IMPORTANT NOTE ON CLUSTER IDs:
-#'   The 'cluster' column must contain numeric values or values that can be converted to numeric.
-#'   Non-numeric cluster IDs (e.g., "cluster_1", "T_cells", "7_0") may cause errors or unexpected
-#'   behavior. Before using this function, it is recommended to:
-#'
-#'   1. Ensure all cluster IDs are numeric or can be cleanly converted to numeric values
-#'   2. If your data contains non-numeric cluster IDs, consider creating a mapping between
-#'      original IDs and numeric IDs:
-#'      ```r
-#'      # Example of standardizing cluster IDs
-#'      original_ids <- unique(markers$cluster)
-#'      id_mapping <- data.frame(
-#'        original = original_ids,
-#'        numeric = seq(0, length(original_ids) - 1)
-#'      )
-#'      markers$cluster <- id_mapping$numeric[match(markers$cluster, id_mapping$original)]
-#'      ```
-#' @param tissue_name Optional input of tissue name
-#' @param models Vector of model names to participate in the discussion. Supported models:
-#'   - OpenAI: 'gpt-4o', 'gpt-4o-mini', 'gpt-4.1', 'gpt-4.1-mini', 'gpt-4.1-nano', 'gpt-4-turbo', 'gpt-3.5-turbo', 'o1', 'o1-mini', 'o1-preview', 'o1-pro'
-#'   - Anthropic: 'claude-opus-4-1-20250805', 'claude-sonnet-4-20250514', 'claude-opus-4-20250514', 'claude-3-7-sonnet-20250219', 'claude-3-5-sonnet-20241022',
-#'     'claude-3-5-haiku-20241022', 'claude-3-opus-20240229'
-#'   - DeepSeek: 'deepseek-chat', 'deepseek-r1', 'deepseek-r1-zero', 'deepseek-reasoner'
-#'   - Google: 'gemini-2.5-pro', 'gemini-2.5-flash', 'gemini-2.0-flash', 'gemini-2.0-flash-lite', 'gemini-1.5-pro-latest', 'gemini-1.5-flash-latest', 'gemini-1.5-flash-8b'
-#'   - Alibaba: 'qwen-max-2025-01-25', 'qwen3-72b'
-#'   - Stepfun: 'step-2-16k', 'step-2-mini', 'step-1-8k', 'step-1-flash', 'step-1-32k', 'step-1-128k', 'step-1-256k'
-#'   - Zhipu: 'glm-4-plus', 'glm-3-turbo', 'glm-4'
-#'   - MiniMax: 'minimax-text-01'
-#'   - X.AI: 'grok-3-latest', 'grok-3', 'grok-3-fast', 'grok-3-fast-latest', 'grok-3-mini', 'grok-3-mini-latest', 'grok-3-mini-fast', 'grok-3-mini-fast-latest'
-#'   - OpenRouter: Provides access to models from multiple providers through a single API. Format: 'provider/model-name'
-#'     - OpenAI models: 'openai/gpt-4o', 'openai/gpt-4o-mini', 'openai/gpt-4-turbo', 'openai/gpt-4', 'openai/gpt-3.5-turbo'
-#'     - Anthropic models: 'anthropic/claude-opus-4.1', 'anthropic/claude-sonnet-4', 'anthropic/claude-opus-4', 'anthropic/claude-3.7-sonnet',
-#'       'anthropic/claude-3.5-sonnet', 'anthropic/claude-3.5-haiku', 'anthropic/claude-3-opus'
-#'     - Meta models: 'meta-llama/llama-3-70b-instruct', 'meta-llama/llama-3-8b-instruct', 'meta-llama/llama-2-70b-chat', 'meta-llama/llama-4-maverick'
-#'     - Google models: 'google/gemini-2.5-pro', 'google/gemini-2.5-flash', 'google/gemini-2.0-flash', 'google/gemini-1.5-pro-latest', 'google/gemini-1.5-flash'
-#'     - Mistral models: 'mistralai/mistral-large', 'mistralai/mistral-medium', 'mistralai/mistral-small'
-#'     - Other models: 'microsoft/mai-ds-r1', 'perplexity/sonar-small-chat', 'cohere/command-r', 'deepseek/deepseek-chat', 'thudm/glm-z1-32b'
-#'     - Free models: 'meta-llama/llama-4-maverick:free', 'nvidia/llama-3.1-nemotron-ultra-253b-v1:free', 'deepseek/deepseek-chat-v3-0324:free', 'microsoft/mai-ds-r1:free'
-#' @param api_keys Named list of API keys. Can be provided in two formats:
-#'   1. With provider names as keys: `list("openai" = "sk-...", "anthropic" = "sk-ant-...", "openrouter" = "sk-or-...")`
-#'   2. With model names as keys: `list("gpt-4o" = "sk-...", "claude-3-opus" = "sk-ant-...")`
-#'
-#'   The system first tries to find the API key using the provider name. If not found, it then tries using the model name.
-#'   Example:
-#'   ```r
-#'   api_keys <- list(
-#'     "openai" = Sys.getenv("OPENAI_API_KEY"),
-#'     "anthropic" = Sys.getenv("ANTHROPIC_API_KEY"),
-#'     "openrouter" = Sys.getenv("OPENROUTER_API_KEY"),
-#'     "claude-3-opus" = "sk-ant-api03-specific-key-for-opus"
-#'   )
-#'   ```
-#' @param top_gene_count Number of top differential genes to use
-#' @param controversy_threshold Consensus proportion threshold (default: 0.7). Clusters with consensus proportion below this value will be marked as controversial
-#' @param entropy_threshold Entropy threshold for identifying controversial clusters (default: 1.0)
-#' @param max_discussion_rounds Maximum number of discussion rounds for controversial clusters (default: 3)
-#' @param consensus_check_model Model to use for consensus checking
-#' @param log_dir Directory for storing logs
-#' @param cache_dir Directory for storing cache
-#' @param use_cache Whether to use cached results
-#' @param clusters_to_analyze Optional vector of cluster IDs to analyze. 
-#'   If NULL (default), all clusters in the input will be analyzed.
-#'   Must be character or numeric values that match the cluster IDs in your input.
-#'   Examples:
-#'   - For numeric clusters: c(0, 2, 5) or c("0", "2", "5")
-#'   - This is useful when you want to focus on specific clusters without filtering the input data
-#'   - Non-existent cluster IDs will be ignored with a warning
-#' @param force_rerun Logical. If TRUE, ignore cached results and force re-analysis 
-#'   of all specified clusters. Useful when you want to re-analyze clusters with 
-#'   different context or for subtype identification. Default is FALSE.
-#'   Note: This parameter only affects the discussion phase for controversial clusters.
-#' @return A list containing consensus results, logs, and annotations
-#' @name interactive_consensus_annotation
-#' @export
-NULL
-
 # =============================================================================
 # HELPER FUNCTIONS
 # =============================================================================
@@ -104,13 +7,6 @@ NULL
 #' This function retrieves initial cell type predictions from all specified models.
 #' It is an internal helper function used by the interactive_consensus_annotation function.
 #'
-#' @param input Either the differential gene table or a list of genes
-#' @param tissue_name The tissue type or cell source
-#' @param models Vector of model names to use
-#' @param api_keys Named list of API keys
-#' @param top_gene_count Number of top differential genes to use
-#' @param base_urls Optional custom base URLs for API endpoints
-#' @return A list containing individual predictions and successful models
 #' @keywords internal
 get_initial_predictions <- function(input, tissue_name, models, api_keys, top_gene_count, base_urls = NULL) {
   log_info("Phase 1: Getting initial predictions from all models...", list(
@@ -165,11 +61,11 @@ get_initial_predictions <- function(input, tissue_name, models, api_keys, top_ge
 
 #' Identify controversial clusters based on consensus analysis
 #'
-#' @param input Either the differential gene table or a list of genes
-#' @param individual_predictions List of predictions from each model
-#' @param controversy_threshold Threshold for marking clusters as controversial
-#' @param entropy_threshold Entropy threshold for identifying controversial clusters
-#' @return A list containing controversial clusters and consensus results
+#
+#
+#
+#
+#
 #' @keywords internal
 identify_controversial_clusters <- function(input, individual_predictions, controversy_threshold, entropy_threshold, api_keys, consensus_check_model = NULL) {
   # For each cluster, check consensus
@@ -343,9 +239,9 @@ identify_controversial_clusters <- function(input, individual_predictions, contr
 
 #' Select the best prediction from consensus results
 #'
-#' @param consensus_result Consensus analysis result
-#' @param valid_predictions Valid predictions for the cluster
-#' @return The best prediction
+#
+#
+#
 #' @keywords internal
 select_best_prediction <- function(consensus_result, valid_predictions) {
   # If we have a majority prediction from Claude, use it
@@ -373,20 +269,20 @@ select_best_prediction <- function(consensus_result, valid_predictions) {
 
 #' Process controversial clusters through discussion
 #'
-#' @param controversial_clusters List of controversial cluster IDs
-#' @param input Either the differential gene table or a list of genes
-#' @param tissue_name The tissue type or cell source
-#' @param successful_models Vector of successful model names
-#' @param api_keys Named list of API keys
-#' @param individual_predictions List of predictions from each model
-#' @param top_gene_count Number of top differential genes to use
-#' @param controversy_threshold Threshold for marking clusters as controversial
-#' @param max_discussion_rounds Maximum number of discussion rounds for controversial clusters
-#' @param cache_manager Cache manager object
-#' @param use_cache Whether to use cached results
-#' @param consensus_check_model Model to use for consensus checking
-#' @param force_rerun Whether to force re-analysis, ignoring cache
-#' @return A list containing discussion logs and final annotations
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#
 #' @keywords internal
 process_controversial_clusters <- function(controversial_clusters, input, tissue_name,
                                           successful_models, api_keys, individual_predictions,
@@ -526,8 +422,8 @@ process_controversial_clusters <- function(controversial_clusters, input, tissue
 
 #' Clean annotation text by removing prefixes and extra whitespace
 #'
-#' @param annotation The annotation text to clean
-#' @return Cleaned annotation text
+#
+#
 #' @keywords internal
 clean_annotation <- function(annotation) {
   if (is.null(annotation) || is.na(annotation)) {
@@ -546,10 +442,10 @@ clean_annotation <- function(annotation) {
 
 #' Combine results from all phases of consensus annotation
 #'
-#' @param initial_results Results from initial prediction phase
-#' @param controversy_results Results from controversy identification phase
-#' @param discussion_results Results from discussion phase
-#' @return Combined results
+#
+#
+#
+#
 #' @keywords internal
 combine_results <- function(initial_results, controversy_results, discussion_results) {
   # Combine final annotations from non-controversial and controversial clusters
@@ -685,79 +581,47 @@ combine_results <- function(initial_results, controversy_results, discussion_res
 #' 3. Detailed discussion for controversial clusters
 #' 4. Final summary by a designated LLM (default: Claude)
 #'
-#' @param input One of the following:
-#'   - A data frame from Seurat's FindAllMarkers() function containing differential gene expression results
-#'     (must have columns: 'cluster', 'gene', and 'avg_log2FC'). The function will select the top genes
-#'     based on avg_log2FC for each cluster.
-#'   - A list where each element has a 'genes' field containing marker genes for a cluster.
-#'     This can be in one of these formats:
-#'     * Named with cluster IDs: list("0" = list(genes = c(...)), "1" = list(genes = c(...)))
-#'     * Named with cell type names: list(t_cells = list(genes = c(...)), b_cells = list(genes = c(...)))
-#'     * Unnamed list: list(list(genes = c(...)), list(genes = c(...)))
-#'   - For both input types, if cluster IDs are numeric and start from 1, they will be automatically
-#'     converted to 0-based indexing (e.g., cluster 1 becomes cluster 0) for consistency.
-#' @param tissue_name Optional input of tissue name
-#' @param models Vector of model names to participate in the discussion. Supported models:
-#'   - OpenAI: 'gpt-4o', 'gpt-4o-mini', 'gpt-4.1', 'gpt-4.1-mini', 'gpt-4.1-nano', 'gpt-4-turbo', 'gpt-3.5-turbo', 'o1', 'o1-mini', 'o1-preview', 'o1-pro'
-#'   - Anthropic: 'claude-opus-4-1-20250805', 'claude-sonnet-4-20250514', 'claude-opus-4-20250514', 'claude-3-7-sonnet-20250219', 'claude-3-5-sonnet-20241022',
-#'     'claude-3-5-haiku-20241022', 'claude-3-opus-20240229'
-#'   - DeepSeek: 'deepseek-chat', 'deepseek-r1', 'deepseek-r1-zero', 'deepseek-reasoner'
-#'   - Google: 'gemini-2.5-pro', 'gemini-2.5-flash', 'gemini-2.0-flash', 'gemini-2.0-flash-lite', 'gemini-1.5-pro-latest', 'gemini-1.5-flash-latest', 'gemini-1.5-flash-8b'
-#'   - Alibaba: 'qwen-max-2025-01-25', 'qwen3-72b'
-#'   - Stepfun: 'step-2-16k', 'step-2-mini', 'step-1-8k'
-#'   - Zhipu: 'glm-4-plus', 'glm-3-turbo'
-#'   - MiniMax: 'minimax-text-01'
-#'   - X.AI: 'grok-3-latest', 'grok-3', 'grok-3-fast', 'grok-3-fast-latest', 'grok-3-mini', 'grok-3-mini-latest', 'grok-3-mini-fast', 'grok-3-mini-fast-latest'
-#'   - OpenRouter: Provides access to models from multiple providers through a single API. Format: 'provider/model-name'
-#'     - OpenAI models: 'openai/gpt-4o', 'openai/gpt-4o-mini', 'openai/gpt-4-turbo', 'openai/gpt-4', 'openai/gpt-3.5-turbo'
-#'     - Anthropic models: 'anthropic/claude-opus-4.1', 'anthropic/claude-sonnet-4', 'anthropic/claude-opus-4', 'anthropic/claude-3.7-sonnet',
-#'       'anthropic/claude-3.5-sonnet', 'anthropic/claude-3.5-haiku', 'anthropic/claude-3-opus'
-#'     - Meta models: 'meta-llama/llama-3-70b-instruct', 'meta-llama/llama-3-8b-instruct', 'meta-llama/llama-2-70b-chat'
-#'     - Google models: 'google/gemini-2.5-pro', 'google/gemini-2.5-flash', 'google/gemini-2.0-flash', 'google/gemini-1.5-pro-latest', 'google/gemini-1.5-flash'
-#'     - Mistral models: 'mistralai/mistral-large', 'mistralai/mistral-medium', 'mistralai/mistral-small'
-#'     - Other models: 'microsoft/mai-ds-r1', 'perplexity/sonar-small-chat', 'cohere/command-r', 'deepseek/deepseek-chat', 'thudm/glm-z1-32b'
-#' @param api_keys Named list of API keys. Can be provided in two formats:
-#'   1. With provider names as keys: `list("openai" = "sk-...", "anthropic" = "sk-ant-...", "openrouter" = "sk-or-...")`
-#'   2. With model names as keys: `list("gpt-4o" = "sk-...", "claude-3-opus" = "sk-ant-...")`
+#' @param input Either a data frame from Seurat's FindAllMarkers() function containing 
+#'   differential gene expression results (must have columns: 'cluster', 'gene', 
+#'   and 'avg_log2FC'), or a list where each element has a 'genes' field containing 
+#'   marker genes for a cluster. Cluster IDs must be numeric starting from 0.
+#' @param tissue_name Character string specifying the tissue type for context-aware 
+#'   cell type annotation. If NULL, generic cell type annotation will be performed.
+#' @param models Character vector of model names to use for consensus annotation. 
+#'   Minimum 2 models required. Supports models from OpenAI, Anthropic, DeepSeek, 
+#'   Google, Alibaba, Stepfun, Zhipu, MiniMax, X.AI, and OpenRouter.
+#' @param api_keys Named list of API keys. Can use provider names as keys 
+#'   (e.g., "openai", "anthropic") or model names as keys (e.g., "gpt-4o").
+#' @param top_gene_count Integer specifying the number of top marker genes to use 
+#'   for annotation per cluster (default: 10).
+#' @param controversy_threshold Numeric value between 0 and 1 for consensus proportion 
+#'   threshold. Clusters below this threshold are considered controversial (default: 0.7).
+#' @param entropy_threshold Numeric value for entropy threshold. Higher entropy 
+#'   indicates more disagreement among models (default: 1.0).
+#' @param max_discussion_rounds Integer specifying maximum number of discussion rounds 
+#'   for controversial clusters (default: 3).
+#' @param consensus_check_model Character string specifying which model to use for 
+#'   consensus checking. If NULL, uses the first model from the models list.
+#' @param log_dir Character string specifying directory for log files (default: "logs").
+#' @param cache_dir Character string or NULL. Cache directory for storing results. 
+#'   NULL uses system cache, "local" uses current directory, "temp" uses temporary 
+#'   directory, or specify custom path.
+#' @param use_cache Logical indicating whether to use caching (default: TRUE).
+#' @param base_urls Named list or character string specifying custom API base URLs. 
+#'   Useful for proxies or alternative endpoints. If NULL, uses official endpoints.
+#' @param clusters_to_analyze Character or numeric vector specifying which clusters 
+#'   to analyze. If NULL (default), all clusters are analyzed.
+#' @param force_rerun Logical indicating whether to force rerun of all specified 
+#'   clusters, ignoring cache. Only affects controversial cluster discussions 
+#'   (default: FALSE).
 #'
-#'   The system first tries to find the API key using the provider name. If not found, it then tries using the model name.
-#'   Example:
-#'   ```r
-#'   api_keys <- list(
-#'     "openai" = Sys.getenv("OPENAI_API_KEY"),
-#'     "anthropic" = Sys.getenv("ANTHROPIC_API_KEY"),
-#'     "openrouter" = Sys.getenv("OPENROUTER_API_KEY"),
-#'     "claude-3-opus" = "sk-ant-api03-specific-key-for-opus"
-#'   )
-#'   ```
-#' @param top_gene_count Number of top differential genes to use
-#' @param controversy_threshold Consensus proportion threshold (default: 0.7). Clusters with consensus proportion below this value will be marked as controversial
-#' @param entropy_threshold Entropy threshold for identifying controversial clusters (default: 1.0)
-#' @param max_discussion_rounds Maximum number of discussion rounds for controversial clusters (default: 3)
-#' @param consensus_check_model Model to use for consensus checking
-#' @param log_dir Directory for storing logs
-#' @param cache_dir Directory for storing cache
-#' @param use_cache Whether to use cached results
-#' @param base_urls Optional custom base URLs for API endpoints. Can be:
-#'   - A single character string: Applied to all providers (e.g., "https://api.proxy.com/v1")
-#'   - A named list: Provider-specific URLs (e.g., list(openai = "https://openai-proxy.com/v1",
-#'     anthropic = "https://anthropic-proxy.com/v1")). This is useful for:
-#'     * Chinese users accessing international APIs through proxies
-#'     * Enterprise users with internal API gateways
-#'     * Development/testing with local or alternative endpoints
-#'   If NULL (default), uses official API endpoints for each provider.
-#' @param clusters_to_analyze Optional vector of cluster IDs to analyze. 
-#'   If NULL (default), all clusters in the input will be analyzed.
-#'   Must be character or numeric values that match the cluster IDs in your input.
-#'   Examples:
-#'   - For numeric clusters: c(0, 2, 5) or c("0", "2", "5")
-#'   - This is useful when you want to focus on specific clusters without filtering the input data
-#'   - Non-existent cluster IDs will be ignored with a warning
-#' @param force_rerun Logical. If TRUE, ignore cached results and force re-analysis 
-#'   of all specified clusters. Useful when you want to re-analyze clusters with 
-#'   different context or for subtype identification. Default is FALSE.
-#'   Note: This parameter only affects the discussion phase for controversial clusters.
-#' @return A list containing consensus results, logs, and annotations
+#' @return A list containing:
+#'   \itemize{
+#'     \item \code{voting_results}: Initial voting results from all models
+#'     \item \code{controversial_clusters}: Clusters identified as controversial
+#'     \item \code{discussion_results}: Detailed discussion results for controversial clusters
+#'     \item \code{final_consensus}: Final consensus annotations for all clusters
+#'   }
 #' @export
 interactive_consensus_annotation <- function(input,
                                            tissue_name = NULL,
@@ -777,7 +641,7 @@ interactive_consensus_annotation <- function(input,
                                            max_discussion_rounds = 3,
                                            consensus_check_model = NULL,
                                            log_dir = "logs",
-                                           cache_dir = "consensus_cache",
+                                           cache_dir = NULL,
                                            use_cache = TRUE,
                                            base_urls = NULL,
                                            clusters_to_analyze = NULL,
@@ -832,11 +696,14 @@ interactive_consensus_annotation <- function(input,
 
   # Initialize cache manager
   cache_manager <- CacheManager$new(cache_dir)
+  
+  # Get actual cache directory path (important!)
+  actual_cache_dir <- cache_manager$get_cache_dir()
 
-  # Log cache settings
+  # Log cache settings - use actual path
   if (use_cache && !force_rerun) {
-    cache_msg <- sprintf("Cache enabled. Using cache directory: %s", cache_dir)
-    log_info(cache_msg, list(cache_dir = cache_dir))
+    cache_msg <- sprintf("Cache enabled. Using cache directory: %s", actual_cache_dir)
+    log_info(cache_msg, list(cache_dir = actual_cache_dir))
     message(cache_msg)
   } else if (force_rerun) {
     log_info("Force rerun enabled, cache will be ignored for controversial clusters")

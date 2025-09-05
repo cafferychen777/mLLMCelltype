@@ -22,3 +22,5 @@ tests/testthat/logs/
 
 # Cache files
 tests/testthat/consensus_cache/
+/doc/
+/Meta/

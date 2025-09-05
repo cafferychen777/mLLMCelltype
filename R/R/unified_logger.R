@@ -34,12 +34,12 @@ UnifiedLogger <- R6::R6Class("UnifiedLogger",
     
     #' @description
     #' Initialize the unified logger
-    #' @param base_dir Base directory for logs (default: "logs")
-    #' @param level Logging level: DEBUG, INFO, WARN, ERROR (default: "INFO")
-    #' @param max_size Maximum log file size in MB (default: 10)
-    #' @param max_files Maximum number of log files to keep (default: 5)
-    #' @param console_output Whether to output to console (default: TRUE)
-    #' @param json_format Whether to use JSON format (default: TRUE)
+    #
+    #
+    #
+    #
+    #
+    #
     initialize = function(base_dir = "logs", level = "INFO", max_size = 10, 
                          max_files = 5, console_output = TRUE, json_format = TRUE) {
       self$log_dir <- base_dir
@@ -78,24 +78,24 @@ UnifiedLogger <- R6::R6Class("UnifiedLogger",
     
     #' @description
     #' Log a debug message
-    #' @param message Log message
-    #' @param context Additional context (optional)
+    #
+    #
     debug = function(message, context = NULL) {
       private$log_message("DEBUG", message, context)
     },
     
     #' @description
     #' Log an info message
-    #' @param message Log message
-    #' @param context Additional context (optional)
+    #
+    #
     info = function(message, context = NULL) {
       private$log_message("INFO", message, context)
     },
     
     #' @description
     #' Log a warning message
-    #' @param message Log message
-    #' @param context Additional context (optional)
+    #
+    #
     warn = function(message, context = NULL) {
       self$performance_stats$warnings <- self$performance_stats$warnings + 1
       private$log_message("WARN", message, context)
@@ -103,8 +103,8 @@ UnifiedLogger <- R6::R6Class("UnifiedLogger",
     
     #' @description
     #' Log an error message
-    #' @param message Log message
-    #' @param context Additional context (optional)
+    #
+    #
     error = function(message, context = NULL) {
       self$performance_stats$errors <- self$performance_stats$errors + 1
       private$log_message("ERROR", message, context)
@@ -112,11 +112,11 @@ UnifiedLogger <- R6::R6Class("UnifiedLogger",
     
     #' @description
     #' Log API call performance
-    #' @param provider API provider name
-    #' @param model Model name
-    #' @param duration Duration in seconds
-    #' @param success Whether the call was successful
-    #' @param tokens Number of tokens used (optional)
+    #
+    #
+    #
+    #
+    #
     log_api_call = function(provider, model, duration, success = TRUE, tokens = NULL) {
       self$performance_stats$api_calls <- self$performance_stats$api_calls + 1
       
@@ -138,12 +138,12 @@ UnifiedLogger <- R6::R6Class("UnifiedLogger",
     
     #' @description
     #' Log complete API request and response for debugging and audit
-    #' @param provider API provider name
-    #' @param model Model name
-    #' @param prompt_content The complete prompt sent to the API
-    #' @param response_content The complete response received from the API
-    #' @param request_metadata Additional request metadata (optional)
-    #' @param response_metadata Additional response metadata (optional)
+    #
+    #
+    #
+    #
+    #
+    #
     log_api_request_response = function(provider, model, prompt_content, response_content, 
                                       request_metadata = NULL, response_metadata = NULL) {
       # Skip during R CMD check
@@ -218,9 +218,9 @@ UnifiedLogger <- R6::R6Class("UnifiedLogger",
     
     #' @description
     #' Log cache operations
-    #' @param operation Operation type: "hit", "miss", "store", "clear"
-    #' @param key Cache key
-    #' @param size Size of cached data (optional)
+    #
+    #
+    #
     log_cache_operation = function(operation, key, size = NULL) {
       if (operation == "hit") {
         self$performance_stats$cache_hits <- self$performance_stats$cache_hits + 1
@@ -241,9 +241,9 @@ UnifiedLogger <- R6::R6Class("UnifiedLogger",
     
     #' @description
     #' Log cluster annotation progress
-    #' @param cluster_id Cluster identifier
-    #' @param stage Current stage
-    #' @param progress Progress information
+    #
+    #
+    #
     log_cluster_progress = function(cluster_id, stage, progress = NULL) {
       context <- list(
         cluster_id = cluster_id,
@@ -257,9 +257,9 @@ UnifiedLogger <- R6::R6Class("UnifiedLogger",
     
     #' @description
     #' Log detailed cluster discussion with complete model conversations
-    #' @param cluster_id Cluster identifier  
-    #' @param event_type Type of event (start, prediction, consensus, end)
-    #' @param data Event data
+    #
+    #
+    #
     log_discussion = function(cluster_id, event_type, data = NULL) {
       # Skip during R CMD check
       if (nzchar(Sys.getenv("_R_CHECK_PACKAGE_NAME_", ""))) {
@@ -335,7 +335,7 @@ UnifiedLogger <- R6::R6Class("UnifiedLogger",
     
     #' @description
     #' Get performance summary
-    #' @return List of performance statistics
+    #
     get_performance_summary = function() {
       session_duration <- as.numeric(difftime(Sys.time(), self$performance_stats$session_start, units = "secs"))
       
@@ -358,7 +358,7 @@ UnifiedLogger <- R6::R6Class("UnifiedLogger",
     
     #' @description
     #' Clean up old log files
-    #' @param force Force cleanup even if within file limits
+    #
     cleanup_logs = function(force = FALSE) {
       log_files <- list.files(self$log_dir, pattern = "^mllm_.*\\.log$", full.names = TRUE)
       
@@ -396,7 +396,7 @@ UnifiedLogger <- R6::R6Class("UnifiedLogger",
     
     #' @description
     #' Set logging level
-    #' @param level New logging level: DEBUG, INFO, WARN, ERROR
+    #
     set_level = function(level) {
       old_level <- self$log_level
       self$log_level <- toupper(level)
@@ -485,7 +485,7 @@ UnifiedLogger <- R6::R6Class("UnifiedLogger",
 )
 
 #' Get the global logger instance
-#' @return UnifiedLogger instance
+#
 #' @export
 get_logger <- function() {
   if (!exists(".mllm_logger", envir = .GlobalEnv) || is.null(.GlobalEnv$.mllm_logger)) {
@@ -495,9 +495,12 @@ get_logger <- function() {
 }
 
 #' Set global logger configuration
-#' @param level Logging level
-#' @param console_output Whether to output to console
-#' @param json_format Whether to use JSON format
+#'
+#' @param level Logging level: "DEBUG", "INFO", "WARN", or "ERROR". Default: "INFO"
+#' @param console_output Whether to enable console output. Default: TRUE
+#' @param json_format Whether to use JSON format for log messages. Default: TRUE
+#'
+#' @return Invisible logger object
 #' @export
 configure_logger <- function(level = "INFO", console_output = TRUE, json_format = TRUE) {
   logger <- get_logger()
@@ -509,8 +512,11 @@ configure_logger <- function(level = "INFO", console_output = TRUE, json_format 
 }
 
 #' Convenience functions for logging
-#' @param message Log message
-#' @param context Additional context (optional)
+#'
+#' @param message Log message string
+#' @param context Optional context information (list or character)
+#'
+#' @return Invisible NULL
 #' @name logging_functions
 NULL
 

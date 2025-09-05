@@ -11,24 +11,24 @@ DeepSeekProcessor <- R6::R6Class("DeepSeekProcessor",
   public = list(
     #' @description
     #' Initialize DeepSeek processor
-    #' @param base_url Optional custom base URL for DeepSeek API
+    #
     initialize = function(base_url = NULL) {
       super$initialize("deepseek", base_url)
     },
 
     #' @description
     #' Get default DeepSeek API URL
-    #' @return Default DeepSeek API endpoint URL
+    #
     get_default_api_url = function() {
       return("https://api.deepseek.com/v1/chat/completions")
     },
     
     #' @description
     #' Make API call to DeepSeek
-    #' @param chunk_content Content for this chunk
-    #' @param model Model identifier
-    #' @param api_key API key
-    #' @return httr response object
+    #
+    #
+    #
+    #
     make_api_call = function(chunk_content, model, api_key) {
       # Prepare request body
       body <- list(
@@ -83,9 +83,9 @@ DeepSeekProcessor <- R6::R6Class("DeepSeekProcessor",
     
     #' @description
     #' Extract response content from DeepSeek API response
-    #' @param response httr response object
-    #' @param model Model identifier
-    #' @return Extracted text content
+    #
+    #
+    #
     extract_response_content = function(response, model) {
       self$logger$debug("Parsing DeepSeek API response",
                        list(provider = self$provider_name, model = model))

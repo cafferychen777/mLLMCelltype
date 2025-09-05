@@ -45,15 +45,6 @@ Initialize the base API processor
 \if{html}{\out{<div class="r">}}\preformatted{BaseAPIProcessor$new(provider_name, base_url = NULL)}\if{html}{\out{</div>}}
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{provider_name}}{Name of the API provider (e.g., "openai", "anthropic")}
-
-\item{\code{base_url}}{Optional custom base URL for API endpoints}
-}
-\if{html}{\out{</div>}}
-}
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-BaseAPIProcessor-process_request"></a>}}
@@ -64,20 +55,6 @@ Main entry point for processing API requests
 \if{html}{\out{<div class="r">}}\preformatted{BaseAPIProcessor$process_request(prompt, model, api_key)}\if{html}{\out{</div>}}
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{prompt}}{Input prompt text}
-
-\item{\code{model}}{Model identifier}
-
-\item{\code{api_key}}{API key for authentication}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-Processed response as character vector
-}
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-BaseAPIProcessor-get_api_url"></a>}}
@@ -88,9 +65,6 @@ Get the API URL to use for requests
 \if{html}{\out{<div class="r">}}\preformatted{BaseAPIProcessor$get_api_url()}\if{html}{\out{</div>}}
 }
 
-\subsection{Returns}{
-API URL string
-}
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-BaseAPIProcessor-get_default_api_url"></a>}}
@@ -101,9 +75,6 @@ Abstract method to be implemented by subclasses for getting default API URL
 \if{html}{\out{<div class="r">}}\preformatted{BaseAPIProcessor$get_default_api_url()}\if{html}{\out{</div>}}
 }
 
-\subsection{Returns}{
-Default API URL string
-}
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-BaseAPIProcessor-make_api_call"></a>}}
@@ -114,43 +85,20 @@ Abstract method to be implemented by subclasses for making the actual API call
 \if{html}{\out{<div class="r">}}\preformatted{BaseAPIProcessor$make_api_call(chunk_content, model, api_key)}\if{html}{\out{</div>}}
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{chunk_content}}{Content for this chunk}
-
-\item{\code{model}}{Model identifier}
-
-\item{\code{api_key}}{API key}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-Raw API response
-}
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-BaseAPIProcessor-extract_response_content"></a>}}
 \if{latex}{\out{\hypertarget{method-BaseAPIProcessor-extract_response_content}{}}}
 \subsection{Method \code{extract_response_content()}}{
 Abstract method to be implemented by subclasses for extracting content from response
+Process input text into chunks
+Process all input chunks
+Process response content into lines
+Consolidate results from all chunks
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{BaseAPIProcessor$extract_response_content(response, model)}\if{html}{\out{</div>}}
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{response}}{Raw API response}
-
-\item{\code{model}}{Model identifier}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-Extracted text content
-Validate input parameters
-}
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-BaseAPIProcessor-clone"></a>}}

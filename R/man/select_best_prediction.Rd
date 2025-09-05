@@ -6,14 +6,6 @@
 \usage{
 select_best_prediction(consensus_result, valid_predictions)
 }
-\arguments{
-\item{consensus_result}{Consensus analysis result}
-
-\item{valid_predictions}{Valid predictions for the cluster}
-}
-\value{
-The best prediction
-}
 \description{
 Select the best prediction from consensus results
 }

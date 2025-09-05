@@ -14,9 +14,9 @@ QwenProcessor <- R6::R6Class("QwenProcessor",
 
     #' @description
     #' Test if an endpoint is accessible
-    #' @param url The endpoint URL to test
-    #' @param api_key API key for authentication
-    #' @return TRUE if accessible, FALSE otherwise
+    #
+    #
+    #
     test_endpoint = function(url, api_key) {
       tryCatch({
         # Simple test payload with correct Qwen format
@@ -54,14 +54,14 @@ QwenProcessor <- R6::R6Class("QwenProcessor",
   public = list(
     #' @description
     #' Initialize Qwen processor
-    #' @param base_url Optional custom base URL for Qwen API
+    #
     initialize = function(base_url = NULL) {
       super$initialize("qwen", base_url)
     },
 
     #' @description
     #' Get default Qwen API URL with intelligent endpoint selection
-    #' @return Default Qwen API endpoint URL
+    #
     #' @details Qwen has two API endpoints:
     #'   - International: https://dashscope-intl.aliyuncs.com/api/v1/services/aigc/text-generation/generation (preferred)
     #'   - Domestic (China): https://dashscope.aliyuncs.com/api/v1/services/aigc/text-generation/generation (fallback)
@@ -72,8 +72,8 @@ QwenProcessor <- R6::R6Class("QwenProcessor",
 
     #' @description
     #' Get working Qwen API URL with automatic endpoint detection
-    #' @param api_key API key for testing endpoints
-    #' @return Working Qwen API endpoint URL
+    #
+    #
     get_working_api_url = function(api_key) {
       # If we already found a working endpoint, use it
       if (!is.null(private$working_endpoint)) {
@@ -106,10 +106,10 @@ QwenProcessor <- R6::R6Class("QwenProcessor",
     
     #' @description
     #' Make API call to Qwen
-    #' @param chunk_content Content for this chunk
-    #' @param model Model identifier
-    #' @param api_key API key
-    #' @return httr response object
+    #
+    #
+    #
+    #
     make_api_call = function(chunk_content, model, api_key) {
       # Prepare request body with proper Qwen format
       body <- list(
@@ -172,9 +172,9 @@ QwenProcessor <- R6::R6Class("QwenProcessor",
     
     #' @description
     #' Extract response content from Qwen API response
-    #' @param response httr response object
-    #' @param model Model identifier
-    #' @return Extracted text content
+    #
+    #
+    #
     extract_response_content = function(response, model) {
       self$logger$debug("Parsing Qwen API response",
                        list(provider = self$provider_name, model = model))

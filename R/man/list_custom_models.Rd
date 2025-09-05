@@ -6,9 +6,6 @@
 \usage{
 list_custom_models()
 }
-\value{
-Character vector of model names
-}
 \description{
 Get list of registered custom models
 }

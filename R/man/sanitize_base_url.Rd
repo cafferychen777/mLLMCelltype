@@ -6,12 +6,6 @@
 \usage{
 sanitize_base_url(url)
 }
-\arguments{
-\item{url}{URL to sanitize}
-}
-\value{
-Sanitized URL
-}
 \description{
 Sanitize base URL
 }

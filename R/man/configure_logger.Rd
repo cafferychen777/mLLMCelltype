@@ -7,11 +7,14 @@
 configure_logger(level = "INFO", console_output = TRUE, json_format = TRUE)
 }
 \arguments{
-\item{level}{Logging level}
+\item{level}{Logging level: "DEBUG", "INFO", "WARN", or "ERROR". Default: "INFO"}
 
-\item{console_output}{Whether to output to console}
+\item{console_output}{Whether to enable console output. Default: TRUE}
 
-\item{json_format}{Whether to use JSON format}
+\item{json_format}{Whether to use JSON format for log messages. Default: TRUE}
+}
+\value{
+Invisible logger object
 }
 \description{
 Set global logger configuration

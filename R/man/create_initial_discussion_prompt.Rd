@@ -11,18 +11,6 @@ create_initial_discussion_prompt(
   initial_predictions
 )
 }
-\arguments{
-\item{cluster_id}{The ID of the cluster being analyzed}
-
-\item{cluster_genes}{The marker genes for the cluster}
-
-\item{tissue_name}{The name of the tissue (optional)}
-
-\item{initial_predictions}{A list of initial model predictions}
-}
-\value{
-A formatted prompt string for the initial discussion round
-}
 \description{
 Create prompt for the initial round of discussion
 }

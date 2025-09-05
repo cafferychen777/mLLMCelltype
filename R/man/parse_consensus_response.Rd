@@ -6,12 +6,6 @@
 \usage{
 parse_consensus_response(response)
 }
-\arguments{
-\item{response}{Character string response from model}
-}
-\value{
-List with consensus results
-}
 \description{
 Parse consensus response from model
 }

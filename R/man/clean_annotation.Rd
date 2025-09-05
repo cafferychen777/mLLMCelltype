@@ -6,12 +6,6 @@
 \usage{
 clean_annotation(annotation)
 }
-\arguments{
-\item{annotation}{The annotation text to clean}
-}
-\value{
-Cleaned annotation text
-}
 \description{
 Clean annotation text by removing prefixes and extra whitespace
 }

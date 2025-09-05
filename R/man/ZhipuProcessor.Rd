@@ -42,13 +42,6 @@ Initialize Zhipu processor
 \if{html}{\out{<div class="r">}}\preformatted{ZhipuProcessor$new(base_url = NULL)}\if{html}{\out{</div>}}
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{base_url}}{Optional custom base URL for Zhipu API}
-}
-\if{html}{\out{</div>}}
-}
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-ZhipuProcessor-get_default_api_url"></a>}}
@@ -59,9 +52,6 @@ Get default Zhipu API URL
 \if{html}{\out{<div class="r">}}\preformatted{ZhipuProcessor$get_default_api_url()}\if{html}{\out{</div>}}
 }
 
-\subsection{Returns}{
-Default Zhipu API endpoint URL
-}
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-ZhipuProcessor-make_api_call"></a>}}
@@ -72,20 +62,6 @@ Make API call to Zhipu
 \if{html}{\out{<div class="r">}}\preformatted{ZhipuProcessor$make_api_call(chunk_content, model, api_key)}\if{html}{\out{</div>}}
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{chunk_content}}{Content for this chunk}
-
-\item{\code{model}}{Model identifier}
-
-\item{\code{api_key}}{API key}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-httr response object
-}
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-ZhipuProcessor-extract_response_content"></a>}}
@@ -96,18 +72,6 @@ Extract response content from Zhipu API response
 \if{html}{\out{<div class="r">}}\preformatted{ZhipuProcessor$extract_response_content(response, model)}\if{html}{\out{</div>}}
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{response}}{httr response object}
-
-\item{\code{model}}{Model identifier}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-Extracted text content
-}
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-ZhipuProcessor-clone"></a>}}

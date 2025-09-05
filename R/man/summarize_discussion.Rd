@@ -6,18 +6,6 @@
 \usage{
 summarize_discussion(discussion_log, cluster_id, model, api_key)
 }
-\arguments{
-\item{discussion_log}{Discussion log for a cluster}
-
-\item{cluster_id}{Cluster identifier}
-
-\item{model}{Model to use for summary}
-
-\item{api_key}{API key for the model}
-}
-\value{
-Final cell type determination
-}
 \description{
 NOTE: This function is currently not in use. The consensus_annotation.R file
 now directly extracts the majority_prediction from the last round of discussion.

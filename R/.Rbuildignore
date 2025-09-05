@@ -16,6 +16,7 @@
 ^perfect_check\.log$
 ^mLLMCelltype\.Rcheck$
 ^mLLMCelltype.*\.tar\.gz$
+^\.\.Rcheck$
 ^logs$
 ^examples/logs$
 ^examples/cache$
@@ -30,3 +31,11 @@
 ^final_cran_check\.sh$
 ^\.Rhistory$
 ^\.RData$
+^\.mllmcelltype_cache$
+^consensus_cache$
+^detailed_check\.log$
+^index\.md$
+^examples$
+^Meta$
+^vignettes/\.gitignore$
+

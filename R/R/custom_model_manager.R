@@ -14,11 +14,11 @@ custom_models <- new.env(parent = emptyenv())
 
 #' Register a custom LLM provider
 #'
-#' @param provider_name Character string, unique identifier for the provider
-#' @param process_fn Function that processes prompts and returns responses.
-#'        Must accept parameters: prompt, model, api_key
+#' @param provider_name Unique name for the custom provider
+#' @param process_fn Function that processes LLM requests. Must accept parameters: prompt, model, api_key
 #' @param description Optional description of the provider
-#' @return Invisibly returns TRUE if registration is successful
+#'
+#' @return Invisible NULL
 #' @export
 #'
 #' @examples
@@ -74,10 +74,11 @@ register_custom_provider <- function(provider_name, process_fn,
 
 #' Register a custom model for a provider
 #'
-#' @param model_name Character string, unique identifier for the model
-#' @param provider_name Character string, name of the registered provider
-#' @param model_config List of model-specific configuration parameters
-#' @return Invisibly returns TRUE if registration is successful
+#' @param model_name Unique name for the custom model
+#' @param provider_name Name of the provider this model belongs to
+#' @param model_config List of configuration parameters for the model (e.g., temperature, max_tokens)
+#'
+#' @return Invisible TRUE on success
 #' @export
 #'
 #' @examples
@@ -158,14 +159,14 @@ process_custom <- function(prompt, model, api_key) {
 }
 
 #' Get list of registered custom providers
-#' @return Character vector of provider names
+#
 #' @export
 list_custom_providers <- function() {
   ls(envir = custom_providers)
 }
 
 #' Get list of registered custom models
-#' @return Character vector of model names
+#
 #' @export
 list_custom_models <- function() {
   ls(envir = custom_models)

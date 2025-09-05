@@ -13,18 +13,6 @@ identify_controversial_clusters(
   consensus_check_model = NULL
 )
 }
-\arguments{
-\item{input}{Either the differential gene table or a list of genes}
-
-\item{individual_predictions}{List of predictions from each model}
-
-\item{controversy_threshold}{Threshold for marking clusters as controversial}
-
-\item{entropy_threshold}{Entropy threshold for identifying controversial clusters}
-}
-\value{
-A list containing controversial clusters and consensus results
-}
 \description{
 Identify controversial clusters based on consensus analysis
 }

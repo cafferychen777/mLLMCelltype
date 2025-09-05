@@ -4,14 +4,14 @@
 #' including initial predictions from all models, uncertainty metrics, and final consensus
 #' for each controversial cluster.
 #' 
-#' @param results A list containing consensus annotation results with the following components:
+#
 #'   \itemize{
 #'     \item initial_results: A list containing individual_predictions, consensus_results, and controversial_clusters
 #'     \item final_annotations: A list of final cell type annotations for each cluster
 #'     \item controversial_clusters: A character vector of cluster IDs that were controversial
 #'     \item discussion_logs: A list of discussion logs for each controversial cluster
 #'   }
-#' @return None, prints summary to console
+#
 #' @keywords internal
 print_consensus_summary <- function(results) {
   # Print consensus building summary

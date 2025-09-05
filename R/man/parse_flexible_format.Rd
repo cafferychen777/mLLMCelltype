@@ -6,12 +6,6 @@
 \usage{
 parse_flexible_format(lines)
 }
-\arguments{
-\item{lines}{Character vector of all response lines}
-}
-\value{
-List with parsed values
-}
 \description{
 Parse flexible format consensus response
 }

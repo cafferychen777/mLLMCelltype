@@ -81,9 +81,7 @@ library(dplyr)
 #                           min.pct = 0.25,
 #                           logfc.threshold = 0.25)
 
-# Set up cache directory to speed up processing
-cache_dir <- "./mllmcelltype_cache"
-dir.create(cache_dir, showWarnings = FALSE, recursive = TRUE)
+# Cache will be automatically managed using system cache directory
 
 # Run LLMCelltype annotation with multiple LLM models
 consensus_results <- interactive_consensus_annotation(
@@ -103,7 +101,7 @@ consensus_results <- interactive_consensus_annotation(
   controversy_threshold = 1.0,
   entropy_threshold = 1.0,
   consensus_check_model = "claude-3-7-sonnet-20250219",  # Use a reliable model for consensus checking
-  cache_dir = cache_dir
+  cache_dir = NULL  # Uses default system cache directory
 )
 
 # Add annotations to Seurat object
@@ -179,7 +177,7 @@ single_model_results <- annotate_with_single_model(
   model = "claude-3-7-sonnet-20250219",
   api_key = Sys.getenv("ANTHROPIC_API_KEY"),
   top_gene_count = 10,
-  cache_dir = cache_dir
+  cache_dir = NULL  # Uses default system cache directory
 )
 
 # Add annotations to Seurat object
@@ -212,7 +210,7 @@ custom_consensus_results <- interactive_consensus_annotation(
   entropy_threshold = 0.7,            # Entropy threshold for controversy detection
   max_discussion_rounds = 2,          # Maximum rounds of discussion
   consensus_check_model = "claude-3-7-sonnet-20250219",  # Use a reliable model for consensus checking
-  cache_dir = cache_dir
+  cache_dir = NULL  # Uses default system cache directory
 )
 ```
 

@@ -5,8 +5,8 @@ utils::globalVariables(c("custom_models"))
 #'
 #' This function determines the appropriate provider (e.g., OpenAI, Anthropic, Google, OpenRouter) based on the model name.
 #'
-#' @param model Character string specifying the model name to check
-#' @return Character string with the provider name
+#
+#
 #' @details
 #' Supported providers and models include:
 #' \itemize{

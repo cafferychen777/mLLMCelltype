@@ -4,9 +4,9 @@
 #' It provides both individual predictions and a consensus analysis.
 #' 
 #' @note This function uses create_standardization_prompt from prompt_templates.R
-#' @param input Either the differential gene table returned by Seurat FindAllMarkers() function, or a list of genes.
-#' @param tissue_name Required. The tissue type or cell source (e.g., 'human PBMC', 'mouse brain', etc.).
-#' @param models Vector of model names to compare. Default includes one model from each provider.
+#
+#
+#
 #'   Supported models:
 #'   - OpenAI: 'gpt-4o', 'gpt-4o-mini', 'gpt-4.1', 'gpt-4.1-mini', 'gpt-4.1-nano', 'gpt-4-turbo', 'gpt-3.5-turbo', 'o1', 'o1-mini', 'o1-preview', 'o1-pro'
 #'   - Anthropic: 'claude-opus-4-1-20250805', 'claude-sonnet-4-20250514', 'claude-opus-4-20250514', 'claude-3-7-sonnet-20250219', 'claude-3-5-sonnet-20241022',
@@ -26,7 +26,7 @@
 #'     - Google models: 'google/gemini-2.5-pro', 'google/gemini-2.5-flash', 'google/gemini-2.0-flash', 'google/gemini-1.5-pro-latest', 'google/gemini-1.5-flash'
 #'     - Mistral models: 'mistralai/mistral-large', 'mistralai/mistral-medium', 'mistralai/mistral-small'
 #'     - Other models: 'microsoft/mai-ds-r1', 'perplexity/sonar-small-chat', 'cohere/command-r', 'deepseek/deepseek-chat', 'thudm/glm-z1-32b'
-#' @param api_keys Named list of API keys. Can be provided in two formats:
+#
 #'   1. With provider names as keys: `list("openai" = "sk-...", "anthropic" = "sk-ant-...", "openrouter" = "sk-or-...")`
 #'   2. With model names as keys: `list("gpt-4o" = "sk-...", "claude-3-opus" = "sk-ant-...")`
 #'   
@@ -40,9 +40,15 @@
 #'     "claude-3-opus" = "sk-ant-api03-specific-key-for-opus"
 #'   )
 #'   ```
-#' @param top_gene_count Number of top differential genes to be used if input is Seurat differential genes.
-#' @param consensus_threshold Minimum proportion of models that must agree for a consensus (default 0.5).
-#' @return A list containing individual predictions, consensus results, and agreement statistics.
+#'
+#' @param input Either a data frame from Seurat's FindAllMarkers() containing columns 'cluster', 'gene', and 'avg_log2FC', or a list with 'genes' field for each cluster
+#' @param tissue_name Tissue context (e.g., 'human PBMC', 'mouse brain') for more accurate annotations
+#' @param models Vector of model names to use for comparison. Default includes top models from each provider
+#' @param api_keys Named list of API keys for the models, with provider or model names as keys
+#' @param top_gene_count Number of top genes to use per cluster when input is from Seurat. Default: 10
+#' @param consensus_threshold Minimum agreement threshold for consensus (0-1). Default: 0.5
+#'
+#' @return List containing individual model predictions and consensus analysis
 #' @export
 #' @examples
 #' \dontrun{
@@ -242,13 +248,13 @@ compare_model_predictions <- function(input,
 #' This function takes predictions from multiple models and standardizes the cell type
 #' nomenclature to ensure consistent naming across different models' outputs.
 #' 
-#' @param predictions List of predictions from different models
-#' @param models Vector of model names that successfully completed predictions
-#' @param api_keys Named list of API keys. Can be provided in two formats:
+#
+#
+#
 #'   1. With provider names as keys: `list("openai" = "sk-...", "anthropic" = "sk-ant-...", "openrouter" = "sk-or-...")`
 #'   2. With model names as keys: `list("gpt-4o" = "sk-...", "claude-3-opus" = "sk-ant-...")`
-#' @param standardization_model Model to use for standardization (default: "claude-sonnet-4-20250514")
-#' @return List of standardized predictions with the same structure as the input
+#
+#
 #' @keywords internal
 standardize_cell_type_names <- function(predictions, 
                                        models, 

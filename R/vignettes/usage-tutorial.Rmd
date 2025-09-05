@@ -64,7 +64,7 @@ consensus_results <- interactive_consensus_annotation(
   max_discussion_rounds = 3,  # Maximum discussion rounds
   consensus_check_model = NULL,  # Model to use for consensus checking (see recommendations below)
   log_dir = "logs",     # Directory for logs
-  cache_dir = "consensus_cache",  # Directory for cache
+  cache_dir = NULL,  # Uses default system cache directory
   use_cache = TRUE      # Whether to use cache
 )
 ```
@@ -343,7 +343,7 @@ Based on our testing, we recommend the following free models:
 Some models may have limitations:
 
 - `deepseek/deepseek-chat-v3-0324:free`: May occasionally return empty results
-- `thudm/glm-z1-9b:free`: May return Chinese error messages ("非字符参数") when used for consensus checking
+- `thudm/glm-z1-9b:free`: May return localized error messages ("non-character parameter") when used for consensus checking
 
 These free models are accessed through OpenRouter and don't consume credits, but may have limitations compared to paid models. Use the `:free` suffix in the model name to access them.
 
@@ -586,12 +586,12 @@ If you encounter "No auth credentials found" errors with OpenRouter:
 - Ensure you're using the correct format for the model name (e.g., `provider/model-name:free`)
 - Try a different free model, as some models may have access restrictions
 
-### Chinese Error Messages
+### Non-English Model Error Messages
 
-If you see "非字符参数" (non-character parameter) errors:
+If you see "non-character parameter" errors:
 
-- This typically occurs when using Chinese models like `thudm/glm-z1-9b:free` for consensus checking
-- Switch to an English model like `meta-llama/llama-4-maverick:free` for consensus checking
+- This typically occurs when using non-English language models like `thudm/glm-z1-9b:free` for consensus checking
+- Switch to an English-optimized model like `meta-llama/llama-4-maverick:free` for consensus checking
 
 ### Empty Results
 

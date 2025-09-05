@@ -30,6 +30,17 @@
   
   # Display the message
   packageStartupMessage(msg)
+  
+  # Only show message when old cache is found
+  old_cache <- file.path(".", "consensus_cache")
+  if (dir.exists(old_cache)) {
+    packageStartupMessage(
+      "Note: Found old cache directory 'consensus_cache' in current directory.\n",
+      "mLLMCelltype now uses system cache by default. To clean up:\n",
+      "  unlink('consensus_cache', recursive = TRUE)\n",
+      "For cache info, use: mllmcelltype_cache_dir()"
+    )
+  }
 }
 
 #' Package load message

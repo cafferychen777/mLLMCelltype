@@ -43,13 +43,6 @@ Initialize Gemini processor
 \if{html}{\out{<div class="r">}}\preformatted{GeminiProcessor$new(base_url = NULL)}\if{html}{\out{</div>}}
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{base_url}}{Optional custom base URL for Gemini API}
-}
-\if{html}{\out{</div>}}
-}
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-GeminiProcessor-get_default_api_url"></a>}}
@@ -60,9 +53,6 @@ Get default Gemini API URL template
 \if{html}{\out{<div class="r">}}\preformatted{GeminiProcessor$get_default_api_url()}\if{html}{\out{</div>}}
 }
 
-\subsection{Returns}{
-Default Gemini API endpoint URL template
-}
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-GeminiProcessor-get_api_url_for_model"></a>}}
@@ -73,16 +63,6 @@ Get API URL for specific model
 \if{html}{\out{<div class="r">}}\preformatted{GeminiProcessor$get_api_url_for_model(model)}\if{html}{\out{</div>}}
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{model}}{Model identifier}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-Complete API URL for the model
-}
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-GeminiProcessor-make_api_call"></a>}}
@@ -93,20 +73,6 @@ Make API call to Gemini
 \if{html}{\out{<div class="r">}}\preformatted{GeminiProcessor$make_api_call(chunk_content, model, api_key)}\if{html}{\out{</div>}}
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{chunk_content}}{Content for this chunk}
-
-\item{\code{model}}{Model identifier}
-
-\item{\code{api_key}}{API key}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-httr response object
-}
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-GeminiProcessor-extract_response_content"></a>}}
@@ -117,18 +83,6 @@ Extract response content from Gemini API response
 \if{html}{\out{<div class="r">}}\preformatted{GeminiProcessor$extract_response_content(response, model)}\if{html}{\out{</div>}}
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{response}}{httr response object}
-
-\item{\code{model}}{Model identifier}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-Extracted text content
-}
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-GeminiProcessor-clone"></a>}}

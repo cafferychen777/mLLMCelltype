@@ -6,12 +6,6 @@
 \usage{
 create_standardization_prompt(all_cell_types)
 }
-\arguments{
-\item{all_cell_types}{A vector of cell type names to standardize}
-}
-\value{
-A formatted prompt string for cell type standardization
-}
 \description{
 Create prompt for standardizing cell type names
 }

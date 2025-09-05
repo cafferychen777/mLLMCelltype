@@ -6,18 +6,6 @@
 \usage{
 process_grok(prompt, model, api_key, base_url = NULL)
 }
-\arguments{
-\item{prompt}{Input prompt text}
-
-\item{model}{Model identifier}
-
-\item{api_key}{Grok API key}
-
-\item{base_url}{Optional custom base URL for Grok API}
-}
-\value{
-Processed response as character vector
-}
 \description{
 This function uses the new BaseAPIProcessor architecture for improved
 maintainability and consistent logging across all API providers.

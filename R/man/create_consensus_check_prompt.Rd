@@ -10,16 +10,6 @@ create_consensus_check_prompt(
   entropy_threshold = 1
 )
 }
-\arguments{
-\item{round_responses}{A vector of cell type predictions from different models}
-
-\item{controversy_threshold}{Threshold for consensus proportion (default: 2/3)}
-
-\item{entropy_threshold}{Threshold for entropy (default: 1.0)}
-}
-\value{
-A formatted prompt string for consensus checking
-}
 \description{
 Create prompt for checking consensus among model predictions
 }

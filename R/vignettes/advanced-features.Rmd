@@ -532,7 +532,7 @@ consensus_with_cache <- interactive_consensus_annotation(
   models = c("claude-3-7-sonnet-20250219", "gpt-4o"),
   api_keys = api_keys,
   use_cache = TRUE,  # Enable caching
-  cache_dir = "my_cache_directory"  # Specify cache directory
+  cache_dir = NULL  # Uses default system cache directory
 )
 
 # 2. Process clusters in batches
@@ -687,7 +687,7 @@ The `CacheManager` class helps optimize performance by caching consensus results
 
 ```{r}
 # Create a cache manager
-cache_manager <- CacheManager$new(cache_dir = "consensus_cache")
+cache_manager <- CacheManager$new(cache_dir = NULL)
 
 # Generate a cache key
 cache_key <- cache_manager$generate_key(
@@ -711,6 +711,21 @@ cache_stats <- cache_manager$get_cache_stats()
 
 # Clear cache (with confirmation)
 # cache_manager$clear_cache(confirm = TRUE)
+```
+
+### Cache Management
+
+mLLMCelltype provides convenient functions for managing cache directories:
+
+```{r}
+# Check cache location
+mllmcelltype_cache_dir()
+
+# Use local cache
+mllmcelltype_cache_dir("local")
+
+# Clear cache
+mllmcelltype_clear_cache()
 ```
 
 ## Next Steps

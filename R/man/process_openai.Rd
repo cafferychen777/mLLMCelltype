@@ -8,20 +8,6 @@ process_openai(prompt, model, api_key, base_url = NULL)
 
 process_openai(prompt, model, api_key, base_url = NULL)
 }
-\arguments{
-\item{prompt}{Input prompt text}
-
-\item{model}{Model identifier}
-
-\item{api_key}{OpenAI API key}
-
-\item{base_url}{Optional custom base URL for OpenAI API}
-}
-\value{
-Processed response as character vector
-
-Processed response as character vector
-}
 \description{
 Main function that creates an OpenAI processor and handles the request.
 This maintains backward compatibility with the existing API.

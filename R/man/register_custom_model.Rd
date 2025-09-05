@@ -7,14 +7,14 @@
 register_custom_model(model_name, provider_name, model_config = list())
 }
 \arguments{
-\item{model_name}{Character string, unique identifier for the model}
+\item{model_name}{Unique name for the custom model}
 
-\item{provider_name}{Character string, name of the registered provider}
+\item{provider_name}{Name of the provider this model belongs to}
 
-\item{model_config}{List of model-specific configuration parameters}
+\item{model_config}{List of configuration parameters for the model (e.g., temperature, max_tokens)}
 }
 \value{
-Invisibly returns TRUE if registration is successful
+Invisible TRUE on success
 }
 \description{
 Register a custom model for a provider

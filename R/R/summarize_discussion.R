@@ -4,11 +4,11 @@
 #' now directly extracts the majority_prediction from the last round of discussion.
 #' This function is kept for potential future use or reference.
 #'
-#' @param discussion_log Discussion log for a cluster
-#' @param cluster_id Cluster identifier
-#' @param model Model to use for summary
-#' @param api_key API key for the model
-#' @return Final cell type determination
+#
+#
+#
+#
+#
 #' @keywords internal
 summarize_discussion <- function(discussion_log, cluster_id, model, api_key) {
   # Check if discussion log is empty

@@ -6,14 +6,6 @@
 \usage{
 resolve_provider_base_url(provider, base_urls)
 }
-\arguments{
-\item{provider}{Provider name (e.g., "openai", "anthropic")}
-
-\item{base_urls}{User-provided base URLs (string or named list)}
-}
-\value{
-Resolved base URL or NULL
-}
 \description{
 This file contains utility functions for resolving and validating
 custom base URLs for different API providers.

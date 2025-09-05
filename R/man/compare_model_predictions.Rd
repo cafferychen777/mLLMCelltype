@@ -16,11 +16,27 @@ compare_model_predictions(
 )
 }
 \arguments{
-\item{input}{Either the differential gene table returned by Seurat FindAllMarkers() function, or a list of genes.}
+\item{input}{Either a data frame from Seurat's FindAllMarkers() containing columns 'cluster', 'gene', and 'avg_log2FC', or a list with 'genes' field for each cluster}
 
-\item{tissue_name}{Required. The tissue type or cell source (e.g., 'human PBMC', 'mouse brain', etc.).}
+\item{tissue_name}{Tissue context (e.g., 'human PBMC', 'mouse brain') for more accurate annotations}
 
-\item{models}{Vector of model names to compare. Default includes one model from each provider.
+\item{models}{Vector of model names to use for comparison. Default includes top models from each provider}
+
+\item{api_keys}{Named list of API keys for the models, with provider or model names as keys}
+
+\item{top_gene_count}{Number of top genes to use per cluster when input is from Seurat. Default: 10}
+
+\item{consensus_threshold}{Minimum agreement threshold for consensus (0-1). Default: 0.5}
+}
+\value{
+List containing individual model predictions and consensus analysis
+}
+\description{
+This function runs the same input through multiple models and compares their predictions.
+It provides both individual predictions and a consensus analysis.
+}
+\note{
+This function uses create_standardization_prompt from prompt_templates.R
 Supported models:
 \itemize{
 \item OpenAI: 'gpt-4o', 'gpt-4o-mini', 'gpt-4.1', 'gpt-4.1-mini', 'gpt-4.1-nano', 'gpt-4-turbo', 'gpt-3.5-turbo', 'o1', 'o1-mini', 'o1-preview', 'o1-pro'
@@ -43,9 +59,7 @@ Supported models:
 \item Mistral models: 'mistralai/mistral-large', 'mistralai/mistral-medium', 'mistralai/mistral-small'
 \item Other models: 'microsoft/mai-ds-r1', 'perplexity/sonar-small-chat', 'cohere/command-r', 'deepseek/deepseek-chat', 'thudm/glm-z1-32b'
 }
-}}
-
-\item{api_keys}{Named list of API keys. Can be provided in two formats:
+}
 \enumerate{
 \item With provider names as keys: \code{list("openai" = "sk-...", "anthropic" = "sk-ant-...", "openrouter" = "sk-or-...")}
 \item With model names as keys: \code{list("gpt-4o" = "sk-...", "claude-3-opus" = "sk-ant-...")}
@@ -60,21 +74,7 @@ Example:
   "openrouter" = Sys.getenv("OPENROUTER_API_KEY"),
   "claude-3-opus" = "sk-ant-api03-specific-key-for-opus"
 )
-}\if{html}{\out{</div>}}}
-
-\item{top_gene_count}{Number of top differential genes to be used if input is Seurat differential genes.}
-
-\item{consensus_threshold}{Minimum proportion of models that must agree for a consensus (default 0.5).}
-}
-\value{
-A list containing individual predictions, consensus results, and agreement statistics.
-}
-\description{
-This function runs the same input through multiple models and compares their predictions.
-It provides both individual predictions and a consensus analysis.
-}
-\note{
-This function uses create_standardization_prompt from prompt_templates.R
+}\if{html}{\out{</div>}}
 }
 \examples{
 \dontrun{

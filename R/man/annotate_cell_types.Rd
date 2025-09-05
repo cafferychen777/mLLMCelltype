@@ -15,7 +15,28 @@ annotate_cell_types(
 )
 }
 \arguments{
-\item{input}{One of the following:
+\item{input}{Either a data frame from Seurat's FindAllMarkers() containing columns 'cluster', 'gene', and 'avg_log2FC', or a list with 'genes' field for each cluster}
+
+\item{tissue_name}{Optional tissue context (e.g., 'human PBMC', 'mouse brain') for more accurate annotations}
+
+\item{model}{Model name to use. Default: 'gpt-4o'. See details for supported models}
+
+\item{api_key}{API key for the selected model provider. If NA, returns prompt only}
+
+\item{top_gene_count}{Number of top genes to use per cluster when input is from Seurat. Default: 10}
+
+\item{debug}{Logical indicating whether to enable debug output. Default: FALSE}
+
+\item{base_urls}{Optional base URLs for API endpoints. Can be a string or named list for custom endpoints}
+}
+\value{
+When api_key is provided: Vector of cell type annotations per cluster. When api_key is NA: The generated prompt string
+}
+\description{
+A comprehensive function for automated cell type annotation using multiple Large Language Models (LLMs).
+This function supports both Seurat's differential gene expression results and custom gene lists as input.
+It implements a sophisticated annotation pipeline that leverages state-of-the-art LLMs to identify
+cell types based on marker gene expression patterns.
 \itemize{
 \item A data frame from Seurat's FindAllMarkers() function containing differential gene expression results
 (must have columns: 'cluster', 'gene', and 'avg_log2FC'). The function will select the top genes
@@ -48,12 +69,9 @@ id_mapping <- data.frame(
 )
 markers$cluster <- id_mapping$numeric[match(markers$cluster, id_mapping$original)]
 }\if{html}{\out{</div>}}
-}}
+}
 
-\item{tissue_name}{Character string specifying the tissue type or cell source (e.g., 'human PBMC',
-'mouse brain'). This helps provide context for more accurate annotations.}
-
-\item{model}{Character string specifying the LLM model to use. Supported models:
+'mouse brain'). This helps provide context for more accurate annotations.
 \itemize{
 \item OpenAI: 'gpt-4o', 'gpt-4o-mini', 'gpt-4.1', 'gpt-4.1-mini', 'gpt-4.1-nano', 'gpt-4-turbo', 'gpt-3.5-turbo', 'o1', 'o1-mini', 'o1-preview', 'o1-pro'
 \item Anthropic: 'claude-opus-4-1-20250805', 'claude-sonnet-4-20250514', 'claude-opus-4-20250514', 'claude-3-7-sonnet-20250219', 'claude-3-5-sonnet-20241022',
@@ -74,12 +92,8 @@ markers$cluster <- id_mapping$numeric[match(markers$cluster, id_mapping$original
 \item Google models: 'google/gemini-2.5-pro', 'google/gemini-2.5-flash', 'google/gemini-2.0-flash', 'google/gemini-1.5-pro-latest', 'google/gemini-1.5-flash'
 \item Mistral models: 'mistralai/mistral-large', 'mistralai/mistral-medium', 'mistralai/mistral-small'
 \item Other models: 'microsoft/mai-ds-r1', 'perplexity/sonar-small-chat', 'cohere/command-r', 'deepseek/deepseek-chat', 'thudm/glm-z1-32b'
-}
-}}
-
-\item{api_key}{Character string containing the API key for the selected model.
 Each provider requires a specific API key format and authentication method:
-\itemize{
+}
 \item OpenAI: "sk-..." (obtain from OpenAI platform)
 \item Anthropic: "sk-ant-..." (obtain from Anthropic console)
 \item Google: A Google API key for Gemini models (obtain from Google AI)
@@ -110,38 +124,19 @@ result <- annotate_cell_types(input, tissue_name, model="claude-3-opus",
 }\if{html}{\out{</div>}}
 
 If NA, returns the generated prompt without making an API call, which is useful for
-reviewing the prompt before sending it to the API.}
-
-\item{top_gene_count}{Integer specifying the number of top marker genes to use per cluster.
-when input is from Seurat's FindAllMarkers(). Default: 10}
-
-\item{debug}{Logical. If TRUE, prints additional debugging information during execution.}
-
-\item{base_urls}{Optional custom base URLs for API endpoints. Can be:
+reviewing the prompt before sending it to the API.
+when input is from Seurat's FindAllMarkers(). Default: 10
 \itemize{
 \item A single character string: Applied to all providers (e.g., "https://api.proxy.com/v1")
 \item A named list: Provider-specific URLs (e.g., list(openai = "https://openai-proxy.com/v1",
 anthropic = "https://anthropic-proxy.com/v1")). This is useful for:
 \itemize{
-\item Chinese users accessing international APIs through proxies
+\item Users accessing international APIs through proxies
 \item Enterprise users with internal API gateways
 \item Development/testing with local or alternative endpoints
 If NULL (default), uses official API endpoints for each provider.
 }
-}}
 }
-\value{
-A character vector containing:
-\itemize{
-\item When api_key is provided: One cell type annotation per cluster, in the order of input clusters
-\item When api_key is NA: The generated prompt string that would be sent to the LLM
-}
-}
-\description{
-A comprehensive function for automated cell type annotation using multiple Large Language Models (LLMs).
-This function supports both Seurat's differential gene expression results and custom gene lists as input.
-It implements a sophisticated annotation pipeline that leverages state-of-the-art LLMs to identify
-cell types based on marker gene expression patterns.
 }
 \examples{
 # Example 1: Using custom gene lists, returning prompt only (no API call)

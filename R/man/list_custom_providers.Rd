@@ -6,9 +6,6 @@
 \usage{
 list_custom_providers()
 }
-\value{
-Character vector of provider names
-}
 \description{
 Get list of registered custom providers
 }

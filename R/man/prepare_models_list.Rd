@@ -6,12 +6,6 @@
 \usage{
 prepare_models_list(consensus_check_model = NULL)
 }
-\arguments{
-\item{consensus_check_model}{User-specified model (can be NULL)}
-}
-\value{
-Character vector of models in order of preference
-}
 \description{
 Prepare list of models to try for consensus checking
 }

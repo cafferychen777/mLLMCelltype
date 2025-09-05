@@ -6,16 +6,6 @@
 \usage{
 extract_labeled_value(lines, pattern, value_pattern)
 }
-\arguments{
-\item{lines}{Character vector of all response lines}
-
-\item{pattern}{Pattern to match the label}
-
-\item{value_pattern}{Pattern to extract the numeric value}
-}
-\value{
-Numeric value or NULL if not found
-}
 \description{
 Extract numeric value from line containing a label
 }

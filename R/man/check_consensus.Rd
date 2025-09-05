@@ -12,17 +12,6 @@ check_consensus(
   consensus_check_model = NULL
 )
 }
-\arguments{
-\item{round_responses}{A vector of model responses to check for consensus}
-
-\item{api_keys}{A list of API keys for different providers}
-
-\item{controversy_threshold}{Threshold for consensus proportion (default: 2/3)}
-
-\item{entropy_threshold}{Threshold for entropy (default: 1.0)}
-
-\item{consensus_check_model}{Model to use for consensus checking (default: NULL, will try available models in order)}
-}
 \description{
 Check if consensus is reached among models
 }

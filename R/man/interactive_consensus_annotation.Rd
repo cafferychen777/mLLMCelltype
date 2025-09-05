@@ -16,7 +16,7 @@ interactive_consensus_annotation(
   entropy_threshold = 1,
   max_discussion_rounds = 3,
   consensus_check_model = NULL,
-  log_dir = NULL,
+  log_dir = "logs",
   cache_dir = NULL,
   use_cache = TRUE,
   base_urls = NULL,
@@ -25,125 +25,64 @@ interactive_consensus_annotation(
 )
 }
 \arguments{
-\item{input}{One of the following:
-\itemize{
-\item A data frame from Seurat's FindAllMarkers() function containing differential gene expression results
-(must have columns: 'cluster', 'gene', and 'avg_log2FC'). The function will select the top genes
-based on avg_log2FC for each cluster.
-\item A list where each element has a 'genes' field containing marker genes for a cluster.
-This can be in one of these formats:
-\itemize{
-\item Named with cluster IDs: list("0" = list(genes = c(...)), "1" = list(genes = c(...)))
-\item Named with cell type names: list(t_cells = list(genes = c(...)), b_cells = list(genes = c(...)))
-\item Unnamed list: list(list(genes = c(...)), list(genes = c(...)))
-}
-\item For both input types, if cluster IDs are numeric and start from 1, they will be automatically
-converted to 0-based indexing (e.g., cluster 1 becomes cluster 0) for consistency.
-}}
+\item{input}{Either a data frame from Seurat's FindAllMarkers() function containing
+differential gene expression results (must have columns: 'cluster', 'gene',
+and 'avg_log2FC'), or a list where each element has a 'genes' field containing
+marker genes for a cluster. Cluster IDs must be numeric starting from 0.}
 
-\item{tissue_name}{Optional input of tissue name}
+\item{tissue_name}{Character string specifying the tissue type for context-aware
+cell type annotation. If NULL, generic cell type annotation will be performed.}
 
-\item{models}{Vector of model names to participate in the discussion. Supported models:
-\itemize{
-\item OpenAI: 'gpt-4o', 'gpt-4o-mini', 'gpt-4.1', 'gpt-4.1-mini', 'gpt-4.1-nano', 'gpt-4-turbo', 'gpt-3.5-turbo', 'o1', 'o1-mini', 'o1-preview', 'o1-pro'
-\item Anthropic: 'claude-opus-4-1-20250805', 'claude-sonnet-4-20250514', 'claude-opus-4-20250514', 'claude-3-7-sonnet-20250219', 'claude-3-5-sonnet-20241022',
-'claude-3-5-haiku-20241022', 'claude-3-opus-20240229'
-\item DeepSeek: 'deepseek-chat', 'deepseek-r1', 'deepseek-r1-zero', 'deepseek-reasoner'
-\item Google: 'gemini-2.5-pro', 'gemini-2.5-flash', 'gemini-2.0-flash', 'gemini-2.0-flash-lite', 'gemini-1.5-pro-latest', 'gemini-1.5-flash-latest', 'gemini-1.5-flash-8b'
-\item Alibaba: 'qwen-max-2025-01-25', 'qwen3-72b'
-\item Stepfun: 'step-2-16k', 'step-2-mini', 'step-1-8k'
-\item Zhipu: 'glm-4-plus', 'glm-3-turbo'
-\item MiniMax: 'minimax-text-01'
-\item X.AI: 'grok-3-latest', 'grok-3', 'grok-3-fast', 'grok-3-fast-latest', 'grok-3-mini', 'grok-3-mini-latest', 'grok-3-mini-fast', 'grok-3-mini-fast-latest'
-\item OpenRouter: Provides access to models from multiple providers through a single API. Format: 'provider/model-name'
-\itemize{
-\item OpenAI models: 'openai/gpt-4o', 'openai/gpt-4o-mini', 'openai/gpt-4-turbo', 'openai/gpt-4', 'openai/gpt-3.5-turbo'
-\item Anthropic models: 'anthropic/claude-opus-4.1', 'anthropic/claude-sonnet-4', 'anthropic/claude-opus-4', 'anthropic/claude-3.7-sonnet',
-'anthropic/claude-3.5-sonnet', 'anthropic/claude-3.5-haiku', 'anthropic/claude-3-opus'
-\item Meta models: 'meta-llama/llama-3-70b-instruct', 'meta-llama/llama-3-8b-instruct', 'meta-llama/llama-2-70b-chat'
-\item Google models: 'google/gemini-2.5-pro', 'google/gemini-2.5-flash', 'google/gemini-2.0-flash', 'google/gemini-1.5-pro-latest', 'google/gemini-1.5-flash'
-\item Mistral models: 'mistralai/mistral-large', 'mistralai/mistral-medium', 'mistralai/mistral-small'
-\item Other models: 'microsoft/mai-ds-r1', 'perplexity/sonar-small-chat', 'cohere/command-r', 'deepseek/deepseek-chat', 'thudm/glm-z1-32b'
-}
-}}
+\item{models}{Character vector of model names to use for consensus annotation.
+Minimum 2 models required. Supports models from OpenAI, Anthropic, DeepSeek,
+Google, Alibaba, Stepfun, Zhipu, MiniMax, X.AI, and OpenRouter.}
 
-\item{api_keys}{Named list of API keys. Can be provided in two formats:
-\enumerate{
-\item With provider names as keys: \code{list("openai" = "sk-...", "anthropic" = "sk-ant-...", "openrouter" = "sk-or-...")}
-\item With model names as keys: \code{list("gpt-4o" = "sk-...", "claude-3-opus" = "sk-ant-...")}
-}
+\item{api_keys}{Named list of API keys. Can use provider names as keys
+(e.g., "openai", "anthropic") or model names as keys (e.g., "gpt-4o").}
 
-The system first tries to find the API key using the provider name. If not found, it then tries using the model name.
-Example:
+\item{top_gene_count}{Integer specifying the number of top marker genes to use
+for annotation per cluster (default: 10).}
 
-\if{html}{\out{<div class="sourceCode r">}}\preformatted{api_keys <- list(
-  "openai" = Sys.getenv("OPENAI_API_KEY"),
-  "anthropic" = Sys.getenv("ANTHROPIC_API_KEY"),
-  "openrouter" = Sys.getenv("OPENROUTER_API_KEY"),
-  "claude-3-opus" = "sk-ant-api03-specific-key-for-opus"
-)
-}\if{html}{\out{</div>}}}
+\item{controversy_threshold}{Numeric value between 0 and 1 for consensus proportion
+threshold. Clusters below this threshold are considered controversial (default: 0.7).}
 
-\item{top_gene_count}{Number of top differential genes to use}
+\item{entropy_threshold}{Numeric value for entropy threshold. Higher entropy
+indicates more disagreement among models (default: 1.0).}
 
-\item{controversy_threshold}{Consensus proportion threshold (default: 0.7). Clusters with consensus proportion below this value will be marked as controversial}
+\item{max_discussion_rounds}{Integer specifying maximum number of discussion rounds
+for controversial clusters (default: 3).}
 
-\item{entropy_threshold}{Entropy threshold for identifying controversial clusters (default: 1.0)}
+\item{consensus_check_model}{Character string specifying which model to use for
+consensus checking. If NULL, uses the first model from the models list.}
 
-\item{max_discussion_rounds}{Maximum number of discussion rounds for controversial clusters (default: 3)}
+\item{log_dir}{Character string specifying directory for log files (default: "logs").}
 
-\item{consensus_check_model}{Model to use for consensus checking}
+\item{cache_dir}{Character string or NULL. Cache directory for storing results.
+NULL uses system cache, "local" uses current directory, "temp" uses temporary
+directory, or specify custom path.}
 
-\item{log_dir}{Directory for storing logs (defaults to tempdir())}
+\item{use_cache}{Logical indicating whether to use caching (default: TRUE).}
 
-\item{cache_dir}{Directory for storing cache (defaults to tempdir())}
+\item{base_urls}{Named list or character string specifying custom API base URLs.
+Useful for proxies or alternative endpoints. If NULL, uses official endpoints.}
 
-\item{use_cache}{Whether to use cached results}
+\item{clusters_to_analyze}{Character or numeric vector specifying which clusters
+to analyze. If NULL (default), all clusters are analyzed.}
 
-\item{base_urls}{Optional custom base URLs for API endpoints. Can be:
-\itemize{
-\item A single character string: Applied to all providers (e.g., "https://api.proxy.com/v1")
-\item A named list: Provider-specific URLs (e.g., list(openai = "https://openai-proxy.com/v1",
-anthropic = "https://anthropic-proxy.com/v1")). This is useful for:
-\itemize{
-\item Chinese users accessing international APIs through proxies
-\item Enterprise users with internal API gateways
-\item Development/testing with local or alternative endpoints
-If NULL (default), uses official API endpoints for each provider.
-}
-}}
-
-\item{clusters_to_analyze}{Optional vector of cluster IDs to analyze.
-If NULL (default), all clusters in the input will be analyzed.
-Must be character or numeric values that match the cluster IDs in your input.
-Examples:
-\itemize{
-\item For numeric clusters: c(0, 2, 5) or c("0", "2", "5")
-\item This is useful when you want to focus on specific clusters without filtering the input data
-\item Non-existent cluster IDs will be ignored with a warning
-}}
-
-\item{force_rerun}{Logical. If TRUE, ignore cached results and force re-analysis
-of all specified clusters. Useful when you want to re-analyze clusters with
-different context or for subtype identification. Default is FALSE.
-Note: This parameter only affects the discussion phase for controversial clusters.}
+\item{force_rerun}{Logical indicating whether to force rerun of all specified
+clusters, ignoring cache. Only affects controversial cluster discussions
+(default: FALSE).}
 }
 \value{
-A list containing consensus results, logs, and annotations
-
-A list containing consensus results, logs, and annotations
+A list containing:
+\itemize{
+\item \code{voting_results}: Initial voting results from all models
+\item \code{controversial_clusters}: Clusters identified as controversial
+\item \code{discussion_results}: Detailed discussion results for controversial clusters
+\item \code{final_consensus}: Final consensus annotations for all clusters
+}
 }
 \description{
-This function implements an interactive voting and discussion mechanism where multiple LLMs
-collaborate to reach a consensus on cell type annotations, particularly focusing on
-clusters with low agreement. The process includes:
-\enumerate{
-\item Initial voting by all LLMs
-\item Identification of controversial clusters
-\item Detailed discussion for controversial clusters
-\item Final summary by a designated LLM (default: Claude)
-}
-
 This function implements an interactive voting and discussion mechanism where multiple LLMs
 collaborate to reach a consensus on cell type annotations, particularly focusing on
 clusters with low agreement. The process includes:

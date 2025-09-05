@@ -9,7 +9,13 @@ Manages caching of consensus analysis results
 \section{Public fields}{
 \if{html}{\out{<div class="r6-fields">}}
 \describe{
-\item{\code{cache_dir}}{Directory to store cache files}
+\item{\code{cache_dir}}{Directory to store cache files. Options:
+\itemize{
+\item NULL (default): Uses system cache directory
+\item "local": Uses .mllmcelltype_cache in current directory
+\item "temp": Uses temporary directory
+\item Custom path: Any other string is used as directory path
+}}
 
 \item{\code{cache_version}}{Current cache version}
 }
@@ -19,6 +25,7 @@ Manages caching of consensus analysis results
 \subsection{Public methods}{
 \itemize{
 \item \href{#method-CacheManager-new}{\code{CacheManager$new()}}
+\item \href{#method-CacheManager-get_cache_dir}{\code{CacheManager$get_cache_dir()}}
 \item \href{#method-CacheManager-generate_key}{\code{CacheManager$generate_key()}}
 \item \href{#method-CacheManager-save_to_cache}{\code{CacheManager$save_to_cache()}}
 \item \href{#method-CacheManager-load_from_cache}{\code{CacheManager$load_from_cache()}}
@@ -34,17 +41,26 @@ Manages caching of consensus analysis results
 \if{latex}{\out{\hypertarget{method-CacheManager-new}{}}}
 \subsection{Method \code{new()}}{
 Initialize cache manager
+\itemize{
+\item NULL (default): Uses system cache directory via \code{tools::R_user_dir()}
+\item "local": Uses .mllmcelltype_cache in current directory
+\item "temp": Uses temporary directory (cleared on R restart)
+\item Custom path: Any other string is used as directory path
+}
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{CacheManager$new(cache_dir = "consensus_cache")}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{CacheManager$new(cache_dir = NULL)}\if{html}{\out{</div>}}
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{cache_dir}}{Directory to store cache files}
 }
-\if{html}{\out{</div>}}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-CacheManager-get_cache_dir"></a>}}
+\if{latex}{\out{\hypertarget{method-CacheManager-get_cache_dir}{}}}
+\subsection{Method \code{get_cache_dir()}}{
+Get actual cache directory path
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{CacheManager$get_cache_dir()}\if{html}{\out{</div>}}
 }
+
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-CacheManager-generate_key"></a>}}
@@ -55,20 +71,6 @@ Generate cache key from input parameters (improved version)
 \if{html}{\out{<div class="r">}}\preformatted{CacheManager$generate_key(input, models, cluster_id)}\if{html}{\out{</div>}}
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{input}}{Input data}
-
-\item{\code{models}}{Models used}
-
-\item{\code{cluster_id}}{Cluster ID}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-Cache key string
-}
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-CacheManager-save_to_cache"></a>}}
@@ -79,15 +81,6 @@ Save results to cache
 \if{html}{\out{<div class="r">}}\preformatted{CacheManager$save_to_cache(key, data)}\if{html}{\out{</div>}}
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{key}}{Cache key}
-
-\item{\code{data}}{Data to cache}
-}
-\if{html}{\out{</div>}}
-}
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-CacheManager-load_from_cache"></a>}}
@@ -98,16 +91,6 @@ Load results from cache
 \if{html}{\out{<div class="r">}}\preformatted{CacheManager$load_from_cache(key)}\if{html}{\out{</div>}}
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{key}}{Cache key}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-Cached data if exists, NULL otherwise
-}
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-CacheManager-has_cache"></a>}}
@@ -118,16 +101,6 @@ Check if results exist in cache
 \if{html}{\out{<div class="r">}}\preformatted{CacheManager$has_cache(key)}\if{html}{\out{</div>}}
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{key}}{Cache key}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-TRUE if cached results exist
-}
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-CacheManager-get_cache_stats"></a>}}
@@ -138,9 +111,6 @@ Get cache statistics
 \if{html}{\out{<div class="r">}}\preformatted{CacheManager$get_cache_stats()}\if{html}{\out{</div>}}
 }
 
-\subsection{Returns}{
-A list with cache statistics
-}
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-CacheManager-clear_cache"></a>}}
@@ -151,34 +121,20 @@ Clear all cache
 \if{html}{\out{<div class="r">}}\preformatted{CacheManager$clear_cache(confirm = FALSE)}\if{html}{\out{</div>}}
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{confirm}}{Boolean, if TRUE, will clear cache without confirmation}
-}
-\if{html}{\out{</div>}}
-}
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-CacheManager-validate_cache"></a>}}
 \if{latex}{\out{\hypertarget{method-CacheManager-validate_cache}{}}}
 \subsection{Method \code{validate_cache()}}{
 Validate cache content
+Extract genes from input in a standardized way
+Create stable hash from genes list
+Create stable hash from models list
+Create stable hash from cluster ID
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{CacheManager$validate_cache(key)}\if{html}{\out{</div>}}
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{key}}{Cache key}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-TRUE if cache is valid, FALSE otherwise
-Extract genes from input in a standardized way
-}
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-CacheManager-clone"></a>}}

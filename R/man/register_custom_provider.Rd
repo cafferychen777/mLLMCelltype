@@ -7,15 +7,14 @@
 register_custom_provider(provider_name, process_fn, description = NULL)
 }
 \arguments{
-\item{provider_name}{Character string, unique identifier for the provider}
+\item{provider_name}{Unique name for the custom provider}
 
-\item{process_fn}{Function that processes prompts and returns responses.
-Must accept parameters: prompt, model, api_key}
+\item{process_fn}{Function that processes LLM requests. Must accept parameters: prompt, model, api_key}
 
 \item{description}{Optional description of the provider}
 }
 \value{
-Invisibly returns TRUE if registration is successful
+Invisible NULL
 }
 \description{
 Register a custom LLM provider

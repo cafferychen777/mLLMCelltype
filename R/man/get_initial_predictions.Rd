@@ -13,22 +13,6 @@ get_initial_predictions(
   base_urls = NULL
 )
 }
-\arguments{
-\item{input}{Either the differential gene table or a list of genes}
-
-\item{tissue_name}{The tissue type or cell source}
-
-\item{models}{Vector of model names to use}
-
-\item{api_keys}{Named list of API keys}
-
-\item{top_gene_count}{Number of top differential genes to use}
-
-\item{base_urls}{Optional custom base URLs for API endpoints}
-}
-\value{
-A list containing individual predictions and successful models
-}
 \description{
 This function retrieves initial cell type predictions from all specified models.
 It is an internal helper function used by the interactive_consensus_annotation function.

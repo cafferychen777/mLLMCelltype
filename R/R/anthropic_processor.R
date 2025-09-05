@@ -11,24 +11,24 @@ AnthropicProcessor <- R6::R6Class("AnthropicProcessor",
   public = list(
     #' @description
     #' Initialize Anthropic processor
-    #' @param base_url Optional custom base URL for Anthropic API
+    #
     initialize = function(base_url = NULL) {
       super$initialize("anthropic", base_url)
     },
 
     #' @description
     #' Get default Anthropic API URL
-    #' @return Default Anthropic API endpoint URL
+    #
     get_default_api_url = function() {
       return("https://api.anthropic.com/v1/messages")
     },
     
     #' @description
     #' Make API call to Anthropic
-    #' @param chunk_content Content for this chunk
-    #' @param model Model identifier
-    #' @param api_key API key
-    #' @return httr response object
+    #
+    #
+    #
+    #
     make_api_call = function(chunk_content, model, api_key) {
       # Check for deprecated models that will be retired on July 21, 2025
       deprecated_models <- c("claude-2", "claude-2.0", "claude-2.1", "claude-3-sonnet", "claude-3-opus")
@@ -100,9 +100,9 @@ AnthropicProcessor <- R6::R6Class("AnthropicProcessor",
     
     #' @description
     #' Extract response content from Anthropic API response
-    #' @param response httr response object
-    #' @param model Model identifier
-    #' @return Extracted text content
+    #
+    #
+    #
     extract_response_content = function(response, model) {
       self$logger$debug("Parsing Anthropic API response",
                        list(provider = self$provider_name, model = model))

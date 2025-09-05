@@ -19,8 +19,8 @@ BaseAPIProcessor <- R6::R6Class("BaseAPIProcessor",
 
     #' @description
     #' Initialize the base API processor
-    #' @param provider_name Name of the API provider (e.g., "openai", "anthropic")
-    #' @param base_url Optional custom base URL for API endpoints
+    #
+    #
     initialize = function(provider_name, base_url = NULL) {
       self$provider_name <- provider_name
       self$base_url <- base_url
@@ -31,10 +31,10 @@ BaseAPIProcessor <- R6::R6Class("BaseAPIProcessor",
     
     #' @description
     #' Main entry point for processing API requests
-    #' @param prompt Input prompt text
-    #' @param model Model identifier
-    #' @param api_key API key for authentication
-    #' @return Processed response as character vector
+    #
+    #
+    #
+    #
     process_request = function(prompt, model, api_key) {
       start_time <- Sys.time()
       
@@ -71,7 +71,7 @@ BaseAPIProcessor <- R6::R6Class("BaseAPIProcessor",
 
     #' @description
     #' Get the API URL to use for requests
-    #' @return API URL string
+    #
     get_api_url = function() {
       if (!is.null(self$base_url)) {
         self$logger$debug("Using custom base URL",
@@ -83,36 +83,33 @@ BaseAPIProcessor <- R6::R6Class("BaseAPIProcessor",
 
     #' @description
     #' Abstract method to be implemented by subclasses for getting default API URL
-    #' @return Default API URL string
+    #
     get_default_api_url = function() {
       stop("get_default_api_url must be implemented by subclass")
     },
 
     #' @description
     #' Abstract method to be implemented by subclasses for making the actual API call
-    #' @param chunk_content Content for this chunk
-    #' @param model Model identifier
-    #' @param api_key API key
-    #' @return Raw API response
+    #
+    #
+    #
+    #
     make_api_call = function(chunk_content, model, api_key) {
       stop("make_api_call must be implemented by subclass")
     },
     
     #' @description
     #' Abstract method to be implemented by subclasses for extracting content from response
-    #' @param response Raw API response
-    #' @param model Model identifier
-    #' @return Extracted text content
+    #
+    #
+    #
     extract_response_content = function(response, model) {
       stop("extract_response_content must be implemented by subclass")
     }
   ),
   
   private = list(
-    #' Validate input parameters
-    #' @param prompt Input prompt
-    #' @param model Model identifier
-    #' @param api_key API key
+    # Validate input parameters
     validate_inputs = function(prompt, model, api_key) {
       if (is.null(api_key) || api_key == "") {
         self$logger$error(sprintf("%s API key is missing or empty", self$provider_name),
@@ -137,8 +134,8 @@ BaseAPIProcessor <- R6::R6Class("BaseAPIProcessor",
     },
     
     #' Process input text into chunks
-    #' @param prompt Input prompt text
-    #' @return List with input_lines and chunk_ids
+    #
+    #
     process_input = function(prompt) {
       input_lines <- strsplit(prompt, "\n")[[1]]
       cutnum <- 1  # Always use 1 chunk for consistency
@@ -162,10 +159,10 @@ BaseAPIProcessor <- R6::R6Class("BaseAPIProcessor",
     },
     
     #' Process all input chunks
-    #' @param input_chunks Processed input chunks
-    #' @param model Model identifier
-    #' @param api_key API key
-    #' @return List of results from all chunks
+    #
+    #
+    #
+    #
     process_chunks = function(input_chunks, model, api_key) {
       all_results <- sapply(1:input_chunks$chunk_count, function(i) {
         self$logger$debug("Processing chunk",
@@ -218,9 +215,9 @@ BaseAPIProcessor <- R6::R6Class("BaseAPIProcessor",
     },
     
     #' Process response content into lines
-    #' @param response_content Raw response content
-    #' @param model Model identifier
-    #' @return Processed response lines
+    #
+    #
+    #
     process_response_content = function(response_content, model) {
       if (!is.character(response_content)) {
         self$logger$error("Response content is not a character string",
@@ -248,8 +245,8 @@ BaseAPIProcessor <- R6::R6Class("BaseAPIProcessor",
     },
     
     #' Consolidate results from all chunks
-    #' @param all_results List of results from all chunks
-    #' @return Final consolidated result
+    #
+    #
     consolidate_results = function(all_results) {
       self$logger$info("All chunks processed, consolidating results",
                       list(provider = self$provider_name,

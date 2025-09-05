@@ -6,12 +6,6 @@
 \usage{
 normalize_annotation(annotation)
 }
-\arguments{
-\item{annotation}{The annotation string to normalize}
-}
-\value{
-Normalized annotation string
-}
 \description{
 Normalize annotation for comparison
 }

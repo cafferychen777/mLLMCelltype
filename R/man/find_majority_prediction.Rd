@@ -6,12 +6,6 @@
 \usage{
 find_majority_prediction(lines)
 }
-\arguments{
-\item{lines}{Character vector of response lines}
-}
-\value{
-Character string of majority prediction
-}
 \description{
 Find majority prediction from response lines
 }

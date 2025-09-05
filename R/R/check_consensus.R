@@ -1,7 +1,7 @@
 
 #' Normalize annotation for comparison
-#' @param annotation The annotation string to normalize
-#' @return Normalized annotation string
+#
+#
 #' @keywords internal
 normalize_annotation <- function(annotation) {
   # Convert to lowercase
@@ -24,8 +24,8 @@ normalize_annotation <- function(annotation) {
 }
 
 #' Calculate simple consensus without LLM
-#' @param round_responses Vector of model responses
-#' @return List with consensus_proportion, entropy, and majority_prediction
+#
+#
 #' @keywords internal
 calculate_simple_consensus <- function(round_responses) {
   # Normalize all annotations
@@ -86,8 +86,8 @@ calculate_simple_consensus <- function(round_responses) {
 )
 
 #' Prepare list of models to try for consensus checking
-#' @param consensus_check_model User-specified model (can be NULL)
-#' @return Character vector of models in order of preference
+#
+#
 #' @keywords internal
 prepare_models_list <- function(consensus_check_model = NULL) {
   models_to_try <- c()
@@ -114,8 +114,8 @@ prepare_models_list <- function(consensus_check_model = NULL) {
 }
 
 #' Parse standard 4-line consensus response format
-#' @param result_lines Character vector of 4 lines
-#' @return List with parsed values or NULL if not standard format
+#
+#
 #' @keywords internal
 parse_standard_format <- function(result_lines) {
   if (length(result_lines) != 4) return(NULL)
@@ -140,10 +140,10 @@ parse_standard_format <- function(result_lines) {
 }
 
 #' Extract numeric value from line containing a label
-#' @param lines Character vector of all response lines
-#' @param pattern Pattern to match the label
-#' @param value_pattern Pattern to extract the numeric value
-#' @return Numeric value or NULL if not found
+#
+#
+#
+#
 #' @keywords internal
 extract_labeled_value <- function(lines, pattern, value_pattern) {
   for (line in lines) {
@@ -167,8 +167,8 @@ extract_labeled_value <- function(lines, pattern, value_pattern) {
 }
 
 #' Find majority prediction from response lines
-#' @param lines Character vector of response lines
-#' @return Character string of majority prediction
+#
+#
 #' @keywords internal
 find_majority_prediction <- function(lines) {
   numeric_pattern <- .CONSENSUS_CONSTANTS$NUMERIC_PATTERNS$GENERAL_NUMERIC
@@ -194,8 +194,8 @@ find_majority_prediction <- function(lines) {
 }
 
 #' Parse flexible format consensus response
-#' @param lines Character vector of all response lines
-#' @return List with parsed values
+#
+#
 #' @keywords internal
 parse_flexible_format <- function(lines) {
   result <- list(
@@ -240,8 +240,8 @@ parse_flexible_format <- function(lines) {
 }
 
 #' Parse consensus response from model
-#' @param response Character string response from model
-#' @return List with consensus results
+#
+#
 #' @keywords internal
 parse_consensus_response <- function(response) {
   # Handle NULL or empty response
@@ -321,10 +321,10 @@ parse_consensus_response <- function(response) {
 }
 
 #' Execute consensus check with retry logic
-#' @param formatted_responses Formatted prompt for consensus check
-#' @param api_keys List of API keys
-#' @param models_to_try Character vector of models to attempt
-#' @return List with success flag and response
+#
+#
+#
+#
 #' @keywords internal
 execute_consensus_check <- function(formatted_responses, api_keys, models_to_try) {
   max_retries <- .CONSENSUS_CONSTANTS$MAX_RETRIES
@@ -391,11 +391,11 @@ execute_consensus_check <- function(formatted_responses, api_keys, models_to_try
 }
 
 #' Check if consensus is reached among models
-#' @param round_responses A vector of model responses to check for consensus
-#' @param api_keys A list of API keys for different providers
-#' @param controversy_threshold Threshold for consensus proportion (default: 2/3)
-#' @param entropy_threshold Threshold for entropy (default: 1.0)
-#' @param consensus_check_model Model to use for consensus checking (default: NULL, will try available models in order)
+#
+#
+#
+#
+#
 #' @note This function uses create_consensus_check_prompt from prompt_templates.R
 #' @importFrom utils write.table tail
 #' @keywords internal
