@@ -14,7 +14,7 @@ utils::globalVariables(c("custom_models"))
 #'   \item Anthropic: 'claude-opus-4-1-20250805', 'claude-opus-4-20250514', 'claude-sonnet-4-20250514', 'claude-3-7-sonnet-20250219', 'claude-3-5-sonnet-20241022', 'claude-3-5-haiku-20241022', 'claude-3-opus-20240229'
 #'   \item DeepSeek: 'deepseek-chat', 'deepseek-reasoner'
 #'   \item Google: 'gemini-2.5-pro', 'gemini-2.5-flash', 'gemini-2.0-flash', 'gemini-2.0-flash-lite', 'gemini-1.5-pro-latest', 'gemini-1.5-flash-latest', 'gemini-1.5-flash-8b'
-#'   \item Qwen: 'qwen-max-2025-01-25', 'qwen3-72b'
+#'   \item Qwen: 'qwen-max-2025-01-25', 'qwen-turbo', 'qwen-plus'
 #'   \item Stepfun: 'step-2-mini', 'step-2-16k', 'step-1-8k'
 #'   \item Zhipu: 'glm-4-plus', 'glm-3-turbo'
 #'   \item MiniMax: 'minimax-text-01'
@@ -166,9 +166,7 @@ get_provider <- function(model) {
     "qwen1.5-7b-chat",
     "qwen1.5-4b-chat",
     "qwen1.5-1.8b-chat",
-    "qwen1.5-0.5b-chat",
-    "qwen3-72b",
-    "qwq-32b-preview"
+    "qwen1.5-0.5b-chat"
   )
   stepfun_models <- c("step-2-mini", "step-2-16k", "step-1-8k")
   zhipu_models <- c(

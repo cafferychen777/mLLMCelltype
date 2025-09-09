@@ -190,7 +190,7 @@ QwenProcessor <- R6::R6Class("QwenProcessor",
                               model = model,
                               content_structure = names(content),
                               output_available = !is.null(content$output),
-                              text_available = if(!is.null(content$output)) !is.null(content$output$text) else FALSE))
+                              text_available = if (!is.null(content$output)) { !is.null(content$output$text) } else { FALSE }))
 
         stop("Unexpected response format from Qwen API")
       }
