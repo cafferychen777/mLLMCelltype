@@ -1,5 +1,17 @@
 # mLLMCelltype Changelog
 
+## 1.3.4 (2025-09-09)
+
+### Bug Fixes
+* Fixed critical NA handling issue in base_api_processor.R that caused "missing value where TRUE/FALSE needed" errors
+* Fixed similar NA handling issues in print_consensus_summary.R
+* Improved robustness of API key validation to handle NA, NULL, and empty string cases correctly
+
+### Improvements
+* Enhanced error handling for invalid API keys
+* Better support for OpenRouter API integration
+* Improved stability when processing consensus annotations
+
 ## 1.3.2 (2025-09-02) - CRAN Release
 
 ### Official CRAN Release

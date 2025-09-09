@@ -45,7 +45,7 @@ print_consensus_summary <- function(results) {
           prediction <- initial_predictions[[model]]
           
           # Handle empty or NA predictions
-          if (is.null(prediction) || is.na(prediction) || prediction == "") {
+          if (is.null(prediction) || is.na(prediction) || (is.character(prediction) && prediction == "")) {
             prediction <- "No prediction provided"
           }
           
@@ -81,7 +81,7 @@ print_consensus_summary <- function(results) {
           }
           
           # Handle empty or NA predictions
-          if (is.null(prediction) || is.na(prediction) || prediction == "") {
+          if (is.null(prediction) || is.na(prediction) || (is.character(prediction) && prediction == "")) {
             prediction <- "No prediction provided"
           }
           
@@ -171,7 +171,7 @@ print_consensus_summary <- function(results) {
               if (!is.null(pred)) {
                 if (!is.na(pred)) {
                   # Make sure to compare against the placeholder string too
-                  if (pred != "" && pred != "No prediction provided") { 
+                  if ((is.character(pred) && pred != "") && pred != "No prediction provided") { 
                      all_predictions[[model]] <- pred
                   }
                 }

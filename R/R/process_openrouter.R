@@ -11,11 +11,21 @@
 #' @keywords internal
 process_openrouter <- function(prompt, model, api_key, base_url = NULL) {
   # Source the required files with robust path resolution
-  script_dir <- if (exists("sys.frame") && !is.null(sys.frame(1)$ofile)) {
-    dirname(sys.frame(1)$ofile)
-  } else {
-    getwd()  # Fallback to current working directory
-  }
+  script_dir <- tryCatch({
+    if (exists("sys.frame") && !is.null(sys.frame(1)$ofile)) {
+      dirname(sys.frame(1)$ofile)
+    } else {
+      system.file("R", package = "mLLMCelltype")
+    }
+  }, error = function(e) {
+    # If in package context, use system.file
+    pkg_dir <- system.file("R", package = "mLLMCelltype")
+    if (pkg_dir != "") {
+      pkg_dir
+    } else {
+      getwd()  # Final fallback
+    }
+  })
 
   if (!exists("BaseAPIProcessor")) {
     source(file.path(script_dir, "base_api_processor.R"))

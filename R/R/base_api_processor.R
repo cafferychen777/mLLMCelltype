@@ -111,7 +111,7 @@ BaseAPIProcessor <- R6::R6Class("BaseAPIProcessor",
   private = list(
     # Validate input parameters
     validate_inputs = function(prompt, model, api_key) {
-      if (is.null(api_key) || api_key == "") {
+      if (is.null(api_key) || is.na(api_key) || (is.character(api_key) && api_key == "")) {
         self$logger$error(sprintf("%s API key is missing or empty", self$provider_name),
                          list(provider = self$provider_name))
         stop(sprintf("%s API key is required but not provided", self$provider_name))
