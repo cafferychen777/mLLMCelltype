@@ -190,8 +190,8 @@ results <- annotate_cell_types(
 4. **Recommended free models**:
    - `meta-llama/llama-4-maverick:free` - Meta Llama 4 Maverick (256K context)
    - `nvidia/llama-3.1-nemotron-ultra-253b-v1:free` - NVIDIA Nemotron Ultra 253B
-   - `deepseek/deepseek-chat-v3-0324:free` - DeepSeek Chat v3
-   - `deepseek/deepseek-r1:free` - Microsoft MAI-DS-R1
+   - `deepseek/deepseek-r1:free` - DeepSeek R1 (advanced reasoning)
+   - `meta-llama/llama-3.3-70b-instruct:free` - Meta Llama 3.3 70B
 
 Free models don't consume credits but may have limitations compared to paid models.
 

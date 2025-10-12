@@ -209,8 +209,8 @@ openrouter_api_key <- Sys.getenv("OPENROUTER_API_KEY")
 free_models <- c(
   "meta-llama/llama-4-maverick:free",                # Meta Llama 4 Maverick (free)
   "nvidia/llama-3.1-nemotron-ultra-253b-v1:free",    # NVIDIA Nemotron Ultra 253B (free)
-  "deepseek/deepseek-chat-v3-0324:free",             # DeepSeek Chat v3 (free)
-  "deepseek/deepseek-r1:free"                         # Microsoft MAI-DS-R1 (free)
+  "deepseek/deepseek-r1:free",             # DeepSeek R1 (free, advanced reasoning)
+  "meta-llama/llama-3.3-70b-instruct:free"          # Meta Llama 3.3 70B (free)
 )
 
 # Run annotation with free OpenRouter models
@@ -331,8 +331,7 @@ For users with limited API credits or budget constraints:
 
 - **Meta Llama 4 Maverick** (`meta-llama/llama-4-maverick:free`): Most reliable and fast, recommended for consensus checking
 - **NVIDIA Nemotron Ultra 253B** (`nvidia/llama-3.1-nemotron-ultra-253b-v1:free`): Good performance with consistent formatting
-- **Microsoft MAI-DS-R1** (`deepseek/deepseek-r1:free`): Reliable with good response time
-- **DeepSeek Chat v3** (`deepseek/deepseek-chat-v3-0324:free`): Free model with 163K context window (may occasionally return empty results)
+- **DeepSeek R1** (`deepseek/deepseek-r1:free`): Advanced reasoning model (free)
 
 Based on our testing, we recommend the following free models:
 
@@ -342,7 +341,7 @@ Based on our testing, we recommend the following free models:
 
 Some models may have limitations:
 
-- `deepseek/deepseek-chat-v3-0324:free`: May occasionally return empty results
+- `deepseek/deepseek-r1:free`: May occasionally return empty results
 - `thudm/glm-z1-9b:free`: May return localized error messages ("non-character parameter") when used for consensus checking
 
 These free models are accessed through OpenRouter and don't consume credits, but may have limitations compared to paid models. Use the `:free` suffix in the model name to access them.
@@ -598,7 +597,7 @@ If you see "non-character parameter" errors:
 If a model returns empty results:
 
 - Try increasing the timeout or retry with the same model
-- Some models like `deepseek/deepseek-chat-v3-0324:free` may occasionally return empty results
+- Some models like `deepseek/deepseek-r1:free` may occasionally return empty results
 - Switch to a more reliable model if the problem persists
 
 ## Next Steps
