@@ -477,8 +477,8 @@ time</li>
 <code>deepseek/deepseek-chat-v3-0324:free</code>: May occasionally
 return empty results</li>
 <li>
-<code>thudm/glm-z1-9b:free</code>: May return Chinese error messages
-(“非字符参数”) when used for consensus checking</li>
+<code>thudm/glm-z1-9b:free</code>: May return localized error messages
+(“non-character parameter”) when used for consensus checking</li>
 </ul>
 <p>These free models are accessed through OpenRouter and don’t consume
 credits, but may have limitations compared to paid models. Use the
@@ -748,11 +748,11 @@ restrictions</li>
 </ul>
 </div>
 <div class="section level4">
-<h4 id="chinese-error-messages">Chinese Error Messages<a class="anchor" aria-label="anchor" href="#chinese-error-messages"></a>
+<h4 id="non-english-model-error-messages">Non-English Model Error Messages<a class="anchor" aria-label="anchor" href="#non-english-model-error-messages"></a>
 </h4>
-<p>If you see “非字符参数” (non-character parameter) errors:</p>
+<p>If you see “non-character parameter” (non-character parameter) errors:</p>
 <ul>
-<li>This typically occurs when using Chinese models like
+<li>This typically occurs when using non-English language models like
 <code>thudm/glm-z1-9b:free</code> for consensus checking</li>
 <li>Switch to an English model like
 <code>meta-llama/llama-4-maverick:free</code> for consensus
