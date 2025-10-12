@@ -177,7 +177,7 @@ workflow to capture these hierarchical relationships.</p>
 <span><span class="va">high_level_results</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/annotate_cell_types.html">annotate_cell_types</a></span><span class="op">(</span></span>
 <span>  input <span class="op">=</span> <span class="va">marker_data</span>,</span>
 <span>  tissue_name <span class="op">=</span> <span class="st">"human PBMC"</span>,</span>
-<span>  model <span class="op">=</span> <span class="st">"claude-3-7-sonnet-20250219"</span>,</span>
+<span>  model <span class="op">=</span> <span class="st">"claude-sonnet-4-5-20250929"</span>,</span>
 <span>  api_key <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Sys.getenv.html" class="external-link">Sys.getenv</a></span><span class="op">(</span><span class="st">"ANTHROPIC_API_KEY"</span><span class="op">)</span>,</span>
 <span>  top_gene_count <span class="op">=</span> <span class="fl">10</span></span>
 <span><span class="op">)</span></span>
@@ -199,7 +199,7 @@ workflow to capture these hierarchical relationships.</p>
 <span><span class="va">t_cell_subtypes</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/annotate_cell_types.html">annotate_cell_types</a></span><span class="op">(</span></span>
 <span>  input <span class="op">=</span> <span class="va">t_cell_markers</span>,</span>
 <span>  tissue_name <span class="op">=</span> <span class="st">"human PBMC T cells"</span>,</span>
-<span>  model <span class="op">=</span> <span class="st">"claude-3-7-sonnet-20250219"</span>,</span>
+<span>  model <span class="op">=</span> <span class="st">"claude-sonnet-4-5-20250929"</span>,</span>
 <span>  api_key <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Sys.getenv.html" class="external-link">Sys.getenv</a></span><span class="op">(</span><span class="st">"ANTHROPIC_API_KEY"</span><span class="op">)</span>,</span>
 <span>  top_gene_count <span class="op">=</span> <span class="fl">10</span></span>
 <span><span class="op">)</span></span>
@@ -264,7 +264,7 @@ strongest signals:</p>
 <span><span class="va">results_fewer_genes</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/annotate_cell_types.html">annotate_cell_types</a></span><span class="op">(</span></span>
 <span>  input <span class="op">=</span> <span class="va">marker_data</span>,  <span class="co"># Your marker gene data</span></span>
 <span>  tissue_name <span class="op">=</span> <span class="st">"human PBMC"</span>,</span>
-<span>  model <span class="op">=</span> <span class="st">"claude-3-7-sonnet-20250219"</span>,</span>
+<span>  model <span class="op">=</span> <span class="st">"claude-sonnet-4-5-20250929"</span>,</span>
 <span>  api_key <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Sys.getenv.html" class="external-link">Sys.getenv</a></span><span class="op">(</span><span class="st">"ANTHROPIC_API_KEY"</span><span class="op">)</span>,</span>
 <span>  top_gene_count <span class="op">=</span> <span class="fl">5</span>  <span class="co"># Use fewer genes to focus on strongest signals</span></span>
 <span><span class="op">)</span></span></code></pre></div>
@@ -283,7 +283,7 @@ annotation quality:</p>
 <span><span class="va">results_filtered</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/annotate_cell_types.html">annotate_cell_types</a></span><span class="op">(</span></span>
 <span>  input <span class="op">=</span> <span class="va">filtered_markers</span>,</span>
 <span>  tissue_name <span class="op">=</span> <span class="st">"human PBMC"</span>,</span>
-<span>  model <span class="op">=</span> <span class="st">"claude-3-7-sonnet-20250219"</span>,</span>
+<span>  model <span class="op">=</span> <span class="st">"claude-sonnet-4-5-20250929"</span>,</span>
 <span>  api_key <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Sys.getenv.html" class="external-link">Sys.getenv</a></span><span class="op">(</span><span class="st">"ANTHROPIC_API_KEY"</span><span class="op">)</span></span>
 <span><span class="op">)</span></span></code></pre></div>
 </div>
@@ -302,8 +302,8 @@ predictions from multiple models:</p>
 <span></span>
 <span><span class="co"># Define multiple models to use</span></span>
 <span><span class="va">models</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
-<span>  <span class="st">"claude-3-7-sonnet-20250219"</span>,</span>
-<span>  <span class="st">"gpt-4o"</span>,</span>
+<span>  <span class="st">"claude-sonnet-4-5-20250929"</span>,</span>
+<span>  <span class="st">"gpt-5"</span>,</span>
 <span>  <span class="st">"gemini-1.5-pro"</span></span>
 <span><span class="op">)</span></span>
 <span></span>
@@ -315,7 +315,7 @@ predictions from multiple models:</p>
 <span>  api_keys <span class="op">=</span> <span class="va">api_keys</span>,</span>
 <span>  controversy_threshold <span class="op">=</span> <span class="fl">0.7</span>,</span>
 <span>  entropy_threshold <span class="op">=</span> <span class="fl">1.0</span>,</span>
-<span>  consensus_check_model <span class="op">=</span> <span class="st">"claude-3-7-sonnet-20250219"</span></span>
+<span>  consensus_check_model <span class="op">=</span> <span class="st">"claude-sonnet-4-5-20250929"</span></span>
 <span><span class="op">)</span></span></code></pre></div>
 </div>
 </div>
@@ -332,7 +332,7 @@ threshold<a class="anchor" aria-label="anchor" href="#use-the-consensus-approach
 <span><span class="va">batch_consensus</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/interactive_consensus_annotation.html">interactive_consensus_annotation</a></span><span class="op">(</span></span>
 <span>  input <span class="op">=</span> <span class="va">marker_data</span>,  <span class="co"># Your marker gene data with batch effects</span></span>
 <span>  tissue_name <span class="op">=</span> <span class="st">"mouse brain"</span>,</span>
-<span>  models <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"claude-3-7-sonnet-20250219"</span>, <span class="st">"gpt-4o"</span>, <span class="st">"gemini-1.5-pro"</span><span class="op">)</span>,</span>
+<span>  models <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"claude-sonnet-4-5-20250929"</span>, <span class="st">"gpt-5"</span>, <span class="st">"gemini-1.5-pro"</span><span class="op">)</span>,</span>
 <span>  api_keys <span class="op">=</span> <span class="va">api_keys</span>,</span>
 <span>  controversy_threshold <span class="op">=</span> <span class="fl">0.4</span>,  <span class="co"># Lower threshold to discuss more clusters</span></span>
 <span>  entropy_threshold <span class="op">=</span> <span class="fl">0.8</span>  <span class="co"># Lower entropy threshold</span></span>
@@ -346,7 +346,7 @@ threshold<a class="anchor" aria-label="anchor" href="#use-the-consensus-approach
 <span><span class="va">batch_aware_results</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/annotate_cell_types.html">annotate_cell_types</a></span><span class="op">(</span></span>
 <span>  input <span class="op">=</span> <span class="va">marker_data</span>,  <span class="co"># Your marker gene data with batch effects</span></span>
 <span>  tissue_name <span class="op">=</span> <span class="st">"mouse brain with technical batch effects"</span>,  <span class="co"># Include batch context</span></span>
-<span>  model <span class="op">=</span> <span class="st">"claude-3-7-sonnet-20250219"</span>,</span>
+<span>  model <span class="op">=</span> <span class="st">"claude-sonnet-4-5-20250929"</span>,</span>
 <span>  api_key <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Sys.getenv.html" class="external-link">Sys.getenv</a></span><span class="op">(</span><span class="st">"ANTHROPIC_API_KEY"</span><span class="op">)</span></span>
 <span><span class="op">)</span></span></code></pre></div>
 </div>
@@ -366,7 +366,7 @@ provides important context to the LLM:</p>
 <span><span class="va">basic_results</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/annotate_cell_types.html">annotate_cell_types</a></span><span class="op">(</span></span>
 <span>  input <span class="op">=</span> <span class="va">marker_data</span>,</span>
 <span>  tissue_name <span class="op">=</span> <span class="st">"human sample"</span>,  <span class="co"># Generic context</span></span>
-<span>  model <span class="op">=</span> <span class="st">"claude-3-7-sonnet-20250219"</span>,</span>
+<span>  model <span class="op">=</span> <span class="st">"claude-sonnet-4-5-20250929"</span>,</span>
 <span>  api_key <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Sys.getenv.html" class="external-link">Sys.getenv</a></span><span class="op">(</span><span class="st">"ANTHROPIC_API_KEY"</span><span class="op">)</span></span>
 <span><span class="op">)</span></span>
 <span></span>
@@ -374,7 +374,7 @@ provides important context to the LLM:</p>
 <span><span class="va">specific_results</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/annotate_cell_types.html">annotate_cell_types</a></span><span class="op">(</span></span>
 <span>  input <span class="op">=</span> <span class="va">marker_data</span>,</span>
 <span>  tissue_name <span class="op">=</span> <span class="st">"human fetal liver at 20 weeks gestation"</span>,  <span class="co"># Detailed context</span></span>
-<span>  model <span class="op">=</span> <span class="st">"claude-3-7-sonnet-20250219"</span>,</span>
+<span>  model <span class="op">=</span> <span class="st">"claude-sonnet-4-5-20250929"</span>,</span>
 <span>  api_key <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Sys.getenv.html" class="external-link">Sys.getenv</a></span><span class="op">(</span><span class="st">"ANTHROPIC_API_KEY"</span><span class="op">)</span></span>
 <span><span class="op">)</span></span></code></pre></div>
 </div>
@@ -401,7 +401,7 @@ prompt directly:</p>
 <span><span class="co"># Use the modified prompt directly</span></span>
 <span><span class="va">custom_results</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_model_response.html">get_model_response</a></span><span class="op">(</span></span>
 <span>  prompt <span class="op">=</span> <span class="va">modified_prompt</span>,</span>
-<span>  model <span class="op">=</span> <span class="st">"claude-3-7-sonnet-20250219"</span>,</span>
+<span>  model <span class="op">=</span> <span class="st">"claude-sonnet-4-5-20250929"</span>,</span>
 <span>  api_key <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Sys.getenv.html" class="external-link">Sys.getenv</a></span><span class="op">(</span><span class="st">"ANTHROPIC_API_KEY"</span><span class="op">)</span></span>
 <span><span class="op">)</span></span></code></pre></div>
 </div>
@@ -421,7 +421,7 @@ with other R packages and resources:</p>
 <span><span class="va">annotations</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/annotate_cell_types.html">annotate_cell_types</a></span><span class="op">(</span></span>
 <span>  input <span class="op">=</span> <span class="va">marker_data</span>,</span>
 <span>  tissue_name <span class="op">=</span> <span class="st">"human PBMC"</span>,</span>
-<span>  model <span class="op">=</span> <span class="st">"claude-3-7-sonnet-20250219"</span>,</span>
+<span>  model <span class="op">=</span> <span class="st">"claude-sonnet-4-5-20250929"</span>,</span>
 <span>  api_key <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Sys.getenv.html" class="external-link">Sys.getenv</a></span><span class="op">(</span><span class="st">"ANTHROPIC_API_KEY"</span><span class="op">)</span></span>
 <span><span class="op">)</span></span>
 <span></span>
@@ -514,11 +514,11 @@ dataset:</p>
 <span><span class="va">consensus_results</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/interactive_consensus_annotation.html">interactive_consensus_annotation</a></span><span class="op">(</span></span>
 <span>  input <span class="op">=</span> <span class="va">pbmc_markers</span>,</span>
 <span>  tissue_name <span class="op">=</span> <span class="st">"human PBMC"</span>,</span>
-<span>  models <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"claude-3-7-sonnet-20250219"</span>, <span class="st">"gpt-4o"</span>, <span class="st">"gemini-1.5-pro"</span><span class="op">)</span>,</span>
+<span>  models <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"claude-sonnet-4-5-20250929"</span>, <span class="st">"gpt-5"</span>, <span class="st">"gemini-1.5-pro"</span><span class="op">)</span>,</span>
 <span>  api_keys <span class="op">=</span> <span class="va">api_keys</span>,</span>
 <span>  controversy_threshold <span class="op">=</span> <span class="fl">0.7</span>,</span>
 <span>  entropy_threshold <span class="op">=</span> <span class="fl">1.0</span>,</span>
-<span>  consensus_check_model <span class="op">=</span> <span class="st">"claude-3-7-sonnet-20250219"</span></span>
+<span>  consensus_check_model <span class="op">=</span> <span class="st">"claude-sonnet-4-5-20250929"</span></span>
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Add results to Seurat object</span></span>
@@ -545,7 +545,7 @@ adjust parameters to improve detection:</p>
 <span><span class="va">rare_cell_annotation</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/annotate_cell_types.html">annotate_cell_types</a></span><span class="op">(</span></span>
 <span>  input <span class="op">=</span> <span class="va">marker_data</span>,  <span class="co"># Your marker gene data</span></span>
 <span>  tissue_name <span class="op">=</span> <span class="st">"human bone marrow"</span>,</span>
-<span>  model <span class="op">=</span> <span class="st">"claude-3-7-sonnet-20250219"</span>,</span>
+<span>  model <span class="op">=</span> <span class="st">"claude-sonnet-4-5-20250929"</span>,</span>
 <span>  api_key <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Sys.getenv.html" class="external-link">Sys.getenv</a></span><span class="op">(</span><span class="st">"ANTHROPIC_API_KEY"</span><span class="op">)</span>,</span>
 <span>  top_gene_count <span class="op">=</span> <span class="fl">20</span>  <span class="co"># Use more genes for rare cell types</span></span>
 <span><span class="op">)</span></span>
@@ -554,18 +554,18 @@ adjust parameters to improve detection:</p>
 <span><span class="va">rare_cell_consensus</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/interactive_consensus_annotation.html">interactive_consensus_annotation</a></span><span class="op">(</span></span>
 <span>  input <span class="op">=</span> <span class="va">marker_data</span>,  <span class="co"># Your marker gene data</span></span>
 <span>  tissue_name <span class="op">=</span> <span class="st">"human bone marrow"</span>,</span>
-<span>  models <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"claude-3-7-sonnet-20250219"</span>, <span class="st">"gpt-4o"</span>, <span class="st">"gemini-1.5-pro"</span><span class="op">)</span>,</span>
+<span>  models <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"claude-sonnet-4-5-20250929"</span>, <span class="st">"gpt-5"</span>, <span class="st">"gemini-1.5-pro"</span><span class="op">)</span>,</span>
 <span>  api_keys <span class="op">=</span> <span class="va">api_keys</span>,</span>
 <span>  controversy_threshold <span class="op">=</span> <span class="fl">0.4</span>,  <span class="co"># Lower threshold to discuss more clusters</span></span>
 <span>  entropy_threshold <span class="op">=</span> <span class="fl">0.8</span>,  <span class="co"># Lower entropy threshold</span></span>
-<span>  consensus_check_model <span class="op">=</span> <span class="st">"claude-3-7-sonnet-20250219"</span></span>
+<span>  consensus_check_model <span class="op">=</span> <span class="st">"claude-sonnet-4-5-20250929"</span></span>
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># 3. Provide more specific tissue context</span></span>
 <span><span class="va">specific_annotation</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/annotate_cell_types.html">annotate_cell_types</a></span><span class="op">(</span></span>
 <span>  input <span class="op">=</span> <span class="va">marker_data</span>,  <span class="co"># Your marker gene data</span></span>
 <span>  tissue_name <span class="op">=</span> <span class="st">"human bone marrow with expected rare plasma cells and basophils"</span>,</span>
-<span>  model <span class="op">=</span> <span class="st">"claude-3-7-sonnet-20250219"</span>,</span>
+<span>  model <span class="op">=</span> <span class="st">"claude-sonnet-4-5-20250929"</span>,</span>
 <span>  api_key <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Sys.getenv.html" class="external-link">Sys.getenv</a></span><span class="op">(</span><span class="st">"ANTHROPIC_API_KEY"</span><span class="op">)</span></span>
 <span><span class="op">)</span></span></code></pre></div>
 </div>
@@ -582,14 +582,14 @@ species:</p>
 <span><span class="va">human_annotations</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/annotate_cell_types.html">annotate_cell_types</a></span><span class="op">(</span></span>
 <span>  input <span class="op">=</span> <span class="va">human_marker_data</span>,  <span class="co"># Your human marker data</span></span>
 <span>  tissue_name <span class="op">=</span> <span class="st">"human brain cortex"</span>,</span>
-<span>  model <span class="op">=</span> <span class="st">"claude-3-7-sonnet-20250219"</span>,</span>
+<span>  model <span class="op">=</span> <span class="st">"claude-sonnet-4-5-20250929"</span>,</span>
 <span>  api_key <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Sys.getenv.html" class="external-link">Sys.getenv</a></span><span class="op">(</span><span class="st">"ANTHROPIC_API_KEY"</span><span class="op">)</span></span>
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">mouse_annotations</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/annotate_cell_types.html">annotate_cell_types</a></span><span class="op">(</span></span>
 <span>  input <span class="op">=</span> <span class="va">mouse_marker_data</span>,  <span class="co"># Your mouse marker data</span></span>
 <span>  tissue_name <span class="op">=</span> <span class="st">"mouse brain cortex"</span>,</span>
-<span>  model <span class="op">=</span> <span class="st">"claude-3-7-sonnet-20250219"</span>,</span>
+<span>  model <span class="op">=</span> <span class="st">"claude-sonnet-4-5-20250929"</span>,</span>
 <span>  api_key <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Sys.getenv.html" class="external-link">Sys.getenv</a></span><span class="op">(</span><span class="st">"ANTHROPIC_API_KEY"</span><span class="op">)</span></span>
 <span><span class="op">)</span></span>
 <span></span>
@@ -642,7 +642,7 @@ associated with API calls to different LLM providers:</p>
 <span><span class="va">affordable_annotation</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/annotate_cell_types.html">annotate_cell_types</a></span><span class="op">(</span></span>
 <span>  input <span class="op">=</span> <span class="va">marker_data</span>,  <span class="co"># Your marker gene data</span></span>
 <span>  tissue_name <span class="op">=</span> <span class="st">"human PBMC"</span>,</span>
-<span>  model <span class="op">=</span> <span class="st">"claude-3-5-haiku-latest"</span>,  <span class="co"># More affordable model</span></span>
+<span>  model <span class="op">=</span> <span class="st">"claude-haiku-4-20250514"</span>,  <span class="co"># More affordable model</span></span>
 <span>  api_key <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Sys.getenv.html" class="external-link">Sys.getenv</a></span><span class="op">(</span><span class="st">"ANTHROPIC_API_KEY"</span><span class="op">)</span></span>
 <span><span class="op">)</span></span>
 <span></span>
@@ -651,7 +651,7 @@ associated with API calls to different LLM providers:</p>
 <span><span class="va">premium_annotation</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/annotate_cell_types.html">annotate_cell_types</a></span><span class="op">(</span></span>
 <span>  input <span class="op">=</span> <span class="va">marker_data</span>,  <span class="co"># Your marker gene data</span></span>
 <span>  tissue_name <span class="op">=</span> <span class="st">"human PBMC"</span>,</span>
-<span>  model <span class="op">=</span> <span class="st">"claude-3-7-sonnet-20250219"</span>,  <span class="co"># More powerful model</span></span>
+<span>  model <span class="op">=</span> <span class="st">"claude-sonnet-4-5-20250929"</span>,  <span class="co"># More powerful model</span></span>
 <span>  api_key <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Sys.getenv.html" class="external-link">Sys.getenv</a></span><span class="op">(</span><span class="st">"ANTHROPIC_API_KEY"</span><span class="op">)</span></span>
 <span><span class="op">)</span></span>
 <span></span>
@@ -672,7 +672,7 @@ associated with API calls to different LLM providers:</p>
 <span><span class="va">consensus_with_cache</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/interactive_consensus_annotation.html">interactive_consensus_annotation</a></span><span class="op">(</span></span>
 <span>  input <span class="op">=</span> <span class="va">marker_data</span>,  <span class="co"># Your marker gene data</span></span>
 <span>  tissue_name <span class="op">=</span> <span class="st">"human PBMC"</span>,</span>
-<span>  models <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"claude-3-7-sonnet-20250219"</span>, <span class="st">"gpt-4o"</span><span class="op">)</span>,</span>
+<span>  models <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"claude-sonnet-4-5-20250929"</span>, <span class="st">"gpt-5"</span><span class="op">)</span>,</span>
 <span>  api_keys <span class="op">=</span> <span class="va">api_keys</span>,</span>
 <span>  use_cache <span class="op">=</span> <span class="cn">TRUE</span>,  <span class="co"># Enable caching</span></span>
 <span>  cache_dir <span class="op">=</span> <span class="cn">NULL</span>  <span class="co"># Uses default system cache directory</span></span>
@@ -697,7 +697,7 @@ associated with API calls to different LLM providers:</p>
 <span>    <span class="va">batch_results</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/annotate_cell_types.html">annotate_cell_types</a></span><span class="op">(</span></span>
 <span>      input <span class="op">=</span> <span class="va">batch_data</span>,</span>
 <span>      tissue_name <span class="op">=</span> <span class="st">"human PBMC"</span>,</span>
-<span>      model <span class="op">=</span> <span class="st">"claude-3-7-sonnet-20250219"</span>,</span>
+<span>      model <span class="op">=</span> <span class="st">"claude-sonnet-4-5-20250929"</span>,</span>
 <span>      api_key <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Sys.getenv.html" class="external-link">Sys.getenv</a></span><span class="op">(</span><span class="st">"ANTHROPIC_API_KEY"</span><span class="op">)</span></span>
 <span>    <span class="op">)</span></span>
 <span></span>
@@ -712,7 +712,7 @@ associated with API calls to different LLM providers:</p>
 <span><span class="va">fast_annotation</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/annotate_cell_types.html">annotate_cell_types</a></span><span class="op">(</span></span>
 <span>  input <span class="op">=</span> <span class="va">marker_data</span>,  <span class="co"># Your marker gene data</span></span>
 <span>  tissue_name <span class="op">=</span> <span class="st">"human PBMC"</span>,</span>
-<span>  model <span class="op">=</span> <span class="st">"claude-3-5-haiku-latest"</span>,  <span class="co"># Faster model</span></span>
+<span>  model <span class="op">=</span> <span class="st">"claude-haiku-4-20250514"</span>,  <span class="co"># Faster model</span></span>
 <span>  api_key <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Sys.getenv.html" class="external-link">Sys.getenv</a></span><span class="op">(</span><span class="st">"ANTHROPIC_API_KEY"</span><span class="op">)</span></span>
 <span><span class="op">)</span></span></code></pre></div>
 </div>
@@ -800,7 +800,7 @@ structured output, performance monitoring, and multi-level logging:</p>
 <span></span>
 <span><span class="co"># Log warnings and errors</span></span>
 <span><span class="fu"><a href="../reference/logging_functions.html">log_warn</a></span><span class="op">(</span><span class="st">"Model response had unusual format"</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
-<span>  model <span class="op">=</span> <span class="st">"gpt-4o"</span>,</span>
+<span>  model <span class="op">=</span> <span class="st">"gpt-5"</span>,</span>
 <span>  response_length <span class="op">=</span> <span class="fl">50</span></span>
 <span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
@@ -837,7 +837,7 @@ caching consensus results:</p>
 <span><span class="co"># Generate a cache key</span></span>
 <span><span class="va">cache_key</span> <span class="op">&lt;-</span> <span class="va">cache_manager</span><span class="op">$</span><span class="fu">generate_key</span><span class="op">(</span></span>
 <span>  input <span class="op">=</span> <span class="va">marker_data</span>,</span>
-<span>  models <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"claude-3-7-sonnet-20250219"</span>, <span class="st">"gpt-4o"</span><span class="op">)</span>,</span>
+<span>  models <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"claude-sonnet-4-5-20250929"</span>, <span class="st">"gpt-5"</span><span class="op">)</span>,</span>
 <span>  cluster_id <span class="op">=</span> <span class="st">"0"</span></span>
 <span><span class="op">)</span></span>
 <span></span>

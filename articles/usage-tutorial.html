@@ -185,7 +185,7 @@ through interactive discussion:</p>
 <code class="sourceCode R"><span><span class="va">consensus_results</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/interactive_consensus_annotation.html">interactive_consensus_annotation</a></span><span class="op">(</span></span>
 <span>  <span class="va">input</span>,                <span class="co"># Original marker gene data (Seurat FindAllMarkers result or list of genes)</span></span>
 <span>  tissue_name <span class="op">=</span> <span class="cn">NULL</span>,   <span class="co"># Optional tissue name</span></span>
-<span>  models <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"claude-3-7-sonnet-20250219"</span>, <span class="st">"gpt-4o"</span>, <span class="st">"gemini-1.5-pro"</span><span class="op">)</span>,  <span class="co"># Models to use</span></span>
+<span>  models <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"claude-sonnet-4-5-20250929"</span>, <span class="st">"gpt-5"</span>, <span class="st">"gemini-1.5-pro"</span><span class="op">)</span>,  <span class="co"># Models to use</span></span>
 <span>  <span class="va">api_keys</span>,             <span class="co"># Named list of API keys</span></span>
 <span>  top_gene_count <span class="op">=</span> <span class="fl">10</span>,  <span class="co"># Number of top genes to use</span></span>
 <span>  controversy_threshold <span class="op">=</span> <span class="fl">0.7</span>,  <span class="co"># Threshold for identifying controversial clusters</span></span>
@@ -203,9 +203,9 @@ similarity, calculates consensus metrics, and moderates discussions. We
 strongly recommend using high-performance models like: -
 <code>claude-sonnet-4-5-20250929</code> (best overall, latest and most
 intelligent) - <code>claude-opus-4-1-20250805</code> (excellent for
-complex reasoning) - <code>claude-3-7-sonnet-20250219</code> (great
-balance) - <code>o1</code> (advanced reasoning) - <code>gpt-4o</code>
-(strong performance) - <code>gemini-2.5-pro</code> (top-tier)</p>
+complex reasoning) - <code>o1</code> (advanced reasoning) -
+<code>gpt-5</code> (strong performance) - <code>gemini-2.5-pro</code>
+(top-tier)</p>
 <p>See the main README for detailed recommendations and examples.</p>
 </div>
 </div>
@@ -228,7 +228,7 @@ balance) - <code>o1</code> (advanced reasoning) - <code>gpt-4o</code>
 <span><span class="va">results</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/annotate_cell_types.html">annotate_cell_types</a></span><span class="op">(</span></span>
 <span>  input <span class="op">=</span> <span class="va">pbmc_markers</span>,</span>
 <span>  tissue_name <span class="op">=</span> <span class="st">"human PBMC"</span>,</span>
-<span>  model <span class="op">=</span> <span class="st">"claude-3-7-sonnet-20250219"</span>,</span>
+<span>  model <span class="op">=</span> <span class="st">"claude-sonnet-4-5-20250929"</span>,</span>
 <span>  api_key <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Sys.getenv.html" class="external-link">Sys.getenv</a></span><span class="op">(</span><span class="st">"ANTHROPIC_API_KEY"</span><span class="op">)</span>,</span>
 <span>  top_gene_count <span class="op">=</span> <span class="fl">10</span></span>
 <span><span class="op">)</span></span>
@@ -251,8 +251,8 @@ quantification:</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Define multiple models to use</span></span>
 <span><span class="va">models</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
-<span>  <span class="st">"claude-3-7-sonnet-20250219"</span>,  <span class="co"># Anthropic</span></span>
-<span>  <span class="st">"gpt-4o"</span>,                      <span class="co"># OpenAI</span></span>
+<span>  <span class="st">"claude-sonnet-4-5-20250929"</span>,  <span class="co"># Anthropic</span></span>
+<span>  <span class="st">"gpt-5"</span>,                      <span class="co"># OpenAI</span></span>
 <span>  <span class="st">"gemini-1.5-pro"</span>,              <span class="co"># Google</span></span>
 <span>  <span class="st">"grok-3"</span>                       <span class="co"># X.AI</span></span>
 <span><span class="op">)</span></span>
@@ -288,7 +288,7 @@ quantification:</p>
 <span>  api_keys <span class="op">=</span> <span class="va">api_keys</span>,</span>
 <span>  controversy_threshold <span class="op">=</span> <span class="fl">0.7</span>,</span>
 <span>  entropy_threshold <span class="op">=</span> <span class="fl">1.0</span>,</span>
-<span>  consensus_check_model <span class="op">=</span> <span class="st">"claude-3-7-sonnet-20250219"</span></span>
+<span>  consensus_check_model <span class="op">=</span> <span class="st">"claude-sonnet-4-5-20250929"</span></span>
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># View consensus results</span></span>
@@ -398,7 +398,7 @@ quantification:</p>
 <span><span class="va">results</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/annotate_cell_types.html">annotate_cell_types</a></span><span class="op">(</span></span>
 <span>  input <span class="op">=</span> <span class="st">"pbmc_markers.csv"</span>,</span>
 <span>  tissue_name <span class="op">=</span> <span class="st">"human PBMC"</span>,</span>
-<span>  model <span class="op">=</span> <span class="st">"claude-3-7-sonnet-20250219"</span>,</span>
+<span>  model <span class="op">=</span> <span class="st">"claude-sonnet-4-5-20250929"</span>,</span>
 <span>  api_key <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Sys.getenv.html" class="external-link">Sys.getenv</a></span><span class="op">(</span><span class="st">"ANTHROPIC_API_KEY"</span><span class="op">)</span></span>
 <span><span class="op">)</span></span></code></pre></div>
 </div>
@@ -414,7 +414,7 @@ quantification:</p>
 <span><span class="va">results</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/annotate_cell_types.html">annotate_cell_types</a></span><span class="op">(</span></span>
 <span>  input <span class="op">=</span> <span class="va">pbmc_markers</span>,</span>
 <span>  tissue_name <span class="op">=</span> <span class="st">"human PBMC"</span>,</span>
-<span>  model <span class="op">=</span> <span class="st">"claude-3-7-sonnet-20250219"</span>,</span>
+<span>  model <span class="op">=</span> <span class="st">"claude-sonnet-4-5-20250929"</span>,</span>
 <span>  api_key <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Sys.getenv.html" class="external-link">Sys.getenv</a></span><span class="op">(</span><span class="st">"ANTHROPIC_API_KEY"</span><span class="op">)</span>,</span>
 <span>  top_gene_count <span class="op">=</span> <span class="fl">10</span>,</span>
 <span>  debug <span class="op">=</span> <span class="cn">FALSE</span></span>
@@ -437,15 +437,19 @@ help you choose:</p>
 <p>For the most accurate annotations:</p>
 <ul>
 <li>
-<strong>Anthropic Claude 3.7 Sonnet</strong>
-(<code>claude-3-7-sonnet-20250219</code>): Excellent biological
-knowledge, best for discussion</li>
+<strong>Anthropic Claude Sonnet 4.5</strong>
+(<code>claude-sonnet-4-5-20250929</code>): Latest and most intelligent,
+excellent biological knowledge</li>
 <li>
-<strong>OpenAI GPT-4o</strong> (<code>gpt-4o</code>): Strong overall
+<strong>Anthropic Claude Opus 4.1</strong>
+(<code>claude-opus-4-1-20250805</code>): Best for complex reasoning and
+detailed analysis</li>
+<li>
+<strong>OpenAI GPT-5</strong> (<code>gpt-5</code>): Strong overall
 performance, good biological knowledge</li>
 <li>
-<strong>Google Gemini 1.5 Pro</strong>
-(<code>gemini-1.5-pro</code>): Good performance with detailed
+<strong>Google Gemini 2.5 Pro</strong>
+(<code>gemini-2.5-pro</code>): Top-tier performance with detailed
 reasoning</li>
 </ul>
 </div>
@@ -454,10 +458,6 @@ reasoning</li>
 </h4>
 <p>For good results with lower API costs:</p>
 <ul>
-<li>
-<strong>Anthropic Claude 3.5 Sonnet</strong>
-(<code>claude-3-5-sonnet-20241022</code>): Good balance of performance
-and cost</li>
 <li>
 <strong>X.AI Grok-3</strong> (<code>grok-3</code>): Competitive
 performance at lower cost</li>
@@ -571,8 +571,8 @@ workflow:</p>
 <span></span>
 <span><span class="co"># Define models to use</span></span>
 <span><span class="va">models</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
-<span>  <span class="st">"claude-3-7-sonnet-20250219"</span>,</span>
-<span>  <span class="st">"gpt-4o"</span>,</span>
+<span>  <span class="st">"claude-sonnet-4-5-20250929"</span>,</span>
+<span>  <span class="st">"gpt-5"</span>,</span>
 <span>  <span class="st">"gemini-1.5-pro"</span></span>
 <span><span class="op">)</span></span>
 <span></span>
@@ -614,7 +614,7 @@ workflow:</p>
 <span>  api_keys <span class="op">=</span> <span class="va">api_keys</span>,</span>
 <span>  controversy_threshold <span class="op">=</span> <span class="fl">0.7</span>,</span>
 <span>  entropy_threshold <span class="op">=</span> <span class="fl">1.0</span>,</span>
-<span>  consensus_check_model <span class="op">=</span> <span class="st">"claude-3-7-sonnet-20250219"</span></span>
+<span>  consensus_check_model <span class="op">=</span> <span class="st">"claude-sonnet-4-5-20250929"</span></span>
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Add consensus results to Seurat object</span></span>
@@ -680,7 +680,7 @@ marker genes per cluster are used for annotation:</p>
 <span><span class="va">results_more_genes</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/annotate_cell_types.html">annotate_cell_types</a></span><span class="op">(</span></span>
 <span>  input <span class="op">=</span> <span class="va">pbmc_markers</span>,</span>
 <span>  tissue_name <span class="op">=</span> <span class="st">"human PBMC"</span>,</span>
-<span>  model <span class="op">=</span> <span class="st">"claude-3-7-sonnet-20250219"</span>,</span>
+<span>  model <span class="op">=</span> <span class="st">"claude-sonnet-4-5-20250929"</span>,</span>
 <span>  api_key <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Sys.getenv.html" class="external-link">Sys.getenv</a></span><span class="op">(</span><span class="st">"ANTHROPIC_API_KEY"</span><span class="op">)</span>,</span>
 <span>  top_gene_count <span class="op">=</span> <span class="fl">20</span>  <span class="co"># Using more genes</span></span>
 <span><span class="op">)</span></span>
@@ -689,7 +689,7 @@ marker genes per cluster are used for annotation:</p>
 <span><span class="va">results_fewer_genes</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/annotate_cell_types.html">annotate_cell_types</a></span><span class="op">(</span></span>
 <span>  input <span class="op">=</span> <span class="va">pbmc_markers</span>,</span>
 <span>  tissue_name <span class="op">=</span> <span class="st">"human PBMC"</span>,</span>
-<span>  model <span class="op">=</span> <span class="st">"claude-3-7-sonnet-20250219"</span>,</span>
+<span>  model <span class="op">=</span> <span class="st">"claude-sonnet-4-5-20250929"</span>,</span>
 <span>  api_key <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Sys.getenv.html" class="external-link">Sys.getenv</a></span><span class="op">(</span><span class="st">"ANTHROPIC_API_KEY"</span><span class="op">)</span>,</span>
 <span>  top_gene_count <span class="op">=</span> <span class="fl">5</span>   <span class="co"># Using fewer genes</span></span>
 <span><span class="op">)</span></span></code></pre></div>
@@ -706,7 +706,7 @@ clusters are considered controversial and require discussion:</p>
 <span><span class="va">consensus_results_low_threshold</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/interactive_consensus_annotation.html">interactive_consensus_annotation</a></span><span class="op">(</span></span>
 <span>  input <span class="op">=</span> <span class="va">pbmc_markers</span>,</span>
 <span>  tissue_name <span class="op">=</span> <span class="st">"human PBMC"</span>,</span>
-<span>  models <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"claude-3-7-sonnet-20250219"</span>, <span class="st">"gpt-4o"</span>, <span class="st">"gemini-2.0-flash"</span><span class="op">)</span>,</span>
+<span>  models <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"claude-sonnet-4-5-20250929"</span>, <span class="st">"gpt-5"</span>, <span class="st">"gemini-2.0-flash"</span><span class="op">)</span>,</span>
 <span>  api_keys <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
 <span>    <span class="st">"anthropic"</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Sys.getenv.html" class="external-link">Sys.getenv</a></span><span class="op">(</span><span class="st">"ANTHROPIC_API_KEY"</span><span class="op">)</span>,</span>
 <span>    <span class="st">"openai"</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Sys.getenv.html" class="external-link">Sys.getenv</a></span><span class="op">(</span><span class="st">"OPENAI_API_KEY"</span><span class="op">)</span>,</span>
@@ -719,7 +719,7 @@ clusters are considered controversial and require discussion:</p>
 <span><span class="va">consensus_results_high_threshold</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/interactive_consensus_annotation.html">interactive_consensus_annotation</a></span><span class="op">(</span></span>
 <span>  input <span class="op">=</span> <span class="va">pbmc_markers</span>,</span>
 <span>  tissue_name <span class="op">=</span> <span class="st">"human PBMC"</span>,</span>
-<span>  models <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"claude-3-7-sonnet-20250219"</span>, <span class="st">"gpt-4o"</span>, <span class="st">"gemini-2.0-flash"</span><span class="op">)</span>,</span>
+<span>  models <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"claude-sonnet-4-5-20250929"</span>, <span class="st">"gpt-5"</span>, <span class="st">"gemini-2.0-flash"</span><span class="op">)</span>,</span>
 <span>  api_keys <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
 <span>    <span class="st">"anthropic"</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Sys.getenv.html" class="external-link">Sys.getenv</a></span><span class="op">(</span><span class="st">"ANTHROPIC_API_KEY"</span><span class="op">)</span>,</span>
 <span>    <span class="st">"openai"</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Sys.getenv.html" class="external-link">Sys.getenv</a></span><span class="op">(</span><span class="st">"OPENAI_API_KEY"</span><span class="op">)</span>,</span>

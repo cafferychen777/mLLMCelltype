@@ -1421,7 +1421,7 @@ cluster:</p>
 <span><span class="op">}</span></span>
 <span></span>
 <span><span class="co"># Create and plot the heatmap</span></span>
-<span><span class="va">models</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"claude-3-7-sonnet-20250219"</span>, <span class="st">"gpt-4o"</span>, <span class="st">"gemini-1.5-pro"</span><span class="op">)</span></span>
+<span><span class="va">models</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"claude-sonnet-4-5-20250929"</span>, <span class="st">"gpt-5"</span>, <span class="st">"gemini-1.5-pro"</span><span class="op">)</span></span>
 <span><span class="va">prediction_matrix</span> <span class="op">&lt;-</span> <span class="fu">create_prediction_matrix</span><span class="op">(</span><span class="va">consensus_results</span>, <span class="va">models</span><span class="op">)</span></span>
 <span><span class="va">encoded_data</span> <span class="op">&lt;-</span> <span class="fu">encode_cell_types</span><span class="op">(</span><span class="va">prediction_matrix</span><span class="op">)</span></span>
 <span></span>
