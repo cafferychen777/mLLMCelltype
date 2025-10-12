@@ -340,8 +340,8 @@ quantification:</p>
 <span><span class="va">free_models</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
 <span>  <span class="st">"meta-llama/llama-4-maverick:free"</span>,                <span class="co"># Meta Llama 4 Maverick (free)</span></span>
 <span>  <span class="st">"nvidia/llama-3.1-nemotron-ultra-253b-v1:free"</span>,    <span class="co"># NVIDIA Nemotron Ultra 253B (free)</span></span>
-<span>  <span class="st">"deepseek/deepseek-chat-v3-0324:free"</span>,             <span class="co"># DeepSeek Chat v3 (free)</span></span>
-<span>  <span class="st">"deepseek/deepseek-r1:free"</span>                         <span class="co"># Microsoft MAI-DS-R1 (free)</span></span>
+<span>  <span class="st">"deepseek/deepseek-r1:free"</span>,             <span class="co"># DeepSeek R1 (free, advanced reasoning)</span></span>
+<span>  <span class="st">"meta-llama/llama-3.3-70b-instruct:free"</span>          <span class="co"># Meta Llama 3.3 70B (free)</span></span>
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Run annotation with free OpenRouter models</span></span>
@@ -496,13 +496,9 @@ recommended for consensus checking</li>
 (<code>nvidia/llama-3.1-nemotron-ultra-253b-v1:free</code>): Good
 performance with consistent formatting</li>
 <li>
-<strong>Microsoft MAI-DS-R1</strong>
-(<code>deepseek/deepseek-r1:free</code>): Reliable with good response
-time</li>
-<li>
-<strong>DeepSeek Chat v3</strong>
-(<code>deepseek/deepseek-chat-v3-0324:free</code>): Free model with 163K
-context window (may occasionally return empty results)</li>
+<strong>DeepSeek R1</strong>
+(<code>deepseek/deepseek-r1:free</code>): Advanced reasoning model
+(free)</li>
 </ul>
 <p>Based on our testing, we recommend the following free models:</p>
 <ul>
@@ -519,8 +515,8 @@ time</li>
 <p>Some models may have limitations:</p>
 <ul>
 <li>
-<code>deepseek/deepseek-chat-v3-0324:free</code>: May occasionally
-return empty results</li>
+<code>deepseek/deepseek-r1:free</code>: May occasionally return
+empty results</li>
 <li>
 <code>thudm/glm-z1-9b:free</code>: May return localized error
 messages (“non-character parameter”) when used for consensus
@@ -811,8 +807,8 @@ checking</li>
 <p>If a model returns empty results:</p>
 <ul>
 <li>Try increasing the timeout or retry with the same model</li>
-<li>Some models like <code>deepseek/deepseek-chat-v3-0324:free</code>
-may occasionally return empty results</li>
+<li>Some models like <code>deepseek/deepseek-r1:free</code> may
+occasionally return empty results</li>
 <li>Switch to a more reliable model if the problem persists</li>
 </ul>
 </div>
