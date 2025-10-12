@@ -515,7 +515,7 @@ premium_annotation <- annotate_cell_types(
 openrouter_annotation <- annotate_cell_types(
   input = marker_data,  # Your marker gene data
   tissue_name = "human PBMC",
-  model = "meta-llama/llama-3.1-8b-instruct:free",  # Free model via OpenRouter
+  model = "meta-llama/llama-3.3-70b-instruct:free",  # Free model via OpenRouter
   api_key = Sys.getenv("OPENROUTER_API_KEY")
 )
 ```

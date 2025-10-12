@@ -264,7 +264,7 @@ annotations = annotate_clusters(
     species='human',
     tissue='peripheral blood',
     provider='openrouter',
-    model='microsoft/mai-ds-r1:free'  # 무료 모델
+    model='deepseek/deepseek-r1:free'  # 무료 모델
 )
 
 # 주석 출력

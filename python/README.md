@@ -484,7 +484,7 @@ result = interactive_consensus_annotation(
     tissue='peripheral blood',
     models=[
         {"provider": "openrouter", "model": "deepseek/deepseek-chat:free"},      # DeepSeek (free)
-        {"provider": "openrouter", "model": "microsoft/mai-ds-r1:free"},         # Microsoft (free)
+        {"provider": "openrouter", "model": "deepseek/deepseek-r1:free"},         # Microsoft (free)
         {"provider": "openrouter", "model": "qwen/qwen-2.5-7b-instruct:free"},   # Qwen (free)
         {"provider": "openrouter", "model": "thudm/glm-4-9b:free"}               # GLM (free)
     ],
@@ -524,7 +524,7 @@ mai_annotations = annotate_clusters(
     species='human',
     tissue='peripheral blood',
     provider='openrouter',
-    model='microsoft/mai-ds-r1:free'  # Free model
+    model='deepseek/deepseek-r1:free'  # Free model
 )
 
 # Print annotations
@@ -630,7 +630,7 @@ result_free = interactive_consensus_annotation(
     tissue='peripheral blood',
     models=[
         {"provider": "openrouter", "model": "deepseek/deepseek-chat:free"},      # DeepSeek (free)
-        {"provider": "openrouter", "model": "microsoft/mai-ds-r1:free"},         # Microsoft (free)
+        {"provider": "openrouter", "model": "deepseek/deepseek-r1:free"},         # Microsoft (free)
         {"provider": "openrouter", "model": "qwen/qwen-2.5-7b-instruct:free"},   # Qwen (free)
         {"provider": "openrouter", "model": "thudm/glm-4-9b:free"}               # GLM (free)
     ],

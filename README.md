@@ -259,7 +259,7 @@ pip install google-genai
 - **OpenRouter**: Access to multiple models through a single API ([API Key](https://openrouter.ai/keys))
   - Supports models from OpenAI, Anthropic, Meta, Google, Mistral, and more
   - Format: 'provider/model-name' (e.g., 'openai/gpt-5', 'anthropic/claude-opus-4.1')
-  - Free models available with `:free` suffix (e.g., 'microsoft/mai-ds-r1:free', 'deepseek/deepseek-chat:free')
+  - Free models available with `:free` suffix (e.g., 'deepseek/deepseek-r1:free', 'meta-llama/llama-4-maverick:free')
 
 ## Usage Examples
 
@@ -358,8 +358,8 @@ free_models_results = interactive_consensus_annotation(
     models=[
         {"provider": "openrouter", "model": "meta-llama/llama-4-maverick:free"},      # Meta Llama 4 Maverick (free)
         {"provider": "openrouter", "model": "nvidia/llama-3.1-nemotron-ultra-253b-v1:free"},  # NVIDIA Nemotron Ultra 253B (free)
-        {"provider": "openrouter", "model": "deepseek/deepseek-chat-v3-0324:free"},   # DeepSeek Chat v3 (free)
-        {"provider": "openrouter", "model": "microsoft/mai-ds-r1:free"}               # Microsoft MAI-DS-R1 (free)
+        {"provider": "openrouter", "model": "deepseek/deepseek-r1:free"},             # DeepSeek R1 (free, advanced reasoning)
+        {"provider": "openrouter", "model": "meta-llama/llama-3.3-70b-instruct:free"} # Meta Llama 3.3 70B (free)
     ],
     consensus_threshold=0.7,
     max_discussion_rounds=2
@@ -438,7 +438,7 @@ annotations = annotate_clusters(
     species='human',
     tissue='peripheral blood',
     provider='openrouter',
-    model='microsoft/mai-ds-r1:free'  # Free model
+    model='deepseek/deepseek-r1:free'  # Free model with advanced reasoning
 )
 
 # Print annotations
@@ -488,7 +488,7 @@ annotations = annotate_clusters(
     species='human',
     tissue='peripheral blood',  # adjust based on your tissue type
     provider='openrouter',
-    model='microsoft/mai-ds-r1:free'  # Free model
+    model='deepseek/deepseek-r1:free'  # Free model
 )
 
 # Add annotations to AnnData object
@@ -815,11 +815,11 @@ free_consensus_results <-
     models = c(
       "meta-llama/llama-4-maverick:free",      # Meta Llama 4 Maverick (free)
       "nvidia/llama-3.1-nemotron-ultra-253b-v1:free",  # NVIDIA Nemotron Ultra 253B (free)
-      "deepseek/deepseek-chat-v3-0324:free",   # DeepSeek Chat v3 (free)
-      "microsoft/mai-ds-r1:free"               # Microsoft MAI-DS-R1 (free)
+      "deepseek/deepseek-r1:free",             # DeepSeek R1 (free, advanced reasoning)
+      "meta-llama/llama-3.3-70b-instruct:free" # Meta Llama 3.3 70B (free)
     ),
     api_keys = api_keys,
-    consensus_check_model = "deepseek/deepseek-chat-v3-0324:free",  # Free model for consensus checking
+    consensus_check_model = "deepseek/deepseek-r1:free",  # Free model for consensus checking
     controversy_threshold = 0.6,
     entropy_threshold = 1.0,
     max_discussion_rounds = 2,

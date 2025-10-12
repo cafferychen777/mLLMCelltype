@@ -285,7 +285,7 @@ pip install google-genai
 - **OpenRouter**: 通过单一API访问多种模型 ([API Key](https://openrouter.ai/keys))
   - 支持来自OpenAI、Anthropic、Meta、Google、Mistral等多家提供商的模型
   - 格式: 'provider/model-name'（例如：'openai/gpt-5'、'anthropic/claude-opus-4.1'）
-  - 提供免费模型，使用`:free`后缀（例如：'microsoft/mai-ds-r1:free'、'deepseek/deepseek-chat:free'）
+  - 提供免费模型，使用`:free`后缀（例如：'deepseek/deepseek-r1:free'、'deepseek/deepseek-chat:free'）
 
 ## 中国大陆用户指南
 
@@ -411,8 +411,8 @@ free_models_results = interactive_consensus_annotation(
     models=[
         "meta-llama/llama-4-maverick:free",                # Meta Llama 4 Maverick（免费）
         "nvidia/llama-3.1-nemotron-ultra-253b-v1:free",    # NVIDIA Nemotron Ultra 253B（免费）
-        "deepseek/deepseek-chat-v3-0324:free",             # DeepSeek Chat v3（免费）
-        "microsoft/mai-ds-r1:free"                         # Microsoft MAI-DS-R1（免费）
+        "deepseek/deepseek-r1:free",             # DeepSeek Chat v3（免费）
+        "deepseek/deepseek-r1:free"                         # Microsoft MAI-DS-R1（免费）
     ],
     consensus_threshold=0.7
 )
@@ -443,13 +443,13 @@ free_consensus_results <- interactive_consensus_annotation(
   models = c(
     "meta-llama/llama-4-maverick:free",                # Meta Llama 4 Maverick（免费）
     "nvidia/llama-3.1-nemotron-ultra-253b-v1:free",    # NVIDIA Nemotron Ultra 253B（免费）
-    "deepseek/deepseek-chat-v3-0324:free",             # DeepSeek Chat v3（免费）
-    "microsoft/mai-ds-r1:free"                         # Microsoft MAI-DS-R1（免费）
+    "deepseek/deepseek-r1:free",             # DeepSeek Chat v3（免费）
+    "deepseek/deepseek-r1:free"                         # Microsoft MAI-DS-R1（免费）
   ),
   api_keys = list(
     openrouter = "your-openrouter-key"  # 单一 API 密钥访问多种模型
   ),
-  consensus_check_model = "deepseek/deepseek-chat-v3-0324:free"  # 免费模型用于共识检查
+  consensus_check_model = "deepseek/deepseek-r1:free"  # 免费模型用于共识检查
 )
 ```
 
@@ -464,7 +464,7 @@ free_consensus_results <- interactive_consensus_annotation(
 > **方案1：使用替代模型**
 > - 国内模型：DeepSeek、Qwen、GLM-4、MiniMax、Stepfun
 > - 通过 OpenRouter 访问的其他国际模型：Anthropic Claude、Google Gemini、Meta Llama 4
-> - OpenRouter 免费模型：`meta-llama/llama-4-maverick:free`、`nvidia/llama-3.1-nemotron-ultra-253b-v1:free`、`microsoft/mai-ds-r1:free`
+> - OpenRouter 免费模型：`meta-llama/llama-4-maverick:free`、`nvidia/llama-3.1-nemotron-ultra-253b-v1:free`、`deepseek/deepseek-r1:free`
 >
 > **方案2：使用干净 IP 的 VPN**
 > - 根据用户反馈，使用具有"干净 IP"（未被 OpenAI 或 X.AI 封禁的 IP 地址）的 VPN 服务可能解决访问限制
@@ -765,8 +765,8 @@ free_models_results = interactive_consensus_annotation(
     models=[
         {"provider": "openrouter", "model": "meta-llama/llama-4-maverick:free"},      # Meta Llama 4 Maverick（免费）
         {"provider": "openrouter", "model": "nvidia/llama-3.1-nemotron-ultra-253b-v1:free"},  # NVIDIA Nemotron Ultra 253B（免费）
-        {"provider": "openrouter", "model": "deepseek/deepseek-chat-v3-0324:free"},   # DeepSeek Chat v3（免费）
-        {"provider": "openrouter", "model": "microsoft/mai-ds-r1:free"}               # Microsoft MAI-DS-R1（免费）
+        {"provider": "openrouter", "model": "deepseek/deepseek-r1:free"},   # DeepSeek Chat v3（免费）
+        {"provider": "openrouter", "model": "deepseek/deepseek-r1:free"}               # Microsoft MAI-DS-R1（免费）
     ],
     consensus_threshold=0.7,
     max_discussion_rounds=2
@@ -845,7 +845,7 @@ annotations = annotate_clusters(
     species='human',
     tissue='peripheral blood',
     provider='openrouter',
-    model='microsoft/mai-ds-r1:free'  # 免费模型
+    model='deepseek/deepseek-r1:free'  # 免费模型
 )
 
 # 打印注释
@@ -895,7 +895,7 @@ annotations = annotate_clusters(
     species='human',
     tissue='peripheral blood',  # 根据您的组织类型调整
     provider='openrouter',
-    model='microsoft/mai-ds-r1:free'  # 免费模型
+    model='deepseek/deepseek-r1:free'  # 免费模型
 )
 
 # 将注释添加到AnnData对象
@@ -1222,11 +1222,11 @@ free_consensus_results <-
     models = c(
       "meta-llama/llama-4-maverick:free",      # Meta Llama 4 Maverick（免费）
       "nvidia/llama-3.1-nemotron-ultra-253b-v1:free",  # NVIDIA Nemotron Ultra 253B（免费）
-      "deepseek/deepseek-chat-v3-0324:free",   # DeepSeek Chat v3（免费）
-      "microsoft/mai-ds-r1:free"               # Microsoft MAI-DS-R1（免费）
+      "deepseek/deepseek-r1:free",   # DeepSeek Chat v3（免费）
+      "deepseek/deepseek-r1:free"               # Microsoft MAI-DS-R1（免费）
     ),
     api_keys = api_keys,
-    consensus_check_model = "deepseek/deepseek-chat-v3-0324:free",  # 用于共识检查的免费模型
+    consensus_check_model = "deepseek/deepseek-r1:free",  # 用于共识检查的免费模型
     controversy_threshold = 0.6,
     entropy_threshold = 1.0,
     max_discussion_rounds = 2,

@@ -219,7 +219,7 @@ pip install google-genai
 - **OpenRouter**: Acceso a múltiples modelos a través de una sola API ([Clave API](https://openrouter.ai/keys))
   - Compatible con modelos de OpenAI, Anthropic, Meta, Google, Mistral y más
   - Formato: 'proveedor/nombre-modelo' (por ejemplo, 'openai/gpt-5', 'anthropic/claude-opus-4.1')
-  - Modelos gratuitos disponibles con el sufijo `:free` (por ejemplo, 'microsoft/mai-ds-r1:free', 'deepseek/deepseek-chat:free')
+  - Modelos gratuitos disponibles con el sufijo `:free` (por ejemplo, 'deepseek/deepseek-r1:free', 'deepseek/deepseek-chat:free')
 
 ## Ejemplos de Uso
 
@@ -318,8 +318,8 @@ free_models_results = interactive_consensus_annotation(
     models=[
         {"provider": "openrouter", "model": "meta-llama/llama-4-maverick:free"},      # Meta Llama 4 Maverick (gratis)
         {"provider": "openrouter", "model": "nvidia/llama-3.1-nemotron-ultra-253b-v1:free"},  # NVIDIA Nemotron Ultra 253B (gratis)
-        {"provider": "openrouter", "model": "deepseek/deepseek-chat-v3-0324:free"},   # DeepSeek Chat v3 (gratis)
-        {"provider": "openrouter", "model": "microsoft/mai-ds-r1:free"}               # Microsoft MAI-DS-R1 (gratis)
+        {"provider": "openrouter", "model": "deepseek/deepseek-r1:free"},   # DeepSeek Chat v3 (gratis)
+        {"provider": "openrouter", "model": "deepseek/deepseek-r1:free"}               # Microsoft MAI-DS-R1 (gratis)
     ],
     consensus_threshold=0.7,
     max_discussion_rounds=2
@@ -398,7 +398,7 @@ annotations = annotate_clusters(
     species='human',
     tissue='peripheral blood',
     provider='openrouter',
-    model='microsoft/mai-ds-r1:free'  # Modelo gratuito
+    model='deepseek/deepseek-r1:free'  # Modelo gratuito
 )
 
 # Imprimir anotaciones
@@ -448,7 +448,7 @@ annotations = annotate_clusters(
     species='human',
     tissue='peripheral blood',  # ajustar según su tipo de tejido
     provider='openrouter',
-    model='microsoft/mai-ds-r1:free'  # Modelo gratuito
+    model='deepseek/deepseek-r1:free'  # Modelo gratuito
 )
 
 # Agregar anotaciones al objeto AnnData

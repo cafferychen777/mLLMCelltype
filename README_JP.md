@@ -163,7 +163,7 @@ Anthropicは2025年7月21日に複数のClaudeモデルを廃止します：
 - **OpenRouter**: 単一APIで複数のモデルにアクセス ([APIキー](https://openrouter.ai/keys))
   - OpenAI、Anthropic、Meta、Google、Mistralなどのモデルをサポート
   - 形式: 'provider/model-name'（例: 'openai/gpt-5'、'anthropic/claude-opus-4.1'）
-  - `:free`接尾辞付きの無料モデルが利用可能（例: 'microsoft/mai-ds-r1:free'、'deepseek/deepseek-chat:free'）
+  - `:free`接尾辞付きの無料モデルが利用可能（例: 'deepseek/deepseek-r1:free'、'deepseek/deepseek-chat:free'）
 
 ## ディレクトリ構造
 
@@ -471,8 +471,8 @@ free_models_results = interactive_consensus_annotation(
     models=[
         {"provider": "openrouter", "model": "meta-llama/llama-4-maverick:free"},      # Meta Llama 4 Maverick（無料）
         {"provider": "openrouter", "model": "nvidia/llama-3.1-nemotron-ultra-253b-v1:free"},  # NVIDIA Nemotron Ultra 253B（無料）
-        {"provider": "openrouter", "model": "deepseek/deepseek-chat-v3-0324:free"},   # DeepSeek Chat v3（無料）
-        {"provider": "openrouter", "model": "microsoft/mai-ds-r1:free"}               # Microsoft MAI-DS-R1（無料）
+        {"provider": "openrouter", "model": "deepseek/deepseek-r1:free"},   # DeepSeek Chat v3（無料）
+        {"provider": "openrouter", "model": "deepseek/deepseek-r1:free"}               # Microsoft MAI-DS-R1（無料）
     ],
     consensus_threshold=0.7,
     max_discussion_rounds=2
@@ -551,7 +551,7 @@ annotations = annotate_clusters(
     species='human',
     tissue='peripheral blood',
     provider='openrouter',
-    model='microsoft/mai-ds-r1:free'  # 無料モデル
+    model='deepseek/deepseek-r1:free'  # 無料モデル
 )
 
 # アノテーションを表示
@@ -601,7 +601,7 @@ annotations = annotate_clusters(
     species='human',
     tissue='peripheral blood',  # 組織タイプに応じて調整
     provider='openrouter',
-    model='microsoft/mai-ds-r1:free'  # 無料モデル
+    model='deepseek/deepseek-r1:free'  # 無料モデル
 )
 
 # AnnDataオブジェクトにアノテーションを追加

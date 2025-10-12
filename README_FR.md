@@ -163,7 +163,7 @@ Consultez [NEWS.md](R/NEWS.md) pour un changelog complet.
 - **OpenRouter**: Accès à plusieurs modèles via une seule API ([Clé API](https://openrouter.ai/keys))
   - Prend en charge les modèles d'OpenAI, Anthropic, Meta, Google, Mistral et plus
   - Format: 'fournisseur/nom-du-modèle' (par exemple, 'openai/gpt-5', 'anthropic/claude-opus-4.1')
-  - Modèles gratuits disponibles avec le suffixe `:free` (par exemple, 'microsoft/mai-ds-r1:free', 'deepseek/deepseek-chat:free')
+  - Modèles gratuits disponibles avec le suffixe `:free` (par exemple, 'deepseek/deepseek-r1:free', 'deepseek/deepseek-chat:free')
 
 ## Structure des répertoires
 
@@ -478,8 +478,8 @@ free_models_results = interactive_consensus_annotation(
     models=[
         {"provider": "openrouter", "model": "meta-llama/llama-4-maverick:free"},      # Meta Llama 4 Maverick (gratuit)
         {"provider": "openrouter", "model": "nvidia/llama-3.1-nemotron-ultra-253b-v1:free"},  # NVIDIA Nemotron Ultra 253B (gratuit)
-        {"provider": "openrouter", "model": "deepseek/deepseek-chat-v3-0324:free"},   # DeepSeek Chat v3 (gratuit)
-        {"provider": "openrouter", "model": "microsoft/mai-ds-r1:free"}               # Microsoft MAI-DS-R1 (gratuit)
+        {"provider": "openrouter", "model": "deepseek/deepseek-r1:free"},   # DeepSeek Chat v3 (gratuit)
+        {"provider": "openrouter", "model": "deepseek/deepseek-r1:free"}               # Microsoft MAI-DS-R1 (gratuit)
     ],
     consensus_threshold=0.7,
     max_discussion_rounds=2
@@ -558,7 +558,7 @@ annotations = annotate_clusters(
     species='human',
     tissue='peripheral blood',
     provider='openrouter',
-    model='microsoft/mai-ds-r1:free'  # Modèle gratuit
+    model='deepseek/deepseek-r1:free'  # Modèle gratuit
 )
 
 # Afficher les annotations
@@ -608,7 +608,7 @@ annotations = annotate_clusters(
     species='human',
     tissue='peripheral blood',  # ajuster selon votre type de tissu
     provider='openrouter',
-    model='microsoft/mai-ds-r1:free'  # Modèle gratuit
+    model='deepseek/deepseek-r1:free'  # Modèle gratuit
 )
 
 # Ajouter les annotations à l'objet AnnData
