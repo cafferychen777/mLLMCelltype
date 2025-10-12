@@ -246,6 +246,8 @@ identify_controversial_clusters <- function(input, individual_predictions, contr
 select_best_prediction <- function(consensus_result, valid_predictions) {
   # If we have a majority prediction from Claude, use it
   if (!is.na(consensus_result$majority_prediction) &&
+      !is.null(consensus_result$majority_prediction) &&
+      is.character(consensus_result$majority_prediction) &&
       consensus_result$majority_prediction != "Unknown" &&
       consensus_result$majority_prediction != "") {
     return(consensus_result$majority_prediction)

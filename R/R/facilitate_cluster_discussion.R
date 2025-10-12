@@ -71,8 +71,8 @@ facilitate_cluster_discussion <- function(cluster_id,
 
       # Process each line which should be in format: "cluster_id: cell_type"
       for (line in model_preds) {
-        # Skip empty lines
-        if (trimws(line) == "") next
+        # Skip empty lines or NA values
+        if (is.na(line) || is.null(line) || trimws(line) == "") next
 
         # Try to parse the line as "cluster_id: cell_type"
         parts <- strsplit(line, ":", fixed = TRUE)[[1]]

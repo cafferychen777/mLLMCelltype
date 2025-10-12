@@ -47,41 +47,53 @@ def process_anthropic(
         )
         write_log("Recommended migrations:")
         if model.startswith("claude-2"):
-            write_log("  - Use 'claude-sonnet-4-20250514' or 'claude-3-5-sonnet-20241022'")
+            write_log(
+                "  - Use 'claude-sonnet-4-5-20250929' (latest) or 'claude-3-5-sonnet-20241022'"
+            )
         elif model == "claude-3-sonnet":
-            write_log("  - Use 'claude-sonnet-4-20250514' or 'claude-3-7-sonnet-20250219'")
+            write_log(
+                "  - Use 'claude-sonnet-4-5-20250929' (latest) or 'claude-3-7-sonnet-20250219'"
+            )
         elif model == "claude-3-opus":
-            write_log("  - Use 'claude-opus-4-20250514' or 'claude-3-opus-20240229'")
+            write_log("  - Use 'claude-opus-4-1-20250805' (latest) or 'claude-3-opus-20240229'")
 
     # Handle old model names and map to the latest versions
     model_mapping = {
-        # Claude 4 series
+        # Claude 4.5 series (latest - Sep 2025)
+        "claude-sonnet-4-5-20250929": "claude-sonnet-4-5-20250929",
+        "claude-sonnet-4.5": "claude-sonnet-4-5-20250929",
+        "claude-sonnet-latest": "claude-sonnet-4-5-20250929",
+        # Claude 4.1 series (Aug 2025)
+        "claude-opus-4-1-20250805": "claude-opus-4-1-20250805",
+        "claude-opus-4.1": "claude-opus-4-1-20250805",
+        "claude-opus-latest": "claude-opus-4-1-20250805",
+        # Claude 4 series (May 2025)
         "claude-opus-4-20250514": "claude-opus-4-20250514",
         "claude-opus-4": "claude-opus-4-20250514",
         "claude-sonnet-4-20250514": "claude-sonnet-4-20250514",
         "claude-sonnet-4": "claude-sonnet-4-20250514",
-        # Claude 3.7 series (deprecated - use Claude 4 instead)
-        "claude-3-7-sonnet-20250219": "claude-sonnet-4-20250514",
-        "claude-3-7-sonnet": "claude-sonnet-4-20250514",
-        # Claude 3.5 series
+        # Claude 3.7 series (Feb 2025)
+        "claude-3-7-sonnet-20250219": "claude-3-7-sonnet-20250219",
+        "claude-3-7-sonnet": "claude-3-7-sonnet-20250219",
+        # Claude 3.5 series (2024)
         "claude-3-5-sonnet-20241022": "claude-3-5-sonnet-20241022",
         "claude-3-5-sonnet-new": "claude-3-5-sonnet-20241022",
         "claude-3-5-sonnet-20240620": "claude-3-5-sonnet-20240620",
         "claude-3-5-sonnet-old": "claude-3-5-sonnet-20240620",
-        "claude-3-5-sonnet": "claude-3-5-sonnet-20241022",  # Default to new version
+        "claude-3-5-sonnet": "claude-3-5-sonnet-20241022",
         "claude-3-5-sonnet-latest": "claude-3-5-sonnet-20241022",
         "claude-3-5-haiku-20241022": "claude-3-5-haiku-20241022",
         "claude-3-5-haiku": "claude-3-5-haiku-20241022",
         "claude-3-5-haiku-latest": "claude-3-5-haiku-20241022",
-        # Claude 3 series
+        # Claude 3 series (2024)
         "claude-3-opus-20240229": "claude-3-opus-20240229",
         "claude-3-opus": "claude-3-opus-20240229",
         "claude-3-haiku-20240307": "claude-3-haiku-20240307",
         "claude-3-haiku": "claude-3-haiku-20240307",
         # Deprecated models - mapping to recommended alternatives (will be retired July 21, 2025)
-        "claude-2": "claude-3-5-sonnet-20241022",
-        "claude-2.0": "claude-3-5-sonnet-20241022",
-        "claude-2.1": "claude-3-5-sonnet-20241022",
+        "claude-2": "claude-sonnet-4-5-20250929",
+        "claude-2.0": "claude-sonnet-4-5-20250929",
+        "claude-2.1": "claude-sonnet-4-5-20250929",
         "claude-3-sonnet": "claude-3-7-sonnet-20250219",  # Non-versioned, map to versioned
     }
 

@@ -11,7 +11,7 @@ utils::globalVariables(c("custom_models"))
 #' Supported providers and models include:
 #' \itemize{
 #'   \item OpenAI: 'chatgpt-4o-latest', 'gpt-3.5-turbo', 'gpt-4', 'gpt-4-turbo', 'gpt-4.1', 'gpt-4.1-mini', 'gpt-4.1-nano', 'gpt-4o', 'gpt-4o-mini', 'gpt-5', 'gpt-5-mini', 'gpt-5-nano', 'o1', 'o1-mini', 'o1-pro', 'o3', 'o3-mini', 'o4-mini' and more with date variants
-#'   \item Anthropic: 'claude-opus-4-1-20250805', 'claude-opus-4-20250514', 'claude-sonnet-4-20250514', 'claude-3-7-sonnet-20250219', 'claude-3-5-sonnet-20241022', 'claude-3-5-haiku-20241022', 'claude-3-opus-20240229'
+#'   \item Anthropic: 'claude-sonnet-4-5-20250929', 'claude-opus-4-1-20250805', 'claude-sonnet-4-20250514', 'claude-opus-4-20250514', 'claude-3-7-sonnet-20250219', 'claude-3-5-sonnet-20241022', 'claude-3-5-sonnet-20240620', 'claude-3-5-haiku-20241022', 'claude-3-opus-20240229', 'claude-3-haiku-20240307' and more with alias variants (e.g., 'claude-sonnet-4.5', 'claude-opus-4.1')
 #'   \item DeepSeek: 'deepseek-chat', 'deepseek-reasoner'
 #'   \item Google: 'gemini-2.5-pro', 'gemini-2.5-flash', 'gemini-2.0-flash', 'gemini-2.0-flash-lite', 'gemini-1.5-pro-latest', 'gemini-1.5-flash-latest', 'gemini-1.5-flash-8b'
 #'   \item Qwen: 'qwen-max-2025-01-25', 'qwen-turbo', 'qwen-plus'
@@ -22,8 +22,11 @@ utils::globalVariables(c("custom_models"))
 #'   \item OpenRouter: Provides access to models from multiple providers through a single API. Format: 'provider/model-name'
 #'     \itemize{
 #'       \item OpenAI models: 'openai/gpt-4o', 'openai/gpt-4o-mini', 'openai/gpt-4-turbo', 'openai/gpt-4', 'openai/gpt-3.5-turbo'
-#'       \item Anthropic models: 'anthropic/claude-opus-4.1', 'anthropic/claude-opus-4', 'anthropic/claude-sonnet-4', 'anthropic/claude-3.7-sonnet',
-#'         'anthropic/claude-3.5-sonnet', 'anthropic/claude-3.5-haiku', 'anthropic/claude-3-opus'
+#'       \item Anthropic models: 'anthropic/claude-sonnet-4.5', 'anthropic/claude-sonnet-4-5-20250929', 'anthropic/claude-opus-4.1', 'anthropic/claude-opus-4-1-20250805',
+#'         'anthropic/claude-sonnet-4', 'anthropic/claude-sonnet-4-20250514', 'anthropic/claude-opus-4', 'anthropic/claude-opus-4-20250514',
+#'         'anthropic/claude-3.7-sonnet', 'anthropic/claude-3.5-sonnet', 'anthropic/claude-3.5-sonnet-20241022', 'anthropic/claude-3.5-sonnet-20240620',
+#'         'anthropic/claude-3.5-haiku', 'anthropic/claude-3.5-haiku-20241022', 'anthropic/claude-3-opus', 'anthropic/claude-3-opus-20240229',
+#'         'anthropic/claude-3-haiku', 'anthropic/claude-3-haiku-20240307'
 #'       \item Meta models: 'meta-llama/llama-3-70b-instruct', 'meta-llama/llama-3-8b-instruct', 'meta-llama/llama-2-70b-chat'
 #'       \item Google models: 'google/gemini-2.5-pro', 'google/gemini-2.5-flash', 'google/gemini-2.0-flash', 'google/gemini-1.5-pro-latest', 'google/gemini-1.5-flash'
 #'       \item Mistral models: 'mistralai/mistral-large', 'mistralai/mistral-medium', 'mistralai/mistral-small'
@@ -106,15 +109,24 @@ get_provider <- function(model) {
     "o4-mini-deep-research-2025-06-26"
   )
   anthropic_models <- c(
+    # Claude 4.5 series (latest - Sep 2025)
+    "claude-sonnet-4-5-20250929",
+    "claude-sonnet-4.5",
+    # Claude 4.1 series (Aug 2025)
     "claude-opus-4-1-20250805",
+    "claude-opus-4.1",
+    # Claude 4 series (May 2025)
     "claude-opus-4-20250514",
     "claude-opus-4",
     "claude-sonnet-4-20250514",
     "claude-sonnet-4",
+    # Claude 3.7 series (Feb 2025)
     "claude-3-7-sonnet-20250219",
+    # Claude 3.5 series (2024)
     "claude-3-5-sonnet-20241022",
     "claude-3-5-sonnet-20240620",
     "claude-3-5-haiku-20241022",
+    # Claude 3 series (2024)
     "claude-3-opus-20240229",
     "claude-3-haiku-20240307"
   )
@@ -203,16 +215,25 @@ get_provider <- function(model) {
     "anthracite-org/magnum-v2-72b",
     "anthracite-org/magnum-v4-72b",
     "anthropic/claude-3-haiku",
+    "anthropic/claude-3-haiku-20240307",
     "anthropic/claude-3-opus",
+    "anthropic/claude-3-opus-20240229",
     "anthropic/claude-3.5-haiku",
     "anthropic/claude-3.5-haiku-20241022",
     "anthropic/claude-3.5-sonnet",
     "anthropic/claude-3.5-sonnet-20240620",
+    "anthropic/claude-3.5-sonnet-20241022",
     "anthropic/claude-3.7-sonnet",
+    "anthropic/claude-3.7-sonnet-20250219",
     "anthropic/claude-3.7-sonnet:thinking",
     "anthropic/claude-opus-4",
+    "anthropic/claude-opus-4-20250514",
     "anthropic/claude-opus-4.1",
+    "anthropic/claude-opus-4-1-20250805",
     "anthropic/claude-sonnet-4",
+    "anthropic/claude-sonnet-4-20250514",
+    "anthropic/claude-sonnet-4.5",
+    "anthropic/claude-sonnet-4-5-20250929",
     "arcee-ai/coder-large",
     "arcee-ai/maestro-reasoning",
     "arcee-ai/spotlight",

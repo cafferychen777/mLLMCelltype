@@ -2,6 +2,21 @@
 
 All notable changes to the Python implementation of mLLMCelltype will be documented in this file.
 
+## [1.2.5] - 2025-10-12
+
+### Updated
+- Updated Anthropic Claude model list to include latest models:
+  - Added **Claude Sonnet 4.5** (`claude-sonnet-4-5-20250929`) - Latest and most intelligent Sonnet model
+  - Added **Claude Opus 4.1** (`claude-opus-4-1-20250805`) - Enhanced reasoning capabilities
+  - Added Claude 4 series models with date versions
+  - All Sonnet models (4.5, 4, 3.5, 3.7) have the same pricing - recommend using latest version
+- Updated all documentation and examples to use latest model recommendations
+- Updated model migration suggestions for deprecated Claude models
+
+### Notes
+- Claude Sonnet 4.5 provides best overall performance at same price as earlier Sonnet versions
+- All dated model versions (e.g., 20250929) are identical across platforms and do not change
+
 ## [1.2.4] - 2025-06-24
 
 ### Added

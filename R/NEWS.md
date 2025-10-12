@@ -1,5 +1,25 @@
 # mLLMCelltype Changelog
 
+## 1.3.5 (2025-10-12)
+
+### Updated Models
+* Updated Anthropic Claude model support to include latest releases:
+  - Added **Claude Sonnet 4.5** (`claude-sonnet-4-5-20250929`) - Latest and most intelligent Sonnet model, same price as earlier Sonnets
+  - Added **Claude Opus 4.1** (`claude-opus-4-1-20250805`) - Enhanced reasoning capabilities
+  - Added Claude 4 series models (`claude-sonnet-4-20250514`, `claude-opus-4-20250514`)
+  - Added support for both date-versioned and alias formats (e.g., `claude-sonnet-4.5`, `claude-opus-4.1`)
+* Updated all documentation, vignettes, and examples to recommend latest models
+* All Sonnet models (4.5, 4, 3.5, 3.7) have identical pricing - **strongly recommend using Claude Sonnet 4.5 for best performance**
+
+### Documentation Updates
+* Updated model recommendations in usage tutorials and vignettes
+* Updated get_provider() documentation with comprehensive model lists
+* Added clarification that dated model versions are identical across all platforms
+
+### Notes
+* OpenRouter now supports `anthropic/claude-sonnet-4.5` and `anthropic/claude-opus-4.1`
+* All dated model versions (e.g., `20250929`) remain stable and do not change over time
+
 ## 1.3.4 (2025-09-09)
 
 ### Bug Fixes

@@ -70,8 +70,9 @@ consensus_results <- interactive_consensus_annotation(
 ```
 
 **Important Note on `consensus_check_model`**: This parameter is critical for annotation accuracy. The consensus check model evaluates semantic similarity, calculates consensus metrics, and moderates discussions. We strongly recommend using high-performance models like:
-- `claude-opus-4-20250514` (best overall)
-- `claude-3-7-sonnet-20250219` (excellent balance)
+- `claude-sonnet-4-5-20250929` (best overall, latest and most intelligent)
+- `claude-opus-4-1-20250805` (excellent for complex reasoning)
+- `claude-3-7-sonnet-20250219` (great balance)
 - `o1` (advanced reasoning)
 - `gpt-4o` (strong performance)
 - `gemini-2.5-pro` (top-tier)
@@ -313,7 +314,7 @@ For the most accurate annotations:
 
 For good results with lower API costs:
 
-- **Anthropic Claude 3.5 Sonnet** (`claude-3-5-sonnet-20240620`): Good balance of performance and cost
+- **Anthropic Claude 3.5 Sonnet** (`claude-3-5-sonnet-20241022`): Good balance of performance and cost
 - **X.AI Grok-3** (`grok-3`): Competitive performance at lower cost
 - **DeepSeek V3** (`deepseek-v3`): Good performance for specialized tissues
 

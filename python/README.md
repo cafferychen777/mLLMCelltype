@@ -252,7 +252,7 @@ batch_annotations = batch_annotate_clusters(
     marker_genes_list=marker_genes_list,
     species='mouse',                      # Organism species
     provider='anthropic',                 # LLM provider
-    model='claude-sonnet-4-20250514',    # Specific model
+    model='claude-sonnet-4-5-20250929',  # Latest Sonnet model (recommended)
     tissue='brain'                       # Optional tissue context
 )
 
@@ -292,7 +292,7 @@ all_marker_genes = {
 result = interactive_consensus_annotation(
     marker_genes=all_marker_genes,
     species="human",
-    models=["gpt-4o", "claude-sonnet-4-20250514", "gemini-2.5-pro"],
+    models=["gpt-4o", "claude-sonnet-4-5-20250929", "gemini-2.5-pro"],
     clusters_to_analyze=["cluster_0", "cluster_1", "cluster_2", "cluster_3"],  # Only immune clusters
     tissue="peripheral blood",
     verbose=True
@@ -325,7 +325,7 @@ print("=== First Analysis (will be cached) ===")
 result1 = interactive_consensus_annotation(
     marker_genes=marker_genes,
     species="human",
-    models=["gpt-4o", "claude-sonnet-4-20250514"],
+    models=["gpt-4o", "claude-sonnet-4-5-20250929"],
     tissue="peripheral blood",  # General context
     force_rerun=False,  # Use cache if available (default)
     verbose=False
@@ -336,7 +336,7 @@ print("=== Second Analysis (force fresh analysis) ===")
 result2 = interactive_consensus_annotation(
     marker_genes=marker_genes,
     species="human", 
-    models=["gpt-4o", "claude-sonnet-4-20250514"],
+    models=["gpt-4o", "claude-sonnet-4-5-20250929"],
     tissue="peripheral blood",
     additional_context="Patient with autoimmune disease, focus on activated/memory cell states",
     force_rerun=True,  # Force fresh analysis, ignore cache
@@ -364,7 +364,7 @@ controversial_clusters = ["cluster_5", "cluster_8", "cluster_12"]  # Previously 
 result = interactive_consensus_annotation(
     marker_genes=all_marker_genes,
     species="human",
-    models=["gpt-4o", "claude-sonnet-4-20250514", "gemini-2.5-pro", "qwen-max-2025-01-25"],
+    models=["gpt-4o", "claude-sonnet-4-5-20250929", "gemini-2.5-pro", "qwen-max-2025-01-25"],
     clusters_to_analyze=controversial_clusters,  # Focus on specific clusters
     force_rerun=True,                           # Force fresh analysis
     tissue="brain",
@@ -587,7 +587,7 @@ result = interactive_consensus_annotation(
     tissue='peripheral blood',                            # Tissue context
     models=[                                              # Multiple LLM models
         'gpt-4o',                                         # OpenAI direct API
-        'claude-sonnet-4-20250514',                     # Anthropic direct API
+        'claude-sonnet-4-5-20250929',                   # Anthropic direct API (latest)
         'gemini-2.5-pro',                                  # Google direct API
         'qwen-max-2025-01-25',                            # Alibaba direct API
         {"provider": "openrouter", "model": "openai/gpt-4o"},             # OpenRouter (OpenAI)
@@ -733,9 +733,10 @@ The `consensus_model` parameter in `interactive_consensus_annotation` allows you
 #### Recommended Models for Consensus Checking (Ranked by Performance)
 
 1. **Anthropic Claude Models** (Highest recommendation)
-   - `claude-opus-4-20250514` - Best overall performance
-   - `claude-sonnet-4-20250514` - Claude 4 provides superior performance and understanding
-   - `claude-3-5-sonnet-20241022` - Good performance with faster response
+   - `claude-sonnet-4-5-20250929` - **Best overall** (latest, most intelligent, same price as Sonnet 4)
+   - `claude-opus-4-1-20250805` - Excellent for complex reasoning tasks
+   - `claude-sonnet-4-20250514` - Strong performance and understanding
+   - `claude-3-5-sonnet-20241022` - Good performance (Note: same price as Sonnet 4.5, recommend using latest)
 
 2. **OpenAI Models**
    - `o1` / `o1-pro` - Advanced reasoning capabilities
@@ -762,8 +763,8 @@ consensus_results = interactive_consensus_annotation(
     marker_genes=marker_genes,
     species="human",
     tissue="brain",
-    models=["gpt-4o", "claude-sonnet-4-20250514", "gemini-2.5-pro", "qwen-max-2025-01-25"],
-    consensus_model="claude-opus-4-20250514",  # Use the most capable model
+    models=["gpt-4o", "claude-sonnet-4-5-20250929", "gemini-2.5-pro", "qwen-max-2025-01-25"],
+    consensus_model="claude-sonnet-4-5-20250929",  # Use the latest and most capable Sonnet model
     consensus_threshold=0.7,
     entropy_threshold=1.0
 )
@@ -774,7 +775,7 @@ consensus_results = interactive_consensus_annotation(
     species="mouse",
     tissue="liver",
     models=["gpt-4o", "gemini-2.5-pro", "qwen-max-2025-01-25"],
-    consensus_model={"provider": "anthropic", "model": "claude-sonnet-4-20250514"},
+    consensus_model={"provider": "anthropic", "model": "claude-sonnet-4-5-20250929"},
     consensus_threshold=0.7,
     entropy_threshold=1.0
 )
@@ -784,7 +785,7 @@ consensus_results = interactive_consensus_annotation(
     marker_genes=marker_genes,
     species="human",
     tissue="heart",
-    models=["gpt-4o", "claude-sonnet-4-20250514", "qwen-max-2025-01-25"],
+    models=["gpt-4o", "claude-sonnet-4-5-20250929", "qwen-max-2025-01-25"],
     consensus_model={"provider": "google", "model": "gemini-2.5-pro"},
     consensus_threshold=0.7,
     entropy_threshold=1.0
@@ -795,7 +796,7 @@ consensus_results = interactive_consensus_annotation(
     marker_genes=marker_genes,
     species="human",
     tissue="immune cells",
-    models=["gpt-4o", "claude-sonnet-4-20250514", "gemini-2.5-pro"],
+    models=["gpt-4o", "claude-sonnet-4-5-20250929", "gemini-2.5-pro"],
     consensus_model="o1",  # OpenAI's advanced reasoning model
     consensus_threshold=0.7,
     entropy_threshold=1.0,
@@ -807,8 +808,8 @@ consensus_results = interactive_consensus_annotation(
     marker_genes=marker_genes,
     species="human",
     tissue="blood",
-    models=["gpt-4o", "claude-sonnet-4-20250514", "gemini-2.5-pro"],
-    # If not specified, defaults to qwen-max-2025-01-25 with claude-3-5-sonnet-latest as fallback
+    models=["gpt-4o", "claude-sonnet-4-5-20250929", "gemini-2.5-pro"],
+    # If not specified, defaults to qwen-max-2025-01-25 with claude-sonnet-4-5-20250929 as fallback
     consensus_threshold=0.7,
     entropy_threshold=1.0
 )
@@ -823,7 +824,7 @@ consensus_results = interactive_consensus_annotation(
 
 2. **Model Availability**: Ensure you have API access to your chosen consensus model. The system will use fallback models if the primary choice is unavailable:
    - Primary: Your specified model or `qwen-max-2025-01-25` (default)
-   - Fallback: `claude-3-5-sonnet-latest`
+   - Fallback: `claude-sonnet-4-5-20250929`
 
 3. **Consistency**: Use the same high-performance model for all consensus checks within a project to ensure consistent evaluation criteria.
 
@@ -996,7 +997,7 @@ import mllmcelltype as mct
 consensus_results = mct.interactive_consensus_annotation(
     marker_genes=marker_genes,
     species='human',
-    models=['gpt-4o', 'claude-sonnet-4-20250514', 'gemini-2.5-pro', 'openai/gpt-4o'],  # Can include OpenRouter models
+    models=['gpt-4o', 'claude-sonnet-4-5-20250929', 'gemini-2.5-pro', 'openai/gpt-4o'],  # Can include OpenRouter models
     consensus_threshold=0.7
 )
 
