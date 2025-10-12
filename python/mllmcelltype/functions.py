@@ -34,6 +34,9 @@ PROVIDER_FUNCTIONS = {
 # Define supported models as literals for better type checking
 ModelType = Literal[
     # OpenAI models
+    "gpt-5",
+    "gpt-5-mini",
+    "gpt-5-nano",
     "gpt-4o",
     "gpt-4-turbo",
     "gpt-4.1",
@@ -42,6 +45,8 @@ ModelType = Literal[
     "o1-pro",
     "o4-mini",
     # Anthropic models
+    "claude-sonnet-4-5-20250929",
+    "claude-opus-4-1-20250805",
     "claude-opus-4-20250514",
     "claude-sonnet-4-20250514",
     "claude-sonnet-4-20250514",
@@ -88,6 +93,9 @@ def get_provider(model: str) -> str:
     # Common model prefixes for each provider (based on R package and API verification)
     providers = {
         "openai": [
+            "gpt-5",
+            "gpt-5-mini",
+            "gpt-5-nano",
             "gpt-4o",
             "gpt-4o-mini",
             "gpt-4.1",
@@ -107,6 +115,8 @@ def get_provider(model: str) -> str:
             "chatgpt-4o-latest",
         ],
         "anthropic": [
+            "claude-sonnet-4-5-20250929",
+            "claude-opus-4-1-20250805",
             "claude-opus-4-20250514",
             "claude-opus-4",
             "claude-sonnet-4-20250514",

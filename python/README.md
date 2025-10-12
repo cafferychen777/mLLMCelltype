@@ -20,7 +20,7 @@ Single-cell RNA sequencing has revolutionized our understanding of cellular hete
 
 ### Multi-LLM Architecture
 - **Comprehensive Provider Support**:
-  - OpenAI (GPT-4o, O1, etc.)
+  - OpenAI (GPT-5, O1, etc.)
   - Anthropic (Claude 4 Opus, Claude 4 Sonnet, Claude 4 Sonnet, Claude 3.5 Haiku, etc.)
   - Google (Gemini 2.5 Pro, Gemini 2.5 Flash, Gemini 2.0 Flash, Gemini 1.5 Pro, etc.)
   - Alibaba (Qwen-Max-2025-01-25, Qwen-Plus, etc.)
@@ -31,7 +31,7 @@ Single-cell RNA sequencing has revolutionized our understanding of cellular hete
   - X.AI (Grok-3-latest)
   - OpenRouter (Access to multiple models through a single API)
     - Supports models from OpenAI, Anthropic, Meta, Mistral and more
-    - Format: 'provider/model-name' (e.g., 'openai/gpt-4o', 'anthropic/claude-3-opus')
+    - Format: 'provider/model-name' (e.g., 'openai/gpt-5', 'anthropic/claude-3-opus')
 - **Seamless Integration**:
   - Works directly with Scanpy/AnnData workflows
   - Compatible with scverse ecosystem
@@ -95,7 +95,7 @@ annotations = annotate_clusters(
     marker_genes=marker_genes_df,  # DataFrame or dictionary of marker genes
     species='human',               # Organism species
     provider='openai',            # LLM provider
-    model='gpt-4o',               # Specific model
+    model='gpt-5',               # Specific model
     tissue='brain'                # Tissue context (optional but recommended)
 )
 
@@ -158,7 +158,7 @@ annotations = annotate_clusters(
     marker_genes=marker_genes,
     species='human',
     provider='openai',
-    model='gpt-4o',
+    model='gpt-5',
     api_key='your-api-key',
     base_urls='https://your-proxy.com/v1/chat/completions'  # Single URL for all
 )
@@ -180,7 +180,7 @@ base_urls = {
 consensus_results = interactive_consensus_annotation(
     marker_genes=marker_genes,
     species='human',
-    models=['gpt-4o', 'claude-3-opus', 'qwen-max'],
+    models=['gpt-5', 'claude-3-opus', 'qwen-max'],
     api_keys={
         'openai': 'your-openai-key',
         'anthropic': 'your-anthropic-key',
@@ -226,7 +226,7 @@ consensus_results = interactive_consensus_annotation(
     marker_genes=marker_genes,
     species='human',
     models=[
-        'gpt-4o',           # Through proxy
+        'gpt-5',           # Through proxy
         'claude-3-opus',    # Through proxy
         'qwen-max',         # Direct access with smart endpoint selection
         'deepseek-chat',    # Direct access
@@ -292,7 +292,7 @@ all_marker_genes = {
 result = interactive_consensus_annotation(
     marker_genes=all_marker_genes,
     species="human",
-    models=["gpt-4o", "claude-sonnet-4-5-20250929", "gemini-2.5-pro"],
+    models=["gpt-5", "claude-sonnet-4-5-20250929", "gemini-2.5-pro"],
     clusters_to_analyze=["cluster_0", "cluster_1", "cluster_2", "cluster_3"],  # Only immune clusters
     tissue="peripheral blood",
     verbose=True
@@ -325,7 +325,7 @@ print("=== First Analysis (will be cached) ===")
 result1 = interactive_consensus_annotation(
     marker_genes=marker_genes,
     species="human",
-    models=["gpt-4o", "claude-sonnet-4-5-20250929"],
+    models=["gpt-5", "claude-sonnet-4-5-20250929"],
     tissue="peripheral blood",  # General context
     force_rerun=False,  # Use cache if available (default)
     verbose=False
@@ -336,7 +336,7 @@ print("=== Second Analysis (force fresh analysis) ===")
 result2 = interactive_consensus_annotation(
     marker_genes=marker_genes,
     species="human", 
-    models=["gpt-4o", "claude-sonnet-4-5-20250929"],
+    models=["gpt-5", "claude-sonnet-4-5-20250929"],
     tissue="peripheral blood",
     additional_context="Patient with autoimmune disease, focus on activated/memory cell states",
     force_rerun=True,  # Force fresh analysis, ignore cache
@@ -364,7 +364,7 @@ controversial_clusters = ["cluster_5", "cluster_8", "cluster_12"]  # Previously 
 result = interactive_consensus_annotation(
     marker_genes=all_marker_genes,
     species="human",
-    models=["gpt-4o", "claude-sonnet-4-5-20250929", "gemini-2.5-pro", "qwen-max-2025-01-25"],
+    models=["gpt-5", "claude-sonnet-4-5-20250929", "gemini-2.5-pro", "qwen-max-2025-01-25"],
     clusters_to_analyze=controversial_clusters,  # Focus on specific clusters
     force_rerun=True,                           # Force fresh analysis
     tissue="brain",
@@ -403,12 +403,12 @@ marker_genes = {
     "3": ["CD14", "LYZ", "CSF1R", "ITGAM", "CD68", "FCGR3A"]      # Monocytes
 }
 
-# Annotate using OpenAI's GPT-4o via OpenRouter
+# Annotate using OpenAI's GPT-5 via OpenRouter
 openai_annotations = annotate_clusters(
     marker_genes=marker_genes,
     species='human',
     tissue='peripheral blood',
-    provider_config={"provider": "openrouter", "model": "openai/gpt-4o"}
+    provider_config={"provider": "openrouter", "model": "openai/gpt-5"}
 )
 
 # Annotate using Anthropic's Claude model via OpenRouter
@@ -438,7 +438,7 @@ free_model_annotations = annotate_clusters(
 # Print annotations from different models
 for cluster in marker_genes.keys():
     print(f"Cluster {cluster}:")
-    print(f"  OpenAI GPT-4o: {openai_annotations[cluster]}")
+    print(f"  OpenAI GPT-5: {openai_annotations[cluster]}")
     print(f"  Anthropic Claude: {anthropic_annotations[cluster]}")
     print(f"  Meta Llama: {meta_annotations[cluster]}")
     print(f"  DeepSeek (free): {free_model_annotations[cluster]}")
@@ -457,7 +457,7 @@ result = interactive_consensus_annotation(
     species='human',
     tissue='peripheral blood',
     models=[
-        {"provider": "openrouter", "model": "openai/gpt-4o"},             # OpenRouter OpenAI (paid)
+        {"provider": "openrouter", "model": "openai/gpt-5"},             # OpenRouter OpenAI (paid)
         {"provider": "openrouter", "model": "anthropic/claude-3-opus"},   # OpenRouter Anthropic (paid)
         {"provider": "openrouter", "model": "meta-llama/llama-3-70b-instruct"}  # OpenRouter Meta (paid)
     ],
@@ -586,11 +586,11 @@ result = interactive_consensus_annotation(
     species='human',                                      # Organism species
     tissue='peripheral blood',                            # Tissue context
     models=[                                              # Multiple LLM models
-        'gpt-4o',                                         # OpenAI direct API
+        'gpt-5',                                         # OpenAI direct API
         'claude-sonnet-4-5-20250929',                   # Anthropic direct API (latest)
         'gemini-2.5-pro',                                  # Google direct API
         'qwen-max-2025-01-25',                            # Alibaba direct API
-        {"provider": "openrouter", "model": "openai/gpt-4o"},             # OpenRouter (OpenAI)
+        {"provider": "openrouter", "model": "openai/gpt-5"},             # OpenRouter (OpenAI)
         {"provider": "openrouter", "model": "anthropic/claude-3-opus"},   # OpenRouter (Anthropic)
         {"provider": "openrouter", "model": "meta-llama/llama-3-70b-instruct"}  # OpenRouter (Meta)
     ],
@@ -614,8 +614,8 @@ result = interactive_consensus_annotation(
     species='human',
     tissue='lymphoid tissue',
     models=[
-        'gpt-4o',                                                      # Direct API (paid)
-        {"provider": "openrouter", "model": "openai/gpt-4o"},          # OpenRouter (paid)
+        'gpt-5',                                                      # Direct API (paid)
+        {"provider": "openrouter", "model": "openai/gpt-5"},          # OpenRouter (paid)
         {"provider": "openrouter", "model": "deepseek/deepseek-chat:free"},  # OpenRouter (free)
     ],
     consensus_threshold=0.8,                # Higher threshold to force discussion
@@ -650,7 +650,7 @@ openai_via_openrouter = annotate_clusters(
     marker_genes=marker_genes,
     species='human',
     tissue='peripheral blood',
-    provider_config={"provider": "openrouter", "model": "openai/gpt-4o"}
+    provider_config={"provider": "openrouter", "model": "openai/gpt-5"}
 )
 
 anthropic_via_openrouter = annotate_clusters(
@@ -688,7 +688,7 @@ import seaborn as sns
 
 # Compare results from different LLM providers
 model_predictions = {
-    "OpenAI (GPT-4o)": results_openai,
+    "OpenAI (GPT-5)": results_openai,
     "Anthropic (Claude 4)": results_claude,
     "Google (Gemini 2.5 Pro)": results_gemini,
     "Alibaba (Qwen-Max-2025-01-25)": results_qwen
@@ -733,10 +733,8 @@ The `consensus_model` parameter in `interactive_consensus_annotation` allows you
 #### Recommended Models for Consensus Checking (Ranked by Performance)
 
 1. **Anthropic Claude Models** (Highest recommendation)
-   - `claude-sonnet-4-5-20250929` - **Best overall** (latest, most intelligent, same price as Sonnet 4)
+   - `claude-sonnet-4-5-20250929` - **Best overall** (latest, most intelligent)
    - `claude-opus-4-1-20250805` - Excellent for complex reasoning tasks
-   - `claude-sonnet-4-20250514` - Strong performance and understanding
-   - `claude-3-5-sonnet-20241022` - Good performance (Note: same price as Sonnet 4.5, recommend using latest)
 
 2. **OpenAI Models**
    - `o1` / `o1-pro` - Advanced reasoning capabilities
@@ -763,7 +761,7 @@ consensus_results = interactive_consensus_annotation(
     marker_genes=marker_genes,
     species="human",
     tissue="brain",
-    models=["gpt-4o", "claude-sonnet-4-5-20250929", "gemini-2.5-pro", "qwen-max-2025-01-25"],
+    models=["gpt-5", "claude-sonnet-4-5-20250929", "gemini-2.5-pro", "qwen-max-2025-01-25"],
     consensus_model="claude-sonnet-4-5-20250929",  # Use the latest and most capable Sonnet model
     consensus_threshold=0.7,
     entropy_threshold=1.0
@@ -774,7 +772,7 @@ consensus_results = interactive_consensus_annotation(
     marker_genes=marker_genes,
     species="mouse",
     tissue="liver",
-    models=["gpt-4o", "gemini-2.5-pro", "qwen-max-2025-01-25"],
+    models=["gpt-5", "gemini-2.5-pro", "qwen-max-2025-01-25"],
     consensus_model={"provider": "anthropic", "model": "claude-sonnet-4-5-20250929"},
     consensus_threshold=0.7,
     entropy_threshold=1.0
@@ -785,7 +783,7 @@ consensus_results = interactive_consensus_annotation(
     marker_genes=marker_genes,
     species="human",
     tissue="heart",
-    models=["gpt-4o", "claude-sonnet-4-5-20250929", "qwen-max-2025-01-25"],
+    models=["gpt-5", "claude-sonnet-4-5-20250929", "qwen-max-2025-01-25"],
     consensus_model={"provider": "google", "model": "gemini-2.5-pro"},
     consensus_threshold=0.7,
     entropy_threshold=1.0
@@ -796,7 +794,7 @@ consensus_results = interactive_consensus_annotation(
     marker_genes=marker_genes,
     species="human",
     tissue="immune cells",
-    models=["gpt-4o", "claude-sonnet-4-5-20250929", "gemini-2.5-pro"],
+    models=["gpt-5", "claude-sonnet-4-5-20250929", "gemini-2.5-pro"],
     consensus_model="o1",  # OpenAI's advanced reasoning model
     consensus_threshold=0.7,
     entropy_threshold=1.0,
@@ -808,7 +806,7 @@ consensus_results = interactive_consensus_annotation(
     marker_genes=marker_genes,
     species="human",
     tissue="blood",
-    models=["gpt-4o", "claude-sonnet-4-5-20250929", "gemini-2.5-pro"],
+    models=["gpt-5", "claude-sonnet-4-5-20250929", "gemini-2.5-pro"],
     # If not specified, defaults to qwen-max-2025-01-25 with claude-sonnet-4-5-20250929 as fallback
     consensus_threshold=0.7,
     entropy_threshold=1.0
@@ -878,7 +876,7 @@ annotations = annotate_clusters(
     marker_genes=marker_genes_df,
     species='human',                # Organism species
     provider='openai',              # LLM provider
-    model='gpt-4o',                # Specific model
+    model='gpt-5',                # Specific model
     prompt_template=custom_template # Custom instruction template
 )
 ```
@@ -917,7 +915,7 @@ json_annotations = annotate_clusters(
     species='human',                # Organism species
     tissue='lung',                  # Tissue context
     provider='openai',              # LLM provider
-    model='gpt-4o',                # Specific model
+    model='gpt-5',                # Specific model
     prompt_template=json_template   # JSON response template
 )
 
@@ -976,7 +974,7 @@ annotations = mct.annotate_clusters(
     marker_genes=marker_genes,
     species='human',
     provider='openai',
-    model='gpt-4o'
+    model='gpt-5'
 )
 
 # Add annotations back to AnnData object
@@ -997,7 +995,7 @@ import mllmcelltype as mct
 consensus_results = mct.interactive_consensus_annotation(
     marker_genes=marker_genes,
     species='human',
-    models=['gpt-4o', 'claude-sonnet-4-5-20250929', 'gemini-2.5-pro', 'openai/gpt-4o'],  # Can include OpenRouter models
+    models=['gpt-5', 'claude-sonnet-4-5-20250929', 'gemini-2.5-pro', 'openai/gpt-5'],  # Can include OpenRouter models
     consensus_threshold=0.7
 )
 

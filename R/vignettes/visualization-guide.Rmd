@@ -1213,7 +1213,7 @@ encode_cell_types <- function(prediction_matrix) {
 }
 
 # Create and plot the heatmap
-models <- c("claude-3-7-sonnet-20250219", "gpt-4o", "gemini-1.5-pro")
+models <- c("claude-sonnet-4-5-20250929", "gpt-5", "gemini-1.5-pro")
 prediction_matrix <- create_prediction_matrix(consensus_results, models)
 encoded_data <- encode_cell_types(prediction_matrix)
 

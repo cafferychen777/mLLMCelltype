@@ -88,8 +88,8 @@ consensus_results <- interactive_consensus_annotation(
   input = pbmc_markers,
   tissue_name = "human PBMC",  # provide tissue context
   models = c(
-    "claude-3-7-sonnet-20250219",  # Anthropic
-    "gpt-4o",                   # OpenAI
+    "claude-sonnet-4-5-20250929",  # Anthropic
+    "gpt-5",                   # OpenAI
     "gemini-2.5-pro"            # Google
   ),
   api_keys = list(
@@ -100,7 +100,7 @@ consensus_results <- interactive_consensus_annotation(
   top_gene_count = 10,
   controversy_threshold = 1.0,
   entropy_threshold = 1.0,
-  consensus_check_model = "claude-3-7-sonnet-20250219",  # Use a reliable model for consensus checking
+  consensus_check_model = "claude-sonnet-4-5-20250929",  # Use a reliable model for consensus checking
   cache_dir = NULL  # Uses default system cache directory
 )
 
@@ -152,8 +152,8 @@ print_consensus_summary(consensus_results)
 
 mLLMCelltype supports various LLM models:
 
-- **OpenAI**: gpt-4o, gpt-4o-mini, gpt-4.1, gpt-4.1-mini, gpt-4.1-nano, gpt-4-turbo, gpt-3.5-turbo, o1, o1-mini, o1-preview, o1-pro
-- **Anthropic**: claude-sonnet-4-5-20250929, claude-opus-4-1-20250805, claude-sonnet-4-20250514, claude-opus-4-20250514, claude-3-7-sonnet-20250219, claude-3-5-sonnet-20241022, claude-3-5-haiku-20241022, claude-3-opus-20240229
+- **OpenAI**: gpt-5, gpt-5-mini, gpt-5-nano, gpt-4.1, gpt-4.1-mini, gpt-4.1-nano, gpt-4o, gpt-4o-mini, gpt-4-turbo, gpt-3.5-turbo, o1, o1-mini, o1-preview, o1-pro
+- **Anthropic**: claude-sonnet-4-5-20250929, claude-opus-4-1-20250805, claude-sonnet-4-20250514, claude-opus-4-20250514, claude-sonnet-4-5-20250929, claude-sonnet-4-5-20250929, claude-3-5-haiku-20241022, claude-3-opus-20240229
 - **DeepSeek**: deepseek-chat, deepseek-reasoner
 - **Google**: gemini-2.5-pro, gemini-2.0-flash, gemini-2.0-flash-exp, gemini-1.5-pro, gemini-1.5-flash
 - **Qwen**: qwen-max-2025-01-25, qwen3-72b
@@ -174,7 +174,7 @@ If you only want to use a single LLM model instead of the consensus approach:
 single_model_results <- annotate_with_single_model(
   input = pbmc_markers,
   tissue_name = "human PBMC",
-  model = "claude-3-7-sonnet-20250219",
+  model = "claude-sonnet-4-5-20250929",
   api_key = Sys.getenv("ANTHROPIC_API_KEY"),
   top_gene_count = 10,
   cache_dir = NULL  # Uses default system cache directory
@@ -199,7 +199,7 @@ DimPlot(pbmc, group.by = "single_model_cell_type", label = TRUE) +
 custom_consensus_results <- interactive_consensus_annotation(
   input = pbmc_markers,
   tissue_name = "human PBMC",
-  models = c("claude-3-7-sonnet-20250219", "gpt-4o", "gemini-2.5-pro"),
+  models = c("claude-sonnet-4-5-20250929", "gpt-5", "gemini-2.5-pro"),
   api_keys = list(
     anthropic = Sys.getenv("ANTHROPIC_API_KEY"),
     openai = Sys.getenv("OPENAI_API_KEY"),
@@ -209,7 +209,7 @@ custom_consensus_results <- interactive_consensus_annotation(
   controversy_threshold = 0.7,        # Threshold for controversy detection
   entropy_threshold = 0.7,            # Entropy threshold for controversy detection
   max_discussion_rounds = 2,          # Maximum rounds of discussion
-  consensus_check_model = "claude-3-7-sonnet-20250219",  # Use a reliable model for consensus checking
+  consensus_check_model = "claude-sonnet-4-5-20250929",  # Use a reliable model for consensus checking
   cache_dir = NULL  # Uses default system cache directory
 )
 ```
@@ -229,7 +229,7 @@ register_custom_provider(
 # Use the custom provider
 results <- annotate_cell_types(
   seurat_obj = seurat_obj,
-  models = c("my-model-1", "claude-3-7-sonnet-20250219"),
+  models = c("my-model-1", "claude-sonnet-4-5-20250929"),
   # other parameters
 )
 ```

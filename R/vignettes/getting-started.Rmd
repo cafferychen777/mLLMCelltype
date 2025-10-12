@@ -71,7 +71,7 @@ Alternatively, you can provide API keys directly in function calls:
 results <- annotate_cell_types(
   input = markers,
   tissue_name = "human PBMC",
-  model = "claude-3-7-sonnet-20250219",
+  model = "claude-sonnet-4-5-20250929",
   api_key = "your-anthropic-api-key",  # Direct API key
   top_gene_count = 10
 )
@@ -140,7 +140,7 @@ The `annotate_cell_types` function has the following parameters:
 |-----------|-------------|---------------|
 | `input` | Marker gene data (data frame, list, or file path) | (required) |
 | `tissue_name` | Tissue name (e.g., "human PBMC", "mouse brain") | `NULL` |
-| `model` | LLM model to use | `"gpt-4o"` |
+| `model` | LLM model to use | `"gpt-5"` |
 | `api_key` | API key (if not set in environment) | `NA` |
 | `top_gene_count` | Number of top genes per cluster to use | `10` |
 | `debug` | Whether to print debugging information | `FALSE` |
@@ -164,7 +164,7 @@ markers <- data.frame(
 results <- annotate_cell_types(
   input = markers,
   tissue_name = "human PBMC",
-  model = "claude-3-7-sonnet-20250219",
+  model = "claude-sonnet-4-5-20250929",
   api_key = Sys.getenv("ANTHROPIC_API_KEY"),
   top_gene_count = 10,
   debug = FALSE  # Set to TRUE for more detailed output
@@ -190,8 +190,8 @@ For more reliable annotations, you can use multiple models and create a consensu
 ```{r}
 # Define models to use
 models <- c(
-  "claude-3-7-sonnet-20250219",  # Anthropic
-  "gpt-4o",                      # OpenAI
+  "claude-sonnet-4-5-20250929",  # Anthropic
+  "gpt-5",                      # OpenAI
   "gemini-1.5-pro"               # Google
 )
 
@@ -225,7 +225,7 @@ consensus_results <- interactive_consensus_annotation(
   api_keys = api_keys,
   controversy_threshold = 0.7,
   entropy_threshold = 1.0,
-  consensus_check_model = "claude-3-7-sonnet-20250219"
+  consensus_check_model = "claude-sonnet-4-5-20250929"
 )
 
 # Print consensus results
@@ -249,18 +249,18 @@ Cluster 0:
   Consensus proportion: 1.0
   Entropy: 0.0
   Model predictions:
-    - claude-3-7-sonnet-20250219: T cells
-    - gpt-4o: T cells
-    - gemini-1.5-pro: T cells
+    - claude-sonnet-4-5-20250929: T cells
+    - gpt-5: T cells
+    - gemini-2.5-pro: T cells
 
 Cluster 1:
   Final annotation: Monocytes
   Consensus proportion: 1.0
   Entropy: 0.0
   Model predictions:
-    - claude-3-7-sonnet-20250219: Monocytes
-    - gpt-4o: Monocytes
-    - gemini-1.5-pro: Monocytes
+    - claude-sonnet-4-5-20250929: Monocytes
+    - gpt-5: Monocytes
+    - gemini-2.5-pro: Monocytes
 ```
 
 ## Integrating with Seurat

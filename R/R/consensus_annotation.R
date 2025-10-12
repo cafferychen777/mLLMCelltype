@@ -592,8 +592,8 @@ combine_results <- function(initial_results, controversy_results, discussion_res
 #' @param models Character vector of model names to use for consensus annotation. 
 #'   Minimum 2 models required. Supports models from OpenAI, Anthropic, DeepSeek, 
 #'   Google, Alibaba, Stepfun, Zhipu, MiniMax, X.AI, and OpenRouter.
-#' @param api_keys Named list of API keys. Can use provider names as keys 
-#'   (e.g., "openai", "anthropic") or model names as keys (e.g., "gpt-4o").
+#' @param api_keys Named list of API keys. Can use provider names as keys
+#'   (e.g., "openai", "anthropic") or model names as keys (e.g., "gpt-5").
 #' @param top_gene_count Integer specifying the number of top marker genes to use 
 #'   for annotation per cluster (default: 10).
 #' @param controversy_threshold Numeric value between 0 and 1 for consensus proportion 
@@ -627,14 +627,10 @@ combine_results <- function(initial_results, controversy_results, discussion_res
 #' @export
 interactive_consensus_annotation <- function(input,
                                            tissue_name = NULL,
-                                           models = c("claude-sonnet-4-20250514",
-                                                     "claude-3-7-sonnet-20250219",
-                                                     "claude-3-5-sonnet-20241022",
-                                                     "claude-3-5-haiku-20241022",
-                                                     "gemini-2.0-flash",
-                                                     "gemini-1.5-pro",
-                                                     "qwen-max-2025-01-25",
-                                                     "gpt-4o",
+                                           models = c("claude-sonnet-4-5-20250929",
+                                                     "claude-opus-4-1-20250805",
+                                                     "gpt-5",
+                                                     "gemini-2.5-pro",
                                                      "grok-3-latest"),
                                            api_keys,
                                            top_gene_count = 10,

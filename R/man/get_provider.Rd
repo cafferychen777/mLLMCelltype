@@ -18,10 +18,10 @@ It's used internally to determine which base_url to use from a list of provider-
 Supported providers and models include:
 \itemize{
 \item OpenAI: 'chatgpt-4o-latest', 'gpt-3.5-turbo', 'gpt-4', 'gpt-4-turbo', 'gpt-4.1', 'gpt-4.1-mini', 'gpt-4.1-nano', 'gpt-4o', 'gpt-4o-mini', 'gpt-5', 'gpt-5-mini', 'gpt-5-nano', 'o1', 'o1-mini', 'o1-pro', 'o3', 'o3-mini', 'o4-mini' and more with date variants
-\item Anthropic: 'claude-opus-4-1-20250805', 'claude-opus-4-20250514', 'claude-sonnet-4-20250514', 'claude-3-7-sonnet-20250219', 'claude-3-5-sonnet-20241022', 'claude-3-5-haiku-20241022', 'claude-3-opus-20240229'
+\item Anthropic: 'claude-sonnet-4-5-20250929', 'claude-opus-4-1-20250805', 'claude-sonnet-4-20250514', 'claude-opus-4-20250514', 'claude-3-7-sonnet-20250219', 'claude-3-5-sonnet-20241022', 'claude-3-5-sonnet-20240620', 'claude-3-5-haiku-20241022', 'claude-3-opus-20240229', 'claude-3-haiku-20240307' and more with alias variants (e.g., 'claude-sonnet-4.5', 'claude-opus-4.1')
 \item DeepSeek: 'deepseek-chat', 'deepseek-reasoner'
 \item Google: 'gemini-2.5-pro', 'gemini-2.5-flash', 'gemini-2.0-flash', 'gemini-2.0-flash-lite', 'gemini-1.5-pro-latest', 'gemini-1.5-flash-latest', 'gemini-1.5-flash-8b'
-\item Qwen: 'qwen-max-2025-01-25', 'qwen3-72b'
+\item Qwen: 'qwen-max-2025-01-25', 'qwen-turbo', 'qwen-plus'
 \item Stepfun: 'step-2-mini', 'step-2-16k', 'step-1-8k'
 \item Zhipu: 'glm-4-plus', 'glm-3-turbo'
 \item MiniMax: 'minimax-text-01'
@@ -29,8 +29,11 @@ Supported providers and models include:
 \item OpenRouter: Provides access to models from multiple providers through a single API. Format: 'provider/model-name'
 \itemize{
 \item OpenAI models: 'openai/gpt-4o', 'openai/gpt-4o-mini', 'openai/gpt-4-turbo', 'openai/gpt-4', 'openai/gpt-3.5-turbo'
-\item Anthropic models: 'anthropic/claude-opus-4.1', 'anthropic/claude-opus-4', 'anthropic/claude-sonnet-4', 'anthropic/claude-3.7-sonnet',
-'anthropic/claude-3.5-sonnet', 'anthropic/claude-3.5-haiku', 'anthropic/claude-3-opus'
+\item Anthropic models: 'anthropic/claude-sonnet-4.5', 'anthropic/claude-sonnet-4-5-20250929', 'anthropic/claude-opus-4.1', 'anthropic/claude-opus-4-1-20250805',
+'anthropic/claude-sonnet-4', 'anthropic/claude-sonnet-4-20250514', 'anthropic/claude-opus-4', 'anthropic/claude-opus-4-20250514',
+'anthropic/claude-3.7-sonnet', 'anthropic/claude-3.5-sonnet', 'anthropic/claude-3.5-sonnet-20241022', 'anthropic/claude-3.5-sonnet-20240620',
+'anthropic/claude-3.5-haiku', 'anthropic/claude-3.5-haiku-20241022', 'anthropic/claude-3-opus', 'anthropic/claude-3-opus-20240229',
+'anthropic/claude-3-haiku', 'anthropic/claude-3-haiku-20240307'
 \item Meta models: 'meta-llama/llama-3-70b-instruct', 'meta-llama/llama-3-8b-instruct', 'meta-llama/llama-2-70b-chat'
 \item Google models: 'google/gemini-2.5-pro', 'google/gemini-2.5-flash', 'google/gemini-2.0-flash', 'google/gemini-1.5-pro-latest', 'google/gemini-1.5-flash'
 \item Mistral models: 'mistralai/mistral-large', 'mistralai/mistral-medium', 'mistralai/mistral-small'

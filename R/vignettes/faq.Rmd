@@ -343,7 +343,7 @@ custom_prompt <- create_annotation_prompt(
 # Use the custom prompt directly
 response <- get_model_response(
   prompt = custom_prompt,
-  model = "claude-3-7-sonnet-20250219",
+  model = "claude-sonnet-4-5-20250929",
   api_key = your_api_key
 )
 ```

@@ -48,7 +48,7 @@ utils::globalVariables(c("cluster", "avg_log2FC", "gene"))
 #
 #'   'mouse brain'). This helps provide context for more accurate annotations.
 #
-#'   - OpenAI: 'gpt-4o', 'gpt-4o-mini', 'gpt-4.1', 'gpt-4.1-mini', 'gpt-4.1-nano', 'gpt-4-turbo', 'gpt-3.5-turbo', 'o1', 'o1-mini', 'o1-preview', 'o1-pro'
+#'   - OpenAI: 'gpt-5', 'gpt-5-mini', 'gpt-5-nano', 'gpt-4o', 'gpt-4o-mini', 'gpt-4.1', 'gpt-4.1-mini', 'gpt-4.1-nano', 'gpt-4-turbo', 'gpt-3.5-turbo', 'o1', 'o1-mini', 'o1-preview', 'o1-pro'
 #'   - Anthropic: 'claude-opus-4-1-20250805', 'claude-sonnet-4-20250514', 'claude-opus-4-20250514', 'claude-3-7-sonnet-20250219', 'claude-3-5-sonnet-20241022',
 #'     'claude-3-5-haiku-20241022', 'claude-3-opus-20240229'
 #'   - DeepSeek: 'deepseek-chat', 'deepseek-r1', 'deepseek-r1-zero', 'deepseek-reasoner'
@@ -59,7 +59,7 @@ utils::globalVariables(c("cluster", "avg_log2FC", "gene"))
 #'   - MiniMax: 'minimax-text-01'
 #'   - X.AI: 'grok-3-latest', 'grok-3', 'grok-3-fast', 'grok-3-fast-latest', 'grok-3-mini', 'grok-3-mini-latest', 'grok-3-mini-fast', 'grok-3-mini-fast-latest'
 #'   - OpenRouter: Provides access to models from multiple providers through a single API. Format: 'provider/model-name'
-#'     - OpenAI models: 'openai/gpt-4o', 'openai/gpt-4o-mini', 'openai/gpt-4-turbo', 'openai/gpt-4', 'openai/gpt-3.5-turbo'
+#'     - OpenAI models: 'openai/gpt-5', 'openai/gpt-5-mini', 'openai/gpt-4o', 'openai/gpt-4o-mini', 'openai/gpt-4-turbo', 'openai/gpt-4', 'openai/gpt-3.5-turbo'
 #'     - Anthropic models: 'anthropic/claude-opus-4.1', 'anthropic/claude-sonnet-4', 'anthropic/claude-opus-4', 'anthropic/claude-3.7-sonnet',
 #'       'anthropic/claude-3.5-sonnet', 'anthropic/claude-3.5-haiku', 'anthropic/claude-3-opus'
 #'     - Meta models: 'meta-llama/llama-3-70b-instruct', 'meta-llama/llama-3-8b-instruct', 'meta-llama/llama-2-70b-chat'
@@ -84,7 +84,7 @@ utils::globalVariables(c("cluster", "avg_log2FC", "gene"))
 #'   The API key can be provided directly or stored in environment variables:
 #'   ```r
 #'   # Direct API key
-#'   result <- annotate_cell_types(input, tissue_name, model="gpt-4o",
+#'   result <- annotate_cell_types(input, tissue_name, model="gpt-5",
 #'                                api_key="sk-...")
 #'
 #'   # Using environment variables
@@ -113,7 +113,7 @@ utils::globalVariables(c("cluster", "avg_log2FC", "gene"))
 #'
 #' @param input Either a data frame from Seurat's FindAllMarkers() containing columns 'cluster', 'gene', and 'avg_log2FC', or a list with 'genes' field for each cluster
 #' @param tissue_name Optional tissue context (e.g., 'human PBMC', 'mouse brain') for more accurate annotations
-#' @param model Model name to use. Default: 'gpt-4o'. See details for supported models
+#' @param model Model name to use. Default: 'gpt-5'. See details for supported models
 #' @param api_key API key for the selected model provider. If NA, returns prompt only
 #' @param top_gene_count Number of top genes to use per cluster when input is from Seurat. Default: 10
 #' @param debug Logical indicating whether to enable debug output. Default: FALSE
@@ -132,7 +132,7 @@ utils::globalVariables(c("cluster", "avg_log2FC", "gene"))
 #'     monocytes = list(genes = c('CD14', 'CD68', 'CSF1R', 'FCGR3A'))
 #'   ),
 #'   tissue_name = 'human PBMC',
-#'   model = 'gpt-4o',
+#'   model = 'gpt-5',
 #'   api_key = NA  # Returns prompt only without making API call
 #' )
 #'
@@ -158,7 +158,7 @@ utils::globalVariables(c("cluster", "avg_log2FC", "gene"))
 #' openai_annotations <- annotate_cell_types(
 #'   input = all.markers,
 #'   tissue_name = 'human PBMC',
-#'   model = 'gpt-4o',
+#'   model = 'gpt-5',
 #'   api_key = Sys.getenv("OPENAI_API_KEY"),
 #'   top_gene_count = 15
 #' )
@@ -181,7 +181,7 @@ utils::globalVariables(c("cluster", "avg_log2FC", "gene"))
 #' openrouter_gpt4_annotations <- annotate_cell_types(
 #'   input = all.markers,
 #'   tissue_name = 'human PBMC',
-#'   model = 'openai/gpt-4o',  # Note the provider/model format
+#'   model = 'openai/gpt-5',  # Note the provider/model format
 #'   api_key = Sys.getenv("OPENROUTER_API_KEY"),
 #'   top_gene_count = 15
 #' )
@@ -199,7 +199,7 @@ utils::globalVariables(c("cluster", "avg_log2FC", "gene"))
 #' mouse_annotations <- annotate_cell_types(
 #'   input = mouse_markers,  # Your mouse marker genes
 #'   tissue_name = 'mouse brain',  # Specify correct tissue for context
-#'   model = 'gpt-4o',
+#'   model = 'gpt-5',
 #'   api_key = Sys.getenv("OPENAI_API_KEY"),
 #'   top_gene_count = 20,  # Use more genes for complex tissues
 #'   debug = TRUE  # Enable debug output
@@ -213,7 +213,7 @@ utils::globalVariables(c("cluster", "avg_log2FC", "gene"))
 #' @export
 annotate_cell_types <- function(input,
                                tissue_name = NULL,
-                               model = 'gpt-4o',
+                               model = 'gpt-5',
                                api_key = NA,
                                top_gene_count = 10,
                                debug = FALSE,

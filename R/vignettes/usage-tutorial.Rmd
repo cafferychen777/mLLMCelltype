@@ -56,7 +56,7 @@ Function for creating consensus annotations from multiple models through interac
 consensus_results <- interactive_consensus_annotation(
   input,                # Original marker gene data (Seurat FindAllMarkers result or list of genes)
   tissue_name = NULL,   # Optional tissue name
-  models = c("claude-3-7-sonnet-20250219", "gpt-4o", "gemini-1.5-pro"),  # Models to use
+  models = c("claude-sonnet-4-5-20250929", "gpt-5", "gemini-1.5-pro"),  # Models to use
   api_keys,             # Named list of API keys
   top_gene_count = 10,  # Number of top genes to use
   controversy_threshold = 0.7,  # Threshold for identifying controversial clusters
@@ -72,9 +72,8 @@ consensus_results <- interactive_consensus_annotation(
 **Important Note on `consensus_check_model`**: This parameter is critical for annotation accuracy. The consensus check model evaluates semantic similarity, calculates consensus metrics, and moderates discussions. We strongly recommend using high-performance models like:
 - `claude-sonnet-4-5-20250929` (best overall, latest and most intelligent)
 - `claude-opus-4-1-20250805` (excellent for complex reasoning)
-- `claude-3-7-sonnet-20250219` (great balance)
 - `o1` (advanced reasoning)
-- `gpt-4o` (strong performance)
+- `gpt-5` (strong performance)
 - `gemini-2.5-pro` (top-tier)
 
 See the main README for detailed recommendations and examples.
@@ -97,7 +96,7 @@ pbmc_markers <- FindAllMarkers(pbmc_small, only.pos = TRUE, min.pct = 0.25, logf
 results <- annotate_cell_types(
   input = pbmc_markers,
   tissue_name = "human PBMC",
-  model = "claude-3-7-sonnet-20250219",
+  model = "claude-sonnet-4-5-20250929",
   api_key = Sys.getenv("ANTHROPIC_API_KEY"),
   top_gene_count = 10
 )
@@ -120,8 +119,8 @@ For publication-quality annotations with uncertainty quantification:
 ```{r}
 # Define multiple models to use
 models <- c(
-  "claude-3-7-sonnet-20250219",  # Anthropic
-  "gpt-4o",                      # OpenAI
+  "claude-sonnet-4-5-20250929",  # Anthropic
+  "gpt-5",                      # OpenAI
   "gemini-1.5-pro",              # Google
   "grok-3"                       # X.AI
 )
@@ -157,7 +156,7 @@ consensus_results <- interactive_consensus_annotation(
   api_keys = api_keys,
   controversy_threshold = 0.7,
   entropy_threshold = 1.0,
-  consensus_check_model = "claude-3-7-sonnet-20250219"
+  consensus_check_model = "claude-sonnet-4-5-20250929"
 )
 
 # View consensus results
@@ -269,7 +268,7 @@ write.csv(pbmc_markers, "pbmc_markers.csv", row.names = FALSE)
 results <- annotate_cell_types(
   input = "pbmc_markers.csv",
   tissue_name = "human PBMC",
-  model = "claude-3-7-sonnet-20250219",
+  model = "claude-sonnet-4-5-20250929",
   api_key = Sys.getenv("ANTHROPIC_API_KEY")
 )
 ```
@@ -286,7 +285,7 @@ For better control over caching behavior:
 results <- annotate_cell_types(
   input = pbmc_markers,
   tissue_name = "human PBMC",
-  model = "claude-3-7-sonnet-20250219",
+  model = "claude-sonnet-4-5-20250929",
   api_key = Sys.getenv("ANTHROPIC_API_KEY"),
   top_gene_count = 10,
   debug = FALSE
@@ -306,15 +305,15 @@ mLLMCelltype supports a wide range of LLM models. Here's a guide to help you cho
 
 For the most accurate annotations:
 
-- **Anthropic Claude 3.7 Sonnet** (`claude-3-7-sonnet-20250219`): Excellent biological knowledge, best for discussion
-- **OpenAI GPT-4o** (`gpt-4o`): Strong overall performance, good biological knowledge
-- **Google Gemini 1.5 Pro** (`gemini-1.5-pro`): Good performance with detailed reasoning
+- **Anthropic Claude Sonnet 4.5** (`claude-sonnet-4-5-20250929`): Latest and most intelligent, excellent biological knowledge
+- **Anthropic Claude Opus 4.1** (`claude-opus-4-1-20250805`): Best for complex reasoning and detailed analysis
+- **OpenAI GPT-5** (`gpt-5`): Strong overall performance, good biological knowledge
+- **Google Gemini 2.5 Pro** (`gemini-2.5-pro`): Top-tier performance with detailed reasoning
 
 ### Balanced Performance/Cost Models
 
 For good results with lower API costs:
 
-- **Anthropic Claude 3.5 Sonnet** (`claude-3-5-sonnet-20241022`): Good balance of performance and cost
 - **X.AI Grok-3** (`grok-3`): Competitive performance at lower cost
 - **DeepSeek V3** (`deepseek-v3`): Good performance for specialized tissues
 
@@ -389,8 +388,8 @@ pbmc_markers <- FindAllMarkers(pbmc_small, only.pos = TRUE, min.pct = 0.25, logf
 
 # Define models to use
 models <- c(
-  "claude-3-7-sonnet-20250219",
-  "gpt-4o",
+  "claude-sonnet-4-5-20250929",
+  "gpt-5",
   "gemini-1.5-pro"
 )
 
@@ -432,7 +431,7 @@ consensus_results <- interactive_consensus_annotation(
   api_keys = api_keys,
   controversy_threshold = 0.7,
   entropy_threshold = 1.0,
-  consensus_check_model = "claude-3-7-sonnet-20250219"
+  consensus_check_model = "claude-sonnet-4-5-20250929"
 )
 
 # Add consensus results to Seurat object
@@ -497,7 +496,7 @@ The `top_gene_count` parameter controls how many top marker genes per cluster ar
 results_more_genes <- annotate_cell_types(
   input = pbmc_markers,
   tissue_name = "human PBMC",
-  model = "claude-3-7-sonnet-20250219",
+  model = "claude-sonnet-4-5-20250929",
   api_key = Sys.getenv("ANTHROPIC_API_KEY"),
   top_gene_count = 20  # Using more genes
 )
@@ -506,7 +505,7 @@ results_more_genes <- annotate_cell_types(
 results_fewer_genes <- annotate_cell_types(
   input = pbmc_markers,
   tissue_name = "human PBMC",
-  model = "claude-3-7-sonnet-20250219",
+  model = "claude-sonnet-4-5-20250929",
   api_key = Sys.getenv("ANTHROPIC_API_KEY"),
   top_gene_count = 5   # Using fewer genes
 )
@@ -522,7 +521,7 @@ The `controversy_threshold` parameter in the `interactive_consensus_annotation` 
 consensus_results_low_threshold <- interactive_consensus_annotation(
   input = pbmc_markers,
   tissue_name = "human PBMC",
-  models = c("claude-3-7-sonnet-20250219", "gpt-4o", "gemini-2.0-flash"),
+  models = c("claude-sonnet-4-5-20250929", "gpt-5", "gemini-2.0-flash"),
   api_keys = list(
     "anthropic" = Sys.getenv("ANTHROPIC_API_KEY"),
     "openai" = Sys.getenv("OPENAI_API_KEY"),
@@ -535,7 +534,7 @@ consensus_results_low_threshold <- interactive_consensus_annotation(
 consensus_results_high_threshold <- interactive_consensus_annotation(
   input = pbmc_markers,
   tissue_name = "human PBMC",
-  models = c("claude-3-7-sonnet-20250219", "gpt-4o", "gemini-2.0-flash"),
+  models = c("claude-sonnet-4-5-20250929", "gpt-5", "gemini-2.0-flash"),
   api_keys = list(
     "anthropic" = Sys.getenv("ANTHROPIC_API_KEY"),
     "openai" = Sys.getenv("OPENAI_API_KEY"),

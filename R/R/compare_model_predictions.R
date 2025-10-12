@@ -8,7 +8,7 @@
 #
 #
 #'   Supported models:
-#'   - OpenAI: 'gpt-4o', 'gpt-4o-mini', 'gpt-4.1', 'gpt-4.1-mini', 'gpt-4.1-nano', 'gpt-4-turbo', 'gpt-3.5-turbo', 'o1', 'o1-mini', 'o1-preview', 'o1-pro'
+#'   - OpenAI: 'gpt-5', 'gpt-5-mini', 'gpt-5-nano', 'gpt-4o', 'gpt-4o-mini', 'gpt-4.1', 'gpt-4.1-mini', 'gpt-4.1-nano', 'gpt-4-turbo', 'gpt-3.5-turbo', 'o1', 'o1-mini', 'o1-preview', 'o1-pro'
 #'   - Anthropic: 'claude-opus-4-1-20250805', 'claude-sonnet-4-20250514', 'claude-opus-4-20250514', 'claude-3-7-sonnet-20250219', 'claude-3-5-sonnet-20241022',
 #'     'claude-3-5-haiku-20241022', 'claude-3-opus-20240229'
 #'   - DeepSeek: 'deepseek-chat', 'deepseek-r1', 'deepseek-r1-zero', 'deepseek-reasoner'
@@ -19,7 +19,7 @@
 #'   - MiniMax: 'minimax-text-01'
 #'   - X.AI: 'grok-3-latest', 'grok-3', 'grok-3-fast', 'grok-3-fast-latest', 'grok-3-mini', 'grok-3-mini-latest', 'grok-3-mini-fast', 'grok-3-mini-fast-latest'
 #'   - OpenRouter: Provides access to models from multiple providers through a single API. Format: 'provider/model-name'
-#'     - OpenAI models: 'openai/gpt-4o', 'openai/gpt-4o-mini', 'openai/gpt-4-turbo', 'openai/gpt-4', 'openai/gpt-3.5-turbo'
+#'     - OpenAI models: 'openai/gpt-5', 'openai/gpt-5-mini', 'openai/gpt-4o', 'openai/gpt-4o-mini', 'openai/gpt-4-turbo', 'openai/gpt-4', 'openai/gpt-3.5-turbo'
 #'     - Anthropic models: 'anthropic/claude-opus-4.1', 'anthropic/claude-sonnet-4', 'anthropic/claude-opus-4', 'anthropic/claude-3.7-sonnet',
 #'       'anthropic/claude-3.5-sonnet', 'anthropic/claude-3.5-haiku', 'anthropic/claude-3-opus'
 #'     - Meta models: 'meta-llama/llama-3-70b-instruct', 'meta-llama/llama-3-8b-instruct', 'meta-llama/llama-2-70b-chat'
@@ -28,7 +28,7 @@
 #'     - Other models: 'microsoft/mai-ds-r1', 'perplexity/sonar-small-chat', 'cohere/command-r', 'deepseek/deepseek-chat', 'thudm/glm-z1-32b'
 #
 #'   1. With provider names as keys: `list("openai" = "sk-...", "anthropic" = "sk-ant-...", "openrouter" = "sk-or-...")`
-#'   2. With model names as keys: `list("gpt-4o" = "sk-...", "claude-3-opus" = "sk-ant-...")`
+#'   2. With model names as keys: `list("gpt-5" = "sk-...", "claude-sonnet-4-5-20250929" = "sk-ant-...")`
 #'   
 #'   The system first tries to find the API key using the provider name. If not found, it then tries using the model name.
 #'   Example:
@@ -66,15 +66,13 @@
 #'   api_keys = api_keys
 #' )
 #' }
-compare_model_predictions <- function(input, 
-                                      tissue_name, 
-                                      models = c("claude-sonnet-4-20250514", 
-                                                 "claude-3-5-sonnet-20241022",
-                                                 "gpt-4.1-mini",
+compare_model_predictions <- function(input,
+                                      tissue_name,
+                                      models = c("claude-sonnet-4-5-20250929",
+                                                 "claude-opus-4-1-20250805",
+                                                 "gpt-5",
+                                                 "gemini-2.5-pro",
                                                  "deepseek-r1",
-                                                 "gemini-2.5-flash",
-                                                 "qwen-max-2025-01-25",
-                                                 "gpt-4o",
                                                  "o1",
                                                  "grok-3-latest"),
                                       api_keys,
@@ -252,7 +250,7 @@ compare_model_predictions <- function(input,
 #
 #
 #'   1. With provider names as keys: `list("openai" = "sk-...", "anthropic" = "sk-ant-...", "openrouter" = "sk-or-...")`
-#'   2. With model names as keys: `list("gpt-4o" = "sk-...", "claude-3-opus" = "sk-ant-...")`
+#'   2. With model names as keys: `list("gpt-5" = "sk-...", "claude-sonnet-4-5-20250929" = "sk-ant-...")`
 #
 #
 #' @keywords internal

@@ -166,7 +166,7 @@ batch_annotate(sample_list, method = "single_agent")
 # High-accuracy research annotation
 research_results <- interactive_consensus_annotation(
   seurat_obj = novel_tissue_data,
-  models = c("gpt-4o", "claude-3-5-sonnet", "gemini-1.5-pro"),
+  models = c("gpt-5", "claude-sonnet-4-5-20250929", "gemini-1.5-pro"),
   consensus_method = "iterative"
 )
 

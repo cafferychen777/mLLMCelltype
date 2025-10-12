@@ -169,7 +169,7 @@ library(mLLMCelltype)
 results <- interactive_consensus_annotation(
   seurat_obj = your_data,
   tissue_name = "PBMC",
-  models = c("gpt-4o", "claude-3-5-sonnet", "gemini-1.5-pro"),
+  models = c("gpt-5", "claude-sonnet-4-5-20250929", "gemini-1.5-pro"),
   consensus_method = "iterative"
 )
 

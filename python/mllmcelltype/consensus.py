@@ -65,7 +65,7 @@ def _call_llm_with_retry(
     api_key: Optional[str],
     max_retries: int = 3,
     fallback_provider: str = "anthropic",
-    fallback_model: str = "claude-3-5-sonnet-latest",
+    fallback_model: str = "claude-sonnet-4-5-20250929",
     api_keys: Optional[dict[str, str]] = None,
     base_urls: Optional[Union[str, dict[str, str]]] = None,
 ) -> Optional[str]:
@@ -378,7 +378,7 @@ def check_consensus(
             api_key=primary_api_key,
             max_retries=3,
             fallback_provider="anthropic",
-            fallback_model="claude-3-5-sonnet-latest",
+            fallback_model="claude-sonnet-4-5-20250929",
             api_keys=api_keys,
         )
 
@@ -506,9 +506,9 @@ def process_controversial_clusters(
         # Use a more capable model for discussion if possible
         discussion_model = model
         if provider == "openai" and not discussion_model:
-            discussion_model = "gpt-4o"
+            discussion_model = "gpt-5"
         elif provider == "anthropic" and not discussion_model:
-            discussion_model = "claude-3-opus"
+            discussion_model = "claude-sonnet-4-5-20250929"
 
         # Initialize variables for iterative discussion
         current_round = 1
@@ -1083,7 +1083,7 @@ def interactive_consensus_annotation(
         api_key = api_keys.get(provider)
 
         # For OpenRouter models, we need to keep the full model name with the provider prefix
-        # The model name is already in the correct format (e.g., "openai/gpt-4o")
+        # The model name is already in the correct format (e.g., "openai/gpt-5")
         # Do not modify the model name for OpenRouter
 
         if not api_key:
@@ -1157,7 +1157,7 @@ def interactive_consensus_annotation(
                 write_log(f"Using specified consensus model for discussion: {discussion_model}")
         else:
             # Otherwise, try to use the most capable model available from the input models
-            for preferred_model_name in ["gpt-4o", "claude-3-opus", "gemini-2.0-pro"]:
+            for preferred_model_name in ["gpt-5", "claude-sonnet-4-5-20250929", "gemini-2.5-pro"]:
                 # Check if the preferred model is in the models list
                 for model_item in models:
                     if isinstance(model_item, dict):
