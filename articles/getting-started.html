@@ -539,25 +539,32 @@ free models:</p>
 <span></span>
 <span><span class="co"># Print results</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">free_results</span><span class="op">)</span></span></code></pre></div>
-<p>Available free models include:</p>
+<p>Available free models (Updated Oct 2025):</p>
 <ul>
 <li>
 <code>meta-llama/llama-4-maverick:free</code> - Meta Llama 4
-Maverick (256K context)</li>
-<li>
-<code>nvidia/llama-3.1-nemotron-ultra-253b-v1:free</code> - NVIDIA
-Nemotron Ultra 253B</li>
+Maverick (256K context, best performance)</li>
 <li>
 <code>deepseek/deepseek-r1:free</code> - DeepSeek R1 (advanced
-reasoning, may have rate limits)</li>
+reasoning)</li>
 <li>
 <code>meta-llama/llama-3.3-70b-instruct:free</code> - Meta Llama 3.3
-70B</li>
+70B (reliable)</li>
+<li>
+<code>venice/uncensored:free</code> - Venice Uncensored (new
+model)</li>
+<li>
+<code>minimax/minimax-m2:free</code> - MiniMax M2 (optimized for
+coding)</li>
+<li>
+<code>z-ai/glm-4.5-air:free</code> - GLM 4.5 Air (lightweight)</li>
 </ul>
-<p><strong>Note</strong>: Free models don’t consume credits but may have
-limitations: - Some free models may be temporarily rate-limited due to
-high usage - If you encounter a 429 error (rate limit), try another free
-model or wait a few minutes</p>
+<p><strong>Important</strong>: OpenRouter reduced free tier limits in
+2025: - <strong>Free accounts</strong>: 50 requests/day (down from 200),
+20 requests/minute - <strong>Accounts with $10+ credits</strong>: 1000
+requests/day - <strong>Some models removed</strong>: NVIDIA Nemotron and
+others have exited the free tier - <strong>For production use</strong>:
+Consider using paid models for better reliability</p>
 </div>
 <div class="section level3">
 <h3 id="troubleshooting">Troubleshooting<a class="anchor" aria-label="anchor" href="#troubleshooting"></a>
