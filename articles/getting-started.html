@@ -141,7 +141,7 @@
       <h1>Getting Started with mLLMCelltype</h1>
                         <h4 data-toc-skip class="author">Chen Yang</h4>
             
-            <h4 data-toc-skip class="date">2025-10-19</h4>
+            <h4 data-toc-skip class="date">2025-10-31</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/cafferychen777/mLLMCelltype/blob/main/vignettes/getting-started.Rmd" class="external-link"><code>vignettes/getting-started.Rmd</code></a></small>
       <div class="d-none name"><code>getting-started.Rmd</code></div>
@@ -549,13 +549,15 @@ Maverick (256K context)</li>
 Nemotron Ultra 253B</li>
 <li>
 <code>deepseek/deepseek-r1:free</code> - DeepSeek R1 (advanced
-reasoning)</li>
+reasoning, may have rate limits)</li>
 <li>
 <code>meta-llama/llama-3.3-70b-instruct:free</code> - Meta Llama 3.3
 70B</li>
 </ul>
-<p>Free models don’t consume credits but may have limitations compared
-to paid models.</p>
+<p><strong>Note</strong>: Free models don’t consume credits but may have
+limitations: - Some free models may be temporarily rate-limited due to
+high usage - If you encounter a 429 error (rate limit), try another free
+model or wait a few minutes</p>
 </div>
 <div class="section level3">
 <h3 id="troubleshooting">Troubleshooting<a class="anchor" aria-label="anchor" href="#troubleshooting"></a>
