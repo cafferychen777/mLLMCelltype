@@ -25,8 +25,8 @@ utils::globalVariables(c("custom_models"))
 #'       \item Anthropic models: 'anthropic/claude-sonnet-4.5', 'anthropic/claude-opus-4.1',
 #'         'anthropic/claude-sonnet-4', 'anthropic/claude-opus-4',
 #'         'anthropic/claude-3.7-sonnet', 'anthropic/claude-3.7-sonnet-20250219', 'anthropic/claude-3.7-sonnet:thinking',
-#'         'anthropic/claude-3.5-sonnet', 'anthropic/claude-3.5-sonnet-20241022', 'anthropic/claude-3.5-sonnet-20240620',
-#'         'anthropic/claude-3.5-haiku', 'anthropic/claude-3.5-haiku-20241022',
+#'         'anthropic/claude-3.5-sonnet', 'anthropic/claude-3.5-sonnet-20241022',
+#'         'anthropic/claude-3.5-haiku',
 #'         'anthropic/claude-3-opus', 'anthropic/claude-3-opus-20240229', 'anthropic/claude-3-haiku'
 #'       \item Meta models: 'meta-llama/llama-3-70b-instruct', 'meta-llama/llama-3-8b-instruct', 'meta-llama/llama-2-70b-chat'
 #'       \item Google models: 'google/gemini-2.5-pro', 'google/gemini-2.5-flash', 'google/gemini-2.0-flash', 'google/gemini-1.5-pro-latest', 'google/gemini-1.5-flash'
@@ -219,9 +219,7 @@ get_provider <- function(model) {
     "anthropic/claude-3-opus",
     "anthropic/claude-3-opus-20240229",
     "anthropic/claude-3.5-haiku",
-    "anthropic/claude-3.5-haiku-20241022",
     "anthropic/claude-3.5-sonnet",
-    "anthropic/claude-3.5-sonnet-20240620",
     "anthropic/claude-3.5-sonnet-20241022",
     "anthropic/claude-3.7-sonnet",
     "anthropic/claude-3.7-sonnet-20250219",
