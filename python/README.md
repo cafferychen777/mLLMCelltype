@@ -32,6 +32,8 @@ Single-cell RNA sequencing has revolutionized our understanding of cellular hete
   - OpenRouter (Access to multiple models through a single API)
     - Supports models from OpenAI, Anthropic, Meta, Mistral and more
     - Format: 'provider/model-name' (e.g., 'openai/gpt-5', 'anthropic/claude-3-opus')
+    - Free models available with `:free` suffix (e.g., 'meta-llama/llama-4-maverick:free')
+    - Free tier limits (as of Oct 2025): 50 requests/day (1000/day with $10+ credits)
 - **Seamless Integration**:
   - Works directly with Scanpy/AnnData workflows
   - Compatible with scverse ecosystem
@@ -432,7 +434,7 @@ free_model_annotations = annotate_clusters(
     marker_genes=marker_genes,
     species='human',
     tissue='peripheral blood',
-    provider_config={"provider": "openrouter", "model": "deepseek/deepseek-chat:free"}  # Free model with :free suffix
+    provider_config={"provider": "openrouter", "model": "meta-llama/llama-4-maverick:free"}  # Free model with :free suffix
 )
 
 # Print annotations from different models
@@ -483,10 +485,10 @@ result = interactive_consensus_annotation(
     species='human',
     tissue='peripheral blood',
     models=[
-        {"provider": "openrouter", "model": "deepseek/deepseek-chat:free"},      # DeepSeek (free)
-        {"provider": "openrouter", "model": "deepseek/deepseek-r1:free"},         # Microsoft (free)
-        {"provider": "openrouter", "model": "qwen/qwen-2.5-7b-instruct:free"},   # Qwen (free)
-        {"provider": "openrouter", "model": "thudm/glm-4-9b:free"}               # GLM (free)
+        {"provider": "openrouter", "model": "meta-llama/llama-4-maverick:free"},      # Llama 4 (free)
+        {"provider": "openrouter", "model": "deepseek/deepseek-r1:free"},             # DeepSeek R1 (free)
+        {"provider": "openrouter", "model": "meta-llama/llama-3.3-70b-instruct:free"}, # Llama 3.3 (free)
+        {"provider": "openrouter", "model": "venice/uncensored:free"}                 # Venice (free)
     ],
     consensus_threshold=0.7,
     max_discussion_rounds=3,
@@ -616,7 +618,7 @@ result = interactive_consensus_annotation(
     models=[
         'gpt-5',                                                      # Direct API (paid)
         {"provider": "openrouter", "model": "openai/gpt-5"},          # OpenRouter (paid)
-        {"provider": "openrouter", "model": "deepseek/deepseek-chat:free"},  # OpenRouter (free)
+        {"provider": "openrouter", "model": "deepseek/deepseek-r1:free"},    # OpenRouter (free)
     ],
     consensus_threshold=0.8,                # Higher threshold to force discussion
     max_discussion_rounds=3,                # Allow multiple rounds of discussion
@@ -629,10 +631,10 @@ result_free = interactive_consensus_annotation(
     species='human',
     tissue='peripheral blood',
     models=[
-        {"provider": "openrouter", "model": "deepseek/deepseek-chat:free"},      # DeepSeek (free)
-        {"provider": "openrouter", "model": "deepseek/deepseek-r1:free"},         # Microsoft (free)
-        {"provider": "openrouter", "model": "qwen/qwen-2.5-7b-instruct:free"},   # Qwen (free)
-        {"provider": "openrouter", "model": "thudm/glm-4-9b:free"}               # GLM (free)
+        {"provider": "openrouter", "model": "meta-llama/llama-4-maverick:free"},      # Llama 4 (free)
+        {"provider": "openrouter", "model": "deepseek/deepseek-r1:free"},             # DeepSeek R1 (free)
+        {"provider": "openrouter", "model": "meta-llama/llama-3.3-70b-instruct:free"}, # Llama 3.3 (free)
+        {"provider": "openrouter", "model": "venice/uncensored:free"}                 # Venice (free)
     ],
     consensus_threshold=0.7,
     max_discussion_rounds=2,

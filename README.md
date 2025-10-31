@@ -260,6 +260,7 @@ pip install google-genai
   - Supports models from OpenAI, Anthropic, Meta, Google, Mistral, and more
   - Format: 'provider/model-name' (e.g., 'openai/gpt-5', 'anthropic/claude-opus-4.1')
   - Free models available with `:free` suffix (e.g., 'deepseek/deepseek-r1:free', 'meta-llama/llama-4-maverick:free')
+  - **Note**: Free tier limits (as of Oct 2025): 50 requests/day (1000/day with $10+ credits), 20 requests/minute. Some models may be unavailable.
 
 ## Usage Examples
 
@@ -357,7 +358,7 @@ free_models_results = interactive_consensus_annotation(
     tissue="blood",
     models=[
         {"provider": "openrouter", "model": "meta-llama/llama-4-maverick:free"},      # Meta Llama 4 Maverick (free)
-        {"provider": "openrouter", "model": "nvidia/llama-3.1-nemotron-ultra-253b-v1:free"},  # NVIDIA Nemotron Ultra 253B (free)
+        {"provider": "openrouter", "model": "venice/uncensored:free"},                # Venice Uncensored (free)
         {"provider": "openrouter", "model": "deepseek/deepseek-r1:free"},             # DeepSeek R1 (free, advanced reasoning)
         {"provider": "openrouter", "model": "meta-llama/llama-3.3-70b-instruct:free"} # Meta Llama 3.3 70B (free)
     ],
@@ -814,7 +815,7 @@ free_consensus_results <-
     tissue_name = "your tissue type", # e.g., "human heart"
     models = c(
       "meta-llama/llama-4-maverick:free",      # Meta Llama 4 Maverick (free)
-      "nvidia/llama-3.1-nemotron-ultra-253b-v1:free",  # NVIDIA Nemotron Ultra 253B (free)
+      "venice/uncensored:free",                # Venice Uncensored (free)
       "deepseek/deepseek-r1:free",             # DeepSeek R1 (free, advanced reasoning)
       "meta-llama/llama-3.3-70b-instruct:free" # Meta Llama 3.3 70B (free)
     ),
