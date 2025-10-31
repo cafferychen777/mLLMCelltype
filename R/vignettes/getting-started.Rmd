@@ -360,16 +360,20 @@ free_results <- annotate_cell_types(
 print(free_results)
 ```
 
-Available free models include:
+Available free models (Updated Oct 2025):
 
-- `meta-llama/llama-4-maverick:free` - Meta Llama 4 Maverick (256K context)
-- `nvidia/llama-3.1-nemotron-ultra-253b-v1:free` - NVIDIA Nemotron Ultra 253B
-- `deepseek/deepseek-r1:free` - DeepSeek R1 (advanced reasoning, may have rate limits)
-- `meta-llama/llama-3.3-70b-instruct:free` - Meta Llama 3.3 70B
+- `meta-llama/llama-4-maverick:free` - Meta Llama 4 Maverick (256K context, best performance)
+- `deepseek/deepseek-r1:free` - DeepSeek R1 (advanced reasoning)
+- `meta-llama/llama-3.3-70b-instruct:free` - Meta Llama 3.3 70B (reliable)
+- `venice/uncensored:free` - Venice Uncensored (new model)
+- `minimax/minimax-m2:free` - MiniMax M2 (optimized for coding)
+- `z-ai/glm-4.5-air:free` - GLM 4.5 Air (lightweight)
 
-**Note**: Free models don't consume credits but may have limitations:
-- Some free models may be temporarily rate-limited due to high usage
-- If you encounter a 429 error (rate limit), try another free model or wait a few minutes
+**Important**: OpenRouter reduced free tier limits in 2025:
+- **Free accounts**: 50 requests/day (down from 200), 20 requests/minute
+- **Accounts with $10+ credits**: 1000 requests/day
+- **Some models removed**: NVIDIA Nemotron and others have exited the free tier
+- **For production use**: Consider using paid models for better reliability
 
 ## Troubleshooting
 

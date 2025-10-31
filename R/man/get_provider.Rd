@@ -38,9 +38,10 @@ Supported providers and models include:
 \item Meta models: 'meta-llama/llama-3-70b-instruct', 'meta-llama/llama-3-8b-instruct', 'meta-llama/llama-2-70b-chat'
 \item Google models: 'google/gemini-2.5-pro', 'google/gemini-2.5-flash', 'google/gemini-2.0-flash', 'google/gemini-1.5-pro-latest', 'google/gemini-1.5-flash'
 \item Mistral models: 'mistralai/mistral-large', 'mistralai/mistral-medium', 'mistralai/mistral-small'
-\item Qwen models: 'qwen/qwen3-coder:free', 'qwen/qwen3-235b-a22b-07-25:free', 'qwen/qwen2.5-72b-instruct:free'
 \item DeepSeek models: 'deepseek/deepseek-r1:free', 'tngtech/deepseek-r1t2-chimera:free'
-\item Other models: 'microsoft/mai-ds-r1:free', 'moonshotai/kimi-k2:free', 'tencent/hunyuan-a13b-instruct:free'
+\item Recommended free models (verified Oct 2025): 'meta-llama/llama-4-maverick:free',
+'meta-llama/llama-3.3-70b-instruct:free', 'venice/uncensored:free', 'minimax/minimax-m2:free', 'z-ai/glm-4.5-air:free'
+\item Note: Free tier limits are 50 requests/day (1000/day with $10+ credits). Some free models may be rate-limited or unavailable.
 }
 }
 }

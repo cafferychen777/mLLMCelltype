@@ -31,9 +31,10 @@ utils::globalVariables(c("custom_models"))
 #'       \item Meta models: 'meta-llama/llama-3-70b-instruct', 'meta-llama/llama-3-8b-instruct', 'meta-llama/llama-2-70b-chat'
 #'       \item Google models: 'google/gemini-2.5-pro', 'google/gemini-2.5-flash', 'google/gemini-2.0-flash', 'google/gemini-1.5-pro-latest', 'google/gemini-1.5-flash'
 #'       \item Mistral models: 'mistralai/mistral-large', 'mistralai/mistral-medium', 'mistralai/mistral-small'
-#'       \item Qwen models: 'qwen/qwen3-coder:free', 'qwen/qwen3-235b-a22b-07-25:free', 'qwen/qwen2.5-72b-instruct:free'
 #'       \item DeepSeek models: 'deepseek/deepseek-r1:free', 'tngtech/deepseek-r1t2-chimera:free'
-#'       \item Other models: 'microsoft/mai-ds-r1:free', 'moonshotai/kimi-k2:free', 'tencent/hunyuan-a13b-instruct:free'
+#'       \item Recommended free models (verified Oct 2025): 'meta-llama/llama-4-maverick:free',
+#'         'meta-llama/llama-3.3-70b-instruct:free', 'venice/uncensored:free', 'minimax/minimax-m2:free', 'z-ai/glm-4.5-air:free'
+#'       \item Note: Free tier limits are 50 requests/day (1000/day with $10+ credits). Some free models may be rate-limited or unavailable.
 #'     }
 #' }
 #' @importFrom utils adist
@@ -344,6 +345,7 @@ get_provider <- function(model) {
     "microsoft/wizardlm-2-8x22b",
     "minimax/minimax-01",
     "minimax/minimax-m1",
+    "minimax/minimax-m2:free",
     "mistralai/codestral-2501",
     "mistralai/codestral-2508",
     "mistralai/devstral-medium",
@@ -397,7 +399,6 @@ get_provider <- function(model) {
     "nousresearch/nous-hermes-2-mixtral-8x7b-dpo",
     "nvidia/llama-3.1-nemotron-70b-instruct",
     "nvidia/llama-3.1-nemotron-ultra-253b-v1",
-    "nvidia/llama-3.1-nemotron-ultra-253b-v1:free",
     "nvidia/llama-3.3-nemotron-super-49b-v1",
     "openai/chatgpt-4o-latest",
     "openai/codex-mini",
@@ -509,6 +510,7 @@ get_provider <- function(model) {
     "tngtech/deepseek-r1t-chimera:free",
     "tngtech/deepseek-r1t2-chimera:free",
     "undi95/remm-slerp-l2-13b",
+    "venice/uncensored:free",
     "x-ai/grok-2-1212",
     "x-ai/grok-2-vision-1212",
     "x-ai/grok-3",
