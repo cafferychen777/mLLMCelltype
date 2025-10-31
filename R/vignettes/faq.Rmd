@@ -190,10 +190,13 @@ results <- annotate_cell_types(
 4. **Recommended free models**:
    - `meta-llama/llama-4-maverick:free` - Meta Llama 4 Maverick (256K context)
    - `nvidia/llama-3.1-nemotron-ultra-253b-v1:free` - NVIDIA Nemotron Ultra 253B
-   - `deepseek/deepseek-r1:free` - DeepSeek R1 (advanced reasoning)
+   - `deepseek/deepseek-r1:free` - DeepSeek R1 (advanced reasoning, may have rate limits)
    - `meta-llama/llama-3.3-70b-instruct:free` - Meta Llama 3.3 70B
 
-Free models don't consume credits but may have limitations compared to paid models.
+**Note**: Free models don't consume credits but may have limitations:
+- Some free models may be temporarily rate-limited due to high usage
+- If you encounter a 429 error (rate limit), try another free model or wait a few minutes
+- For more reliable access, consider using paid models or adding your own API keys to OpenRouter
 
 ### How can I improve the accuracy of annotations?
 

@@ -8,7 +8,7 @@ standardize_cell_type_names(
   predictions,
   models,
   api_keys,
-  standardization_model = "claude-sonnet-4-20250514"
+  standardization_model = "claude-sonnet-4"
 )
 }
 \description{
@@ -18,7 +18,7 @@ nomenclature to ensure consistent naming across different models' outputs.
 \details{
 \enumerate{
 \item With provider names as keys: \code{list("openai" = "sk-...", "anthropic" = "sk-ant-...", "openrouter" = "sk-or-...")}
-\item With model names as keys: \code{list("gpt-5" = "sk-...", "claude-sonnet-4-5-20250929" = "sk-ant-...")}
+\item With model names as keys: \code{list("gpt-5" = "sk-...", "claude-sonnet-4.5" = "sk-ant-...")}
 }
 }
 \keyword{internal}
