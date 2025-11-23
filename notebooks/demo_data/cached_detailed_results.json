@@ -1,0 +1,67 @@
+{
+  "consensus": {
+    "Cluster_0": "T cells",
+    "Cluster_1": "B cells",
+    "Cluster_2": "CD14+ Monocytes",
+    "Cluster_3": "NK cells",
+    "Cluster_4": "Dendritic cells",
+    "Cluster_5": "CD16+ Monocytes",
+    "Cluster_6": "Platelets"
+  },
+  "consensus_proportion": {
+    "Cluster_0": 0.95,
+    "Cluster_1": 0.92,
+    "Cluster_2": 0.88,
+    "Cluster_3": 0.90,
+    "Cluster_4": 0.85,
+    "Cluster_5": 0.87,
+    "Cluster_6": 0.93
+  },
+  "entropy": {
+    "Cluster_0": 0.15,
+    "Cluster_1": 0.18,
+    "Cluster_2": 0.25,
+    "Cluster_3": 0.22,
+    "Cluster_4": 0.32,
+    "Cluster_5": 0.28,
+    "Cluster_6": 0.20
+  },
+  "model_annotations": {
+    "Cluster_0": {
+      "gpt-4-turbo": "T cells",
+      "claude-sonnet-4-5": "T cells",
+      "gemini-1.5-pro": "T cells"
+    },
+    "Cluster_1": {
+      "gpt-4-turbo": "B cells",
+      "claude-sonnet-4-5": "B cells",
+      "gemini-1.5-pro": "B cells"
+    },
+    "Cluster_2": {
+      "gpt-4-turbo": "CD14+ Monocytes",
+      "claude-sonnet-4-5": "CD14+ Monocytes",
+      "gemini-1.5-pro": "Classical Monocytes"
+    },
+    "Cluster_3": {
+      "gpt-4-turbo": "NK cells",
+      "claude-sonnet-4-5": "NK cells",
+      "gemini-1.5-pro": "Natural Killer cells"
+    },
+    "Cluster_4": {
+      "gpt-4-turbo": "Dendritic cells",
+      "claude-sonnet-4-5": "Myeloid dendritic cells",
+      "gemini-1.5-pro": "Dendritic cells"
+    },
+    "Cluster_5": {
+      "gpt-4-turbo": "CD16+ Monocytes",
+      "claude-sonnet-4-5": "Non-classical monocytes",
+      "gemini-1.5-pro": "CD16+ Monocytes"
+    },
+    "Cluster_6": {
+      "gpt-4-turbo": "Platelets",
+      "claude-sonnet-4-5": "Platelets",
+      "gemini-1.5-pro": "Megakaryocytes/Platelets"
+    }
+  },
+  "controversial_clusters": ["Cluster_4"]
+}

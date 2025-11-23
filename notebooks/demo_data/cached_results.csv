@@ -1,0 +1,8 @@
+Cluster,Cell Type,Consensus Score,Entropy
+Cluster_0,T cells,0.95,0.15
+Cluster_1,B cells,0.92,0.18
+Cluster_2,CD14+ Monocytes,0.88,0.25
+Cluster_3,NK cells,0.90,0.22
+Cluster_4,Dendritic cells,0.85,0.32
+Cluster_5,CD16+ Monocytes,0.87,0.28
+Cluster_6,Platelets,0.93,0.20

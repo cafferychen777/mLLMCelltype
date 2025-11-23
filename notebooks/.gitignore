@@ -1,0 +1,20 @@
+# Jupyter Notebook checkpoints
+.ipynb_checkpoints/
+*/.ipynb_checkpoints/*
+
+# Python cache
+__pycache__/
+*.py[cod]
+*$py.class
+
+# User-generated outputs (don't commit personal results)
+mllmcelltype_results.csv
+mllmcelltype_detailed_results.json
+mllmcelltype_report.txt
+
+# Environment files with API keys
+.env
+
+# Keep demo data (these are intentional)
+!demo_data/
+!demo_data/*
