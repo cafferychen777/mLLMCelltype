@@ -1,5 +1,5 @@
 pandoc: 3.1.11
-pkgdown: 2.1.3
+pkgdown: 2.2.0
 pkgdown_sha: ~
 articles:
   advanced-features: advanced-features.html
@@ -15,7 +15,7 @@ articles:
   visualization-guide: visualization-guide.html
   vs-single-agent: vs-single-agent.html
   why-consensus: why-consensus.html
-last_built: 2025-10-31T15:40Z
+last_built: 2025-11-23T02:57Z
 urls:
   reference: https://cafferyang.com/mLLMCelltype/reference
   article: https://cafferyang.com/mLLMCelltype/articles
