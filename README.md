@@ -70,6 +70,16 @@ mLLMCelltype is an open-source tool for single-cell transcriptomics analysis tha
 
 ## News
 
+🧬 **FlashDeconv: Ultra-Fast Spatial Transcriptomics Deconvolution**
+
+Check out our new tool [FlashDeconv](https://github.com/cafferychen777/FlashDeconv) for spatial transcriptomics cell type deconvolution:
+- ⚡ Processes 1M spots in ~3 minutes on CPU (no GPU required)
+- 📈 O(N) time complexity using random sketching
+- 🔗 Seamless integration with scanpy workflows
+- 📦 Install: `pip install flashdeconv`
+
+---
+
 🚀 **Web Application Launch (2025-06-18)**
 
 We're excited to announce the launch of mLLMCelltype Web Application! Now you can access mLLMCelltype's powerful cell type annotation capabilities directly through your web browser without any installation required.
