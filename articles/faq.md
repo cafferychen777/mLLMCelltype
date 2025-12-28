@@ -342,7 +342,7 @@ If specific cell types are not being correctly identified:
 mLLMCelltype integrates seamlessly with Seurat:
 
 1.  **Input**: You can directly use Seurat’s
-    [`FindAllMarkers()`](https://satijalab.org/seurat/reference/FindAllMarkers.html)
+    [`FindAllMarkers()`](https://rdrr.io/pkg/Seurat/man/FindAllMarkers.html)
     output as input
 
 2.  **Output**: Annotation results can be easily added to your Seurat

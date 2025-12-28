@@ -82,7 +82,7 @@ markers_df <- data.frame(
 #### 2. Seurat FindMarkers Output
 
 You can directly use the output from Seurat’s
-[`FindAllMarkers()`](https://satijalab.org/seurat/reference/FindAllMarkers.html)
+[`FindAllMarkers()`](https://rdrr.io/pkg/Seurat/man/FindAllMarkers.html)
 function:
 
 ``` r

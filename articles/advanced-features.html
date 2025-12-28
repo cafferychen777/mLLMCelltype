@@ -141,7 +141,7 @@
       <h1>Advanced Features &amp; Case Studies</h1>
                         <h4 data-toc-skip class="author">Chen Yang</h4>
             
-            <h4 data-toc-skip class="date">2025-11-23</h4>
+            <h4 data-toc-skip class="date">2025-12-28</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/cafferychen777/mLLMCelltype/blob/main/vignettes/advanced-features.Rmd" class="external-link"><code>vignettes/advanced-features.Rmd</code></a></small>
       <div class="d-none name"><code>advanced-features.Rmd</code></div>
@@ -193,7 +193,7 @@ workflow to capture these hierarchical relationships.</p>
 <span><span class="va">t_cells</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/subset.html" class="external-link">subset</a></span><span class="op">(</span><span class="va">seurat_obj</span>, <span class="va">high_level_celltype</span> <span class="op">==</span> <span class="st">"T cells"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Step 4: Find markers within T cells</span></span>
-<span><span class="va">t_cell_markers</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://satijalab.org/seurat/reference/FindAllMarkers.html" class="external-link">FindAllMarkers</a></span><span class="op">(</span><span class="va">t_cells</span>, only.pos <span class="op">=</span> <span class="cn">TRUE</span>, min.pct <span class="op">=</span> <span class="fl">0.25</span>, logfc.threshold <span class="op">=</span> <span class="fl">0.25</span><span class="op">)</span></span>
+<span><span class="va">t_cell_markers</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/Seurat/man/FindAllMarkers.html" class="external-link">FindAllMarkers</a></span><span class="op">(</span><span class="va">t_cells</span>, only.pos <span class="op">=</span> <span class="cn">TRUE</span>, min.pct <span class="op">=</span> <span class="fl">0.25</span>, logfc.threshold <span class="op">=</span> <span class="fl">0.25</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Step 5: Perform T cell subtype annotation</span></span>
 <span><span class="va">t_cell_subtypes</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/annotate_cell_types.html">annotate_cell_types</a></span><span class="op">(</span></span>
@@ -498,7 +498,7 @@ dataset:</p>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"pbmc_small"</span><span class="op">)</span>  <span class="co"># Example dataset from Seurat</span></span>
 <span></span>
 <span><span class="co"># Find marker genes</span></span>
-<span><span class="va">pbmc_markers</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://satijalab.org/seurat/reference/FindAllMarkers.html" class="external-link">FindAllMarkers</a></span><span class="op">(</span><span class="va">pbmc_small</span>,</span>
+<span><span class="va">pbmc_markers</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/Seurat/man/FindAllMarkers.html" class="external-link">FindAllMarkers</a></span><span class="op">(</span><span class="va">pbmc_small</span>,</span>
 <span>                              only.pos <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>                              min.pct <span class="op">=</span> <span class="fl">0.25</span>,</span>
 <span>                              logfc.threshold <span class="op">=</span> <span class="fl">0.25</span><span class="op">)</span></span>

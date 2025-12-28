@@ -141,7 +141,7 @@
       <h1>Visualization Guide</h1>
                         <h4 data-toc-skip class="author">Chen Yang</h4>
             
-            <h4 data-toc-skip class="date">2025-11-23</h4>
+            <h4 data-toc-skip class="date">2025-12-28</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/cafferychen777/mLLMCelltype/blob/main/vignettes/visualization-guide.Rmd" class="external-link"><code>vignettes/visualization-guide.Rmd</code></a></small>
       <div class="d-none name"><code>visualization-guide.Rmd</code></div>
@@ -348,7 +348,7 @@ your Seurat object:</p>
 </h5>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Basic cell type visualization</span></span>
-<span><span class="va">p1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://satijalab.org/seurat/reference/DimPlot.html" class="external-link">DimPlot</a></span><span class="op">(</span><span class="va">seurat_obj</span>,</span>
+<span><span class="va">p1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/Seurat/man/DimPlot.html" class="external-link">DimPlot</a></span><span class="op">(</span><span class="va">seurat_obj</span>,</span>
 <span>              group.by <span class="op">=</span> <span class="st">"cell_type_consensus"</span>,</span>
 <span>              label <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>              repel <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="op">+</span></span>
@@ -362,7 +362,7 @@ your Seurat object:</p>
 </h5>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Visualize consensus proportion</span></span>
-<span><span class="va">p2</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://satijalab.org/seurat/reference/FeaturePlot.html" class="external-link">FeaturePlot</a></span><span class="op">(</span><span class="va">seurat_obj</span>,</span>
+<span><span class="va">p2</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/Seurat/man/FeaturePlot.html" class="external-link">FeaturePlot</a></span><span class="op">(</span><span class="va">seurat_obj</span>,</span>
 <span>                 features <span class="op">=</span> <span class="st">"consensus_proportion"</span>,</span>
 <span>                 cols <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"yellow"</span>, <span class="st">"green"</span>, <span class="st">"blue"</span><span class="op">)</span>,</span>
 <span>                 min.cutoff <span class="op">=</span> <span class="fl">0.3</span>,</span>
@@ -377,7 +377,7 @@ your Seurat object:</p>
 </h5>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Visualize Shannon entropy</span></span>
-<span><span class="va">p3</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://satijalab.org/seurat/reference/FeaturePlot.html" class="external-link">FeaturePlot</a></span><span class="op">(</span><span class="va">seurat_obj</span>,</span>
+<span><span class="va">p3</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/Seurat/man/FeaturePlot.html" class="external-link">FeaturePlot</a></span><span class="op">(</span><span class="va">seurat_obj</span>,</span>
 <span>                 features <span class="op">=</span> <span class="st">"entropy"</span>,  <span class="co"># Note: The column name is 'entropy', not 'shannon_entropy'</span></span>
 <span>                 cols <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"red"</span>, <span class="st">"orange"</span>, <span class="st">"yellow"</span><span class="op">)</span>,</span>
 <span>                 min.cutoff <span class="op">=</span> <span class="fl">0</span>,</span>
@@ -873,7 +873,7 @@ required packages:</p>
 <p>First, identify marker genes for each cluster using Seurat:</p>
 <div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Find marker genes for each cluster</span></span>
-<span><span class="va">pbmc_markers</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://satijalab.org/seurat/reference/FindAllMarkers.html" class="external-link">FindAllMarkers</a></span><span class="op">(</span></span>
+<span><span class="va">pbmc_markers</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/Seurat/man/FindAllMarkers.html" class="external-link">FindAllMarkers</a></span><span class="op">(</span></span>
 <span>  <span class="va">seurat_obj</span>,</span>
 <span>  only.pos <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  min.pct <span class="op">=</span> <span class="fl">0.25</span>,</span>
@@ -916,7 +916,7 @@ expression percentage (dot size):</p>
 <span><span class="fu"><a href="https://satijalab.github.io/seurat-object/reference/Idents.html" class="external-link">Idents</a></span><span class="op">(</span><span class="va">seurat_obj</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="va">seurat_obj</span><span class="op">$</span><span class="va">cell_type_consensus</span></span>
 <span></span>
 <span><span class="co"># Create the basic dotplot</span></span>
-<span><span class="va">p_dotplot</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://satijalab.org/seurat/reference/DotPlot.html" class="external-link">DotPlot</a></span><span class="op">(</span></span>
+<span><span class="va">p_dotplot</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/Seurat/man/DotPlot.html" class="external-link">DotPlot</a></span><span class="op">(</span></span>
 <span>  <span class="va">seurat_obj</span>, </span>
 <span>  features <span class="op">=</span> <span class="va">top_markers</span>,</span>
 <span>  dot.scale <span class="op">=</span> <span class="fl">8</span>,</span>
@@ -1004,7 +1004,7 @@ types:</p>
 <span></span>
 <span><span class="co"># Calculate average expression per cell type</span></span>
 <span><span class="fu"><a href="https://satijalab.github.io/seurat-object/reference/Idents.html" class="external-link">Idents</a></span><span class="op">(</span><span class="va">seurat_obj</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="va">seurat_obj</span><span class="op">$</span><span class="va">cell_type_consensus</span></span>
-<span><span class="va">avg_expression</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://satijalab.org/seurat/reference/AverageExpression.html" class="external-link">AverageExpression</a></span><span class="op">(</span></span>
+<span><span class="va">avg_expression</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/Seurat/man/AverageExpression.html" class="external-link">AverageExpression</a></span><span class="op">(</span></span>
 <span>  <span class="va">seurat_obj</span>, </span>
 <span>  features <span class="op">=</span> <span class="va">selected_genes</span>,</span>
 <span>  group.by <span class="op">=</span> <span class="st">"cell_type_consensus"</span></span>
