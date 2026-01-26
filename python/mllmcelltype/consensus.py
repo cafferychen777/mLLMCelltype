@@ -549,6 +549,7 @@ def process_controversial_clusters(
         final_decision = None
         rounds_history = []
         current_votes = model_votes.copy()
+        consensus_response = None  # Initialize for later use
 
         # Create initial consensus check prompt for LLM to calculate metrics
 
@@ -728,7 +729,7 @@ def process_controversial_clusters(
                 # Try to extract majority_prediction from the last consensus check
                 # Only try to access consensus_response if it was actually created in this iteration
                 last_consensus_check = None
-                if rounds_history and len(rounds_history) >= 1 and "consensus_response" in locals():
+                if rounds_history and consensus_response is not None:
                     # Get the response from the last consensus check
                     last_consensus_check = consensus_response
 
@@ -1121,6 +1122,7 @@ def interactive_consensus_annotation(
 
     # If there are controversial clusters, resolve them
     resolved = {}
+    discussion_logs = {}
     if controversial:
         # Choose model for discussion
         discussion_model = None
@@ -1232,7 +1234,7 @@ def interactive_consensus_annotation(
         "controversial_clusters": controversial,
         "resolved": resolved,
         "model_annotations": model_results,
-        "discussion_logs": discussion_logs if "discussion_logs" in locals() else {},
+        "discussion_logs": discussion_logs,
         "metadata": {
             "timestamp": time.strftime("%Y-%m-%d %H:%M:%S"),
             "models": models,

@@ -15,7 +15,7 @@ import shutil
 
 def clear_mllmcelltype_cache():
     """Clear the mLLMCelltype cache directory."""
-    cache_dir = os.path.join(os.path.expanduser("~"), ".llmcelltype", "cache")
+    cache_dir = os.path.join(os.path.expanduser("~"), ".mllmcelltype", "cache")
 
     if os.path.exists(cache_dir):
         print(f"Found cache directory: {cache_dir}")
@@ -38,7 +38,7 @@ def clear_mllmcelltype_cache():
 
 def get_cache_info():
     """Get information about the current cache state."""
-    cache_dir = os.path.join(os.path.expanduser("~"), ".llmcelltype", "cache")
+    cache_dir = os.path.join(os.path.expanduser("~"), ".mllmcelltype", "cache")
 
     if not os.path.exists(cache_dir):
         return {"exists": False, "path": cache_dir, "file_count": 0, "total_size": 0}

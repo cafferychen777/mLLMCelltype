@@ -18,7 +18,7 @@ logging.basicConfig(
 logger = logging.getLogger("llmcelltype")
 
 # Default log directory
-DEFAULT_LOG_DIR = os.path.join(os.path.expanduser("~"), ".llmcelltype", "logs")
+DEFAULT_LOG_DIR = os.path.join(os.path.expanduser("~"), ".mllmcelltype", "logs")
 
 
 def setup_logging(log_dir: Optional[str] = None, log_level: str = "INFO") -> None:

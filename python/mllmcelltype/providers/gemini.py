@@ -26,6 +26,13 @@ def process_gemini(
     """
     write_log(f"Starting Gemini API request with model: {model}")
 
+    # Warn if base_url is provided (Gemini SDK doesn't support custom URLs)
+    if base_url:
+        write_log(
+            "base_url parameter is ignored for Gemini (SDK doesn't support custom URLs)",
+            level="warning",
+        )
+
     # Check if API key is provided and not empty
     if not api_key:
         error_msg = "Google API key is missing or empty"

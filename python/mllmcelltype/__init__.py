@@ -38,18 +38,6 @@ from .utils import (
     save_to_cache,
 )
 
-# LangExtract components (simplified)
-
-# LangExtract parser module (optional dependency)
-try:
-    # LangExtract parser is available but not exposed at package level
-    # Individual components can be imported directly if needed
-    import mllmcelltype.langextract_parser  # noqa: F401
-
-    LANGEXTRACT_AVAILABLE = True
-except ImportError:
-    LANGEXTRACT_AVAILABLE = False
-
 __version__ = "1.3.3"
 
 __all__ = [
@@ -90,24 +78,4 @@ __all__ = [
     "resolve_provider_base_url",
     "get_default_api_url",
     "validate_base_url",
-    # LangExtract configuration (removed undefined functions)
 ]
-
-# Add LangExtract functionality if available
-if LANGEXTRACT_AVAILABLE:
-    __all__.extend(
-        [
-            # LangExtract Parser
-            "LangextractParser",
-            "ParsingConfig",
-            "CellTypeAnnotation",
-            "ConsensusMetrics",
-            "BatchAnnotationResult",
-            "DiscussionAnalysis",
-            "ParsingComplexity",
-            "create_parser",
-            "parse_cell_types",
-            "analyze_consensus",
-            "LANGEXTRACT_AVAILABLE",
-        ]
-    )

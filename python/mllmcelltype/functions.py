@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-from .logger import write_log
 from .providers import (
     process_anthropic,
     process_deepseek,
@@ -13,7 +12,7 @@ from .providers import (
     process_stepfun,
     process_zhipu,
 )
-from .utils import clean_annotation, find_agreement
+from .utils import find_agreement
 
 # Global provider function mapping for reuse across modules
 PROVIDER_FUNCTIONS = {
