@@ -4,7 +4,6 @@ from .annotate import annotate_clusters, get_model_response
 from .consensus import (
     check_consensus,
     interactive_consensus_annotation,
-    print_consensus_summary,
     process_controversial_clusters,
 )
 from .functions import get_provider
@@ -58,7 +57,6 @@ __all__ = [
     "check_consensus",
     "process_controversial_clusters",
     "interactive_consensus_annotation",
-    "print_consensus_summary",
     # URL utilities
     "resolve_provider_base_url",
     "get_default_api_url",
