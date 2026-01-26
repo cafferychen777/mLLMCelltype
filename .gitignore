@@ -132,3 +132,6 @@ demos/
 examples/
 test_scripts/
 dev_tools/
+
+# Claude Code
+CLAUDE.md
