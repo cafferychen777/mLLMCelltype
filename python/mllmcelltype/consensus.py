@@ -30,24 +30,6 @@ DEFAULT_FALLBACK_CONSENSUS_PROPORTION = 0.25
 DEFAULT_FALLBACK_ENTROPY = 2.0
 
 
-def _get_api_key(provider: str, api_keys: Optional[dict[str, str]] = None) -> Optional[str]:
-    """Get API key for a specific provider.
-
-    Args:
-        provider: Provider name (e.g., 'qwen', 'anthropic')
-        api_keys: Optional dictionary of API keys
-
-    Returns:
-        Optional[str]: API key if found, None otherwise
-    """
-    # Try to get from provided api_keys first
-    if api_keys and provider in api_keys:
-        return api_keys[provider]
-
-    # Fallback to loading from environment/config
-    return load_api_key(provider)
-
-
 def _call_llm_with_retry(
     prompt: str,
     provider: str,
@@ -108,7 +90,7 @@ def _call_llm_with_retry(
 
     # Try fallback provider
     if api_keys:
-        fallback_api_key = _get_api_key(fallback_provider, api_keys)
+        fallback_api_key = api_keys.get(fallback_provider) or load_api_key(fallback_provider)
         if fallback_api_key:
             # Resolve base URL for fallback provider
             fallback_base_url = resolve_provider_base_url(fallback_provider, base_urls)
@@ -363,7 +345,7 @@ def check_consensus(
             primary_model = "qwen-max-2025-01-25"
 
         # Get API key for primary provider
-        primary_api_key = _get_api_key(primary_provider, api_keys)
+        primary_api_key = (api_keys.get(primary_provider) if api_keys else None) or load_api_key(primary_provider)
 
         # If primary model is not available and we have available_models, try to use one of them
         if not primary_api_key and available_models and not consensus_model:
