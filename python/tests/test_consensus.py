@@ -26,17 +26,17 @@ class TestConsensus:
 
         # Sample annotations from different models
         self.model_annotations = {
-            "gpt-4o": {  # Using real model name
+            "gpt-5": {
                 "1": "T cells",
                 "2": "B cells",
                 "3": "NK cells",
             },
-            "claude-3-opus": {  # Using real model name
+            "claude-sonnet-4-5-20250929": {
                 "1": "T lymphocytes",
                 "2": "B lymphocytes",
                 "3": "Natural killer cells",
             },
-            "gemini-1.5-pro": {  # Using real model name
+            "gemini-3-pro": {
                 "1": "CD4+ T cells",
                 "2": "Plasma B cells",
                 "3": "NK cells",
@@ -136,10 +136,10 @@ class TestConsensus:
             marker_genes=self.marker_genes_dict,
             species="human",
             models=[
-                "gpt-4o",
-                "claude-3-opus",
-                "gemini-1.5-pro",
-            ],  # Using real model names
+                "gpt-5",
+                "claude-sonnet-4-5-20250929",
+                "gemini-3-pro",
+            ],
             api_keys={
                 "openai": "test-key",
                 "anthropic": "test-key",
