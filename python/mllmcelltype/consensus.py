@@ -23,11 +23,22 @@ from .prompts import (
 from .url_utils import resolve_provider_base_url
 from .utils import clean_annotation, load_api_key, normalize_annotation_for_comparison
 
-# Default fallback values when metrics cannot be parsed from LLM response
-# Low consensus proportion ensures discussion will happen
+# Default fallback values for different uncertainty levels
+#
+# HIGH uncertainty: used when parsing completely fails or result is inconclusive
+# These conservative values ensure discussion will be triggered
 DEFAULT_FALLBACK_CONSENSUS_PROPORTION = 0.25
-# High entropy indicates high uncertainty
 DEFAULT_FALLBACK_ENTROPY = 2.0
+#
+# MEDIUM uncertainty: used during discussion when metrics extraction fails
+# but discussion is still progressing
+DEFAULT_MEDIUM_CONSENSUS_PROPORTION = 0.5
+DEFAULT_MEDIUM_ENTROPY = 1.0
+#
+# LOW uncertainty: used when we have a final decision but no explicit consensus confirmation
+# These optimistic values reflect that a decision was reached
+DEFAULT_DECIDED_CONSENSUS_PROPORTION = 0.75
+DEFAULT_DECIDED_ENTROPY = 0.5
 
 # Default fallback LLM for consensus checking
 DEFAULT_FALLBACK_PROVIDER = "anthropic"
@@ -618,9 +629,10 @@ def process_controversial_clusters(
                     if cp_value is None or h_value is None:
                         cp_value, h_value = _extract_metrics_from_text(consensus_response)[:2]
 
-                    # If still unable to extract, use default values
+                    # If still unable to extract, use medium uncertainty defaults
+                    # (discussion is progressing, so not as pessimistic as initial fallback)
                     if cp_value is None:
-                        cp_value = 0.5  # Default medium consensus proportion
+                        cp_value = DEFAULT_MEDIUM_CONSENSUS_PROPORTION
                         write_log(
                             f"Could not extract consensus proportion for cluster {cluster_id} "
                             f"in round {current_round}, using default value: {cp_value}",
@@ -628,7 +640,7 @@ def process_controversial_clusters(
                         )
 
                     if h_value is None:
-                        h_value = 1.0  # Default medium entropy value
+                        h_value = DEFAULT_MEDIUM_ENTROPY
                         write_log(
                             f"Could not extract entropy for cluster {cluster_id} "
                             f"in round {current_round}, using default value: {h_value}",
@@ -732,12 +744,12 @@ def process_controversial_clusters(
                         updated_entropy[cluster_id] = h_value
                     else:
                         # If not found, set high uncertainty values
-                        updated_consensus_proportion[cluster_id] = 0.5
-                        updated_entropy[cluster_id] = 1.0
+                        updated_consensus_proportion[cluster_id] = DEFAULT_FALLBACK_CONSENSUS_PROPORTION
+                        updated_entropy[cluster_id] = DEFAULT_FALLBACK_ENTROPY
                 else:
                     # If no discussion history, set high uncertainty values
-                    updated_consensus_proportion[cluster_id] = 0.5
-                    updated_entropy[cluster_id] = 1.0
+                    updated_consensus_proportion[cluster_id] = DEFAULT_FALLBACK_CONSENSUS_PROPORTION
+                    updated_entropy[cluster_id] = DEFAULT_FALLBACK_ENTROPY
             else:
                 results[cluster_id] = final_decision
                 # If consensus wasn't explicitly reached but we have a final decision
@@ -749,9 +761,9 @@ def process_controversial_clusters(
                         updated_consensus_proportion[cluster_id] = cp_value
                         updated_entropy[cluster_id] = h_value
                     else:
-                        # If not found, set reasonable default values
-                        updated_consensus_proportion[cluster_id] = 0.75
-                        updated_entropy[cluster_id] = 0.5
+                        # If not found, use decided defaults (we have a decision, just no metrics)
+                        updated_consensus_proportion[cluster_id] = DEFAULT_DECIDED_CONSENSUS_PROPORTION
+                        updated_entropy[cluster_id] = DEFAULT_DECIDED_ENTROPY
 
             # Store the full discussion history
             discussion_history[cluster_id] = rounds_history
