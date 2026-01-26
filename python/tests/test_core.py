@@ -239,5 +239,158 @@ def test_format_results_json_without_markers():
     assert result == {"1": "T cells", "2": "B cells"}
 
 
+# Test format_discussion_report function
+def test_format_discussion_report_basic():
+    """Test basic functionality of format_discussion_report."""
+    from mllmcelltype.consensus import format_discussion_report
+
+    # Mock results structure
+    mock_results = {
+        "consensus": {"0": "T cells", "1": "B cells"},
+        "consensus_proportion": {"0": 0.8, "1": 1.0},
+        "entropy": {"0": 0.5, "1": 0.0},
+        "controversial_clusters": ["0"],
+        "resolved": {"0": "T cells"},
+        "model_annotations": {
+            "gpt-5": {"0": "T cells", "1": "B cells"},
+            "claude": {"0": "CD4+ T cells", "1": "B cells"},
+        },
+        "discussion_logs": {
+            "0": [
+                {
+                    "gpt-5": "CELL TYPE: T cells\nGROUNDS: CD3D, CD4",
+                    "claude": "CELL TYPE: CD4+ T cells\nGROUNDS: CD3D, CD4, IL7R",
+                }
+            ]
+        },
+        "metadata": {
+            "timestamp": "2026-01-26 12:00:00",
+            "species": "human",
+            "tissue": "blood",
+            "models": ["gpt-5", "claude"],
+            "consensus_threshold": 0.7,
+            "max_discussion_rounds": 3,
+        },
+    }
+
+    # Test basic report generation
+    report = format_discussion_report(mock_results)
+
+    # Verify report contains expected sections
+    assert "MULTI-LLM CONSENSUS DISCUSSION REPORT" in report
+    assert "CLUSTER 0" in report
+    assert "CLUSTER 1" in report
+    assert "INITIAL PREDICTIONS" in report
+    assert "ROUND 1 DISCUSSION" in report
+    assert "FINAL RESULT" in report
+    assert "T cells" in report
+    assert "B cells" in report
+    assert "gpt-5" in report
+    assert "claude" in report
+
+
+def test_format_discussion_report_single_cluster():
+    """Test format_discussion_report with cluster_id filter."""
+    from mllmcelltype.consensus import format_discussion_report
+
+    mock_results = {
+        "consensus": {"0": "T cells", "1": "B cells"},
+        "consensus_proportion": {"0": 0.8, "1": 1.0},
+        "entropy": {"0": 0.5, "1": 0.0},
+        "controversial_clusters": [],
+        "resolved": {},
+        "model_annotations": {
+            "gpt-5": {"0": "T cells", "1": "B cells"},
+        },
+        "discussion_logs": {},
+        "metadata": {
+            "timestamp": "2026-01-26 12:00:00",
+            "species": "human",
+            "tissue": "blood",
+            "models": ["gpt-5"],
+            "consensus_threshold": 0.7,
+            "max_discussion_rounds": 3,
+        },
+    }
+
+    # Test single cluster report
+    report = format_discussion_report(mock_results, cluster_id="0")
+
+    assert "CLUSTER 0" in report
+    assert "CLUSTER 1" not in report
+    assert "T cells" in report
+
+
+def test_format_discussion_report_no_discussion():
+    """Test format_discussion_report when no discussion was needed."""
+    from mllmcelltype.consensus import format_discussion_report
+
+    mock_results = {
+        "consensus": {"0": "T cells"},
+        "consensus_proportion": {"0": 1.0},
+        "entropy": {"0": 0.0},
+        "controversial_clusters": [],
+        "resolved": {},
+        "model_annotations": {
+            "gpt-5": {"0": "T cells"},
+            "claude": {"0": "T cells"},
+        },
+        "discussion_logs": {},
+        "metadata": {
+            "timestamp": "2026-01-26 12:00:00",
+            "species": "human",
+            "tissue": "blood",
+            "models": ["gpt-5", "claude"],
+            "consensus_threshold": 0.7,
+            "max_discussion_rounds": 3,
+        },
+    }
+
+    report = format_discussion_report(mock_results)
+
+    assert "NO DISCUSSION NEEDED" in report
+    assert "Consensus reached with initial predictions" in report
+
+
+def test_format_discussion_report_save_to_file():
+    """Test format_discussion_report saving to file."""
+    from mllmcelltype.consensus import format_discussion_report
+
+    mock_results = {
+        "consensus": {"0": "T cells"},
+        "consensus_proportion": {"0": 1.0},
+        "entropy": {"0": 0.0},
+        "controversial_clusters": [],
+        "resolved": {},
+        "model_annotations": {"gpt-5": {"0": "T cells"}},
+        "discussion_logs": {},
+        "metadata": {
+            "timestamp": "2026-01-26 12:00:00",
+            "species": "human",
+            "tissue": "blood",
+            "models": ["gpt-5"],
+            "consensus_threshold": 0.7,
+            "max_discussion_rounds": 3,
+        },
+    }
+
+    # Test saving to file
+    with tempfile.NamedTemporaryFile(mode="w", suffix=".txt", delete=False) as f:
+        output_path = f.name
+
+    try:
+        report = format_discussion_report(mock_results, output_file=output_path)
+
+        # Verify file was created and contains the report
+        assert os.path.exists(output_path)
+        with open(output_path) as f:
+            file_content = f.read()
+        assert file_content == report
+        assert "MULTI-LLM CONSENSUS DISCUSSION REPORT" in file_content
+    finally:
+        if os.path.exists(output_path):
+            os.remove(output_path)
+
+
 if __name__ == "__main__":
     pytest.main(["-xvs", __file__])

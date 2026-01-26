@@ -1325,3 +1325,126 @@ def interactive_consensus_annotation(
             "max_discussion_rounds": max_discussion_rounds,
         },
     }
+
+
+def format_discussion_report(
+    results: dict[str, Any],
+    cluster_id: Optional[str] = None,
+    output_file: Optional[str] = None,
+) -> str:
+    """Format discussion results into a clean, readable report.
+
+    This function generates a structured report showing:
+    1. Initial predictions from each model
+    2. Full discussion for each round
+    3. Final consensus result
+
+    Args:
+        results: The results dictionary from interactive_consensus_annotation
+        cluster_id: Optional cluster ID to filter. If None, reports all clusters.
+        output_file: Optional file path to save the report. If None, only returns string.
+
+    Returns:
+        str: Formatted discussion report
+
+    Example:
+        >>> results = interactive_consensus_annotation(...)
+        >>> report = format_discussion_report(results, cluster_id="0")
+        >>> print(report)
+
+        # Or save to file:
+        >>> format_discussion_report(results, output_file="discussion_report.txt")
+    """
+    lines = []
+    sep = "=" * 80
+
+    # Extract data from results
+    model_annotations = results.get("model_annotations", {})
+    discussion_logs = results.get("discussion_logs", {})
+    consensus = results.get("consensus", {})
+    consensus_proportion = results.get("consensus_proportion", {})
+    entropy = results.get("entropy", {})
+    controversial_clusters = results.get("controversial_clusters", [])
+    metadata = results.get("metadata", {})
+
+    # Header
+    lines.append(sep)
+    lines.append("MULTI-LLM CONSENSUS DISCUSSION REPORT")
+    lines.append(sep)
+    lines.append(f"Generated: {metadata.get('timestamp', 'N/A')}")
+    lines.append(f"Species: {metadata.get('species', 'N/A')}")
+    lines.append(f"Tissue: {metadata.get('tissue', 'N/A')}")
+    lines.append(f"Models: {', '.join(metadata.get('models', []))}")
+    lines.append(f"Consensus Threshold: {metadata.get('consensus_threshold', 'N/A')}")
+    lines.append(f"Max Discussion Rounds: {metadata.get('max_discussion_rounds', 'N/A')}")
+    lines.append("")
+
+    # Determine which clusters to report
+    if cluster_id is not None:
+        clusters_to_report = [cluster_id] if cluster_id in consensus else []
+    else:
+        clusters_to_report = sorted(consensus.keys(), key=lambda x: int(x) if x.isdigit() else x)
+
+    for cid in clusters_to_report:
+        lines.append(sep)
+        lines.append(f"CLUSTER {cid}")
+        lines.append(sep)
+
+        # Section 1: Initial Predictions
+        lines.append("")
+        lines.append("-" * 40)
+        lines.append("INITIAL PREDICTIONS")
+        lines.append("-" * 40)
+
+        for model_name, predictions in model_annotations.items():
+            if cid in predictions:
+                lines.append(f"\n[{model_name}]")
+                lines.append(f"  {predictions[cid]}")
+
+        # Section 2: Discussion Rounds (if any)
+        if cid in discussion_logs and discussion_logs[cid]:
+            rounds = discussion_logs[cid]
+
+            for round_idx, round_responses in enumerate(rounds, start=1):
+                lines.append("")
+                lines.append("-" * 40)
+                lines.append(f"ROUND {round_idx} DISCUSSION")
+                lines.append("-" * 40)
+
+                for model_name, response in round_responses.items():
+                    lines.append(f"\n[{model_name}]")
+                    # Indent the response for readability
+                    for line in response.strip().split("\n"):
+                        lines.append(f"  {line}")
+        else:
+            lines.append("")
+            lines.append("-" * 40)
+            lines.append("NO DISCUSSION NEEDED")
+            lines.append("-" * 40)
+            lines.append("  Consensus reached with initial predictions.")
+
+        # Section 3: Final Result
+        lines.append("")
+        lines.append("-" * 40)
+        lines.append("FINAL RESULT")
+        lines.append("-" * 40)
+        lines.append(f"  Final Annotation: {consensus.get(cid, 'N/A')}")
+        lines.append(f"  Consensus Proportion: {consensus_proportion.get(cid, 'N/A')}")
+        lines.append(f"  Entropy: {entropy.get(cid, 'N/A')}")
+        lines.append(f"  Was Controversial: {'Yes' if cid in controversial_clusters else 'No'}")
+        lines.append("")
+
+    # Footer
+    lines.append(sep)
+    lines.append("END OF REPORT")
+    lines.append(sep)
+
+    report = "\n".join(lines)
+
+    # Save to file if requested
+    if output_file:
+        with open(output_file, "w", encoding="utf-8") as f:
+            f.write(report)
+        write_log(f"Discussion report saved to: {output_file}")
+
+    return report

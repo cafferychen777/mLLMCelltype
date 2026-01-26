@@ -3,6 +3,7 @@
 from .annotate import annotate_clusters, get_model_response
 from .consensus import (
     check_consensus,
+    format_discussion_report,
     interactive_consensus_annotation,
     process_controversial_clusters,
 )
@@ -29,7 +30,7 @@ from .utils import (
     save_to_cache,
 )
 
-__version__ = "1.3.3"
+__version__ = "2.0.0"
 
 __all__ = [
     # Core annotation
@@ -57,6 +58,7 @@ __all__ = [
     "check_consensus",
     "process_controversial_clusters",
     "interactive_consensus_annotation",
+    "format_discussion_report",
     # URL utilities
     "resolve_provider_base_url",
     "get_default_api_url",
