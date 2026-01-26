@@ -69,13 +69,3 @@ def write_log(message: str, level: str = "INFO") -> None:
     """
     level_method = getattr(logger, level.lower())
     level_method(message)
-
-
-def get_logger():
-    """Get the logger instance.
-
-    Returns:
-        Logger: The logger instance
-
-    """
-    return logger
