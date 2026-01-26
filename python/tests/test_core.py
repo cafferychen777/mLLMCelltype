@@ -205,5 +205,39 @@ def test_clean_annotation():
         assert clean_annotation(input_str) == expected
 
 
+# Test format_results with JSON responses
+def test_format_results_json_with_markers():
+    """Test parsing JSON response with code block markers."""
+    json_response = [
+        "```json",
+        "{",
+        '  "annotations": [',
+        '    {"cluster": "1", "cell_type": "T cells"},',
+        '    {"cluster": "2", "cell_type": "B cells"},',
+        '    {"cluster": "3", "cell_type": "Monocytes"}',
+        "  ]",
+        "}",
+        "```",
+    ]
+    clusters = ["1", "2", "3"]
+    result = format_results(json_response, clusters)
+    assert result == {"1": "T cells", "2": "B cells", "3": "Monocytes"}
+
+
+def test_format_results_json_without_markers():
+    """Test parsing JSON response without code block markers."""
+    json_response = [
+        "{",
+        '  "annotations": [',
+        '    {"cluster": "1", "cell_type": "T cells"},',
+        '    {"cluster": "2", "cell_type": "B cells"}',
+        "  ]",
+        "}",
+    ]
+    clusters = ["1", "2"]
+    result = format_results(json_response, clusters)
+    assert result == {"1": "T cells", "2": "B cells"}
+
+
 if __name__ == "__main__":
     pytest.main(["-xvs", __file__])
