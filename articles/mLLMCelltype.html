@@ -261,7 +261,7 @@ Seurat object:</p>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://wilkelab.org/cowplot/" class="external-link">cowplot</a></span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Basic visualization</span></span>
-<span><span class="va">p1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/Seurat/man/DimPlot.html" class="external-link">DimPlot</a></span><span class="op">(</span><span class="va">pbmc</span>, group.by <span class="op">=</span> <span class="st">"mLLM_cell_type"</span>, label <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="op">+</span></span>
+<span><span class="va">p1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://satijalab.org/seurat/reference/DimPlot.html" class="external-link">DimPlot</a></span><span class="op">(</span><span class="va">pbmc</span>, group.by <span class="op">=</span> <span class="st">"mLLM_cell_type"</span>, label <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">ggtitle</a></span><span class="op">(</span><span class="st">"mLLMCelltype Consensus Annotations"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Visualize consensus proportion (confidence metric)</span></span>
@@ -272,7 +272,7 @@ Seurat object:</p>
 <span>    <span class="va">consensus_results</span><span class="op">$</span><span class="va">initial_results</span><span class="op">$</span><span class="va">consensus_results</span><span class="op">[[</span><span class="va">cluster_id</span><span class="op">]</span><span class="op">]</span><span class="op">$</span><span class="va">consensus_proportion</span></span>
 <span><span class="op">}</span></span>
 <span></span>
-<span><span class="va">p2</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/Seurat/man/FeaturePlot.html" class="external-link">FeaturePlot</a></span><span class="op">(</span><span class="va">pbmc</span>, features <span class="op">=</span> <span class="st">"consensus_proportion"</span>,</span>
+<span><span class="va">p2</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://satijalab.org/seurat/reference/FeaturePlot.html" class="external-link">FeaturePlot</a></span><span class="op">(</span><span class="va">pbmc</span>, features <span class="op">=</span> <span class="st">"consensus_proportion"</span>,</span>
 <span>                 min.cutoff <span class="op">=</span> <span class="fl">0</span>, max.cutoff <span class="op">=</span> <span class="fl">1</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_gradient.html" class="external-link">scale_color_gradientn</a></span><span class="op">(</span>colors <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"blue"</span>, <span class="st">"green"</span>, <span class="st">"red"</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">ggtitle</a></span><span class="op">(</span><span class="st">"Consensus Proportion"</span><span class="op">)</span> <span class="op">+</span></span>
@@ -345,7 +345,7 @@ approach:</p>
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Visualize results</span></span>
-<span><span class="fu"><a href="https://rdrr.io/pkg/Seurat/man/DimPlot.html" class="external-link">DimPlot</a></span><span class="op">(</span><span class="va">pbmc</span>, group.by <span class="op">=</span> <span class="st">"single_model_cell_type"</span>, label <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="op">+</span></span>
+<span><span class="fu"><a href="https://satijalab.org/seurat/reference/DimPlot.html" class="external-link">DimPlot</a></span><span class="op">(</span><span class="va">pbmc</span>, group.by <span class="op">=</span> <span class="st">"single_model_cell_type"</span>, label <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">ggtitle</a></span><span class="op">(</span><span class="st">"Cell Types Annotated by Single LLM Model"</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level3">

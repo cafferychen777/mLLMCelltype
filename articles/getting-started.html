@@ -141,7 +141,7 @@
       <h1>Getting Started with mLLMCelltype</h1>
                         <h4 data-toc-skip class="author">Chen Yang</h4>
             
-            <h4 data-toc-skip class="date">2025-12-28</h4>
+            <h4 data-toc-skip class="date">2026-01-26</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/cafferychen777/mLLMCelltype/blob/main/vignettes/getting-started.Rmd" class="external-link"><code>vignettes/getting-started.Rmd</code></a></small>
       <div class="d-none name"><code>getting-started.Rmd</code></div>
@@ -232,11 +232,11 @@ Cluster ID (must be 0-based) - <code>gene</code>: Gene name/symbol -
 <h4 id="seurat-findmarkers-output">2. Seurat FindMarkers Output<a class="anchor" aria-label="anchor" href="#seurat-findmarkers-output"></a>
 </h4>
 <p>You can directly use the output from Seurat’s
-<code><a href="https://rdrr.io/pkg/Seurat/man/FindAllMarkers.html" class="external-link">FindAllMarkers()</a></code> function:</p>
+<code><a href="https://satijalab.org/seurat/reference/FindAllMarkers.html" class="external-link">FindAllMarkers()</a></code> function:</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Assuming you have a Seurat object named 'seurat_obj'</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://satijalab.org/seurat" class="external-link">Seurat</a></span><span class="op">)</span></span>
-<span><span class="va">all_markers</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/Seurat/man/FindAllMarkers.html" class="external-link">FindAllMarkers</a></span><span class="op">(</span><span class="va">seurat_obj</span>, only.pos <span class="op">=</span> <span class="cn">TRUE</span>, min.pct <span class="op">=</span> <span class="fl">0.25</span>, logfc.threshold <span class="op">=</span> <span class="fl">0.25</span><span class="op">)</span></span></code></pre></div>
+<span><span class="va">all_markers</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://satijalab.org/seurat/reference/FindAllMarkers.html" class="external-link">FindAllMarkers</a></span><span class="op">(</span><span class="va">seurat_obj</span>, only.pos <span class="op">=</span> <span class="cn">TRUE</span>, min.pct <span class="op">=</span> <span class="fl">0.25</span>, logfc.threshold <span class="op">=</span> <span class="fl">0.25</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level4">
 <h4 id="csv-file-path">3. CSV File Path<a class="anchor" aria-label="anchor" href="#csv-file-path"></a>
@@ -472,7 +472,7 @@ a consensus:</p>
 <p>Here’s a simple visualization of the results using Seurat:</p>
 <div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Plot UMAP with cell type annotations</span></span>
-<span><span class="fu"><a href="https://rdrr.io/pkg/Seurat/man/DimPlot.html" class="external-link">DimPlot</a></span><span class="op">(</span><span class="va">seurat_obj</span>, group.by <span class="op">=</span> <span class="st">"cell_type_consensus"</span>, label <span class="op">=</span> <span class="cn">TRUE</span>, repel <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="op">+</span></span>
+<span><span class="fu"><a href="https://satijalab.org/seurat/reference/DimPlot.html" class="external-link">DimPlot</a></span><span class="op">(</span><span class="va">seurat_obj</span>, group.by <span class="op">=</span> <span class="st">"cell_type_consensus"</span>, label <span class="op">=</span> <span class="cn">TRUE</span>, repel <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">ggtitle</a></span><span class="op">(</span><span class="st">"Cell Type Annotations"</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme.html" class="external-link">theme</a></span><span class="op">(</span>plot.title <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html" class="external-link">element_text</a></span><span class="op">(</span>hjust <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 </div>

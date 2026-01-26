@@ -141,7 +141,7 @@
       <h1>Frequently Asked Questions</h1>
                         <h4 data-toc-skip class="author">Chen Yang</h4>
             
-            <h4 data-toc-skip class="date">2025-12-28</h4>
+            <h4 data-toc-skip class="date">2026-01-26</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/cafferychen777/mLLMCelltype/blob/main/vignettes/faq.Rmd" class="external-link"><code>vignettes/faq.Rmd</code></a></small>
       <div class="d-none name"><code>faq.Rmd</code></div>
@@ -535,7 +535,7 @@ poorly represented in the training data of LLMs</p></li>
 <p>mLLMCelltype integrates seamlessly with Seurat:</p>
 <ol style="list-style-type: decimal">
 <li><p><strong>Input</strong>: You can directly use Seurat’s
-<code><a href="https://rdrr.io/pkg/Seurat/man/FindAllMarkers.html" class="external-link">FindAllMarkers()</a></code> output as input</p></li>
+<code><a href="https://satijalab.org/seurat/reference/FindAllMarkers.html" class="external-link">FindAllMarkers()</a></code> output as input</p></li>
 <li><p><strong>Output</strong>: Annotation results can be easily added
 to your Seurat object:</p></li>
 </ol>
@@ -551,7 +551,7 @@ to your Seurat object:</p></li>
 with the added annotations:</li>
 </ol>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/pkg/Seurat/man/DimPlot.html" class="external-link">DimPlot</a></span><span class="op">(</span><span class="va">seurat_obj</span>, group.by <span class="op">=</span> <span class="st">"cell_type_consensus"</span>, label <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="https://satijalab.org/seurat/reference/DimPlot.html" class="external-link">DimPlot</a></span><span class="op">(</span><span class="va">seurat_obj</span>, group.by <span class="op">=</span> <span class="st">"cell_type_consensus"</span>, label <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level4">
 <h4 id="can-i-use-mllmcelltype-with-scanpyanndata-in-r">Can I use mLLMCelltype with Scanpy/AnnData in R?<a class="anchor" aria-label="anchor" href="#can-i-use-mllmcelltype-with-scanpyanndata-in-r"></a>

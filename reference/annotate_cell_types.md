@@ -214,7 +214,7 @@ When api_key is NA: The generated prompt string
 
 ## See also
 
-- [`Seurat::FindAllMarkers()`](https://rdrr.io/pkg/Seurat/man/FindAllMarkers.html)
+- [`Seurat::FindAllMarkers()`](https://satijalab.org/seurat/reference/FindAllMarkers.html)
 
 - [`get_provider()`](https://cafferyang.com/mLLMCelltype/reference/get_provider.md)
 
@@ -234,8 +234,8 @@ annotate_cell_types(
   model = 'gpt-5',
   api_key = NA  # Returns prompt only without making API call
 )
-#> {"timestamp":"2025-12-28 13:58:44","session_id":"20251228_135844","level":"INFO","message":"Unified logger initialized","context":{"session_id":"20251228_135844","log_level":"INFO","log_dir":"logs"},"pid":11039} 
-#> {"timestamp":"2025-12-28 13:58:44","session_id":"20251228_135844","level":"INFO","message":"Processing input with model and provider","context":{"model":"gpt-5","provider":"openai","custom_url":false},"pid":11039} 
+#> {"timestamp":"2026-01-26 07:34:18","session_id":"20260126_073418","level":"INFO","message":"Unified logger initialized","context":{"session_id":"20260126_073418","log_level":"INFO","log_dir":"logs"},"pid":10510} 
+#> {"timestamp":"2026-01-26 07:34:18","session_id":"20260126_073418","level":"INFO","message":"Processing input with model and provider","context":{"model":"gpt-5","provider":"openai","custom_url":false},"pid":10510} 
 #> DEBUG: Formatted lines for prompt:
 #> [1] "You are a cell type annotation expert. Below are marker genes for different cell clusters in human PBMC.\n\n\n\nFor each numbered cluster, provide only the cell type name in a new line, without any explanation."
 
