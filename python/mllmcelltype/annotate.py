@@ -81,7 +81,7 @@ def annotate_clusters(
         api_key = load_api_key(provider)
         if not api_key:
             error_msg = f"API key not found for provider: {provider}"
-            write_log(f"ERROR: {error_msg}", level="error")
+            write_log(error_msg, level="error")
             raise ValueError(error_msg)
 
     # Create prompt
@@ -110,7 +110,7 @@ def annotate_clusters(
     provider_func = PROVIDER_FUNCTIONS.get(provider.lower())
     if not provider_func:
         error_msg = f"Unknown provider: {provider}"
-        write_log(f"ERROR: {error_msg}", level="error")
+        write_log(error_msg, level="error")
         raise ValueError(error_msg)
 
     # Process request
@@ -133,7 +133,7 @@ def annotate_clusters(
 
     except Exception as e:
         error_msg = f"Error during annotation: {str(e)}"
-        write_log(f"ERROR: {error_msg}", level="error")
+        write_log(error_msg, level="error")
         raise
 
 
@@ -202,7 +202,7 @@ def batch_annotate_clusters(
         api_key = load_api_key(provider)
         if not api_key:
             error_msg = f"API key not found for provider: {provider}"
-            write_log(f"ERROR: {error_msg}", level="error")
+            write_log(error_msg, level="error")
             raise ValueError(error_msg)
 
     # Create batch prompt
@@ -243,7 +243,7 @@ def batch_annotate_clusters(
     provider_func = PROVIDER_FUNCTIONS.get(provider.lower())
     if not provider_func:
         error_msg = f"Unknown provider: {provider}"
-        write_log(f"ERROR: {error_msg}", level="error")
+        write_log(error_msg, level="error")
         raise ValueError(error_msg)
 
     # Process request
@@ -396,7 +396,7 @@ def batch_annotate_clusters(
 
     except Exception as e:
         error_msg = f"Error during batch annotation: {str(e)}"
-        write_log(f"ERROR: {error_msg}", level="error")
+        write_log(error_msg, level="error")
         raise
 
 
@@ -467,7 +467,7 @@ def get_model_response(
         api_key = load_api_key(provider)
         if not api_key:
             error_msg = f"API key not found for provider: {provider}"
-            write_log(f"ERROR: {error_msg}", level="error")
+            write_log(error_msg, level="error")
             raise ValueError(error_msg)
 
     # Check cache
@@ -486,7 +486,7 @@ def get_model_response(
     provider_func = PROVIDER_FUNCTIONS.get(provider.lower())
     if not provider_func:
         error_msg = f"Unknown provider: {provider}"
-        write_log(f"ERROR: {error_msg}", level="error")
+        write_log(error_msg, level="error")
         raise ValueError(error_msg)
 
     # Call provider function
@@ -507,5 +507,5 @@ def get_model_response(
         return result
     except Exception as e:
         error_msg = f"Error getting model response: {str(e)}"
-        write_log(f"ERROR: {error_msg}", level="error")
+        write_log(error_msg, level="error")
         raise

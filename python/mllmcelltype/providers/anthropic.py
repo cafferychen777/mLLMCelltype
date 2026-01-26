@@ -29,7 +29,7 @@ def process_anthropic(
     # Check if API key is provided and not empty
     if not api_key:
         error_msg = "Anthropic API key is missing or empty"
-        write_log(f"ERROR: {error_msg}")
+        write_log(error_msg, level="error")
         raise ValueError(error_msg)
 
     # Check for deprecated models that will be retired on July 21, 2025
@@ -43,7 +43,8 @@ def process_anthropic(
 
     if model in deprecated_models:
         write_log(
-            f"WARNING: Model '{model}' will be retired on {deprecated_models[model]}. Please migrate to a newer model."
+            f"Model '{model}' will be retired on {deprecated_models[model]}. Please migrate to a newer model.",
+            level="warning",
         )
         write_log("Recommended migrations:")
         if model.startswith("claude-2"):
@@ -131,7 +132,7 @@ def process_anthropic(
         lines = content.strip().split("\n")
 
         write_log(f"Got response with {len(lines)} lines")
-        write_log(f"Raw response from Anthropic:\n{lines}")
+        write_log(f"Raw response from Anthropic:\n{lines}", level="debug")
 
         # Count the number of expected lines (clusters)
         input_lines = prompt.split("\n")
@@ -217,10 +218,11 @@ def process_anthropic_direct(
                 try:
                     error_message = response.json()
                     error_detail = error_message.get("error", {}).get("message", f"model: {model}")
-                    write_log(f"ERROR: Anthropic API request failed: {error_detail}")
+                    write_log(f"Anthropic API request failed: {error_detail}", level="error")
                 except (ValueError, KeyError, json.JSONDecodeError):
                     write_log(
-                        f"ERROR: Anthropic API request failed with status {response.status_code}"
+                        f"Anthropic API request failed with status {response.status_code}",
+                        level="error",
                     )
 
                 # If rate limited, wait and retry

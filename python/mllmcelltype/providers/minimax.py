@@ -29,7 +29,7 @@ def process_minimax(
     # Check if API key is provided and not empty
     if not api_key:
         error_msg = "MiniMax API key is missing or empty"
-        write_log(f"ERROR: {error_msg}")
+        write_log(error_msg, level="error")
         raise ValueError(error_msg)
 
     # Use custom URL or default URL
@@ -67,31 +67,32 @@ def process_minimax(
     for attempt in range(max_retries):
         try:
             # Log request details for debugging
-            write_log(f"Request URL: {url}")
-            write_log(f"Request headers: {headers}")
-            write_log(f"Request body: {json.dumps(body)}")
+            write_log(f"Request URL: {url}", level="debug")
+            write_log(f"Request headers: {headers}", level="debug")
+            write_log(f"Request body: {json.dumps(body)}", level="debug")
 
             response = requests.post(
                 url=url, headers=headers, data=json.dumps(body), timeout=30
             )
 
             # Log response details
-            write_log(f"Response status code: {response.status_code}")
-            write_log(f"Response headers: {response.headers}")
+            write_log(f"Response status code: {response.status_code}", level="debug")
+            write_log(f"Response headers: {response.headers}", level="debug")
 
             # Check for errors
             if response.status_code != 200:
                 try:
                     error_message = response.json()
-                    write_log(f"ERROR: MiniMax API request failed: {error_message}")
+                    write_log(f"MiniMax API request failed: {error_message}", level="error")
                     write_log(
                         f"Error details: {error_message.get('error', {}).get('message', 'Unknown error')}"
                     )
                 except (ValueError, KeyError, json.JSONDecodeError):
                     write_log(
-                        f"ERROR: MiniMax API request failed with status {response.status_code}"
+                        f"MiniMax API request failed with status {response.status_code}",
+                        level="error",
                     )
-                    write_log(f"Response text: {response.text}")
+                    write_log(f"Response text: {response.text}", level="debug")
 
                 # If rate limited, wait and retry
                 if response.status_code == 429 and attempt < max_retries - 1:
@@ -119,7 +120,7 @@ def process_minimax(
                 raise ValueError(f"Unexpected response format: {content}")
 
             write_log(f"Got response with {len(res)} lines")
-            write_log(f"Raw response from MiniMax:\n{res}")
+            write_log(f"Raw response from MiniMax:\n{res}", level="debug")
 
             # Clean up results (remove commas at the end of lines)
             return [line.rstrip(",") for line in res]

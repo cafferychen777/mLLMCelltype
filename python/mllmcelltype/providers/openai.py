@@ -29,7 +29,7 @@ def process_openai(
     # Check if API key is provided and not empty
     if not api_key:
         error_msg = "OpenAI API key is missing or empty"
-        write_log(f"ERROR: {error_msg}")
+        write_log(error_msg, level="error")
         raise ValueError(error_msg)
 
     # Use custom URL or default URL
@@ -73,7 +73,8 @@ def process_openai(
             if response.status_code != 200:
                 error_message = response.json()
                 write_log(
-                    f"ERROR: OpenAI API request failed: {error_message.get('error', {}).get('message', 'Unknown error')}"
+                    f"OpenAI API request failed: {error_message.get('error', {}).get('message', 'Unknown error')}",
+                    level="error",
                 )
 
                 # If rate limited, wait and retry
@@ -89,7 +90,7 @@ def process_openai(
             content = response.json()
             res = content["choices"][0]["message"]["content"].strip().split("\n")
             write_log(f"Got response with {len(res)} lines")
-            write_log(f"Raw response from OpenAI:\n{res}")
+            write_log(f"Raw response from OpenAI:\n{res}", level="debug")
 
             # Clean up results (remove commas at the end of lines)
             return [line.rstrip(",") for line in res]

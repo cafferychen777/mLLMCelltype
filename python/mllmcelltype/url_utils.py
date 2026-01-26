@@ -117,17 +117,17 @@ def get_working_qwen_endpoint(api_key: str) -> str:
         "https://dashscope.aliyuncs.com/compatible-mode/v1/chat/completions",  # Domestic (China)
     ]
 
-    write_log("Testing Qwen endpoint connectivity...")
+    write_log("Testing Qwen endpoint connectivity...", level="debug")
 
     for i, endpoint in enumerate(endpoints):
         endpoint_type = "international" if i == 0 else "domestic"
-        write_log(f"Testing {endpoint_type} endpoint: {endpoint}")
+        write_log(f"Testing {endpoint_type} endpoint: {endpoint}", level="debug")
 
         if test_endpoint_connectivity(endpoint, api_key):
-            write_log(f"✅ {endpoint_type} endpoint is accessible")
+            write_log(f"{endpoint_type} endpoint is accessible", level="debug")
             return endpoint
         else:
-            write_log(f"❌ {endpoint_type} endpoint is not accessible")
+            write_log(f"{endpoint_type} endpoint is not accessible", level="warning")
 
     # If none are reachable, return international endpoint as fallback
     write_log("No endpoints accessible, using international endpoint as fallback")

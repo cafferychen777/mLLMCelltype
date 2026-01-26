@@ -30,7 +30,7 @@ def process_deepseek(
     # Check if API key is provided and not empty
     if not api_key:
         error_msg = "DeepSeek API key is missing or empty"
-        write_log(f"ERROR: {error_msg}")
+        write_log(error_msg, level="error")
         raise ValueError(error_msg)
 
     # Use custom URL or default URL
@@ -97,7 +97,8 @@ def process_deepseek(
             if response.status_code != 200:
                 error_message = response.json()
                 write_log(
-                    f"ERROR: DeepSeek API request failed: {error_message.get('error', {}).get('message', 'Unknown error')}"
+                    f"DeepSeek API request failed: {error_message.get('error', {}).get('message', 'Unknown error')}",
+                    level="error",
                 )
 
                 # If rate limited, wait and retry
@@ -113,7 +114,7 @@ def process_deepseek(
             content = response.json()
             res = content["choices"][0]["message"]["content"].strip().split("\n")
             write_log(f"Got response with {len(res)} lines")
-            write_log(f"Raw response from DeepSeek:\n{res}")
+            write_log(f"Raw response from DeepSeek:\n{res}", level="debug")
 
             # Clean up results (remove commas at the end of lines)
             return [line.rstrip(",") for line in res]
@@ -128,7 +129,8 @@ def process_deepseek(
                 time.sleep(wait_time)
             else:
                 write_log(
-                    f"ERROR: All retry attempts failed with timeout. Last error: {str(e)}"
+                    f"All retry attempts failed with timeout. Last error: {str(e)}",
+                    level="error",
                 )
                 raise
 
@@ -142,7 +144,8 @@ def process_deepseek(
                 time.sleep(wait_time)
             else:
                 write_log(
-                    f"ERROR: All retry attempts failed with connection error. Last error: {str(e)}"
+                    f"All retry attempts failed with connection error. Last error: {str(e)}",
+                    level="error",
                 )
                 raise
 
@@ -153,7 +156,7 @@ def process_deepseek(
                 write_log(f"Waiting {wait_time} seconds before retrying...")
                 time.sleep(wait_time)
             else:
-                write_log(f"ERROR: All retry attempts failed. Last error: {str(e)}")
+                write_log(f"All retry attempts failed. Last error: {str(e)}", level="error")
                 raise
 
     # Should not reach here if all retries fail (exception would be raised)

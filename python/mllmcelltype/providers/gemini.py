@@ -29,7 +29,7 @@ def process_gemini(
     # Check if API key is provided and not empty
     if not api_key:
         error_msg = "Google API key is missing or empty"
-        write_log(f"ERROR: {error_msg}")
+        write_log(error_msg, level="error")
         raise ValueError(error_msg)
 
     # Initialize the client
@@ -55,7 +55,7 @@ def process_gemini(
             # Parse the response
             result = response.text.strip().split("\n")
             write_log(f"Got response with {len(result)} lines")
-            write_log(f"Raw response from Gemini:\n{result}")
+            write_log(f"Raw response from Gemini:\n{result}", level="debug")
 
             # Clean up results (remove commas at the end of lines)
             return [line.rstrip(",") for line in result]

@@ -71,7 +71,7 @@ def load_api_key(provider: str) -> str:
     # Get environment variable name for provider
     env_var = env_var_map.get(provider.lower())
     if not env_var:
-        write_log(f"WARNING: Unknown provider: {provider}", level="warning")
+        write_log(f"Unknown provider: {provider}", level="warning")
         env_var = f"{provider.upper()}_API_KEY"
 
     # Get API key from environment variable
@@ -116,7 +116,7 @@ def load_api_key(provider: str) -> str:
             write_log(f"Error loading .env file: {str(e)}", level="warning")
 
     if not api_key:
-        write_log(f"WARNING: API key not found for provider: {env_var}", level="warning")
+        write_log(f"API key not found for provider: {env_var}", level="warning")
 
     return api_key
 
@@ -241,7 +241,7 @@ def parse_marker_genes(marker_genes_df: pd.DataFrame) -> dict[str, list[str]]:
 
     # Check if dataframe is empty
     if marker_genes_df.empty:
-        write_log("WARNING: Empty marker genes dataframe", level="warning")
+        write_log("Empty marker genes dataframe", level="warning")
         return result
 
     # Get column names
@@ -249,12 +249,12 @@ def parse_marker_genes(marker_genes_df: pd.DataFrame) -> dict[str, list[str]]:
 
     # Check if 'cluster' column exists
     if "cluster" not in columns:
-        write_log("ERROR: 'cluster' column not found in marker genes dataframe", level="error")
+        write_log("'cluster' column not found in marker genes dataframe", level="error")
         raise ValueError("'cluster' column not found in marker genes dataframe")
 
     # Check if 'gene' column exists
     if "gene" not in columns:
-        write_log("ERROR: 'gene' column not found in marker genes dataframe", level="error")
+        write_log("'gene' column not found in marker genes dataframe", level="error")
         raise ValueError("'gene' column not found in marker genes dataframe")
 
     # Group by cluster and get list of genes
@@ -432,7 +432,7 @@ def format_results(results: list[str], clusters: list[str]) -> dict[str, str]:
 
     # Case 4: Fall back to the original method
     write_log(
-        "WARNING: Could not parse complex LLM response, falling back to simple mapping",
+        "Could not parse complex LLM response, falling back to simple mapping",
         level="warning",
     )
     result = {}
@@ -445,7 +445,7 @@ def format_results(results: list[str], clusters: list[str]) -> dict[str, str]:
     # Check if number of results matches number of clusters
     if len(result) != len(clusters):
         write_log(
-            f"WARNING: Number of results ({len(result)}) does not match number of clusters ({len(clusters)})",
+            f"Number of results ({len(result)}) does not match number of clusters ({len(clusters)})",
             level="warning",
         )
 

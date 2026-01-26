@@ -29,7 +29,7 @@ def process_grok(
     # Check if API key is provided and not empty
     if not api_key:
         error_msg = "Grok API key is missing or empty"
-        write_log(f"ERROR: {error_msg}")
+        write_log(error_msg, level="error")
         raise ValueError(error_msg)
 
     # Use custom URL or default URL
@@ -49,7 +49,7 @@ def process_grok(
     write_log(f"Using model: {model}")
 
     # Process all input at once
-    write_log("Processing input in 1 chunk")
+    write_log("Processing input in 1 chunk", level="debug")
 
     # Prepare the request body
     body = {"model": model, "messages": [{"role": "user", "content": prompt}]}
@@ -69,7 +69,8 @@ def process_grok(
             if response.status_code != 200:
                 error_message = response.json()
                 write_log(
-                    f"ERROR: Grok API request failed: {error_message.get('error', {}).get('message', 'Unknown error')}"
+                    f"Grok API request failed: {error_message.get('error', {}).get('message', 'Unknown error')}",
+                    level="error",
                 )
 
                 # If rate limited, wait and retry
@@ -85,10 +86,10 @@ def process_grok(
             content = response.json()
             res = content["choices"][0]["message"]["content"].strip().split("\n")
             write_log(f"Got response with {len(res)} lines")
-            write_log(f"Raw response from Grok:\n{res}")
+            write_log(f"Raw response from Grok:\n{res}", level="debug")
 
             # Success, exit retry loop
-            write_log("All chunks processed successfully")
+            write_log("All chunks processed successfully", level="debug")
             # Clean up results (remove commas at the end of lines)
             return [line.rstrip(",") for line in res]
 
