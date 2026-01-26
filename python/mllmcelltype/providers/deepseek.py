@@ -155,6 +155,3 @@ def process_deepseek(
             else:
                 write_log(f"All retry attempts failed. Last error: {str(e)}", level="error")
                 raise
-
-    # Unreachable: loop always returns or raises
-    raise RuntimeError("Unexpected: retry loop completed without return or raise")

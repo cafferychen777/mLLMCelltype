@@ -167,6 +167,3 @@ def process_anthropic(
                 time.sleep(wait_time)
             else:
                 raise
-
-    # Unreachable: loop always returns or raises
-    raise RuntimeError("Unexpected: retry loop completed without return or raise")
