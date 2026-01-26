@@ -234,8 +234,8 @@ annotate_cell_types(
   model = 'gpt-5',
   api_key = NA  # Returns prompt only without making API call
 )
-#> {"timestamp":"2026-01-26 09:06:11","session_id":"20260126_090611","level":"INFO","message":"Unified logger initialized","context":{"session_id":"20260126_090611","log_level":"INFO","log_dir":"logs"},"pid":10540} 
-#> {"timestamp":"2026-01-26 09:06:11","session_id":"20260126_090611","level":"INFO","message":"Processing input with model and provider","context":{"model":"gpt-5","provider":"openai","custom_url":false},"pid":10540} 
+#> {"timestamp":"2026-01-26 09:11:06","session_id":"20260126_091106","level":"INFO","message":"Unified logger initialized","context":{"session_id":"20260126_091106","log_level":"INFO","log_dir":"logs"},"pid":10563} 
+#> {"timestamp":"2026-01-26 09:11:06","session_id":"20260126_091106","level":"INFO","message":"Processing input with model and provider","context":{"model":"gpt-5","provider":"openai","custom_url":false},"pid":10563} 
 #> DEBUG: Formatted lines for prompt:
 #> [1] "You are a cell type annotation expert. Below are marker genes for different cell clusters in human PBMC.\n\n\n\nFor each numbered cluster, provide only the cell type name in a new line, without any explanation."
 
