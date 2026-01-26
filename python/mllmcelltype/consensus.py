@@ -707,15 +707,9 @@ def process_controversial_clusters(
                             level="info",
                         )
 
-                        # Extract CP and H from the discussion if available
-                        cp_value, h_value = _extract_metrics_from_text(response)[:2]
-                        if cp_value is not None and h_value is not None:
-                            updated_consensus_proportion[cluster_id] = cp_value
-                            updated_entropy[cluster_id] = h_value
-                        else:
-                            # If not found in discussion, set high consensus values
-                            updated_consensus_proportion[cluster_id] = 1.0
-                            updated_entropy[cluster_id] = 0.0
+                        # Use already computed cp_value and h_value from above
+                        updated_consensus_proportion[cluster_id] = cp_value
+                        updated_entropy[cluster_id] = h_value
 
                         rounds_history.append(
                             f"Consensus reached in round {current_round}\n"
@@ -1333,84 +1327,3 @@ def print_consensus_summary(result: dict[str, Any]) -> None:
             print()
 
 
-def facilitate_cluster_discussion(
-    cluster_id: str,
-    marker_genes: list[str],
-    model_votes: dict[str, str],
-    species: str,
-    tissue: Optional[str] = None,
-    provider: str = "openai",
-    model: Optional[str] = None,
-    api_key: Optional[str] = None,
-    use_cache: bool = True,
-    base_url: Optional[str] = None,
-) -> str:
-    """Facilitate a discussion between different model predictions for a controversial cluster.
-
-    Args:
-        cluster_id: ID of the cluster
-        marker_genes: List of marker genes for the cluster
-        model_votes: Dictionary mapping model names to cell type annotations
-        species: Species name (e.g., 'human', 'mouse')
-        tissue: Optional tissue name (e.g., 'brain', 'liver')
-        provider: LLM provider for the discussion
-        model: Model name for the discussion
-        api_key: API key for the provider
-        use_cache: Whether to use cache
-
-    Returns:
-        str: Discussion result
-
-    """
-    # Generate discussion prompt
-    prompt = create_discussion_prompt(
-        cluster_id=cluster_id,
-        marker_genes=marker_genes,
-        model_votes=model_votes,
-        species=species,
-        tissue=tissue,
-    )
-
-    # Get response
-    response = get_model_response(prompt, provider, model, api_key, use_cache, base_url=base_url)
-
-    # Extract final decision
-    cell_type = extract_cell_type_from_discussion(response)
-
-    # Return the full discussion and the extracted cell type
-    return f"{response}\n\nFINAL DETERMINATION: {cell_type}"
-
-
-def summarize_discussion(discussion: str) -> str:
-    """Summarize a model discussion about cell type annotation.
-
-    Args:
-        discussion: Full discussion text
-
-    Returns:
-        str: Summary of the discussion
-
-    """
-    # Extract key points from the discussion
-    lines = discussion.strip().split("\n")
-    summary_lines = []
-
-    # Look for common summary indicators
-    for line in lines:
-        line = line.strip()
-        if line.lower().startswith(
-            ("conclusion", "summary", "final", "therefore", "overall", "in summary")
-        ):
-            summary_lines.append(line)
-
-    # If we found summary lines, join them
-    if summary_lines:
-        return "\n".join(summary_lines)
-
-    # Otherwise, extract the final decision
-    cell_type = extract_cell_type_from_discussion(discussion)
-    if cell_type:
-        return f"Final cell type determination: {cell_type}"
-
-    # If all else fails, return the last few lines
-    return "\n".join(lines[-3:])

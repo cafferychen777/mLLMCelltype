@@ -4,11 +4,9 @@ from .annotate import annotate_clusters, batch_annotate_clusters, get_model_resp
 from .cache_manager import get_cache_info
 from .consensus import (
     check_consensus,
-    facilitate_cluster_discussion,
     interactive_consensus_annotation,
     print_consensus_summary,
     process_controversial_clusters,
-    summarize_discussion,
 )
 from .functions import get_provider
 from .logger import setup_logging, write_log
@@ -27,7 +25,6 @@ from .utils import (
     clean_annotation,
     clear_cache,
     create_cache_key,
-    find_agreement,
     format_results,
     get_cache_stats,
     load_api_key,
@@ -57,7 +54,6 @@ __all__ = [
     "get_cache_stats",
     "get_cache_info",
     "format_results",
-    "find_agreement",
     # Prompts
     "create_prompt",
     "create_batch_prompt",
@@ -68,8 +64,6 @@ __all__ = [
     "process_controversial_clusters",
     "interactive_consensus_annotation",
     "print_consensus_summary",
-    "facilitate_cluster_discussion",
-    "summarize_discussion",
     # URL utilities
     "resolve_provider_base_url",
     "get_default_api_url",

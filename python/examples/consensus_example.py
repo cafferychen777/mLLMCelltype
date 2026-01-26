@@ -11,7 +11,6 @@ from typing import Dict
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "python"))
 
 from mllmcelltype.consensus import check_consensus
-from mllmcelltype.utils import find_agreement
 
 # Sample data for testing
 test_predictions = {
@@ -104,11 +103,6 @@ Only output these 4 lines, nothing else."""
     prompt = simple_consensus_check_prompt(test_annotations)
     print("\nGenerated prompt for consensus check:")
     print(prompt)
-
-    # Test find_agreement function
-    print("\nTesting find_agreement function:")
-    consensus, consensus_proportion, entropy = find_agreement(test_predictions)
-    print_results("Results from find_agreement", consensus, consensus_proportion, entropy)
 
     # Test check_consensus function
     print("\nTesting check_consensus function:")

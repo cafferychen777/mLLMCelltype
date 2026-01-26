@@ -5,24 +5,24 @@ including cache inspection, clearing, and validation functions.
 
 Functions:
     clear_mllmcelltype_cache(): Interactive cache clearing
-    get_cache_info(): Get information about current cache
+    get_cache_info(): Get basic information about current cache (delegates to get_cache_stats)
     clear_cache_cli(): Command-line interface for cache management
 """
 
 import os
 import shutil
 
+from .utils import get_cache_stats
+
 
 def clear_mllmcelltype_cache():
     """Clear the mLLMCelltype cache directory."""
-    cache_dir = os.path.join(os.path.expanduser("~"), ".mllmcelltype", "cache")
+    info = get_cache_stats(detailed=False)
+    cache_dir = info["path"]
 
-    if os.path.exists(cache_dir):
+    if info["exists"]:
         print(f"Found cache directory: {cache_dir}")
-
-        # Count cache files
-        cache_files = [f for f in os.listdir(cache_dir) if f.endswith(".json")]
-        print(f"Found {len(cache_files)} cache files")
+        print(f"Found {info['count']} cache files")
 
         # Ask for confirmation
         response = input("Do you want to clear all cache files? (yes/no): ")
@@ -37,22 +37,21 @@ def clear_mllmcelltype_cache():
 
 
 def get_cache_info():
-    """Get information about the current cache state."""
-    cache_dir = os.path.join(os.path.expanduser("~"), ".mllmcelltype", "cache")
+    """Get basic information about the current cache state.
 
-    if not os.path.exists(cache_dir):
-        return {"exists": False, "path": cache_dir, "file_count": 0, "total_size": 0}
+    This is a convenience wrapper around get_cache_stats(detailed=False).
+    For detailed statistics including provider counts and timestamps,
+    use get_cache_stats() instead.
 
-    cache_files = [f for f in os.listdir(cache_dir) if f.endswith(".json")]
-    total_size = sum(os.path.getsize(os.path.join(cache_dir, f)) for f in cache_files)
-
-    return {
-        "exists": True,
-        "path": cache_dir,
-        "file_count": len(cache_files),
-        "total_size": total_size,
-        "size_mb": total_size / (1024 * 1024),
-    }
+    Returns:
+        dict: Cache info with keys: exists, path, count, size, size_mb
+              (also includes file_count and total_size for backward compatibility)
+    """
+    stats = get_cache_stats(detailed=False)
+    # Add backward-compatible keys
+    stats["file_count"] = stats["count"]
+    stats["total_size"] = stats["size"]
+    return stats
 
 
 def clear_cache_cli():

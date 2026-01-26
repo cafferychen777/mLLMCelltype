@@ -4,7 +4,6 @@ from __future__ import annotations
 
 import hashlib
 import json
-import math
 import os
 import re
 import time
@@ -513,84 +512,6 @@ def normalize_annotation_for_comparison(annotation: str) -> str:
     return normalized
 
 
-def find_agreement(
-    annotations: dict[str, dict[str, str]],
-) -> tuple[dict[str, str], dict[str, float], dict[str, float]]:
-    """Find the level of agreement between different model annotations.
-
-    Args:
-        annotations: Dictionary mapping model names to dictionaries of cluster annotations
-
-    Returns:
-        tuple[dict[str, str], dict[str, float], dict[str, float]]:
-            - Consensus annotations
-            - Consensus proportion (confidence scores)
-            - Entropy scores (measure of uncertainty)
-
-    """
-    consensus = {}
-    confidence = {}
-    entropy_scores = {}
-
-    # Ensure we have annotations
-    if not annotations or not all(annotations.values()):
-        return {}, {}, {}
-
-    # Get all clusters
-    all_clusters = set()
-    for model_results in annotations.values():
-        all_clusters.update(model_results.keys())
-
-    # Process each cluster
-    for cluster in all_clusters:
-        # Collect all annotations for this cluster
-        cluster_annotations = []
-
-        for _model, results in annotations.items():
-            if cluster in results:
-                annotation = clean_annotation(results[cluster])
-                if annotation:
-                    cluster_annotations.append(
-                        annotation.lower()
-                    )  # Convert to lowercase for case-insensitive comparison
-
-        # Count occurrences of each annotation
-        annotation_counts = {}
-        for annotation in cluster_annotations:
-            annotation_counts[annotation] = annotation_counts.get(annotation, 0) + 1
-
-        # Find most common annotation
-        if annotation_counts:
-            most_common = max(annotation_counts.items(), key=lambda x: x[1])
-            most_common_annotation = most_common[0]
-            most_common_count = most_common[1]
-
-            # Calculate consensus proportion (confidence)
-            consensus_proportion = (
-                most_common_count / len(cluster_annotations) if cluster_annotations else 0
-            )
-
-            # Calculate entropy (measure of uncertainty)
-            entropy = 0.0
-            if len(cluster_annotations) > 1:
-                # Calculate entropy based on distribution of annotations
-                total = len(cluster_annotations)
-                entropy = 0.0
-                for count in annotation_counts.values():
-                    p = count / total
-                    entropy -= p * (math.log2(p) if p > 0 else 0)
-
-            consensus[cluster] = most_common_annotation
-            confidence[cluster] = consensus_proportion
-            entropy_scores[cluster] = entropy
-        else:
-            consensus[cluster] = "Unknown"
-            confidence[cluster] = 0.0
-            entropy_scores[cluster] = 0.0
-
-    return consensus, confidence, entropy_scores
-
-
 def clear_cache(cache_dir: Optional[str] = None, older_than: Optional[int] = None) -> int:
     """Clear cache.
 
@@ -648,11 +569,13 @@ def clear_cache(cache_dir: Optional[str] = None, older_than: Optional[int] = Non
     return count
 
 
-def get_cache_stats(cache_dir: Optional[str] = None) -> dict[str, Any]:
+def get_cache_stats(cache_dir: Optional[str] = None, detailed: bool = True) -> dict[str, Any]:
     """Get cache statistics.
 
     Args:
-        cache_dir: The cache directory
+        cache_dir: The cache directory (None for default)
+        detailed: If True, read file contents for detailed stats (slower).
+                  If False, only return basic file counts and sizes (faster).
 
     Returns:
         dict[str, Any]: Cache statistics
@@ -661,30 +584,51 @@ def get_cache_stats(cache_dir: Optional[str] = None) -> dict[str, Any]:
     cache_dir = _get_cache_dir(cache_dir)
 
     if not os.path.exists(cache_dir):
-        return {
-            "status": "No cache directory",
+        result = {
+            "exists": False,
+            "path": cache_dir,
             "count": 0,
             "size": 0,
-            "oldest": None,
-            "newest": None,
-            "provider_counts": {},
+            "size_mb": 0.0,
         }
+        if detailed:
+            result.update({
+                "status": "No cache directory",
+                "oldest": None,
+                "newest": None,
+                "provider_counts": {},
+            })
+        return result
 
     # Get all cache files
     cache_files = [f for f in os.listdir(cache_dir) if f.endswith(".json")]
+    total_size = sum(os.path.getsize(os.path.join(cache_dir, f)) for f in cache_files)
 
+    # Basic stats (fast path)
+    result = {
+        "exists": True,
+        "path": cache_dir,
+        "count": len(cache_files),
+        "size": total_size,
+        "size_mb": total_size / (1024 * 1024),
+    }
+
+    if not detailed:
+        return result
+
+    # Detailed stats (slow path - reads file contents)
     if not cache_files:
-        return {
+        result.update({
             "status": "Empty cache",
-            "count": 0,
-            "size": 0,
             "oldest": None,
             "newest": None,
             "provider_counts": {},
-        }
+            "format_counts": {"legacy": 0, "1.0": 0, "unknown": 0},
+            "valid_files": 0,
+            "invalid_files": 0,
+        })
+        return result
 
-    # Calculate statistics
-    total_size = 0
     oldest = float("inf")
     newest = 0
     provider_counts = {}
@@ -695,10 +639,6 @@ def get_cache_stats(cache_dir: Optional[str] = None) -> dict[str, Any]:
     for f in cache_files:
         file_path = os.path.join(cache_dir, f)
         try:
-            # Get file size
-            file_size = os.path.getsize(file_path)
-            total_size += file_size
-
             # Load cache data
             with open(file_path) as file:
                 cache_data = json.load(file)
@@ -745,25 +685,17 @@ def get_cache_stats(cache_dir: Optional[str] = None) -> dict[str, Any]:
             write_log(f"Error processing cache file {f}: {e}", level="warning")
 
     # Convert timestamps to readable format
-    if oldest != float("inf"):
-        oldest_str = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(oldest))
-    else:
-        oldest_str = None
+    oldest_str = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(oldest)) if oldest != float("inf") else None
+    newest_str = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(newest)) if newest != 0 else None
 
-    if newest != 0:
-        newest_str = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(newest))
-    else:
-        newest_str = None
-
-    return {
+    result.update({
         "status": "Cache available",
-        "count": len(cache_files),
         "valid_files": valid_files,
         "invalid_files": invalid_files,
-        "size": total_size,
-        "size_readable": f"{total_size / (1024 * 1024):.2f} MB",
         "oldest": oldest_str,
         "newest": newest_str,
         "format_counts": format_counts,
         "provider_counts": provider_counts,
-    }
+    })
+
+    return result
