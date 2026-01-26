@@ -62,9 +62,7 @@ def process_openai(
 
     for attempt in range(max_retries):
         try:
-            response = requests.post(
-                url=url, headers=headers, data=json.dumps(body), timeout=30
-            )
+            response = requests.post(url=url, headers=headers, data=json.dumps(body), timeout=30)
 
             # Check for errors
             if response.status_code != 200:

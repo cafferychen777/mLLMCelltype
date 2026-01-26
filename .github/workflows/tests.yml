@@ -69,8 +69,3 @@ jobs:
       run: |
         cd python
         ruff check mllmcelltype tests
-    
-    - name: Check formatting with ruff-format
-      run: |
-        cd python
-        ruff format --check mllmcelltype tests

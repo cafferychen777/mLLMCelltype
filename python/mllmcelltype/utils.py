@@ -608,11 +608,13 @@ def get_cache_stats(cache_dir: str | None = None, detailed: bool = True) -> dict
             "size_mb": 0.0,
         }
         if detailed:
-            result.update({
-                "status": "No cache directory",
-                "oldest": None,
-                "newest": None,
-            })
+            result.update(
+                {
+                    "status": "No cache directory",
+                    "oldest": None,
+                    "newest": None,
+                }
+            )
         return result
 
     # Get all cache files
@@ -633,14 +635,16 @@ def get_cache_stats(cache_dir: str | None = None, detailed: bool = True) -> dict
 
     # Detailed stats (slow path - reads file contents)
     if not cache_files:
-        result.update({
-            "status": "Empty cache",
-            "oldest": None,
-            "newest": None,
-            "format_counts": {"legacy": 0, "1.0": 0, "unknown": 0},
-            "valid_files": 0,
-            "invalid_files": 0,
-        })
+        result.update(
+            {
+                "status": "Empty cache",
+                "oldest": None,
+                "newest": None,
+                "format_counts": {"legacy": 0, "1.0": 0, "unknown": 0},
+                "valid_files": 0,
+                "invalid_files": 0,
+            }
+        )
         return result
 
     oldest = float("inf")
@@ -688,16 +692,22 @@ def get_cache_stats(cache_dir: str | None = None, detailed: bool = True) -> dict
             write_log(f"Error processing cache file {f}: {e}", level="warning")
 
     # Convert timestamps to readable format
-    oldest_str = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(oldest)) if oldest != float("inf") else None
+    oldest_str = (
+        time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(oldest))
+        if oldest != float("inf")
+        else None
+    )
     newest_str = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(newest)) if newest != 0 else None
 
-    result.update({
-        "status": "Cache available",
-        "valid_files": valid_files,
-        "invalid_files": invalid_files,
-        "oldest": oldest_str,
-        "newest": newest_str,
-        "format_counts": format_counts,
-    })
+    result.update(
+        {
+            "status": "Cache available",
+            "valid_files": valid_files,
+            "invalid_files": invalid_files,
+            "oldest": oldest_str,
+            "newest": newest_str,
+            "format_counts": format_counts,
+        }
+    )
 
     return result

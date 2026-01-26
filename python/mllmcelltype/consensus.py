@@ -297,7 +297,10 @@ def check_consensus(
     return_controversial: bool = True,
     consensus_model: dict[str, str] | None = None,
     available_models: list[str | dict[str, str]] | None = None,
-) -> tuple[dict[str, str], dict[str, float], dict[str, float]] | tuple[dict[str, str], dict[str, float], dict[str, float], list[str]]:
+) -> (
+    tuple[dict[str, str], dict[str, float], dict[str, float]]
+    | tuple[dict[str, str], dict[str, float], dict[str, float], list[str]]
+):
     """Check consensus among different model predictions using LLM assistance.
 
     This function uses an LLM to evaluate semantic similarity between

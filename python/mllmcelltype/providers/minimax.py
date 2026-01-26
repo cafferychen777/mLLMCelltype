@@ -68,9 +68,7 @@ def process_minimax(
             write_log(f"Request headers: {headers}", level="debug")
             write_log(f"Request body: {json.dumps(body)}", level="debug")
 
-            response = requests.post(
-                url=url, headers=headers, data=json.dumps(body), timeout=30
-            )
+            response = requests.post(url=url, headers=headers, data=json.dumps(body), timeout=30)
 
             # Log response details
             write_log(f"Response status code: {response.status_code}", level="debug")

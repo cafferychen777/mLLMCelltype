@@ -160,8 +160,7 @@ def create_initial_discussion_prompt(
 
     # Format initial predictions
     predictions_text = "\n".join(
-        f"- {model}: {prediction}"
-        for model, prediction in initial_predictions.items()
+        f"- {model}: {prediction}" for model, prediction in initial_predictions.items()
     )
 
     prompt = f"""We are analyzing cluster {cluster_id} with the following marker genes: {marker_genes_text}

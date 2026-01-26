@@ -67,6 +67,7 @@ test_pbmc3k.R
 
 # Large files and visualizations
 mLLMCelltype_visualizations/
+mLLMCelltype-poster/
 
 # Test files and results
 tests/

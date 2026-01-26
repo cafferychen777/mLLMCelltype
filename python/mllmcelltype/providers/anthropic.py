@@ -125,17 +125,13 @@ def process_anthropic(
 
     for attempt in range(max_retries):
         try:
-            response = requests.post(
-                url=url, headers=headers, data=json.dumps(body), timeout=30
-            )
+            response = requests.post(url=url, headers=headers, data=json.dumps(body), timeout=30)
 
             # Handle errors
             if response.status_code != 200:
                 try:
                     error_message = response.json()
-                    error_detail = error_message.get("error", {}).get(
-                        "message", f"model: {model}"
-                    )
+                    error_detail = error_message.get("error", {}).get("message", f"model: {model}")
                     write_log(f"Anthropic API request failed: {error_detail}", level="error")
                 except (ValueError, KeyError, json.JSONDecodeError):
                     write_log(
