@@ -25,7 +25,7 @@ def _get_cache_dir(cache_dir: Optional[str] = None) -> str:
         str: Cache directory path
     """
     if cache_dir is None:
-        cache_dir = os.path.join(os.path.expanduser("~"), ".llmcelltype", "cache")
+        cache_dir = os.path.join(os.path.expanduser("~"), ".mllmcelltype", "cache")
     return cache_dir
 
 
@@ -249,36 +249,6 @@ def parse_marker_genes(marker_genes_df: pd.DataFrame) -> dict[str, list[str]]:
     return result
 
 
-def get_annotation_metadata(
-    annotation_result: dict[str, str],
-) -> dict[str, dict[str, Any]]:
-    """Retrieve metadata for a specific annotation result.
-
-    Args:
-        annotation_result: Dictionary mapping cluster IDs to cell type annotations
-
-    Returns:
-        dict[str, dict[str, Any]]: Dictionary mapping cluster IDs to metadata
-
-    """
-    try:
-        # Create a unique key for this annotation result
-        key = hashlib.sha256(str(annotation_result).encode()).hexdigest()
-
-        # Check if metadata exists in cache
-        cache_dir = os.path.expanduser("~/.mllmcelltype/metadata")
-        cache_file = os.path.join(cache_dir, f"{key}.json")
-
-        if os.path.exists(cache_file):
-            with open(cache_file) as f:
-                return json.load(f)
-        write_log("No metadata found for the given annotation result", level="debug")
-        return {}
-    except (KeyError, TypeError, AttributeError, ValueError) as e:
-        write_log(f"Failed to retrieve metadata: {str(e)}", level="debug")
-        return {}
-
-
 def format_results(results: list[str], clusters: list[str]) -> dict[str, str]:
     """Format results into a dictionary mapping cluster names to annotations.
 
@@ -290,8 +260,6 @@ def format_results(results: list[str], clusters: list[str]) -> dict[str, str]:
         dict[str, str]: Dictionary mapping cluster names to annotations
 
     """
-    import json
-
     # Clean up results (remove empty lines and whitespace)
     clean_results = [line.strip() for line in results if line.strip()]
 
@@ -373,24 +341,6 @@ def format_results(results: list[str], clusters: list[str]) -> dict[str, str]:
             # If we found annotations for all clusters, return the result
             if len(json_result) == len(clusters):
                 write_log("Successfully parsed JSON response", level="info")
-
-                # Store metadata in cache for later retrieval if needed
-                if metadata:
-                    try:
-                        cache_dir = os.path.expanduser("~/.mllmcelltype/metadata")
-                        os.makedirs(cache_dir, exist_ok=True)
-
-                        # Create a unique key for this annotation result
-                        key = hashlib.sha256(str(json_result).encode()).hexdigest()
-                        cache_file = os.path.join(cache_dir, f"{key}.json")
-
-                        with open(cache_file, "w") as f:
-                            json.dump(metadata, f, indent=2)
-
-                        write_log(f"Stored annotation metadata to {cache_file}", level="debug")
-                    except (OSError, TypeError, ValueError) as e:
-                        write_log(f"Failed to store metadata: {str(e)}", level="debug")
-
                 return json_result
     except (json.JSONDecodeError, ValueError, KeyError, TypeError, AttributeError) as e:
         write_log(f"Failed to parse JSON response: {str(e)}", level="debug")
@@ -564,8 +514,6 @@ def normalize_annotation_for_comparison(annotation: str) -> str:
     for old, new in replacements.items():
         if "$" in old:
             # Handle regex patterns
-            import re
-
             normalized = re.sub(old, new, normalized)
         else:
             normalized = normalized.replace(old, new)
@@ -652,48 +600,6 @@ def find_agreement(
             entropy_scores[cluster] = 0.0
 
     return consensus, confidence, entropy_scores
-
-
-def validate_cache(cache_key: str, cache_dir: Optional[str] = None) -> bool:
-    """Validate cache content for a specific key.
-
-    Args:
-        cache_key: The cache key to validate
-        cache_dir: The cache directory. If None, uses default directory.
-
-    Returns:
-        bool: True if cache is valid, False otherwise
-
-    """
-    cache_dir = _get_cache_dir(cache_dir)
-    cache_file = os.path.join(cache_dir, f"{cache_key}.json")
-
-    # Check if cache file exists
-    if not os.path.exists(cache_file):
-        return False
-
-    # Validate cache content
-    try:
-        with open(cache_file) as f:
-            cache_content = json.load(f)
-
-        # Check if cache content is in the new format
-        if (
-            isinstance(cache_content, dict)
-            and "version" in cache_content
-            and "data" in cache_content
-        ):
-            # New format with metadata
-            return True
-        if isinstance(cache_content, (list, dict)):
-            # Legacy format - still valid but will be converted on next save
-            return True
-        # Invalid format
-        write_log(f"Invalid cache format for key {cache_key}", level="warning")
-        return False
-    except (OSError, json.JSONDecodeError, TypeError, ValueError) as e:
-        write_log(f"Error validating cache for {cache_file}: {e}", level="warning")
-        return False
 
 
 def clear_cache(cache_dir: Optional[str] = None, older_than: Optional[int] = None) -> int:

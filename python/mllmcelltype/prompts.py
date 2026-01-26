@@ -146,24 +146,6 @@ End with a clear final decision on the correct cell type, including:
 You MUST provide numerical values for both CP and H, not just qualitative descriptions.
 """
 
-# Template for checking consensus across models
-DEFAULT_CONSENSUS_CHECK_TEMPLATE = """You are an expert in single-cell RNA-seq analysis, evaluating the consensus cell type annotations across different models.
-
-Species: {species}
-Tissue: {tissue}
-
-Here are the model predictions for each cluster:
-
-{predictions}
-
-For each cluster, assess:
-1. The level of agreement between models
-2. Which annotation is most accurate based on consensus
-3. Any clusters where annotations significantly differ, which require further investigation
-
-Provide a final consensus annotation for each cluster and note any controversial clusters that need additional review.
-"""
-
 # Template for checking if consensus is reached after discussion
 DEFAULT_DISCUSSION_CONSENSUS_CHECK_TEMPLATE = """You are an expert in single-cell RNA-seq analysis, evaluating whether a consensus has been reached after discussion about a controversial cluster annotation.
 
@@ -369,63 +351,6 @@ def create_discussion_prompt(
         )
 
     write_log(f"Generated discussion prompt with {len(prompt)} characters")
-    return prompt
-
-
-def create_model_consensus_check_prompt(
-    predictions: dict[str, dict[str, str]],
-    species: str,
-    tissue: Optional[str] = None,
-    prompt_template: Optional[str] = None,
-) -> str:
-    """Create a prompt for checking consensus across model predictions.
-
-    Args:
-        predictions: Dictionary mapping model names to dictionaries of cluster annotations
-        species: Species name (e.g., 'human', 'mouse')
-        tissue: Tissue name (e.g., 'brain', 'blood')
-        prompt_template: Custom prompt template
-
-    Returns:
-        str: The generated prompt
-
-    """
-    write_log(f"Creating consensus check prompt for {len(predictions)} models")
-
-    # Use default template if none provided
-    if not prompt_template:
-        prompt_template = DEFAULT_CONSENSUS_CHECK_TEMPLATE
-
-    # Default tissue if none provided
-    tissue_text = tissue if tissue else "unknown tissue"
-
-    # Get all model names
-    models = list(predictions.keys())
-
-    # Get all cluster IDs
-    clusters = set()
-    for model_results in predictions.values():
-        clusters.update(model_results.keys())
-    clusters = sorted(clusters)
-
-    # Format predictions text
-    predictions_lines = []
-
-    for cluster in clusters:
-        predictions_lines.append(f"Cluster {cluster}:")
-        for model in models:
-            if cluster in predictions[model]:
-                predictions_lines.append(f"- {model}: {predictions[model][cluster]}")
-        predictions_lines.append("")
-
-    predictions_text = "\n".join(predictions_lines)
-
-    # Fill in the template
-    prompt = prompt_template.format(
-        species=species, tissue=tissue_text, predictions=predictions_text
-    )
-
-    write_log(f"Generated consensus check prompt with {len(prompt)} characters")
     return prompt
 
 

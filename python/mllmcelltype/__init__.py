@@ -32,12 +32,10 @@ from .utils import (
     create_cache_key,
     find_agreement,
     format_results,
-    get_annotation_metadata,
     get_cache_stats,
     load_api_key,
     load_from_cache,
     save_to_cache,
-    validate_cache,
 )
 
 # LangExtract components (simplified)
@@ -71,11 +69,9 @@ __all__ = [
     "create_cache_key",
     "save_to_cache",
     "load_from_cache",
-    "validate_cache",
     "clear_cache",
     "get_cache_stats",
     "get_cache_info",
-    "get_annotation_metadata",
     "format_results",
     "find_agreement",
     # Prompts
