@@ -7,6 +7,7 @@ from typing import Optional
 import requests
 
 from ..logger import write_log
+from ..url_utils import get_working_qwen_endpoint, validate_base_url
 
 
 def process_qwen(
@@ -33,15 +34,11 @@ def process_qwen(
 
     # Use custom URL or smart selection
     if base_url:
-        from ..url_utils import validate_base_url
-
         if not validate_base_url(base_url):
             raise ValueError(f"Invalid base URL: {base_url}")
         url = base_url
         write_log(f"Using custom base URL: {url}")
     else:
-        from ..url_utils import get_working_qwen_endpoint
-
         url = get_working_qwen_endpoint(api_key)
         write_log(f"Using smart-selected endpoint: {url}")
 

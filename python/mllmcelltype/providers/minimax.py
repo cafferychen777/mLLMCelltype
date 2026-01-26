@@ -7,6 +7,7 @@ from typing import Optional
 import requests
 
 from ..logger import write_log
+from ..url_utils import get_default_api_url, validate_base_url
 
 
 def process_minimax(
@@ -34,15 +35,11 @@ def process_minimax(
 
     # Use custom URL or default URL
     if base_url:
-        from ..url_utils import validate_base_url
-
         if not validate_base_url(base_url):
             raise ValueError(f"Invalid base URL: {base_url}")
         url = base_url
         write_log(f"Using custom base URL: {url}")
     else:
-        from ..url_utils import get_default_api_url
-
         url = get_default_api_url("minimax")
         write_log(f"Using default URL: {url}")
 

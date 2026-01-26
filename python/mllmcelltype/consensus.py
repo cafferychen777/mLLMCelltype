@@ -23,6 +23,12 @@ from .prompts import (
 from .url_utils import resolve_provider_base_url
 from .utils import clean_annotation, load_api_key, normalize_annotation_for_comparison
 
+# Default fallback values when metrics cannot be parsed from LLM response
+# Low consensus proportion ensures discussion will happen
+DEFAULT_FALLBACK_CONSENSUS_PROPORTION = 0.25
+# High entropy indicates high uncertainty
+DEFAULT_FALLBACK_ENTROPY = 2.0
+
 
 def _get_api_key(provider: str, api_keys: Optional[dict[str, str]] = None) -> Optional[str]:
     """Get API key for a specific provider.
@@ -575,8 +581,8 @@ def process_controversial_clusters(
 
         # Use default values if parsing failed
         if cp_value is None or h_value is None:
-            cp_value = cp_value or 0.25  # Low consensus to ensure discussion happens
-            h_value = h_value or 2.0  # High entropy to indicate uncertainty
+            cp_value = cp_value or DEFAULT_FALLBACK_CONSENSUS_PROPORTION
+            h_value = h_value or DEFAULT_FALLBACK_ENTROPY
             write_log(
                 f"Could not fully parse LLM consensus response, using defaults: CP={cp_value:.2f}, H={h_value:.2f}",
                 level="warning",

@@ -8,6 +8,7 @@ from requests.adapters import HTTPAdapter
 from urllib3.util.retry import Retry
 
 from ..logger import write_log
+from ..url_utils import get_default_api_url, validate_base_url
 
 
 def process_deepseek(
@@ -35,15 +36,11 @@ def process_deepseek(
 
     # Use custom URL or default URL
     if base_url:
-        from ..url_utils import validate_base_url
-
         if not validate_base_url(base_url):
             raise ValueError(f"Invalid base URL: {base_url}")
         url = base_url
         write_log(f"Using custom base URL: {url}")
     else:
-        from ..url_utils import get_default_api_url
-
         url = get_default_api_url("deepseek")
         write_log(f"Using default URL: {url}")
 
