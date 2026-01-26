@@ -15,7 +15,7 @@ from .providers import (
     process_stepfun,
     process_zhipu,
 )
-from .utils import clean_annotation
+from .utils import clean_annotation, find_agreement
 
 # Global provider function mapping for reuse across modules
 PROVIDER_FUNCTIONS = {
@@ -48,7 +48,6 @@ ModelType = Literal[
     "claude-sonnet-4-5-20250929",
     "claude-opus-4-1-20250805",
     "claude-opus-4-20250514",
-    "claude-sonnet-4-20250514",
     "claude-sonnet-4-20250514",
     "claude-3-5-sonnet-latest",
     "claude-3-5-haiku-latest",
@@ -121,7 +120,6 @@ def get_provider(model: str) -> str:
             "claude-opus-4",
             "claude-sonnet-4-20250514",
             "claude-sonnet-4",
-            "claude-sonnet-4-20250514",
             "claude-3-5-sonnet-20241022",
             "claude-3-5-sonnet-20240620",
             "claude-3-5-haiku-20241022",
@@ -322,6 +320,9 @@ def identify_controversial_clusters(
 ) -> list[str]:
     """Identify clusters with inconsistent annotations across models.
 
+    This function uses find_agreement() to compute consensus statistics,
+    then filters clusters where the consensus proportion is below the threshold.
+
     Args:
         annotations: Dictionary mapping model names to dictionaries of cluster annotations
         threshold: Agreement threshold below which a cluster is considered controversial
@@ -333,36 +334,14 @@ def identify_controversial_clusters(
     if not annotations or len(annotations) < 2:
         return []
 
-    # Get all clusters
-    all_clusters = set()
-    for model_results in annotations.values():
-        all_clusters.update(model_results.keys())
+    # Use find_agreement() to compute consensus statistics for all clusters
+    _consensus, consensus_proportion, _entropy = find_agreement(annotations)
 
-    controversial = []
-
-    # Check each cluster for agreement level
-    for cluster in all_clusters:
-        # Get all annotations for this cluster
-        cluster_annotations = []
-        for _model, results in annotations.items():
-            if cluster in results:
-                annotation = clean_annotation(results[cluster])
-                if annotation:
-                    cluster_annotations.append(annotation)
-
-        # Count occurrences
-        counts = {}
-        for anno in cluster_annotations:
-            counts[anno] = counts.get(anno, 0) + 1
-
-        # Find most common annotation and its frequency
-        if counts:
-            most_common = max(counts.items(), key=lambda x: x[1])
-            most_common_count = most_common[1]
-            agreement = most_common_count / len(cluster_annotations) if cluster_annotations else 0
-
-            # Mark as controversial if agreement is below threshold
-            if agreement < threshold:
-                controversial.append(cluster)
+    # Filter clusters where agreement is below threshold
+    controversial = [
+        cluster
+        for cluster, agreement in consensus_proportion.items()
+        if agreement < threshold
+    ]
 
     return controversial

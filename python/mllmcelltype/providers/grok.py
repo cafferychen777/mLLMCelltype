@@ -32,7 +32,7 @@ def process_grok(
         write_log(f"ERROR: {error_msg}")
         raise ValueError(error_msg)
 
-    # 使用自定义URL或默认URL
+    # Use custom URL or default URL
     if base_url:
         from ..url_utils import validate_base_url
 

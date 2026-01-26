@@ -32,7 +32,7 @@ def process_openai(
         write_log(f"ERROR: {error_msg}")
         raise ValueError(error_msg)
 
-    # 使用自定义URL或默认URL
+    # Use custom URL or default URL
     if base_url:
         from ..url_utils import validate_base_url
 
@@ -48,82 +48,60 @@ def process_openai(
 
     write_log(f"Using model: {model}")
 
-    # Process all input at once instead of chunks
-    input_lines = prompt.split("\n")
-    cutnum = 1  # Changed to always use 1 chunk
+    # Prepare the request body
+    body = {
+        "model": model,
+        "messages": [{"role": "user", "content": prompt}],
+    }
 
-    write_log(f"Processing {cutnum} chunks of input")
+    write_log("Sending API request...")
+    headers = {
+        "Content-Type": "application/json",
+        "Authorization": f"Bearer {api_key}",
+    }
 
-    # Split input into chunks if needed
-    if cutnum > 1:
-        chunk_size = len(input_lines) // cutnum
-        if len(input_lines) % cutnum > 0:
-            chunk_size += 1
-        chunks = [input_lines[i : i + chunk_size] for i in range(0, len(input_lines), chunk_size)]
-    else:
-        chunks = [input_lines]
+    max_retries = 3
+    retry_delay = 2
 
-    # Process each chunk
-    all_results = []
-    for i, chunk in enumerate(chunks):
-        write_log(f"Processing chunk {i + 1} of {cutnum}")
+    for attempt in range(max_retries):
+        try:
+            response = requests.post(
+                url=url, headers=headers, data=json.dumps(body), timeout=30
+            )
 
-        # Prepare the request body
-        body = {
-            "model": model,
-            "messages": [{"role": "user", "content": "\n".join(chunk)}],
-        }
-
-        write_log("Sending API request...")
-        # Make the API request
-        headers = {
-            "Content-Type": "application/json",
-            "Authorization": f"Bearer {api_key}",
-        }
-
-        max_retries = 3
-        retry_delay = 2
-
-        for attempt in range(max_retries):
-            try:
-                response = requests.post(
-                    url=url, headers=headers, data=json.dumps(body), timeout=30
+            # Check for errors
+            if response.status_code != 200:
+                error_message = response.json()
+                write_log(
+                    f"ERROR: OpenAI API request failed: {error_message.get('error', {}).get('message', 'Unknown error')}"
                 )
 
-                # Check for errors
-                if response.status_code != 200:
-                    error_message = response.json()
-                    write_log(
-                        f"ERROR: OpenAI API request failed: {error_message.get('error', {}).get('message', 'Unknown error')}"
-                    )
-
-                    # If rate limited, wait and retry
-                    if response.status_code == 429 and attempt < max_retries - 1:
-                        wait_time = retry_delay * (2**attempt)
-                        write_log(f"Rate limited. Waiting {wait_time} seconds before retrying...")
-                        time.sleep(wait_time)
-                        continue
-
-                    response.raise_for_status()
-
-                # Parse the response
-                content = response.json()
-                res = content["choices"][0]["message"]["content"].strip().split("\n")
-                write_log(f"Got response with {len(res)} lines")
-                write_log(f"Raw response from OpenAI:\n{res}")
-
-                all_results.extend(res)
-                break  # Success, exit retry loop
-
-            except Exception as e:
-                write_log(f"Error during API call (attempt {attempt + 1}/{max_retries}): {str(e)}")
-                if attempt < max_retries - 1:
+                # If rate limited, wait and retry
+                if response.status_code == 429 and attempt < max_retries - 1:
                     wait_time = retry_delay * (2**attempt)
-                    write_log(f"Waiting {wait_time} seconds before retrying...")
+                    write_log(f"Rate limited. Waiting {wait_time} seconds before retrying...")
                     time.sleep(wait_time)
-                else:
-                    raise
+                    continue
 
-    write_log("All chunks processed successfully")
-    # Clean up results (remove commas at the end of lines)
-    return [line.rstrip(",") for line in all_results]
+                response.raise_for_status()
+
+            # Parse the response
+            content = response.json()
+            res = content["choices"][0]["message"]["content"].strip().split("\n")
+            write_log(f"Got response with {len(res)} lines")
+            write_log(f"Raw response from OpenAI:\n{res}")
+
+            # Clean up results (remove commas at the end of lines)
+            return [line.rstrip(",") for line in res]
+
+        except Exception as e:
+            write_log(f"Error during API call (attempt {attempt + 1}/{max_retries}): {str(e)}")
+            if attempt < max_retries - 1:
+                wait_time = retry_delay * (2**attempt)
+                write_log(f"Waiting {wait_time} seconds before retrying...")
+                time.sleep(wait_time)
+            else:
+                raise
+
+    # Should not reach here if all retries fail (exception would be raised)
+    return []

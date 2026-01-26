@@ -68,5 +68,5 @@ def process_gemini(
                 time.sleep(wait_time)
             else:
                 raise
-    # 如果所有重试都失败，返回空结果
+    # If all retries fail, return empty result
     return ["Unknown"]

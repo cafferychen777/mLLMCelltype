@@ -172,7 +172,7 @@ def process_anthropic_direct(
 
     write_log("Falling back to direct API calls for Anthropic")
 
-    # 使用自定义URL或默认URL
+    # Use custom URL or default URL
     if base_url:
         from ..url_utils import validate_base_url
 

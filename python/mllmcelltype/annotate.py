@@ -101,7 +101,7 @@ def annotate_clusters(
             write_log("Using cached results")
             return format_results(cached_results, clusters)
 
-    # 解析base URL
+    # Resolve base URL
     from .url_utils import resolve_provider_base_url
 
     base_url = resolve_provider_base_url(provider, base_urls)
@@ -234,7 +234,7 @@ def batch_annotate_clusters(
                 start_idx = end_idx
             return result_sets
 
-    # 解析base URL
+    # Resolve base URL
     from .url_utils import resolve_provider_base_url
 
     base_url = resolve_provider_base_url(provider, base_urls)

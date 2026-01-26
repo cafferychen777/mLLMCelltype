@@ -86,7 +86,7 @@ def _call_llm_with_retry(
     """
     from .url_utils import resolve_provider_base_url
 
-    # 解析base URL
+    # Resolve base URL
     primary_base_url = resolve_provider_base_url(provider, base_urls)
 
     # First try with primary provider
@@ -121,7 +121,7 @@ def _call_llm_with_retry(
     if api_keys:
         fallback_api_key = _get_api_key(fallback_provider, api_keys)
         if fallback_api_key:
-            # 解析fallback provider的base URL
+            # Resolve base URL for fallback provider
             fallback_base_url = resolve_provider_base_url(fallback_provider, base_urls)
             try:
                 response = get_model_response(
@@ -474,7 +474,7 @@ def process_controversial_clusters(
     from .prompts import create_consensus_check_prompt
     from .url_utils import resolve_provider_base_url
 
-    # 解析base URL
+    # Resolve base URL
     base_url = resolve_provider_base_url(provider, base_urls)
 
     results = {}
@@ -486,8 +486,8 @@ def process_controversial_clusters(
         write_log(f"Processing controversial cluster {cluster_id}")
 
         # Get marker genes for this cluster
-        cluster_markers = marker_genes.get(cluster_id, [])
-        if not cluster_markers:
+        current_marker_genes = marker_genes.get(cluster_id, [])
+        if not current_marker_genes:
             write_log(
                 f"Warning: No marker genes found for cluster {cluster_id}",
                 level="warning",
@@ -541,33 +541,33 @@ def process_controversial_clusters(
             lines = consensus_check_response.strip().split("\n")
             if len(lines) >= 3:
                 # Extract consensus proportion
-                cp = float(lines[1].strip())
+                cp_value = float(lines[1].strip())
 
                 # Extract entropy value
-                h = float(lines[2].strip())
+                h_value = float(lines[2].strip())
 
                 write_log(
-                    f"Initial metrics for cluster {cluster_id} (LLM calculated): CP={cp:.2f}, H={h:.2f}"
+                    f"Initial metrics for cluster {cluster_id} (LLM calculated): CP={cp_value:.2f}, H={h_value:.2f}"
                 )
             else:
                 # Fallback if LLM response format is unexpected
-                cp = 0.25  # Low consensus to ensure discussion happens
-                h = 2.0  # High entropy to indicate uncertainty
+                cp_value = 0.25  # Low consensus to ensure discussion happens
+                h_value = 2.0  # High entropy to indicate uncertainty
                 write_log(
-                    f"Could not parse LLM consensus check response, using default values: CP={cp:.2f}, H={h:.2f}",
+                    f"Could not parse LLM consensus check response, using default values: CP={cp_value:.2f}, H={h_value:.2f}",
                     level="warning",
                 )
         except (ValueError, IndexError, AttributeError, TypeError) as e:
             # Fallback if parsing fails
-            cp = 0.25  # Low consensus to ensure discussion happens
-            h = 2.0  # High entropy to indicate uncertainty
+            cp_value = 0.25  # Low consensus to ensure discussion happens
+            h_value = 2.0  # High entropy to indicate uncertainty
             write_log(
-                f"Error parsing LLM consensus check response: {str(e)}, using default values: CP={cp:.2f}, H={h:.2f}",
+                f"Error parsing LLM consensus check response: {str(e)}, using default values: CP={cp_value:.2f}, H={h_value:.2f}",
                 level="warning",
             )
 
         rounds_history.append(
-            f"Initial votes: {current_votes}\nConsensus Proportion (CP): {cp:.2f}\nShannon Entropy (H): {h:.2f}"
+            f"Initial votes: {current_votes}\nConsensus Proportion (CP): {cp_value:.2f}\nShannon Entropy (H): {h_value:.2f}"
         )
 
         # Start iterative discussion process
@@ -580,7 +580,7 @@ def process_controversial_clusters(
                     # Initial discussion round
                     prompt = create_discussion_prompt(
                         cluster_id=cluster_id,
-                        marker_genes=cluster_markers,
+                        marker_genes=current_marker_genes,
                         model_votes=current_votes,
                         species=species,
                         tissue=tissue,
@@ -589,7 +589,7 @@ def process_controversial_clusters(
                     # Follow-up rounds include previous discussion
                     prompt = create_discussion_prompt(
                         cluster_id=cluster_id,
-                        marker_genes=cluster_markers,
+                        marker_genes=current_marker_genes,
                         model_votes=current_votes,
                         species=species,
                         tissue=tissue,
@@ -1220,11 +1220,11 @@ def interactive_consensus_annotation(
                 )
 
                 # Update consensus proportion and entropy for resolved clusters
-                for cluster_id, cp in updated_cp.items():
-                    consensus_proportion[cluster_id] = cp
+                for cluster_id, cp_value in updated_cp.items():
+                    consensus_proportion[cluster_id] = cp_value
 
-                for cluster_id, h in updated_h.items():
-                    entropy[cluster_id] = h
+                for cluster_id, h_value in updated_h.items():
+                    entropy[cluster_id] = h_value
 
                 if verbose:
                     write_log(f"Successfully resolved {len(resolved)} controversial clusters")
@@ -1314,8 +1314,8 @@ def print_consensus_summary(result: dict[str, Any]) -> None:
 
     print("Cluster annotations:")
     for cluster, annotation in sorted(consensus.items(), key=lambda x: x[0]):
-        cp = consensus_proportion.get(cluster, 0)
-        ent = entropy.get(cluster, 0)
+        stored_cp = consensus_proportion.get(cluster, 0)
+        stored_entropy = entropy.get(cluster, 0)
         if cluster in resolved:
             # For resolved clusters, show CP and H if available in the discussion logs
             discussion_logs = result.get("discussion_logs", {})
@@ -1343,8 +1343,8 @@ def print_consensus_summary(result: dict[str, Any]) -> None:
             print(f"  Cluster {cluster}: {annotation} [Resolved, CP: {cp_value}, H: {h_value}]")
         else:
             # For non-resolved clusters, use the calculated CP and entropy values
-            cp_value = cp
-            h_value = ent
+            cp_value = stored_cp
+            h_value = stored_entropy
 
             # Display different messages based on agreement level
             # Use the already calculated entropy value

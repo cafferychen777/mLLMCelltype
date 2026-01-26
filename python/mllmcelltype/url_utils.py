@@ -4,7 +4,7 @@ from typing import Optional, Union
 
 
 def resolve_provider_base_url(provider: str, base_urls: Union[str, dict, None]) -> Optional[str]:
-    """解析provider特定的base URL
+    """Resolve provider-specific base URL.
 
     Args:
         provider: Provider name (e.g., 'openai', 'anthropic')
@@ -17,16 +17,16 @@ def resolve_provider_base_url(provider: str, base_urls: Union[str, dict, None]) 
         return None
 
     if isinstance(base_urls, str):
-        return base_urls  # 单一URL应用于所有provider
+        return base_urls  # Single URL applies to all providers
 
     if isinstance(base_urls, dict) and provider in base_urls:
-        return base_urls[provider]  # Provider特定URL
+        return base_urls[provider]  # Provider-specific URL
 
     return None
 
 
 def get_default_api_url(provider: str) -> str:
-    """获取默认API URL
+    """Get default API URL for a provider.
 
     Args:
         provider: Provider name
@@ -50,7 +50,7 @@ def get_default_api_url(provider: str) -> str:
 
 
 def validate_base_url(url: str) -> bool:
-    """验证base URL格式
+    """Validate base URL format.
 
     Args:
         url: URL to validate
@@ -61,7 +61,7 @@ def validate_base_url(url: str) -> bool:
     if not url:
         return False
 
-    # 基本URL格式检查
+    # Basic URL format check
     if not (url.startswith("http://") or url.startswith("https://")):
         return False
 
@@ -69,7 +69,7 @@ def validate_base_url(url: str) -> bool:
 
 
 def get_working_qwen_endpoint(api_key: str) -> str:
-    """智能选择Qwen端点
+    """Smart endpoint selection for Qwen.
 
     Args:
         api_key: Qwen API key
@@ -83,7 +83,7 @@ def get_working_qwen_endpoint(api_key: str) -> str:
     from .logger import write_log
 
     def test_endpoint_connectivity(endpoint: str, api_key: str, timeout: int = 5) -> bool:
-        """测试端点连通性
+        """Test endpoint connectivity.
 
         Args:
             endpoint: API endpoint URL
@@ -94,7 +94,7 @@ def get_working_qwen_endpoint(api_key: str) -> str:
             True if endpoint is accessible, False otherwise
         """
         try:
-            # 发送简单的测试请求
+            # Send a simple test request
             headers = {"Authorization": f"Bearer {api_key}", "Content-Type": "application/json"}
 
             test_body = {
@@ -105,16 +105,16 @@ def get_working_qwen_endpoint(api_key: str) -> str:
 
             response = requests.post(endpoint, headers=headers, json=test_body, timeout=timeout)
 
-            # 只有返回200或者是模型相关错误（400）才认为端点可达
-            # 401和403是认证失败，说明端点不适用于此API key
+            # Only 200 or model-related errors (400) indicate the endpoint is reachable
+            # 401 and 403 are auth failures, meaning the endpoint doesn't work with this API key
             return response.status_code in [200, 400]
 
         except Exception:
             return False
 
     endpoints = [
-        "https://dashscope-intl.aliyuncs.com/compatible-mode/v1/chat/completions",  # 国际版
-        "https://dashscope.aliyuncs.com/compatible-mode/v1/chat/completions",  # 国内版
+        "https://dashscope-intl.aliyuncs.com/compatible-mode/v1/chat/completions",  # International
+        "https://dashscope.aliyuncs.com/compatible-mode/v1/chat/completions",  # Domestic (China)
     ]
 
     write_log("Testing Qwen endpoint connectivity...")
@@ -129,6 +129,6 @@ def get_working_qwen_endpoint(api_key: str) -> str:
         else:
             write_log(f"❌ {endpoint_type} endpoint is not accessible")
 
-    # 如果都不可达，返回国际版作为默认
+    # If none are reachable, return international endpoint as fallback
     write_log("No endpoints accessible, using international endpoint as fallback")
     return endpoints[0]
