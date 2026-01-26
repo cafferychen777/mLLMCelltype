@@ -120,7 +120,7 @@ if os.getenv("OPENAI_API_KEY"):
 if os.getenv("ANTHROPIC_API_KEY"):
     models.append("claude-opus-4-20250514")
 if os.getenv("GEMINI_API_KEY"):
-    models.append("gemini-2.5-pro")
+    models.append("gemini-3-pro")
 if os.getenv("QWEN_API_KEY"):
     models.append("qwen-max")
 

@@ -41,7 +41,7 @@ All notable changes to the Python implementation of mLLMCelltype will be documen
 
 ### Updated
 - Updated Gemini model list to include new models and remove discontinued ones:
-  - Added support for `gemini-2.5-pro` and `gemini-2.0-flash-lite`
+  - Added support for `gemini-3-pro` and `gemini-2.0-flash-lite`
   - Removed discontinued `gemini-2.0-flash-001` model
   - Updated documentation to reflect Google's model migration recommendations
 

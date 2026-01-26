@@ -150,7 +150,7 @@ def get_default_model(provider: str) -> str:
         "openai": "gpt-5.2",
         "anthropic": "claude-sonnet-4-5-20250929",
         "deepseek": "deepseek-chat",
-        "gemini": "gemini-2.5-pro",
+        "gemini": "gemini-3-pro",
         "qwen": "qwen3-max",
         "stepfun": "step-3",
         "zhipu": "glm-4-plus",

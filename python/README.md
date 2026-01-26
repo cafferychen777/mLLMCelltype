@@ -22,7 +22,7 @@ Single-cell RNA sequencing has revolutionized our understanding of cellular hete
 - **Comprehensive Provider Support**:
   - OpenAI (GPT-5, O1, etc.)
   - Anthropic (Claude 4 Opus, Claude 4 Sonnet, Claude 4 Sonnet, Claude 3.5 Haiku, etc.)
-  - Google (Gemini 2.5 Pro, Gemini 2.5 Flash, Gemini 2.0 Flash, Gemini 1.5 Pro, etc.)
+  - Google (Gemini 3 Pro, Gemini 3 Flash, Gemini 2.5 Pro, etc.)
   - Alibaba (Qwen-Max-2025-01-25, Qwen-Plus, etc.)
   - DeepSeek (DeepSeek-Chat, DeepSeek-Reasoner)
   - StepFun (Step-2-16k, Step-2-Mini, Step-1-Flash, Step-1-8k, Step-1-32k, etc.)
@@ -270,7 +270,7 @@ all_marker_genes = {
 result = interactive_consensus_annotation(
     marker_genes=all_marker_genes,
     species="human",
-    models=["gpt-5", "claude-sonnet-4-5-20250929", "gemini-2.5-pro"],
+    models=["gpt-5", "claude-sonnet-4-5-20250929", "gemini-3-pro"],
     clusters_to_analyze=["cluster_0", "cluster_1", "cluster_2", "cluster_3"],  # Only immune clusters
     tissue="peripheral blood",
     verbose=True
@@ -342,7 +342,7 @@ controversial_clusters = ["cluster_5", "cluster_8", "cluster_12"]  # Previously 
 result = interactive_consensus_annotation(
     marker_genes=all_marker_genes,
     species="human",
-    models=["gpt-5", "claude-sonnet-4-5-20250929", "gemini-2.5-pro", "qwen-max-2025-01-25"],
+    models=["gpt-5", "claude-sonnet-4-5-20250929", "gemini-3-pro", "qwen-max-2025-01-25"],
     clusters_to_analyze=controversial_clusters,  # Focus on specific clusters
     force_rerun=True,                           # Force fresh analysis
     tissue="brain",
@@ -566,7 +566,7 @@ result = interactive_consensus_annotation(
     models=[                                              # Multiple LLM models
         'gpt-5',                                         # OpenAI direct API
         'claude-sonnet-4-5-20250929',                   # Anthropic direct API (latest)
-        'gemini-2.5-pro',                                  # Google direct API
+        'gemini-3-pro',                                  # Google direct API
         'qwen-max-2025-01-25',                            # Alibaba direct API
         {"provider": "openrouter", "model": "openai/gpt-5"},             # OpenRouter (OpenAI)
         {"provider": "openrouter", "model": "anthropic/claude-3-opus"},   # OpenRouter (Anthropic)
@@ -720,8 +720,8 @@ The `consensus_model` parameter in `interactive_consensus_annotation` allows you
    - `gpt-4.1` - Latest GPT-4 variant
 
 3. **Google Gemini Models**
-   - `gemini-2.5-pro` - Top-tier performance with enhanced reasoning
-   - `gemini-2.5-flash` - Excellent balance of performance and speed
+   - `gemini-3-pro` - Top-tier performance with enhanced reasoning
+   - `gemini-3-flash` - Excellent balance of performance and speed
    - `gemini-2.0-flash` - Good performance with faster processing
 
 4. **Other High-Performance Models**
@@ -739,7 +739,7 @@ consensus_results = interactive_consensus_annotation(
     marker_genes=marker_genes,
     species="human",
     tissue="brain",
-    models=["gpt-5", "claude-sonnet-4-5-20250929", "gemini-2.5-pro", "qwen-max-2025-01-25"],
+    models=["gpt-5", "claude-sonnet-4-5-20250929", "gemini-3-pro", "qwen-max-2025-01-25"],
     consensus_model="claude-sonnet-4-5-20250929",  # Use the latest and most capable Sonnet model
     consensus_threshold=0.7,
     entropy_threshold=1.0
@@ -750,7 +750,7 @@ consensus_results = interactive_consensus_annotation(
     marker_genes=marker_genes,
     species="mouse",
     tissue="liver",
-    models=["gpt-5", "gemini-2.5-pro", "qwen-max-2025-01-25"],
+    models=["gpt-5", "gemini-3-pro", "qwen-max-2025-01-25"],
     consensus_model={"provider": "anthropic", "model": "claude-sonnet-4-5-20250929"},
     consensus_threshold=0.7,
     entropy_threshold=1.0
@@ -762,7 +762,7 @@ consensus_results = interactive_consensus_annotation(
     species="human",
     tissue="heart",
     models=["gpt-5", "claude-sonnet-4-5-20250929", "qwen-max-2025-01-25"],
-    consensus_model={"provider": "google", "model": "gemini-2.5-pro"},
+    consensus_model={"provider": "google", "model": "gemini-3-pro"},
     consensus_threshold=0.7,
     entropy_threshold=1.0
 )
@@ -772,7 +772,7 @@ consensus_results = interactive_consensus_annotation(
     marker_genes=marker_genes,
     species="human",
     tissue="immune cells",
-    models=["gpt-5", "claude-sonnet-4-5-20250929", "gemini-2.5-pro"],
+    models=["gpt-5", "claude-sonnet-4-5-20250929", "gemini-3-pro"],
     consensus_model="o1",  # OpenAI's advanced reasoning model
     consensus_threshold=0.7,
     entropy_threshold=1.0,
@@ -784,7 +784,7 @@ consensus_results = interactive_consensus_annotation(
     marker_genes=marker_genes,
     species="human",
     tissue="blood",
-    models=["gpt-5", "claude-sonnet-4-5-20250929", "gemini-2.5-pro"],
+    models=["gpt-5", "claude-sonnet-4-5-20250929", "gemini-3-pro"],
     # If not specified, defaults to qwen-max-2025-01-25 with claude-sonnet-4-5-20250929 as fallback
     consensus_threshold=0.7,
     entropy_threshold=1.0
@@ -973,7 +973,7 @@ import mllmcelltype as mct
 consensus_results = mct.interactive_consensus_annotation(
     marker_genes=marker_genes,
     species='human',
-    models=['gpt-5', 'claude-sonnet-4-5-20250929', 'gemini-2.5-pro', 'openai/gpt-5'],  # Can include OpenRouter models
+    models=['gpt-5', 'claude-sonnet-4-5-20250929', 'gemini-3-pro', 'openai/gpt-5'],  # Can include OpenRouter models
     consensus_threshold=0.7
 )
 

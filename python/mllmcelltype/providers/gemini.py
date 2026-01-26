@@ -16,7 +16,7 @@ def process_gemini(
 
     Args:
         prompt: The prompt to send to the API
-        model: The model name (e.g., 'gemini-2.5-pro', 'gemini-2.0-flash', 'gemini-2.0-flash-lite')
+        model: The model name (e.g., 'gemini-3-pro', 'gemini-3-flash', 'gemini-2.5-pro')
         api_key: Google API key
         base_url: Optional custom base URL (Note: Gemini uses SDK, base_url may not be applicable)
 

@@ -67,7 +67,7 @@ Googleは複数のGemini 1.5モデルを廃止し、2025年9月24日にさらな
 - **既に廃止済み**：Gemini 1.5 Pro 001、Gemini 1.5 Flash 001
 - **2025年9月24日廃止予定**：Gemini 1.5 Pro 002、Gemini 1.5 Flash 002、Gemini 1.5 Flash-8B -001
 
-**推奨移行**：より良いパフォーマンスと強化された推論能力のために`gemini-2.5-pro`または`gemini-2.5-flash`をご使用ください。エイリアス`gemini-1.5-pro`と`gemini-1.5-flash`は-002バージョンを指すため、2025年9月24日まで動作を継続します。
+**推奨移行**：より良いパフォーマンスと強化された推論能力のために`gemini-3-pro`または`gemini-3-flash`をご使用ください。エイリアス`gemini-1.5-pro`と`gemini-1.5-flash`は-002バージョンを指すため、2025年9月24日まで動作を継続します。
 
 **📢 重要：Claudeモデルの廃止（2025年7月21日）**
 
@@ -238,7 +238,7 @@ markers <- FindAllMarkers(seurat_obj, only.pos = TRUE, min.pct = 0.25, logfc.thr
 consensus_results <- interactive_consensus_annotation(
   input = markers,
   tissue_name = "human PBMC",
-  models = c("gpt-5", "claude-sonnet-4-5-20250929", "gemini-2.5-pro"),
+  models = c("gpt-5", "claude-sonnet-4-5-20250929", "gemini-3-pro"),
   api_keys = list(
     openai = "your_openai_api_key",
     anthropic = "your_anthropic_api_key",
@@ -328,8 +328,8 @@ consensus_results <-
   interactive_consensus_annotation(
     input = marker_genes_list,
     tissue_name = "your tissue type", # 例："human heart"
-    models = c("gemini-2.5-flash",
-              "gemini-2.5-pro",
+    models = c("gemini-3-flash",
+              "gemini-3-pro",
               "qwen-max-2025-01-25",
               "grok-3-latest",
               "anthropic/claude-sonnet-4",
@@ -454,7 +454,7 @@ consensus_results = interactive_consensus_annotation(
     marker_genes=marker_genes,  # 各クラスターのマーカー遺伝子辞書
     species="human",            # 適切な細胞タイプアノテーションのために生物種を指定
     tissue="blood",            # より正確なアノテーションのために組織コンテキストを指定
-    models=["gpt-5", "claude-sonnet-4-5-20250929", "gemini-2.5-pro", "qwen-max-2025-01-25"],  # コンセンサス用の複数LLM
+    models=["gpt-5", "claude-sonnet-4-5-20250929", "gemini-3-pro", "qwen-max-2025-01-25"],  # コンセンサス用の複数LLM
     consensus_threshold=1,     # コンセンサス合意に必要な最小比率
     max_discussion_rounds=3    # 改善のためのモデル間議論ラウンド数
 )
@@ -698,7 +698,7 @@ pbmc_markers <- FindAllMarkers(pbmc,
 # - OpenAI: 'gpt-5', 'gpt-5-mini', 'gpt-4.1', 'gpt-4.1-mini', 'gpt-4.1-nano', 'gpt-4-turbo', 'gpt-3.5-turbo', 'o1', 'o1-mini', 'o1-preview', 'o1-pro'
 # - Anthropic: 'claude-sonnet-4-5-20250929', 'claude-3-5-sonnet-latest', 'claude-3-5-haiku-latest', 'claude-3-opus'
 # - DeepSeek: 'deepseek-chat', 'deepseek-reasoner'
-# - Google: 'gemini-2.5-pro', 'gemini-2.5-flash', 'gemini-2.0-flash', 'gemini-1.5-pro', 'gemini-1.5-flash'
+# - Google: 'gemini-3-pro', 'gemini-3-flash', 'gemini-2.0-flash', 'gemini-1.5-pro', 'gemini-1.5-flash'
 # - Qwen: 'qwen-max-2025-01-25'
 # - Stepfun: 'step-2-mini', 'step-2-16k', 'step-1-8k'
 # - Zhipu: 'glm-4-plus', 'glm-3-turbo'
@@ -708,7 +708,7 @@ pbmc_markers <- FindAllMarkers(pbmc,
 #   - OpenAIモデル: 'openai/gpt-5', 'openai/gpt-5-mini', 'openai/gpt-4-turbo', 'openai/gpt-4', 'openai/gpt-3.5-turbo'
 #   - Anthropicモデル: 'anthropic/claude-sonnet-4', 'anthropic/claude-3-5-sonnet-latest', 'anthropic/claude-3-5-haiku-latest', 'anthropic/claude-opus-4.1'
 #   - Metaモデル: 'meta-llama/llama-3-70b-instruct', 'meta-llama/llama-3-8b-instruct', 'meta-llama/llama-2-70b-chat'
-#   - Googleモデル: 'google/gemini-2.5-pro', 'google/gemini-2.5-flash', 'google/gemini-1.5-pro-latest', 'google/gemini-1.5-flash'
+#   - Googleモデル: 'google/gemini-3-pro', 'google/gemini-3-flash', 'google/gemini-1.5-pro-latest', 'google/gemini-1.5-flash'
 #   - Mistralモデル: 'mistralai/mistral-large', 'mistralai/mistral-medium', 'mistralai/mistral-small'
 #   - その他のモデル: 'microsoft/mai-ds-r1', 'perplexity/sonar-small-chat', 'cohere/command-r', 'deepseek/deepseek-chat', 'thudm/glm-z1-32b'
 
@@ -743,7 +743,7 @@ DimPlot(pbmc, group.by = "cell_type", label = TRUE) +
 
 ```r
 # 異なるモデルを使用してアノテーションを行う
-models <- c("claude-sonnet-4-5-20250929", "gpt-5", "gemini-2.5-pro", "qwen-max-2025-01-25", "grok-3")
+models <- c("claude-sonnet-4-5-20250929", "gpt-5", "gemini-3-pro", "qwen-max-2025-01-25", "grok-3")
 api_keys <- c("your-anthropic-key", "your-openai-key", "your-google-key", "your-qwen-key", "your-xai-key")
 
 # 各モデルの結果を格納する列を作成
@@ -801,8 +801,8 @@ cowplot::plot_grid(p1, p2, p3, p4, p5, ncol = 3)
    - `gpt-4.1` - 最新のGPT-4バリアント
 
 3. **Google Geminiモデル**
-   - `gemini-2.5-pro` - 強化された推論による最上級パフォーマンス
-   - `gemini-2.5-flash` - より高速な処理での良好なパフォーマンス
+   - `gemini-3-pro` - 強化された推論による最上級パフォーマンス
+   - `gemini-3-flash` - より高速な処理での良好なパフォーマンス
 
 4. **その他の高パフォーマンスモデル**
    - `deepseek-r1` / `deepseek-reasoner` - 強力な推論能力
@@ -816,7 +816,7 @@ cowplot::plot_grid(p1, p2, p3, p4, p5, ncol = 3)
 consensus_results <- interactive_consensus_annotation(
   input = marker_genes_list,
   tissue_name = "human brain",
-  models = c("gpt-5", "claude-sonnet-4-5-20250929", "gemini-2.5-flash", "qwen-max-2025-01-25"),
+  models = c("gpt-5", "claude-sonnet-4-5-20250929", "gemini-3-flash", "qwen-max-2025-01-25"),
   api_keys = api_keys,
   consensus_check_model = "claude-sonnet-4-5-20250929",  # 最も有能なモデルを使用
   controversy_threshold = 0.7,
@@ -827,7 +827,7 @@ consensus_results <- interactive_consensus_annotation(
 consensus_results <- interactive_consensus_annotation(
   input = marker_genes_list,
   tissue_name = "mouse liver",
-  models = c("gpt-5", "gemini-2.5-flash", "qwen-max-2025-01-25"),
+  models = c("gpt-5", "gemini-3-flash", "qwen-max-2025-01-25"),
   api_keys = api_keys,
   consensus_check_model = "claude-sonnet-4-5-20250929",  # 代替高パフォーマンスモデル
   controversy_threshold = 0.7,
@@ -838,7 +838,7 @@ consensus_results <- interactive_consensus_annotation(
 consensus_results <- interactive_consensus_annotation(
   input = marker_genes_list,
   tissue_name = "human immune cells",
-  models = c("gpt-5", "claude-sonnet-4-5-20250929", "gemini-2.5-flash"),
+  models = c("gpt-5", "claude-sonnet-4-5-20250929", "gemini-3-flash"),
   api_keys = api_keys,
   consensus_check_model = "o1",  # OpenAIの高度推論モデル
   controversy_threshold = 0.7,
@@ -857,7 +857,7 @@ consensus_results = interactive_consensus_annotation(
     marker_genes=marker_genes,
     species="human",
     tissue="brain",
-    models=["gpt-5", "claude-sonnet-4-5-20250929", "gemini-2.5-flash", "qwen-max-2025-01-25"],
+    models=["gpt-5", "claude-sonnet-4-5-20250929", "gemini-3-flash", "qwen-max-2025-01-25"],
     consensus_model="claude-sonnet-4-5-20250929",  # 最も有能なモデルを使用
     consensus_threshold=0.7,
     entropy_threshold=1.0
@@ -868,7 +868,7 @@ consensus_results = interactive_consensus_annotation(
     marker_genes=marker_genes,
     species="mouse",
     tissue="liver",
-    models=["gpt-5", "gemini-2.5-flash", "qwen-max-2025-01-25"],
+    models=["gpt-5", "gemini-3-flash", "qwen-max-2025-01-25"],
     consensus_model={"provider": "anthropic", "model": "claude-sonnet-4-5-20250929"},
     consensus_threshold=0.7,
     entropy_threshold=1.0
@@ -880,7 +880,7 @@ consensus_results = interactive_consensus_annotation(
     species="human",
     tissue="heart",
     models=["gpt-5", "claude-sonnet-4-5-20250929", "qwen-max-2025-01-25"],
-    consensus_model={"provider": "google", "model": "gemini-2.5-pro"},
+    consensus_model={"provider": "google", "model": "gemini-3-pro"},
     consensus_threshold=0.7,
     entropy_threshold=1.0
 )
@@ -890,7 +890,7 @@ consensus_results = interactive_consensus_annotation(
     marker_genes=marker_genes,
     species="human",
     tissue="blood",
-    models=["gpt-5", "claude-sonnet-4-5-20250929", "gemini-2.5-flash"],
+    models=["gpt-5", "claude-sonnet-4-5-20250929", "gemini-3-flash"],
     # 指定しない場合、デフォルトでqwen-max-2025-01-25（高パフォーマンスモデル）を使用
     consensus_threshold=0.7,
     entropy_threshold=1.0

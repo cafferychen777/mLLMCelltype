@@ -1084,7 +1084,7 @@ def interactive_consensus_annotation(
                 write_log(f"Using specified consensus model for discussion: {discussion_model}")
         else:
             # Otherwise, try to use the most capable model available from the input models
-            for preferred_model_name in ["gpt-5", "claude-sonnet-4-5-20250929", "gemini-2.5-pro"]:
+            for preferred_model_name in ["gpt-5", "claude-sonnet-4-5-20250929", "gemini-3-pro"]:
                 # Check if the preferred model is in the models list
                 for model_item in models:
                     if isinstance(model_item, dict):

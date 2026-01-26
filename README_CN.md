@@ -398,7 +398,7 @@ consensus_results = interactive_consensus_annotation(
     models=[
         "deepseek/deepseek-chat",                # 通过 OpenRouter 访问 DeepSeek（付费）
         "anthropic/claude-sonnet-4",  # 通过 OpenRouter 访问 Anthropic（付费）
-        "google/gemini-2.5-pro-preview-03-25"    # 通过 OpenRouter 访问 Google（付费）
+        "google/gemini-3-pro-preview-03-25"    # 通过 OpenRouter 访问 Google（付费）
     ],
     consensus_threshold=0.7
 )
@@ -429,7 +429,7 @@ consensus_results <- interactive_consensus_annotation(
   models = c(
     "deepseek/deepseek-chat",                # 通过 OpenRouter 访问 DeepSeek（付费）
     "anthropic/claude-sonnet-4",  # 通过 OpenRouter 访问 Anthropic（付费）
-    "google/gemini-2.5-pro-preview-03-25"    # 通过 OpenRouter 访问 Google（付费）
+    "google/gemini-3-pro-preview-03-25"    # 通过 OpenRouter 访问 Google（付费）
   ),
   api_keys = list(
     openrouter = "your-openrouter-key"  # 单一 API 密钥访问多种模型
@@ -748,7 +748,7 @@ consensus_results = interactive_consensus_annotation(
     marker_genes=marker_genes,  # 每个簇的标记基因字典
     species="human",            # 指定生物体以进行适当的细胞类型注释
     tissue="blood",            # 指定组织环境以获得更准确的注释
-    models=["gpt-5", "claude-sonnet-4-5-20250929", "gemini-2.5-pro", "qwen-max-2025-01-25"],  # 用于共识的多个LLM
+    models=["gpt-5", "claude-sonnet-4-5-20250929", "gemini-3-pro", "qwen-max-2025-01-25"],  # 用于共识的多个LLM
     consensus_threshold=1,     # 共识一致所需的最小比例
     max_discussion_rounds=3    # 模型之间进行改进的讨论轮数
 )
@@ -949,7 +949,7 @@ dir.create(cache_dir, showWarnings = FALSE, recursive = TRUE)
 # - OpenAI: 'gpt-5', 'gpt-4o-mini', 'gpt-4.1', 'gpt-4.1-mini', 'gpt-4.1-nano', 'gpt-4-turbo', 'gpt-3.5-turbo', 'o1', 'o1-mini', 'o1-preview', 'o1-pro'
 # - Anthropic: 'claude-sonnet-4-5-20250929', 'claude-3-5-sonnet-20241022', 'claude-3-5-haiku-20241022', 'claude-3-opus-20240229'
 # - DeepSeek: 'deepseek-chat', 'deepseek-reasoner'
-# - Google: 'gemini-2.5-pro', 'gemini-2.5-flash', 'gemini-2.0-flash', 'gemini-2.0-flash-lite', 'gemini-1.5-pro', 'gemini-1.5-flash'
+# - Google: 'gemini-3-pro', 'gemini-3-flash', 'gemini-2.0-flash', 'gemini-2.0-flash-lite', 'gemini-1.5-pro', 'gemini-1.5-flash'
 # - Qwen: 'qwen-max-2025-01-25'
 # - Stepfun: 'step-2-mini', 'step-2-16k', 'step-1-8k'
 # - Zhipu: 'glm-4-plus', 'glm-3-turbo'
@@ -959,7 +959,7 @@ dir.create(cache_dir, showWarnings = FALSE, recursive = TRUE)
 #   - OpenAI模型：'openai/gpt-5', 'openai/gpt-4o-mini', 'openai/gpt-4-turbo', 'openai/gpt-4', 'openai/gpt-3.5-turbo'
 #   - Anthropic模型：'anthropic/claude-sonnet-4.5', 'anthropic/claude-sonnet-4.5', 'anthropic/claude-haiku-4', 'anthropic/claude-opus-4.1'
 #   - Meta模型：'meta-llama/llama-3-70b-instruct', 'meta-llama/llama-3-8b-instruct', 'meta-llama/llama-2-70b-chat'
-#   - Google模型：'google/gemini-2.5-pro', 'google/gemini-2.5-flash', 'google/gemini-1.5-pro-latest', 'google/gemini-1.5-flash'
+#   - Google模型：'google/gemini-3-pro', 'google/gemini-3-flash', 'google/gemini-1.5-pro-latest', 'google/gemini-1.5-flash'
 #   - Mistral模型：'mistralai/mistral-large', 'mistralai/mistral-medium', 'mistralai/mistral-small'
 #   - 其他模型：'microsoft/mai-ds-r1', 'perplexity/sonar-small-chat', 'cohere/command-r', 'deepseek/deepseek-chat', 'thudm/glm-z1-32b'
 
@@ -970,7 +970,7 @@ consensus_results <- interactive_consensus_annotation(
   models = c(
     "claude-sonnet-4-5-20250929",  # Anthropic
     "gpt-5",                   # OpenAI
-    "gemini-2.5-pro",           # Google
+    "gemini-3-pro",           # Google
     "qwen-max-2025-01-25"       # Alibaba
   ),
   api_keys = list(
@@ -1197,8 +1197,8 @@ consensus_results <-
   interactive_consensus_annotation(
     input = marker_genes_list,
     tissue_name = "your tissue type", # 例如："human heart"
-    models = c("gemini-2.5-pro",
-              "gemini-2.5-flash",
+    models = c("gemini-3-pro",
+              "gemini-3-flash",
               "qwen-max-2025-01-25",
               "grok-3-latest",
               "claude-sonnet-4-5-20250929",
@@ -1290,7 +1290,7 @@ pbmc_markers <- FindAllMarkers(pbmc,
 # - OpenAI: 'gpt-5', 'gpt-4o-mini', 'gpt-4.1', 'gpt-4.1-mini', 'gpt-4.1-nano', 'gpt-4-turbo', 'gpt-3.5-turbo', 'o1', 'o1-mini', 'o1-preview', 'o1-pro'
 # - Anthropic: 'claude-sonnet-4-5-20250929', 'claude-3-5-sonnet-20241022', 'claude-3-5-haiku-20241022', 'claude-3-opus-20240229'
 # - DeepSeek: 'deepseek-chat', 'deepseek-reasoner'
-# - Google: 'gemini-2.5-pro', 'gemini-2.5-flash', 'gemini-2.0-flash', 'gemini-2.0-flash-lite', 'gemini-1.5-pro', 'gemini-1.5-flash'
+# - Google: 'gemini-3-pro', 'gemini-3-flash', 'gemini-2.0-flash', 'gemini-2.0-flash-lite', 'gemini-1.5-pro', 'gemini-1.5-flash'
 # - Qwen: 'qwen-max-2025-01-25'
 # - Stepfun: 'step-2-mini', 'step-2-16k', 'step-1-8k'
 # - Zhipu: 'glm-4-plus', 'glm-3-turbo'
@@ -1300,7 +1300,7 @@ pbmc_markers <- FindAllMarkers(pbmc,
 #   - OpenAI模型：'openai/gpt-5', 'openai/gpt-4o-mini', 'openai/gpt-4-turbo', 'openai/gpt-4', 'openai/gpt-3.5-turbo'
 #   - Anthropic模型：'anthropic/claude-sonnet-4.5', 'anthropic/claude-sonnet-4.5', 'anthropic/claude-haiku-4', 'anthropic/claude-opus-4.1'
 #   - Meta模型：'meta-llama/llama-3-70b-instruct', 'meta-llama/llama-3-8b-instruct', 'meta-llama/llama-2-70b-chat'
-#   - Google模型：'google/gemini-2.5-pro', 'google/gemini-2.5-flash', 'google/gemini-1.5-pro-latest', 'google/gemini-1.5-flash'
+#   - Google模型：'google/gemini-3-pro', 'google/gemini-3-flash', 'google/gemini-1.5-pro-latest', 'google/gemini-1.5-flash'
 #   - Mistral模型：'mistralai/mistral-large', 'mistralai/mistral-medium', 'mistralai/mistral-small'
 #   - 其他模型：'microsoft/mai-ds-r1', 'perplexity/sonar-small-chat', 'cohere/command-r', 'deepseek/deepseek-chat', 'thudm/glm-z1-32b'
 
@@ -1347,7 +1347,7 @@ DimPlot(pbmc, group.by = "cell_type", label = TRUE) +
 models_to_test <- c(
   "claude-sonnet-4-5-20250929",  # Anthropic
   "gpt-5",                      # OpenAI
-  "gemini-2.5-pro",              # Google
+  "gemini-3-pro",              # Google
   "qwen-max-2025-01-25"          # Alibaba
 )
 
@@ -1407,8 +1407,8 @@ for (model in models_to_test) {
    - `gpt-4.1` - 最新的GPT-4变体
 
 3. **Google Gemini模型**
-   - `gemini-2.5-pro` - 顶级性能，增强推理能力
-   - `gemini-2.5-flash` - 性能与速度的绝佳平衡
+   - `gemini-3-pro` - 顶级性能，增强推理能力
+   - `gemini-3-flash` - 性能与速度的绝佳平衡
    - `gemini-2.0-flash` - 良好的性能，处理速度更快
 
 4. **其他高性能模型**
@@ -1423,7 +1423,7 @@ for (model in models_to_test) {
 consensus_results <- interactive_consensus_annotation(
   input = marker_genes_list,
   tissue_name = "human brain",
-  models = c("gpt-5", "claude-sonnet-4-5-20250929", "gemini-2.5-pro", "qwen-max-2025-01-25"),
+  models = c("gpt-5", "claude-sonnet-4-5-20250929", "gemini-3-pro", "qwen-max-2025-01-25"),
   api_keys = api_keys,
   consensus_check_model = "claude-sonnet-4-5-20250929",  # 使用最有能力的模型
   controversy_threshold = 0.7,
@@ -1434,7 +1434,7 @@ consensus_results <- interactive_consensus_annotation(
 consensus_results <- interactive_consensus_annotation(
   input = marker_genes_list,
   tissue_name = "mouse liver",
-  models = c("gpt-5", "gemini-2.5-pro", "qwen-max-2025-01-25"),
+  models = c("gpt-5", "gemini-3-pro", "qwen-max-2025-01-25"),
   api_keys = api_keys,
   consensus_check_model = "claude-sonnet-4-5-20250929",  # 替代高性能模型
   controversy_threshold = 0.7,
@@ -1445,7 +1445,7 @@ consensus_results <- interactive_consensus_annotation(
 consensus_results <- interactive_consensus_annotation(
   input = marker_genes_list,
   tissue_name = "human immune cells",
-  models = c("gpt-5", "claude-sonnet-4-5-20250929", "gemini-2.5-pro"),
+  models = c("gpt-5", "claude-sonnet-4-5-20250929", "gemini-3-pro"),
   api_keys = api_keys,
   consensus_check_model = "o1",  # OpenAI的高级推理模型
   controversy_threshold = 0.7,
@@ -1594,7 +1594,7 @@ consensus_results = interactive_consensus_annotation(
     marker_genes=marker_genes,
     species="human",
     tissue="brain",
-    models=["gpt-5", "claude-sonnet-4-5-20250929", "gemini-2.5-pro", "qwen-max-2025-01-25"],
+    models=["gpt-5", "claude-sonnet-4-5-20250929", "gemini-3-pro", "qwen-max-2025-01-25"],
     consensus_model="claude-sonnet-4-5-20250929",  # 使用最有能力的模型
     consensus_threshold=0.7,
     entropy_threshold=1.0
@@ -1605,7 +1605,7 @@ consensus_results = interactive_consensus_annotation(
     marker_genes=marker_genes,
     species="mouse",
     tissue="liver",
-    models=["gpt-5", "gemini-2.5-pro", "qwen-max-2025-01-25"],
+    models=["gpt-5", "gemini-3-pro", "qwen-max-2025-01-25"],
     consensus_model={"provider": "anthropic", "model": "claude-sonnet-4-5-20250929"},
     consensus_threshold=0.7,
     entropy_threshold=1.0
@@ -1617,7 +1617,7 @@ consensus_results = interactive_consensus_annotation(
     species="human",
     tissue="heart",
     models=["gpt-5", "claude-sonnet-4-5-20250929", "qwen-max-2025-01-25"],
-    consensus_model={"provider": "google", "model": "gemini-2.5-pro"},
+    consensus_model={"provider": "google", "model": "gemini-3-pro"},
     consensus_threshold=0.7,
     entropy_threshold=1.0
 )
@@ -1627,7 +1627,7 @@ consensus_results = interactive_consensus_annotation(
     marker_genes=marker_genes,
     species="human",
     tissue="blood",
-    models=["gpt-5", "claude-sonnet-4-5-20250929", "gemini-2.5-pro"],
+    models=["gpt-5", "claude-sonnet-4-5-20250929", "gemini-3-pro"],
     # 如果未指定，默认为qwen-max-2025-01-25（高性能模型）
     consensus_threshold=0.7,
     entropy_threshold=1.0
