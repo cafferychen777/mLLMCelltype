@@ -12,8 +12,6 @@ from .providers import (
     process_stepfun,
     process_zhipu,
 )
-from .utils import find_agreement
-
 # Global provider function mapping for reuse across modules
 PROVIDER_FUNCTIONS = {
     "openai": process_openai,
@@ -83,35 +81,3 @@ def get_provider(model: str) -> str:
         f"Cannot determine provider for model: {model}. "
         f"Supported model prefixes: {', '.join(supported_prefixes)}"
     )
-
-
-def identify_controversial_clusters(
-    annotations: dict[str, dict[str, str]], threshold: float = 0.6
-) -> list[str]:
-    """Identify clusters with inconsistent annotations across models.
-
-    This function uses find_agreement() to compute consensus statistics,
-    then filters clusters where the consensus proportion is below the threshold.
-
-    Args:
-        annotations: Dictionary mapping model names to dictionaries of cluster annotations
-        threshold: Agreement threshold below which a cluster is considered controversial
-
-    Returns:
-        list[str]: List of controversial cluster IDs
-
-    """
-    if not annotations or len(annotations) < 2:
-        return []
-
-    # Use find_agreement() to compute consensus statistics for all clusters
-    _consensus, consensus_proportion, _entropy = find_agreement(annotations)
-
-    # Filter clusters where agreement is below threshold
-    controversial = [
-        cluster
-        for cluster, agreement in consensus_proportion.items()
-        if agreement < threshold
-    ]
-
-    return controversial

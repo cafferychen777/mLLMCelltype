@@ -10,10 +10,7 @@ from .consensus import (
     process_controversial_clusters,
     summarize_discussion,
 )
-from .functions import (
-    get_provider,
-    identify_controversial_clusters,
-)
+from .functions import get_provider
 from .logger import setup_logging, write_log
 from .prompts import (
     create_batch_prompt,
@@ -48,7 +45,6 @@ __all__ = [
     # Functions
     "get_provider",
     "clean_annotation",
-    "identify_controversial_clusters",
     # Logging
     "setup_logging",
     "write_log",
