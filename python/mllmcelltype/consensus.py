@@ -189,24 +189,6 @@ def _extract_metrics_from_text(
     return cp_value, h_value, annotation
 
 
-def _parse_llm_consensus_response(
-    response: str,
-) -> tuple[Optional[float], Optional[float], Optional[str]]:
-    """Parse LLM consensus response to extract metrics and annotation.
-
-    Args:
-        response: LLM response text
-
-    Returns:
-        tuple[Optional[float], Optional[float], Optional[str]]:
-            (consensus_proportion, entropy, annotation)
-    """
-    cp, h, annotation = _extract_metrics_from_text(response)
-    if annotation is None:
-        annotation = "Unknown"
-    return cp, h, annotation
-
-
 def check_consensus(
     predictions: dict[str, dict[str, str]],
     consensus_threshold: float = 0.6,
@@ -394,18 +376,15 @@ def check_consensus(
 
         # Parse LLM response using unified parser
         if llm_response:
-            prop_value, entropy_value, majority_prediction = _parse_llm_consensus_response(
+            prop_value, entropy_value, majority_prediction = _extract_metrics_from_text(
                 llm_response
             )
 
-            if (
-                prop_value is not None
-                and entropy_value is not None
-                and majority_prediction is not None
-            ):
+            if prop_value is not None and entropy_value is not None:
                 consensus_proportion[cluster] = prop_value
                 entropy[cluster] = entropy_value
-                consensus[cluster] = majority_prediction
+                # Use LLM's annotation if available, otherwise use simple consensus result
+                consensus[cluster] = majority_prediction or most_common_annotation
                 write_log(
                     f"LLM consensus check for cluster {cluster}: "
                     f"CP={prop_value:.2f}, H={entropy_value:.2f}",
@@ -413,7 +392,7 @@ def check_consensus(
                 )
                 continue
 
-        # If LLM failed, use the simple consensus results we already calculated
+        # If LLM failed to provide metrics, use simple consensus results
         consensus_proportion[cluster] = prop
         entropy[cluster] = ent
         consensus[cluster] = most_common_annotation
