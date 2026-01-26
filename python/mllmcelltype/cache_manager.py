@@ -5,7 +5,6 @@ including cache inspection, clearing, and validation functions.
 
 Functions:
     clear_mllmcelltype_cache(): Interactive cache clearing
-    get_cache_info(): Get basic information about current cache (delegates to get_cache_stats)
     clear_cache_cli(): Command-line interface for cache management
 """
 
@@ -36,24 +35,6 @@ def clear_mllmcelltype_cache():
         print("No cache directory found.")
 
 
-def get_cache_info():
-    """Get basic information about the current cache state.
-
-    This is a convenience wrapper around get_cache_stats(detailed=False).
-    For detailed statistics including provider counts and timestamps,
-    use get_cache_stats() instead.
-
-    Returns:
-        dict: Cache info with keys: exists, path, count, size, size_mb
-              (also includes file_count and total_size for backward compatibility)
-    """
-    stats = get_cache_stats(detailed=False)
-    # Add backward-compatible keys
-    stats["file_count"] = stats["count"]
-    stats["total_size"] = stats["size"]
-    return stats
-
-
 def clear_cache_cli():
     """Command-line interface for cache management."""
     import sys
@@ -70,9 +51,9 @@ def clear_cache_cli():
         print(f"\nCleared {removed} cache files.")
     elif len(sys.argv) > 1 and sys.argv[1] == "--info":
         # Show cache info
-        info = get_cache_info()
+        info = get_cache_stats(detailed=False)
         print(f"\nCache directory: {info['path']}")
-        print(f"Number of cache files: {info['file_count']}")
+        print(f"Number of cache files: {info['count']}")
         print(f"Total cache size: {info['size_mb']:.2f} MB")
     else:
         # Interactive mode

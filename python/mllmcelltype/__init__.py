@@ -1,7 +1,6 @@
 """mLLMCelltype: A Python module for cell type annotation using various LLMs."""
 
 from .annotate import annotate_clusters, get_model_response
-from .cache_manager import get_cache_info
 from .consensus import (
     check_consensus,
     interactive_consensus_annotation,
@@ -50,7 +49,6 @@ __all__ = [
     "load_from_cache",
     "clear_cache",
     "get_cache_stats",
-    "get_cache_info",
     "format_results",
     # Prompts
     "create_prompt",

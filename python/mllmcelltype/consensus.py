@@ -48,26 +48,6 @@ def _get_api_key(provider: str, api_keys: Optional[dict[str, str]] = None) -> Op
     return load_api_key(provider)
 
 
-def _handle_llm_error(
-    error: Exception, context: str, attempt: int = 0, max_attempts: int = 1
-) -> None:
-    """Handle LLM API call errors consistently.
-
-    Args:
-        error: The exception that occurred
-        context: Context description (e.g., "Qwen attempt", "Claude fallback")
-        attempt: Current attempt number (0-based)
-        max_attempts: Maximum number of attempts
-    """
-    if attempt < max_attempts - 1:
-        write_log(f"Error on {context} {attempt + 1}: {str(error)}", level="warning")
-        write_log("Waiting before next attempt...")
-    else:
-        write_log(f"Error on {context}: {str(error)}", level="warning")
-        if "attempt" in context.lower():
-            write_log(f"All {context.split()[0]} retry attempts failed")
-
-
 def _call_llm_with_retry(
     prompt: str,
     provider: str,
@@ -119,11 +99,12 @@ def _call_llm_with_retry(
             KeyError,
             json.JSONDecodeError,
         ) as e:
-            _handle_llm_error(e, f"{provider} attempt", attempt, max_retries)
             if attempt < max_retries - 1:
+                write_log(f"Error on {provider} attempt {attempt + 1}/{max_retries}: {str(e)}", level="warning")
                 time.sleep(5 * (2**attempt))
             else:
-                write_log(f"falling back to {fallback_provider}")
+                write_log(f"All {provider} retry attempts failed: {str(e)}", level="warning")
+                write_log(f"Falling back to {fallback_provider}")
 
     # Try fallback provider
     if api_keys:
@@ -147,7 +128,7 @@ def _call_llm_with_retry(
                 KeyError,
                 json.JSONDecodeError,
             ) as e:
-                _handle_llm_error(e, f"{fallback_provider} fallback")
+                write_log(f"Error on {fallback_provider} fallback: {str(e)}", level="warning")
         else:
             write_log(f"No {fallback_provider} API key found, falling back to simple consensus")
 
