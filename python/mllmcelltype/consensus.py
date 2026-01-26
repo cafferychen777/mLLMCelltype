@@ -8,7 +8,7 @@ import math
 import re
 import time
 from collections import Counter
-from typing import Any, Optional, Union
+from typing import Any
 
 import requests
 
@@ -46,13 +46,13 @@ def _call_llm_with_retry(
     prompt: str,
     provider: str,
     model: str,
-    api_key: Optional[str],
+    api_key: str | None,
     max_retries: int = 3,
     fallback_provider: str = DEFAULT_FALLBACK_PROVIDER,
     fallback_model: str = DEFAULT_FALLBACK_MODEL,
-    api_keys: Optional[dict[str, str]] = None,
-    base_urls: Optional[Union[str, dict[str, str]]] = None,
-) -> Optional[str]:
+    api_keys: dict[str, str] | None = None,
+    base_urls: str | dict[str, str] | None = None,
+) -> str | None:
     """Call LLM with retry logic and fallback provider.
 
     Args:
@@ -134,7 +134,7 @@ def _call_llm_with_retry(
 
 def _extract_metrics_from_text(
     text: str,
-) -> tuple[Optional[float], Optional[float], Optional[str]]:
+) -> tuple[float | None, float | None, str | None]:
     """Extract consensus metrics (CP, H) and optional annotation from text.
 
     This function mirrors the R implementation's parsing strategies:
@@ -293,14 +293,11 @@ def check_consensus(
     predictions: dict[str, dict[str, str]],
     consensus_threshold: float = 0.7,
     entropy_threshold: float = 1.0,
-    api_keys: Optional[dict[str, str]] = None,
+    api_keys: dict[str, str] | None = None,
     return_controversial: bool = True,
-    consensus_model: Optional[dict[str, str]] = None,
-    available_models: Optional[list[Union[str, dict[str, str]]]] = None,
-) -> Union[
-    tuple[dict[str, str], dict[str, float], dict[str, float]],
-    tuple[dict[str, str], dict[str, float], dict[str, float], list[str]],
-]:
+    consensus_model: dict[str, str] | None = None,
+    available_models: list[str | dict[str, str]] | None = None,
+) -> tuple[dict[str, str], dict[str, float], dict[str, float]] | tuple[dict[str, str], dict[str, float], dict[str, float], list[str]]:
     """Check consensus among different model predictions using LLM assistance.
 
     This function uses an LLM to evaluate semantic similarity between
@@ -505,7 +502,7 @@ def check_consensus(
     return consensus, consensus_proportion, entropy
 
 
-def _extract_cell_type_from_response(response: str) -> Optional[str]:
+def _extract_cell_type_from_response(response: str) -> str | None:
     """Extract cell type from a discussion response.
 
     This function mirrors the R implementation's logic:
@@ -619,6 +616,9 @@ def _calculate_simple_consensus(
         if p > 0:
             entropy -= p * math.log2(p + 1e-10)
 
+    # Ensure entropy is non-negative (can be slightly negative due to floating point precision)
+    entropy = max(0.0, entropy)
+
     return consensus_proportion, entropy, majority_prediction
 
 
@@ -626,9 +626,9 @@ def check_consensus_for_discussion_round(
     round_responses: dict[str, str],
     consensus_threshold: float = 0.7,
     entropy_threshold: float = 1.0,
-    api_keys: Optional[dict[str, str]] = None,
-    consensus_check_model: Optional[dict[str, str]] = None,
-    base_urls: Optional[Union[str, dict[str, str]]] = None,
+    api_keys: dict[str, str] | None = None,
+    consensus_check_model: dict[str, str] | None = None,
+    base_urls: str | dict[str, str] | None = None,
 ) -> dict[str, Any]:
     """Check consensus among model responses for a single discussion round.
 
@@ -661,7 +661,7 @@ def check_consensus_for_discussion_round(
         )
         if len(round_responses) == 1:
             # Extract cell type from the single response
-            single_response = list(round_responses.values())[0]
+            single_response = next(iter(round_responses.values()))
             cell_type = _extract_cell_type_from_response(single_response)
             return {
                 "reached": False,
@@ -779,17 +779,17 @@ def process_controversial_clusters(
     controversial_clusters: list[str],
     model_predictions: dict[str, dict[str, str]],
     species: str,
-    tissue: Optional[str] = None,
-    models: Optional[list[Union[str, dict[str, str]]]] = None,
-    api_keys: Optional[dict[str, str]] = None,
+    tissue: str | None = None,
+    models: list[str | dict[str, str]] | None = None,
+    api_keys: dict[str, str] | None = None,
     max_discussion_rounds: int = 3,
     consensus_threshold: float = 0.7,
     entropy_threshold: float = 1.0,
     use_cache: bool = True,
-    cache_dir: Optional[str] = None,
-    base_urls: Optional[Union[str, dict[str, str]]] = None,
+    cache_dir: str | None = None,
+    base_urls: str | dict[str, str] | None = None,
     force_rerun: bool = False,
-    consensus_check_model: Optional[dict[str, str]] = None,
+    consensus_check_model: dict[str, str] | None = None,
 ) -> tuple[dict[str, str], dict[str, list[dict]], dict[str, float], dict[str, float]]:
     """Process controversial clusters through multi-model discussion.
 
@@ -1041,19 +1041,19 @@ def process_controversial_clusters(
 def interactive_consensus_annotation(
     marker_genes: dict[str, list[str]],
     species: str,
-    models: list[Union[str, dict[str, str]]] = None,
-    api_keys: Optional[dict[str, str]] = None,
-    tissue: Optional[str] = None,
-    additional_context: Optional[str] = None,
+    models: list[str | dict[str, str]] | None = None,
+    api_keys: dict[str, str] | None = None,
+    tissue: str | None = None,
+    additional_context: str | None = None,
     consensus_threshold: float = 0.7,
     entropy_threshold: float = 1.0,
     max_discussion_rounds: int = 3,
     use_cache: bool = True,
-    cache_dir: Optional[str] = None,
+    cache_dir: str | None = None,
     verbose: bool = False,
-    consensus_model: Optional[Union[str, dict[str, str]]] = None,
-    base_urls: Optional[Union[str, dict[str, str]]] = None,
-    clusters_to_analyze: Optional[list[str]] = None,
+    consensus_model: str | dict[str, str] | None = None,
+    base_urls: str | dict[str, str] | None = None,
+    clusters_to_analyze: list[str] | None = None,
     force_rerun: bool = False,
 ) -> dict[str, Any]:
     """Perform consensus annotation of cell types using multiple LLMs and interactive resolution.
@@ -1329,8 +1329,8 @@ def interactive_consensus_annotation(
 
 def format_discussion_report(
     results: dict[str, Any],
-    cluster_id: Optional[str] = None,
-    output_file: Optional[str] = None,
+    cluster_id: str | None = None,
+    output_file: str | None = None,
 ) -> str:
     """Format discussion results into a clean, readable report.
 
@@ -1402,7 +1402,7 @@ def format_discussion_report(
                 lines.append(f"  {predictions[cid]}")
 
         # Section 2: Discussion Rounds (if any)
-        if cid in discussion_logs and discussion_logs[cid]:
+        if discussion_logs.get(cid):
             rounds = discussion_logs[cid]
 
             for round_idx, round_responses in enumerate(rounds, start=1):

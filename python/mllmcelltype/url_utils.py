@@ -2,6 +2,10 @@
 
 from typing import Optional, Union
 
+import requests
+
+from .logger import write_log
+
 
 def resolve_provider_base_url(provider: str, base_urls: Union[str, dict, None]) -> Optional[str]:
     """Resolve provider-specific base URL.
@@ -62,10 +66,7 @@ def validate_base_url(url: str) -> bool:
         return False
 
     # Basic URL format check
-    if not (url.startswith("http://") or url.startswith("https://")):
-        return False
-
-    return True
+    return url.startswith("http://") or url.startswith("https://")
 
 
 def get_working_qwen_endpoint(api_key: str) -> str:
@@ -77,10 +78,6 @@ def get_working_qwen_endpoint(api_key: str) -> str:
     Returns:
         Working endpoint URL
     """
-
-    import requests
-
-    from .logger import write_log
 
     def test_endpoint_connectivity(endpoint: str, api_key: str, timeout: int = 5) -> bool:
         """Test endpoint connectivity.
@@ -105,9 +102,10 @@ def get_working_qwen_endpoint(api_key: str) -> str:
 
             response = requests.post(endpoint, headers=headers, json=test_body, timeout=timeout)
 
-            # Only 200 or model-related errors (400) indicate the endpoint is reachable
-            # 401 and 403 are auth failures, meaning the endpoint doesn't work with this API key
-            return response.status_code in [200, 400]
+            # Any HTTP response indicates the endpoint is network-reachable
+            # 200: success, 400: bad request, 401/403: auth error - all mean endpoint works
+            # Only connection failures (timeout, DNS error, etc.) indicate unreachable endpoint
+            return response.status_code is not None
 
         except Exception:
             return False

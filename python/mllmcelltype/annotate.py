@@ -3,7 +3,6 @@
 from __future__ import annotations
 
 import time
-from typing import Optional, Union
 
 import pandas as pd
 
@@ -22,19 +21,19 @@ from .utils import (
 
 
 def annotate_clusters(
-    marker_genes: Union[dict[str, list[str]], pd.DataFrame],
+    marker_genes: dict[str, list[str]] | pd.DataFrame,
     species: str,
     provider: str = "openai",
-    model: Optional[str] = None,
-    api_key: Optional[str] = None,
-    tissue: Optional[str] = None,
-    additional_context: Optional[str] = None,
-    prompt_template: Optional[str] = None,
+    model: str | None = None,
+    api_key: str | None = None,
+    tissue: str | None = None,
+    additional_context: str | None = None,
+    prompt_template: str | None = None,
     use_cache: bool = True,
-    cache_dir: Optional[str] = None,
-    log_dir: Optional[str] = None,
+    cache_dir: str | None = None,
+    log_dir: str | None = None,
     log_level: str = "INFO",
-    base_urls: Optional[Union[str, dict[str, str]]] = None,
+    base_urls: str | dict[str, str] | None = None,
 ) -> dict[str, str]:
     """Annotate cell clusters using LLM.
 
@@ -131,7 +130,7 @@ def annotate_clusters(
         return format_results(results, clusters)
 
     except Exception as e:
-        error_msg = f"Error during annotation: {str(e)}"
+        error_msg = f"Error during annotation: {e!s}"
         write_log(error_msg, level="error")
         raise
 
@@ -165,11 +164,11 @@ def get_default_model(provider: str) -> str:
 def get_model_response(
     prompt: str,
     provider: str,
-    model: Optional[str] = None,
-    api_key: Optional[str] = None,
+    model: str | None = None,
+    api_key: str | None = None,
     use_cache: bool = True,
-    cache_dir: Optional[str] = None,
-    base_url: Optional[str] = None,
+    cache_dir: str | None = None,
+    base_url: str | None = None,
 ) -> str:
     """Get response from a model for a given prompt.
 
@@ -236,6 +235,6 @@ def get_model_response(
 
         return result
     except Exception as e:
-        error_msg = f"Error getting model response: {str(e)}"
+        error_msg = f"Error getting model response: {e!s}"
         write_log(error_msg, level="error")
         raise

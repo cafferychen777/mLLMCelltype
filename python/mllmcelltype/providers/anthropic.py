@@ -9,7 +9,6 @@ import requests
 from ..logger import write_log
 from ..url_utils import get_default_api_url, validate_base_url
 
-
 # Model alias mapping: user-friendly names -> official API model IDs
 MODEL_ALIASES = {
     # Claude 4.5 series (latest - Nov 2025)
@@ -163,7 +162,7 @@ def process_anthropic(
             return [line.rstrip(",") for line in res]
 
         except Exception as e:
-            write_log(f"Error during API call (attempt {attempt + 1}/{max_retries}): {str(e)}")
+            write_log(f"Error during API call (attempt {attempt + 1}/{max_retries}): {e!s}")
             if attempt < max_retries - 1:
                 wait_time = retry_delay * (2**attempt)
                 write_log(f"Waiting {wait_time} seconds before retrying...")

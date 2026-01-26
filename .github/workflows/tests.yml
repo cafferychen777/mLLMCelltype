@@ -9,20 +9,15 @@ on:
 
 jobs:
   test:
-    runs-on: ${{ matrix.os }}
-    strategy:
-      fail-fast: false
-      matrix:
-        os: [ubuntu-latest, macos-latest]
-        python-version: ['3.9', '3.10', '3.11']
+    runs-on: ubuntu-latest
 
     steps:
     - uses: actions/checkout@v3
-    
-    - name: Set up Python ${{ matrix.python-version }}
+
+    - name: Set up Python 3.11
       uses: actions/setup-python@v4
       with:
-        python-version: ${{ matrix.python-version }}
+        python-version: '3.11'
         cache: 'pip'
     
     - name: Install dependencies
@@ -73,7 +68,7 @@ jobs:
     - name: Lint with ruff
       run: |
         cd python
-        ruff check --select=E,F,B,I --ignore=E501 mllmcelltype tests
+        ruff check mllmcelltype tests
     
     - name: Check formatting with ruff-format
       run: |

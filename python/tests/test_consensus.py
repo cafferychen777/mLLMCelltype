@@ -96,8 +96,8 @@ class TestConsensus:
         assert len(consensus) == 2
         assert len(controversial) >= 0  # May or may not have controversial clusters
 
-    @patch("mllmcelltype.functions.get_provider")
-    @patch("mllmcelltype.annotate.annotate_clusters")
+    @patch("mllmcelltype.consensus.get_provider")
+    @patch("mllmcelltype.consensus.annotate_clusters")
     @patch("mllmcelltype.consensus.check_consensus")
     @patch("mllmcelltype.consensus.process_controversial_clusters")
     def test_interactive_consensus_annotation(

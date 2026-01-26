@@ -7,14 +7,14 @@ import json
 import os
 import re
 import time
-from typing import Any, Optional, Union
+from typing import Any
 
 import pandas as pd
 
 from .logger import write_log
 
 
-def _get_cache_dir(cache_dir: Optional[str] = None) -> str:
+def _get_cache_dir(cache_dir: str | None = None) -> str:
     """Get cache directory path with consistent handling.
 
     Args:
@@ -97,7 +97,7 @@ def load_api_key(provider: str) -> str:
                                 write_log(f"Loaded API key for {provider} from .env file")
                                 break
         except (OSError, ValueError) as e:
-            write_log(f"Error loading .env file: {str(e)}", level="warning")
+            write_log(f"Error loading .env file: {e!s}", level="warning")
 
     if not api_key:
         write_log(f"API key not found for provider: {env_var}", level="warning")
@@ -139,8 +139,8 @@ def create_cache_key(prompt: str, model: str, provider: str) -> str:
 
 def save_to_cache(
     cache_key: str,
-    results: Union[list[str], dict[str, Any]],
-    cache_dir: Optional[str] = None,
+    results: list[str] | dict[str, Any],
+    cache_dir: str | None = None,
 ) -> None:
     """Save results to cache.
 
@@ -169,8 +169,8 @@ def save_to_cache(
 
 
 def load_from_cache(
-    cache_key: str, cache_dir: Optional[str] = None
-) -> Optional[Union[list[str], dict[str, Any]]]:
+    cache_key: str, cache_dir: str | None = None
+) -> list[str] | dict[str, Any] | None:
     """Load results from cache.
 
     Args:
@@ -331,7 +331,7 @@ def format_results(results: list[str], clusters: list[str]) -> dict[str, str]:
                 write_log("Successfully parsed JSON response", level="info")
                 return json_result
     except (json.JSONDecodeError, ValueError, KeyError, TypeError, AttributeError) as e:
-        write_log(f"Failed to parse JSON response: {str(e)}", level="debug")
+        write_log(f"Failed to parse JSON response: {e!s}", level="debug")
 
     # Case 3: Check if this is a simple response where each line corresponds to a cluster
     # This is the expected format from the R version
@@ -528,7 +528,7 @@ def normalize_annotation_for_comparison(annotation: str) -> str:
     return normalized
 
 
-def clear_cache(cache_dir: Optional[str] = None, older_than: Optional[int] = None) -> int:
+def clear_cache(cache_dir: str | None = None, older_than: int | None = None) -> int:
     """Clear cache.
 
     Args:
@@ -585,7 +585,7 @@ def clear_cache(cache_dir: Optional[str] = None, older_than: Optional[int] = Non
     return count
 
 
-def get_cache_stats(cache_dir: Optional[str] = None, detailed: bool = True) -> dict[str, Any]:
+def get_cache_stats(cache_dir: str | None = None, detailed: bool = True) -> dict[str, Any]:
     """Get cache statistics.
 
     Args:

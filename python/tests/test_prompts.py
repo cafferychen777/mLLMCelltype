@@ -10,6 +10,7 @@ import pytest
 from mllmcelltype.prompts import (
     create_consensus_check_prompt,
     create_discussion_prompt,
+    create_initial_discussion_prompt,
     create_prompt,
 )
 
@@ -64,16 +65,16 @@ Marker genes: {markers}"""
         # Check that the custom template was used
         assert "Custom template for human cells from blood" in prompt
 
-    def test_create_discussion_prompt(self):
-        """Test discussion prompt creation."""
+    def test_create_initial_discussion_prompt(self):
+        """Test initial discussion prompt creation."""
         cluster_id = "1"
         marker_genes = ["CD3D", "CD3E", "CD2"]
-        model_votes = {"model1": "T cells", "model2": "T cells", "model3": "NK cells"}
+        initial_predictions = {"model1": "T cells", "model2": "T cells", "model3": "NK cells"}
 
-        prompt = create_discussion_prompt(
+        prompt = create_initial_discussion_prompt(
             cluster_id=cluster_id,
             marker_genes=marker_genes,
-            model_votes=model_votes,
+            initial_predictions=initial_predictions,
             species="human",
             tissue="blood",
         )
@@ -85,7 +86,32 @@ Marker genes: {markers}"""
         assert "CD3D" in prompt
         assert "T cells" in prompt
         assert "NK cells" in prompt
-        assert "Cluster 1" in prompt or "cluster 1" in prompt or "Cluster ID: 1" in prompt
+        assert "cluster 1" in prompt or "Cluster 1" in prompt
+
+    def test_create_discussion_prompt(self):
+        """Test subsequent discussion prompt creation."""
+        cluster_id = "1"
+        marker_genes = ["CD3D", "CD3E", "CD2"]
+        previous_rounds = [
+            {"model1": "T cells response", "model2": "NK cells response"},
+        ]
+
+        prompt = create_discussion_prompt(
+            cluster_id=cluster_id,
+            marker_genes=marker_genes,
+            previous_rounds=previous_rounds,
+            round_number=2,
+            species="human",
+            tissue="blood",
+        )
+
+        # Check that the prompt contains the expected elements
+        assert isinstance(prompt, str)
+        assert "human" in prompt
+        assert "blood" in prompt
+        assert "CD3D" in prompt
+        assert "cluster 1" in prompt or "Cluster 1" in prompt
+        assert "round 2" in prompt.lower() or "Round 2" in prompt
 
     def test_create_consensus_check_prompt(self):
         """Test consensus check prompt creation."""

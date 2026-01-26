@@ -2,8 +2,6 @@
 
 from __future__ import annotations
 
-from typing import Optional
-
 from .logger import write_log
 
 
@@ -86,9 +84,9 @@ Only output these 4 lines, nothing else."""
 def create_prompt(
     marker_genes: dict[str, list[str]],
     species: str,
-    tissue: Optional[str] = None,
-    additional_context: Optional[str] = None,
-    prompt_template: Optional[str] = None,
+    tissue: str | None = None,
+    additional_context: str | None = None,
+    prompt_template: str | None = None,
 ) -> str:
     """Create a prompt for cell type annotation.
 
@@ -138,7 +136,7 @@ def create_initial_discussion_prompt(
     marker_genes: list[str],
     initial_predictions: dict[str, str],
     species: str,
-    tissue: Optional[str] = None,
+    tissue: str | None = None,
 ) -> str:
     """Create a prompt for the initial round of multi-model discussion.
 
@@ -200,7 +198,7 @@ def create_discussion_prompt(
     previous_rounds: list[dict[str, str]],
     round_number: int,
     species: str,
-    tissue: Optional[str] = None,
+    tissue: str | None = None,
 ) -> str:
     """Create a prompt for subsequent rounds of multi-model discussion.
 

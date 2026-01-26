@@ -35,32 +35,32 @@ __version__ = "2.0.1"
 __all__ = [
     # Core annotation
     "annotate_clusters",
+    # Consensus
+    "check_consensus",
+    "clean_annotation",
+    "clear_cache",
+    "create_cache_key",
+    "create_consensus_check_prompt",
+    "create_discussion_prompt",
+    # Prompts
+    "create_prompt",
+    "format_discussion_report",
+    "format_results",
+    "get_cache_stats",
+    "get_default_api_url",
     "get_model_response",
     # Functions
     "get_provider",
-    "clean_annotation",
-    # Logging
-    "setup_logging",
-    "write_log",
+    "interactive_consensus_annotation",
     # Utils
     "load_api_key",
-    "create_cache_key",
-    "save_to_cache",
     "load_from_cache",
-    "clear_cache",
-    "get_cache_stats",
-    "format_results",
-    # Prompts
-    "create_prompt",
-    "create_discussion_prompt",
-    "create_consensus_check_prompt",
-    # Consensus
-    "check_consensus",
     "process_controversial_clusters",
-    "interactive_consensus_annotation",
-    "format_discussion_report",
     # URL utilities
     "resolve_provider_base_url",
-    "get_default_api_url",
+    "save_to_cache",
+    # Logging
+    "setup_logging",
     "validate_base_url",
+    "write_log",
 ]

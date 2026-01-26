@@ -12,6 +12,7 @@ from .providers import (
     process_stepfun,
     process_zhipu,
 )
+
 # Global provider function mapping for reuse across modules
 PROVIDER_FUNCTIONS = {
     "openai": process_openai,

@@ -5,7 +5,6 @@ from __future__ import annotations
 import datetime
 import logging
 import os
-from typing import Optional
 
 # Configure logging
 logging.basicConfig(
@@ -22,10 +21,10 @@ DEFAULT_LOG_DIR = os.path.join(os.path.expanduser("~"), ".mllmcelltype", "logs")
 
 # Track initialization state for idempotent setup
 _logging_initialized = False
-_current_log_file: Optional[str] = None
+_current_log_file: str | None = None
 
 
-def setup_logging(log_dir: Optional[str] = None, log_level: str = "INFO") -> None:
+def setup_logging(log_dir: str | None = None, log_level: str = "INFO") -> None:
     """Setup logging configuration.
 
     This function is idempotent - multiple calls with the same parameters
@@ -118,7 +117,7 @@ def reset_logging() -> None:
     _current_log_file = None
 
 
-def get_current_log_file() -> Optional[str]:
+def get_current_log_file() -> str | None:
     """Get the path to the current log file.
 
     Returns:
