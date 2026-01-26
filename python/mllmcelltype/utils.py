@@ -318,10 +318,14 @@ def format_results(results: list[str], clusters: list[str]) -> dict[str, str]:
     for cluster in clusters:
         cluster_str = str(cluster)
 
+        # Extract numeric ID from cluster name (e.g., "Cluster_0" -> "0", "0" -> "0")
+        cluster_id_match = re.search(r"(\d+)", cluster_str)
+        cluster_id = cluster_id_match.group(1) if cluster_id_match else cluster_str
+
         # Look for exact matches (e.g., "Cluster 0: T cells")
         for line in clean_results:
             match = re.match(cluster_pattern, line)
-            if match and match.group(1) == cluster_str:
+            if match and match.group(1) == cluster_id:
                 result[cluster_str] = match.group(2).strip()
                 break
 
