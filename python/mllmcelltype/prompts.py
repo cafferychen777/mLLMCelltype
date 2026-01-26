@@ -104,43 +104,6 @@ Only output these 4 lines, nothing else."""
     return prompt.replace("{annotations}", formatted_annotations)
 
 
-# Default JSON format prompt template
-DEFAULT_JSON_PROMPT_TEMPLATE = """You are an expert single-cell RNA-seq analyst specializing in cell type annotation.
-I need you to identify cell types of {species} cells from {tissue}.
-Below is a list of marker genes for each cluster.
-Please assign the most likely cell type to each cluster based on the marker genes.
-
-IMPORTANT: Format your response as a valid JSON object as follows, using the EXACT SAME cluster IDs as provided in the input, and maintaining NUMERICAL ORDER:
-```json
-{{
-  "annotations": [
-    {{
-      "cluster": "0",
-      "cell_type": "T cells",
-      "confidence": "high",
-      "key_markers": ["CD3D", "CD3G", "CD3E"]
-    }},
-    {{
-      "cluster": "1",
-      "cell_type": "B cells",
-      "confidence": "high",
-      "key_markers": ["CD19", "CD79A", "MS4A1"]
-    }},
-    ...
-  ]
-}}
-```
-
-For each cluster, provide:
-1. The cluster ID (use the SAME ID as in the input)
-2. The cell type name (be concise but specific)
-3. Your confidence level (high, medium, low)
-4. A list of 2-4 key markers that support your annotation
-
-Here are the marker genes for each cluster:
-{markers}
-"""
-
 # Template for facilitating discussion for controversial clusters
 DEFAULT_DISCUSSION_TEMPLATE = """You are an expert in single-cell RNA-seq cell type annotation tasked with resolving disagreements between model predictions.
 
@@ -335,33 +298,6 @@ def create_batch_prompt(
     return prompt
 
 
-def create_json_prompt(
-    marker_genes: dict[str, list[str]],
-    species: str,
-    tissue: Optional[str] = None,
-    additional_context: Optional[str] = None,
-) -> str:
-    """Create a prompt for cell type annotation with JSON output format.
-
-    Args:
-        marker_genes: Dictionary mapping cluster names to lists of marker genes
-        species: Species name (e.g., 'human', 'mouse')
-        tissue: Tissue name (e.g., 'brain', 'blood')
-        additional_context: Additional context to include in the prompt
-
-    Returns:
-        str: The generated prompt
-
-    """
-    return create_prompt(
-        marker_genes=marker_genes,
-        species=species,
-        tissue=tissue,
-        additional_context=additional_context,
-        prompt_template=DEFAULT_JSON_PROMPT_TEMPLATE,
-    )
-
-
 def create_discussion_prompt(
     cluster_id: str,
     marker_genes: list[str],
@@ -525,58 +461,4 @@ def create_discussion_consensus_check_prompt(
     )
 
     write_log(f"Generated discussion consensus check prompt with {len(prompt)} characters")
-    return prompt
-
-
-def create_initial_discussion_prompt(
-    cluster_id: str, marker_genes: list[str], species: str, tissue: Optional[str] = None
-) -> str:
-    """Create a prompt for initial cell type discussion about a cluster.
-
-    Args:
-        cluster_id: ID of the cluster
-        marker_genes: List of marker genes for the cluster
-        species: Species name (e.g., 'human', 'mouse')
-        tissue: Tissue name (e.g., 'brain', 'blood')
-
-    Returns:
-        str: The generated prompt
-
-    """
-    write_log(f"Creating initial discussion prompt for cluster {cluster_id}")
-
-    # Default tissue if none provided
-    tissue_text = tissue if tissue else "unknown tissue"
-
-    # Format marker genes text
-    marker_genes_text = ", ".join(marker_genes)
-
-    # Template for initial discussion
-    template = """You are an expert in single-cell RNA-seq analysis, assigned to identify the cell type for a specific cluster.
-
-Cluster ID: {cluster_id}
-Species: {species}
-Tissue: {tissue}
-
-Marker genes: {marker_genes}
-
-Your task:
-1. Analyze these marker genes and their expression patterns
-2. Consider the cell types that might express this combination of genes
-3. Provide a detailed reasoning process
-4. Determine the most likely cell type for this cluster
-
-Give a thorough analysis, explaining which genes are most informative and why.
-End with a clear cell type determination.
-"""
-
-    # Fill in the template
-    prompt = template.format(
-        cluster_id=cluster_id,
-        species=species,
-        tissue=tissue_text,
-        marker_genes=marker_genes_text,
-    )
-
-    write_log(f"Generated initial discussion prompt with {len(prompt)} characters")
     return prompt

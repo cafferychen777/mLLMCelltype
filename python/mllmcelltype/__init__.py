@@ -13,15 +13,12 @@ from .consensus import (
 from .functions import (
     get_provider,
     identify_controversial_clusters,
-    select_best_prediction,
 )
 from .logger import setup_logging, write_log
 from .prompts import (
     create_batch_prompt,
     create_consensus_check_prompt,
     create_discussion_prompt,
-    create_initial_discussion_prompt,
-    create_json_prompt,
     create_prompt,
 )
 from .url_utils import (
@@ -66,7 +63,6 @@ __all__ = [
     "get_provider",
     "clean_annotation",
     "identify_controversial_clusters",
-    "select_best_prediction",
     # Logging
     "setup_logging",
     "write_log",
@@ -85,10 +81,8 @@ __all__ = [
     # Prompts
     "create_prompt",
     "create_batch_prompt",
-    "create_json_prompt",
     "create_discussion_prompt",
     "create_consensus_check_prompt",
-    "create_initial_discussion_prompt",
     # Consensus
     "check_consensus",
     "process_controversial_clusters",

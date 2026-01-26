@@ -277,44 +277,6 @@ def get_provider(model: str) -> str:
     )
 
 
-def select_best_prediction(predictions: list[dict[str, str]]) -> dict[str, str]:
-    """Select the best prediction from multiple models.
-
-    Args:
-        predictions: List of dictionaries mapping cluster IDs to cell type annotations
-
-    Returns:
-        dict[str, str]: Dictionary mapping cluster IDs to best predictions
-
-    """
-    if not predictions:
-        return {}
-
-    # Get all cluster IDs
-    all_clusters = set()
-    for prediction in predictions:
-        all_clusters.update(prediction.keys())
-
-    # For each cluster, select the most specific prediction
-    best_predictions = {}
-    for cluster in all_clusters:
-        cluster_predictions = [pred.get(cluster, "") for pred in predictions if cluster in pred]
-
-        # Filter out empty predictions
-        cluster_predictions = [pred for pred in cluster_predictions if pred]
-
-        if not cluster_predictions:
-            best_predictions[cluster] = "Unknown"
-            continue
-
-        # Select the longest prediction (assuming it's more specific)
-        # This is a simple heuristic and could be improved
-        best_pred = max(cluster_predictions, key=len)
-        best_predictions[cluster] = best_pred
-
-    return best_predictions
-
-
 def identify_controversial_clusters(
     annotations: dict[str, dict[str, str]], threshold: float = 0.6
 ) -> list[str]:
