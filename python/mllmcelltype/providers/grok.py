@@ -45,9 +45,6 @@ def process_grok(
 
     write_log(f"Using model: {model}")
 
-    # Process all input at once
-    write_log("Processing input in 1 chunk", level="debug")
-
     # Prepare the request body
     body = {"model": model, "messages": [{"role": "user", "content": prompt}]}
 
@@ -85,8 +82,6 @@ def process_grok(
             write_log(f"Got response with {len(res)} lines")
             write_log(f"Raw response from Grok:\n{res}", level="debug")
 
-            # Success, exit retry loop
-            write_log("All chunks processed successfully", level="debug")
             # Clean up results (remove commas at the end of lines)
             return [line.rstrip(",") for line in res]
 

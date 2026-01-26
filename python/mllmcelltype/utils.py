@@ -321,22 +321,11 @@ def format_results(results: list[str], clusters: list[str]) -> dict[str, str]:
         # Extract annotations from JSON structure
         if "annotations" in data and isinstance(data["annotations"], list):
             json_result = {}
-            metadata = {}
 
             for annotation in data["annotations"]:
                 if "cluster" in annotation and "cell_type" in annotation:
                     cluster_id = annotation["cluster"]
                     json_result[cluster_id] = annotation["cell_type"]
-
-                    # Store additional metadata if available
-                    cluster_metadata = {}
-                    if "confidence" in annotation:
-                        cluster_metadata["confidence"] = annotation["confidence"]
-                    if "key_markers" in annotation:
-                        cluster_metadata["key_markers"] = annotation["key_markers"]
-
-                    if cluster_metadata:
-                        metadata[cluster_id] = cluster_metadata
 
             # If we found annotations for all clusters, return the result
             if len(json_result) == len(clusters):
@@ -699,7 +688,7 @@ def get_cache_stats(cache_dir: Optional[str] = None) -> dict[str, Any]:
     oldest = float("inf")
     newest = 0
     provider_counts = {}
-    format_counts = {"legacy": 0, "v1.0": 0, "unknown": 0}
+    format_counts = {"legacy": 0, "1.0": 0, "unknown": 0}
     valid_files = 0
     invalid_files = 0
 

@@ -666,13 +666,11 @@ def process_controversial_clusters(
                     # Previously had consensus indicators check here, now using metrics extraction
 
                     # Extract consensus proportion and entropy values for the current round
-                    cp_value, h_value = extract_consensus_metrics_from_discussion(response)
+                    cp_value, h_value = _extract_metrics_from_text(response)[:2]
 
                     # If unable to extract from discussion, try to extract from consensus check response
                     if cp_value is None or h_value is None:
-                        cp_value, h_value = extract_consensus_metrics_from_discussion(
-                            consensus_response
-                        )
+                        cp_value, h_value = _extract_metrics_from_text(consensus_response)[:2]
 
                     # If still unable to extract, use default values
                     if cp_value is None:
@@ -710,7 +708,7 @@ def process_controversial_clusters(
                         )
 
                         # Extract CP and H from the discussion if available
-                        cp_value, h_value = extract_consensus_metrics_from_discussion(response)
+                        cp_value, h_value = _extract_metrics_from_text(response)[:2]
                         if cp_value is not None and h_value is not None:
                             updated_consensus_proportion[cluster_id] = cp_value
                             updated_entropy[cluster_id] = h_value
@@ -788,7 +786,7 @@ def process_controversial_clusters(
                 # if available
                 if rounds_history:
                     last_round = rounds_history[-1]
-                    cp_value, h_value = extract_consensus_metrics_from_discussion(last_round)
+                    cp_value, h_value = _extract_metrics_from_text(last_round)[:2]
                     if cp_value is not None and h_value is not None:
                         updated_consensus_proportion[cluster_id] = cp_value
                         updated_entropy[cluster_id] = h_value
@@ -806,7 +804,7 @@ def process_controversial_clusters(
                 # Extract metrics from the last round if available
                 if cluster_id not in updated_consensus_proportion and rounds_history:
                     last_round = rounds_history[-1]
-                    cp_value, h_value = extract_consensus_metrics_from_discussion(last_round)
+                    cp_value, h_value = _extract_metrics_from_text(last_round)[:2]
                     if cp_value is not None and h_value is not None:
                         updated_consensus_proportion[cluster_id] = cp_value
                         updated_entropy[cluster_id] = h_value
@@ -833,22 +831,6 @@ def process_controversial_clusters(
             discussion_history[cluster_id] = [f"Error occurred: {str(e)}"]
 
     return results, discussion_history, updated_consensus_proportion, updated_entropy
-
-
-def extract_consensus_metrics_from_discussion(
-    discussion: str,
-) -> tuple[Optional[float], Optional[float]]:
-    """Extract consensus proportion (CP) and entropy (H) values from discussion text.
-
-    Args:
-        discussion: Text of the model discussion
-
-    Returns:
-        tuple[Optional[float], Optional[float]]: Extracted CP and H values, or None if not found
-
-    """
-    cp, h, _ = _extract_metrics_from_text(discussion)
-    return cp, h
 
 
 def extract_cell_type_from_discussion(discussion: str) -> Optional[str]:
@@ -1001,7 +983,6 @@ def interactive_consensus_annotation(
             raise ValueError(error_msg)
 
         # Filter marker_genes to only include specified clusters
-        original_marker_genes = marker_genes.copy()
         marker_genes = {cluster_id: marker_genes[cluster_id] for cluster_id in valid_clusters}
 
         # Log the filtering
