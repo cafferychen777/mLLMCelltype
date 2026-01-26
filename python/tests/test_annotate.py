@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-# -*- coding: utf-8 -*-
 
 """
 Tests for annotation functionality in mLLMCelltype.
@@ -116,7 +115,7 @@ class TestAnnotation:
         )
 
         # Verify results
-        assert isinstance(result, list) or isinstance(result, str)
+        assert isinstance(result, (list, str))
         if isinstance(result, list):
             assert len(result) == 2
             assert "Cluster 1: T cells" in result[0]
