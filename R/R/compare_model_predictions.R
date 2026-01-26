@@ -68,13 +68,12 @@
 #' }
 compare_model_predictions <- function(input,
                                       tissue_name,
-                                      models = c("claude-sonnet-4-5-20250929",
-                                                 "claude-opus-4-1-20250805",
-                                                 "gpt-5",
-                                                 "gemini-2.5-pro",
+                                      models = c("claude-opus-4.5",
+                                                 "gpt-5.2",
+                                                 "gemini-3-pro",
                                                  "deepseek-r1",
-                                                 "o1",
-                                                 "grok-3-latest"),
+                                                 "o3-pro",
+                                                 "grok-4.1"),
                                       api_keys,
                                       top_gene_count = 10,
                                       consensus_threshold = 0.5) {

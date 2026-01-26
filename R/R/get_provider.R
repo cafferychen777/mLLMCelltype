@@ -10,30 +10,25 @@ utils::globalVariables(c("custom_models"))
 #' @details
 #' Supported providers and models include:
 #' \itemize{
-#'   \item OpenAI: 'chatgpt-4o-latest', 'gpt-3.5-turbo', 'gpt-4', 'gpt-4-turbo', 'gpt-4.1', 'gpt-4.1-mini', 'gpt-4.1-nano', 'gpt-4o', 'gpt-4o-mini', 'gpt-5', 'gpt-5-mini', 'gpt-5-nano', 'o1', 'o1-mini', 'o1-pro', 'o3', 'o3-mini', 'o4-mini' and more with date variants
-#'   \item Anthropic: 'claude-sonnet-4-5-20250929', 'claude-opus-4-1-20250805', 'claude-sonnet-4-20250514', 'claude-opus-4-20250514', 'claude-3-7-sonnet-20250219', 'claude-3-5-sonnet-20241022', 'claude-3-5-sonnet-20240620', 'claude-3-5-haiku-20241022', 'claude-3-opus-20240229', 'claude-3-haiku-20240307' and more with alias variants (e.g., 'claude-sonnet-4.5', 'claude-opus-4.1')
-#'   \item DeepSeek: 'deepseek-chat', 'deepseek-reasoner'
-#'   \item Google: 'gemini-2.5-pro', 'gemini-2.5-flash', 'gemini-2.0-flash', 'gemini-2.0-flash-lite', 'gemini-1.5-pro-latest', 'gemini-1.5-flash-latest', 'gemini-1.5-flash-8b'
-#'   \item Qwen: 'qwen-max-2025-01-25', 'qwen-turbo', 'qwen-plus'
+#'   \item OpenAI: 'gpt-5.2' (latest flagship), 'gpt-5.1', 'gpt-5', 'gpt-4.1', 'gpt-4o', 'o3-pro', 'o3', 'o4-mini' and more with date variants
+#'   \item Anthropic: 'claude-opus-4.5' (latest), 'claude-sonnet-4.5', 'claude-haiku-4.5', 'claude-opus-4.1', 'claude-sonnet-4', 'claude-3.7-sonnet' and more with date variants
+#'   \item DeepSeek: 'deepseek-chat', 'deepseek-r1', 'deepseek-v3.1', 'deepseek-v3.2', 'deepseek-prover-v2'
+#'   \item Google: 'gemini-3-pro' (latest), 'gemini-3-flash', 'gemini-2.5-pro', 'gemini-2.5-flash', 'gemini-2.0-flash'
+#'   \item Qwen: 'qwen3-max', 'qwen3-coder-plus', 'qwen3-235b-a22b', 'qwen-max', 'qwen-plus'
 #'   \item Stepfun: 'step-2-mini', 'step-2-16k', 'step-1-8k'
-#'   \item Zhipu: 'glm-4-plus', 'glm-3-turbo'
-#'   \item MiniMax: 'minimax-text-01'
-#'   \item Grok: 'grok-3', 'grok-3-latest', 'grok-3-fast', 'grok-3-fast-latest', 'grok-3-mini', 'grok-3-mini-latest', 'grok-3-mini-fast', 'grok-3-mini-fast-latest'
+#'   \item Zhipu: 'glm-4.7' (latest), 'glm-4.6', 'glm-4.5', 'glm-4-plus'
+#'   \item MiniMax: 'minimax-m2.1' (latest), 'minimax-m2', 'minimax-m1'
+#'   \item Grok: 'grok-4.1' (latest), 'grok-4', 'grok-4-heavy', 'grok-3', 'grok-code-fast-1'
 #'   \item OpenRouter: Provides access to models from multiple providers through a single API. Format: 'provider/model-name'
 #'     \itemize{
-#'       \item OpenAI models: 'openai/gpt-4o', 'openai/gpt-4o-mini', 'openai/gpt-4-turbo', 'openai/gpt-4', 'openai/gpt-3.5-turbo'
-#'       \item Anthropic models: 'anthropic/claude-sonnet-4.5', 'anthropic/claude-opus-4.1',
-#'         'anthropic/claude-sonnet-4', 'anthropic/claude-opus-4',
-#'         'anthropic/claude-3.7-sonnet', 'anthropic/claude-3.7-sonnet-20250219', 'anthropic/claude-3.7-sonnet:thinking',
-#'         'anthropic/claude-3.5-sonnet', 'anthropic/claude-3.5-sonnet-20241022',
-#'         'anthropic/claude-3.5-haiku',
-#'         'anthropic/claude-3-opus', 'anthropic/claude-3-opus-20240229', 'anthropic/claude-3-haiku'
-#'       \item Meta models: 'meta-llama/llama-3-70b-instruct', 'meta-llama/llama-3-8b-instruct', 'meta-llama/llama-2-70b-chat'
-#'       \item Google models: 'google/gemini-2.5-pro', 'google/gemini-2.5-flash', 'google/gemini-2.0-flash', 'google/gemini-1.5-pro-latest', 'google/gemini-1.5-flash'
-#'       \item Mistral models: 'mistralai/mistral-large', 'mistralai/mistral-medium', 'mistralai/mistral-small'
-#'       \item DeepSeek models: 'deepseek/deepseek-r1:free', 'tngtech/deepseek-r1t2-chimera:free'
-#'       \item Recommended free models (verified Oct 2025): 'meta-llama/llama-4-maverick:free',
-#'         'meta-llama/llama-3.3-70b-instruct:free', 'venice/uncensored:free', 'minimax/minimax-m2:free', 'z-ai/glm-4.5-air:free'
+#'       \item OpenAI models: 'openai/gpt-5.2', 'openai/gpt-5', 'openai/o3-pro', 'openai/o4-mini'
+#'       \item Anthropic models: 'anthropic/claude-opus-4.5', 'anthropic/claude-sonnet-4.5', 'anthropic/claude-haiku-4.5'
+#'       \item Meta models: 'meta-llama/llama-4-maverick', 'meta-llama/llama-4-scout', 'meta-llama/llama-3.3-70b-instruct'
+#'       \item Google models: 'google/gemini-3-pro', 'google/gemini-3-flash', 'google/gemini-2.5-pro'
+#'       \item Mistral models: 'mistralai/mistral-large', 'mistralai/magistral-medium-2506'
+#'       \item DeepSeek models: 'deepseek/deepseek-r1', 'deepseek/deepseek-chat-v3.1'
+#'       \item Recommended free models (verified Jan 2026): 'meta-llama/llama-4-maverick:free',
+#'         'meta-llama/llama-3.3-70b-instruct:free', 'minimax/minimax-m2:free', 'z-ai/glm-4.5-air:free'
 #'       \item Note: Free tier limits are 50 requests/day (1000/day with $10+ credits). Some free models may be rate-limited or unavailable.
 #'     }
 #' }
@@ -53,12 +48,14 @@ get_provider <- function(model) {
   # List of supported models for each provider (all in lowercase)
   openai_models <- c(
     "chatgpt-4o-latest",
+    # GPT-3.5 series (legacy)
     "gpt-3.5-turbo",
     "gpt-3.5-turbo-0125",
     "gpt-3.5-turbo-1106",
     "gpt-3.5-turbo-16k",
     "gpt-3.5-turbo-instruct",
     "gpt-3.5-turbo-instruct-0914",
+    # GPT-4 series (legacy)
     "gpt-4",
     "gpt-4-0125-preview",
     "gpt-4-0613",
@@ -66,12 +63,14 @@ get_provider <- function(model) {
     "gpt-4-turbo",
     "gpt-4-turbo-2024-04-09",
     "gpt-4-turbo-preview",
+    # GPT-4.1 series (Apr 2025)
     "gpt-4.1",
     "gpt-4.1-2025-04-14",
     "gpt-4.1-mini",
     "gpt-4.1-mini-2025-04-14",
     "gpt-4.1-nano",
     "gpt-4.1-nano-2025-04-14",
+    # GPT-4o series
     "gpt-4o",
     "gpt-4o-2024-05-13",
     "gpt-4o-2024-08-06",
@@ -88,6 +87,7 @@ get_provider <- function(model) {
     "gpt-4o-mini-search-preview-2025-03-11",
     "gpt-4o-search-preview",
     "gpt-4o-search-preview-2025-03-11",
+    # GPT-5 series (Aug 2025 - latest flagship)
     "gpt-5",
     "gpt-5-2025-08-07",
     "gpt-5-chat-latest",
@@ -95,25 +95,51 @@ get_provider <- function(model) {
     "gpt-5-mini-2025-08-07",
     "gpt-5-nano",
     "gpt-5-nano-2025-08-07",
+    # GPT-5.1 and GPT-5.2 series (Nov-Dec 2025)
+    "gpt-5.1",
+    "gpt-5.1-2025-11-15",
+    "gpt-5.2",
+    "gpt-5.2-2025-12-10",
+    "gpt-5.2-latest",
+    # Open-weight models (gpt-oss)
+    "gpt-oss-120b",
+    "gpt-oss-20b",
+    # o1 series (reasoning)
     "o1",
     "o1-2024-12-17",
     "o1-mini",
     "o1-mini-2024-09-12",
     "o1-pro",
     "o1-pro-2025-03-19",
+    # o3 series (advanced reasoning)
     "o3",
     "o3-2025-04-16",
     "o3-mini",
     "o3-mini-2025-01-31",
+    "o3-mini-high",
+    "o3-pro",
+    "o3-pro-2025-06-15",
+    "o3-deep-research",
+    "o3-deep-research-2025-07-10",
+    # o4 series (latest reasoning)
     "o4-mini",
     "o4-mini-2025-04-16",
+    "o4-mini-high",
     "o4-mini-deep-research",
-    "o4-mini-deep-research-2025-06-26"
+    "o4-mini-deep-research-2025-06-26",
+    # Codex
+    "codex-mini"
   )
   anthropic_models <- c(
-    # Claude 4.5 series (latest - Sep 2025)
+    # Claude Opus 4.5 series (latest - Nov 2025)
+    "claude-opus-4-5-20251119",
+    "claude-opus-4.5",
+    # Claude Sonnet 4.5 series (Sep 2025)
     "claude-sonnet-4-5-20250929",
     "claude-sonnet-4.5",
+    # Claude Haiku 4.5 series (Oct 2025)
+    "claude-haiku-4-5-20251022",
+    "claude-haiku-4.5",
     # Claude 4.1 series (Aug 2025)
     "claude-opus-4-1-20250805",
     "claude-opus-4.1",
@@ -124,28 +150,61 @@ get_provider <- function(model) {
     "claude-sonnet-4",
     # Claude 3.7 series (Feb 2025)
     "claude-3-7-sonnet-20250219",
-    # Claude 3.5 series (2024)
+    "claude-3.7-sonnet",
+    # Claude 3.5 series (2024 - deprecated Jun 2025)
     "claude-3-5-sonnet-20241022",
     "claude-3-5-sonnet-20240620",
     "claude-3-5-haiku-20241022",
-    # Claude 3 series (2024)
+    # Claude 3 series (2024 - deprecated/retired)
     "claude-3-opus-20240229",
     "claude-3-haiku-20240307"
   )
-  deepseek_models <- c("deepseek-chat", "deepseek-reasoner")
+  deepseek_models <- c(
+    # DeepSeek-V3 series
+    "deepseek-chat",
+    "deepseek-chat-v3-0324",
+    # DeepSeek-R1 series (reasoning)
+    "deepseek-reasoner",
+    "deepseek-r1",
+    "deepseek-r1-0528",
+    # DeepSeek-V3.1 and V3.2 series (Aug-Sep 2025)
+    "deepseek-v3.1",
+    "deepseek-v3.1-terminus",
+    "deepseek-v3.2",
+    "deepseek-v3.2-exp",
+    "deepseek-v3.2-speciale",
+    # DeepSeek Prover
+    "deepseek-prover-v2"
+  )
   gemini_models <- c(
+    # Gemini 3 series (latest - Nov 2025)
+    "gemini-3-pro",
+    "gemini-3-pro-preview",
+    "gemini-3-flash",
+    "gemini-3-flash-preview",
+    "gemini-3-deep-think",
+    "gemini-3-pro-image-preview",
+    # Gemini 2.5 series
     "gemini-2.5-pro",
-    "gemini-2.5-flash",
+    "gemini-2.5-pro-preview",
     "gemini-2.5-pro-preview-06-05",
     "gemini-2.5-pro-preview-05-06",
     "gemini-2.5-pro-preview-03-25",
+    "gemini-2.5-flash",
+    "gemini-2.5-flash-lite",
     "gemini-2.5-flash-preview-05-20",
     "gemini-2.5-flash-preview-04-17",
+    "gemini-2.5-flash-lite-preview-06-17",
+    "gemini-2.5-flash-native-audio-preview",
+    "gemini-2.5-flash-tts-preview",
+    "gemini-2.5-pro-tts-preview",
+    # Gemini 2.0 series (retiring Mar 2026)
     "gemini-2.0-flash",
     "gemini-2.0-flash-001",
     "gemini-2.0-flash-lite",
     "gemini-2.0-flash-lite-001",
     "gemini-2.0-flash-exp",
+    # Gemini 1.5 series (legacy/retired)
     "gemini-1.5-pro-latest",
     "gemini-1.5-pro-002",
     "gemini-1.5-pro",
@@ -156,11 +215,37 @@ get_provider <- function(model) {
     "gemini-1.5-flash-8b-001"
   )
   qwen_models <- c(
+    # Qwen3 series (latest - Apr 2025+)
+    "qwen3-max",
+    "qwen3-max-2025-09-05",
+    "qwen3-max-preview",
+    "qwen3-next",
+    "qwen3-next-80b-a3b-thinking",
+    "qwen3-omni",
+    "qwen3-omni-flash",
+    "qwen3-coder",
+    "qwen3-coder-plus",
+    "qwen3-coder-plus-2025-09-23",
+    "qwen3-coder-plus-2025-07-22",
+    "qwen3-235b-a22b",
+    "qwen3-235b-a22b-instruct-2507",
+    "qwen3-235b-a22b-thinking-2507",
+    "qwen3-30b-a3b",
+    "qwen3-30b-a3b-instruct-2507",
+    "qwen3-32b",
+    "qwen3-14b",
+    "qwen3-8b",
+    "qwen3-4b",
+    # Qwen commercial models
     "qwen-max",
     "qwen-max-2025-01-25",
     "qwen-plus",
     "qwen-turbo",
     "qwen-long",
+    "qwen-vl-max",
+    "qwen-vl-plus",
+    "qwen-image-max",
+    # Qwen2.5 series
     "qwen2.5-72b-instruct",
     "qwen2.5-32b-instruct",
     "qwen2.5-14b-instruct",
@@ -168,11 +253,20 @@ get_provider <- function(model) {
     "qwen2.5-3b-instruct",
     "qwen2.5-1.5b-instruct",
     "qwen2.5-0.5b-instruct",
+    "qwen2.5-coder-32b-instruct",
+    "qwen2.5-vl-7b-instruct",
+    "qwen2.5-vl-32b-instruct",
+    "qwen2.5-vl-72b-instruct",
+    # Qwen2 series (legacy)
     "qwen2-72b-instruct",
     "qwen2-57b-a14b-instruct",
     "qwen2-7b-instruct",
     "qwen2-1.5b-instruct",
     "qwen2-0.5b-instruct",
+    # QwQ reasoning model
+    "qwq-32b",
+    "qwq-32b-preview",
+    # Qwen1.5 series (legacy)
     "qwen1.5-110b-chat",
     "qwen1.5-72b-chat",
     "qwen1.5-32b-chat",
@@ -184,6 +278,16 @@ get_provider <- function(model) {
   )
   stepfun_models <- c("step-2-mini", "step-2-16k", "step-1-8k")
   zhipu_models <- c(
+    # GLM-4.7 series (latest - Dec 2025/Jan 2026)
+    "glm-4.7",
+    "glm-4.7-flash",
+    # GLM-4.6 series (Sep 2025)
+    "glm-4.6",
+    # GLM-4.5 series (Jul 2025)
+    "glm-4.5",
+    "glm-4.5-air",
+    "glm-4.5v",
+    # GLM-4 series (legacy)
     "glm-4-plus",
     "glm-4",
     "glm-4-0520",
@@ -193,14 +297,53 @@ get_provider <- function(model) {
     "glm-4-flashx",
     "glm-4v",
     "glm-4v-plus",
+    # GLM-Z series
+    "glm-z1-32b",
+    # Legacy models
     "glm-3-turbo",
     "chatglm3-6b",
     "chatglm2-6b",
     "chatglm-6b",
     "glm-edge"
   )
-  minimax_models <- c("minimax-text-01", "minimax-01", "minimax-m1")
-  grok_models <- c("grok-3", "grok-3-latest", "grok-3-fast", "grok-3-fast-latest", "grok-3-mini", "grok-3-mini-latest", "grok-3-mini-fast", "grok-3-mini-fast-latest")
+  minimax_models <- c(
+    # MiniMax M2 series (latest - Oct-Dec 2025)
+    "minimax-m2.1",
+    "minimax-m2",
+    # MiniMax M1 series (Jun 2025)
+    "minimax-m1",
+    # Legacy models
+    "minimax-01",
+    "minimax-text-01"
+  )
+  grok_models <- c(
+    # Grok 4 series (latest - Jul 2025+)
+    "grok-4",
+    "grok-4-latest",
+    "grok-4-heavy",
+    "grok-4.1",
+    "grok-4-1-fast",
+    "grok-4-1-fast-latest",
+    "grok-4-1-fast-reasoning",
+    "grok-4-1-fast-non-reasoning",
+    # Grok Code
+    "grok-code-fast-1",
+    # Grok 3 series
+    "grok-3",
+    "grok-3-latest",
+    "grok-3-beta",
+    "grok-3-fast",
+    "grok-3-fast-latest",
+    "grok-3-mini",
+    "grok-3-mini-latest",
+    "grok-3-mini-beta",
+    "grok-3-mini-fast",
+    "grok-3-mini-fast-latest",
+    # Grok 2 series (legacy)
+    "grok-2-1212",
+    "grok-2-vision-1212",
+    "grok-vision-beta"
+  )
   openrouter_models <- c(
     "agentica-org/deepcoder-14b-preview",
     "agentica-org/deepcoder-14b-preview:free",
@@ -227,8 +370,10 @@ get_provider <- function(model) {
     "anthropic/claude-3.7-sonnet:thinking",
     "anthropic/claude-opus-4",
     "anthropic/claude-opus-4.1",
+    "anthropic/claude-opus-4.5",
     "anthropic/claude-sonnet-4",
     "anthropic/claude-sonnet-4.5",
+    "anthropic/claude-haiku-4.5",
     "arcee-ai/coder-large",
     "arcee-ai/maestro-reasoning",
     "arcee-ai/spotlight",
@@ -287,6 +432,10 @@ get_provider <- function(model) {
     "google/gemini-2.5-pro-exp-03-25",
     "google/gemini-2.5-pro-preview",
     "google/gemini-2.5-pro-preview-05-06",
+    "google/gemini-3-pro",
+    "google/gemini-3-pro-preview",
+    "google/gemini-3-flash",
+    "google/gemini-3-flash-preview",
     "google/gemini-flash-1.5",
     "google/gemini-flash-1.5-8b",
     "google/gemini-pro-1.5",
@@ -345,7 +494,9 @@ get_provider <- function(model) {
     "microsoft/wizardlm-2-8x22b",
     "minimax/minimax-01",
     "minimax/minimax-m1",
+    "minimax/minimax-m2",
     "minimax/minimax-m2:free",
+    "minimax/minimax-m2.1",
     "mistralai/codestral-2501",
     "mistralai/codestral-2508",
     "mistralai/devstral-medium",
@@ -428,6 +579,9 @@ get_provider <- function(model) {
     "openai/gpt-5-chat",
     "openai/gpt-5-mini",
     "openai/gpt-5-nano",
+    "openai/gpt-5.1",
+    "openai/gpt-5.2",
+    "openai/gpt-5.2-latest",
     "openai/gpt-oss-120b",
     "openai/gpt-oss-20b",
     "openai/gpt-oss-20b:free",
@@ -439,8 +593,10 @@ get_provider <- function(model) {
     "openai/o3-mini",
     "openai/o3-mini-high",
     "openai/o3-pro",
+    "openai/o3-deep-research",
     "openai/o4-mini",
     "openai/o4-mini-high",
+    "openai/o4-mini-deep-research",
     "opengvlab/internvl3-14b",
     "openrouter/auto",
     "perplexity/r1-1776",
@@ -515,15 +671,24 @@ get_provider <- function(model) {
     "x-ai/grok-2-vision-1212",
     "x-ai/grok-3",
     "x-ai/grok-3-beta",
+    "x-ai/grok-3-fast",
     "x-ai/grok-3-mini",
     "x-ai/grok-3-mini-beta",
     "x-ai/grok-4",
+    "x-ai/grok-4-heavy",
+    "x-ai/grok-4.1",
+    "x-ai/grok-4-1-fast",
+    "x-ai/grok-code-fast-1",
     "x-ai/grok-vision-beta",
     "z-ai/glm-4-32b",
     "z-ai/glm-4.5",
     "z-ai/glm-4.5-air",
     "z-ai/glm-4.5-air:free",
-    "z-ai/glm-4.5v")
+    "z-ai/glm-4.5v",
+    "z-ai/glm-4.6",
+    "z-ai/glm-4.7",
+    "z-ai/glm-4.7-flash",
+    "z-ai/glm-z1-32b")
 
   # Check for custom models first
   if (exists(model, envir = custom_models)) {
