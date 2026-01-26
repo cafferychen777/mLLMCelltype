@@ -12,10 +12,16 @@ from typing import Any, Optional, Union
 
 import requests
 
-from .annotate import get_model_response
+from .annotate import annotate_clusters, get_model_response
+from .functions import get_provider
 from .logger import write_log
-from .prompts import create_discussion_consensus_check_prompt, create_discussion_prompt
-from .utils import clean_annotation, normalize_annotation_for_comparison
+from .prompts import (
+    create_consensus_check_prompt,
+    create_discussion_consensus_check_prompt,
+    create_discussion_prompt,
+)
+from .url_utils import resolve_provider_base_url
+from .utils import clean_annotation, load_api_key, normalize_annotation_for_comparison
 
 
 def _get_api_key(provider: str, api_keys: Optional[dict[str, str]] = None) -> Optional[str]:
@@ -33,8 +39,6 @@ def _get_api_key(provider: str, api_keys: Optional[dict[str, str]] = None) -> Op
         return api_keys[provider]
 
     # Fallback to loading from environment/config
-    from .utils import load_api_key
-
     return load_api_key(provider)
 
 
@@ -84,8 +88,6 @@ def _call_llm_with_retry(
     Returns:
         Optional[str]: LLM response or None if all attempts failed
     """
-    from .url_utils import resolve_provider_base_url
-
     # Resolve base URL
     primary_base_url = resolve_provider_base_url(provider, base_urls)
 
@@ -146,6 +148,74 @@ def _call_llm_with_retry(
     return None
 
 
+def _extract_metrics_from_text(
+    text: str,
+) -> tuple[Optional[float], Optional[float], Optional[str]]:
+    """Extract consensus metrics (CP, H) and optional annotation from text.
+
+    This is the unified low-level parser for extracting consensus proportion,
+    entropy, and annotation from LLM responses or discussion text.
+
+    Args:
+        text: Text to parse (LLM response or discussion)
+
+    Returns:
+        tuple[Optional[float], Optional[float], Optional[str]]:
+            (consensus_proportion, entropy, annotation)
+            annotation may be None if not found
+    """
+    if not text or not text.strip():
+        return None, None, None
+
+    lines = text.strip().split("\n")
+    lines = [line.strip() for line in lines if line.strip()]
+
+    cp_value = None
+    h_value = None
+    annotation = None
+
+    # Strategy 1: Try structured 4-line format [0/1, CP, H, annotation]
+    if len(lines) >= 4:
+        result_lines = lines[-4:]
+        if (
+            re.match(r"^\s*[01]\s*$", result_lines[0])
+            and re.match(r"^\s*(0\.\d+|1\.0*|1)\s*$", result_lines[1])
+            and re.match(r"^\s*(\d+\.\d+|\d+)\s*$", result_lines[2])
+        ):
+            with contextlib.suppress(ValueError, IndexError):
+                cp_value = float(result_lines[1].strip())
+                h_value = float(result_lines[2].strip())
+                majority = result_lines[3].strip()
+                annotation = majority if majority and majority != "Unknown" else None
+                return cp_value, h_value, annotation
+
+    # Strategy 2: Try simple numeric format [?, CP, H, ...]
+    if len(lines) >= 3:
+        with contextlib.suppress(ValueError, IndexError):
+            cp_value = float(lines[1])
+            h_value = float(lines[2])
+            # Try to get annotation from line 4 if exists
+            if len(lines) >= 4:
+                annotation = lines[3].strip() or None
+            return cp_value, h_value, annotation
+
+    # Strategy 3: Fallback to regex patterns
+    cp_pattern = r"(?i)consensus\s+proportion\s*(?:\(CP\))?\s*[:=]\s*([0-9.]+)"
+    h_pattern = r"(?i)(?:shannon\s+)?entropy\s*(?:\(H\))?\s*[:=]\s*([0-9.]+)"
+
+    cp_match = re.search(cp_pattern, text)
+    if cp_match:
+        with contextlib.suppress(ValueError):
+            cp_value = float(cp_match.group(1))
+
+    h_match = re.search(h_pattern, text)
+    if h_match:
+        with contextlib.suppress(ValueError):
+            h_value = float(h_match.group(1))
+
+    return cp_value, h_value, annotation
+
+
 def _parse_llm_consensus_response(
     response: str,
 ) -> tuple[Optional[float], Optional[float], Optional[str]]:
@@ -155,42 +225,13 @@ def _parse_llm_consensus_response(
         response: LLM response text
 
     Returns:
-        tuple[Optional[float], Optional[float], Optional[str]]: (consensus_proportion, entropy, annotation)
+        tuple[Optional[float], Optional[float], Optional[str]]:
+            (consensus_proportion, entropy, annotation)
     """
-    try:
-        # Split response by newlines and clean up
-        lines = response.strip().split("\n")
-        lines = [line.strip() for line in lines if line.strip()]
-
-        # Get the last 4 non-empty lines (standard format)
-        if len(lines) >= 4:
-            result_lines = lines[-4:]
-
-            # Check if it's a standard format (0/1, proportion, entropy, annotation)
-            if (
-                re.match(r"^\s*[01]\s*$", result_lines[0])
-                and re.match(r"^\s*(0\.\d+|1\.0*|1)\s*$", result_lines[1])
-                and re.match(r"^\s*(\d+\.\d+|\d+)\s*$", result_lines[2])
-            ):
-                # Extract consensus proportion
-                prop_value = float(result_lines[1].strip())
-
-                # Extract entropy value
-                entropy_value = float(result_lines[2].strip())
-
-                # Extract majority prediction
-                majority_prediction = result_lines[3].strip()
-                annotation = (
-                    majority_prediction
-                    if majority_prediction and majority_prediction != "Unknown"
-                    else "Unknown"
-                )
-
-                return prop_value, entropy_value, annotation
-    except (ValueError, KeyError, IndexError, json.JSONDecodeError) as e:
-        write_log(f"Error parsing LLM response: {str(e)}", level="warning")
-
-    return None, None, None
+    cp, h, annotation = _extract_metrics_from_text(response)
+    if annotation is None:
+        annotation = "Unknown"
+    return cp, h, annotation
 
 
 def check_consensus(
@@ -229,8 +270,6 @@ def check_consensus(
             - Dictionary mapping cluster IDs to entropy scores
             - List of controversial cluster IDs (only if return_controversial=True)
     """
-    from .prompts import create_consensus_check_prompt
-
     consensus = {}
     consensus_proportion = {}
     entropy = {}
@@ -345,8 +384,6 @@ def check_consensus(
                 f"Primary consensus model {primary_provider} not available, trying available models",
                 level="info",
             )
-
-            from .functions import get_provider
 
             # Try to find a suitable model from available_models
             for model_item in available_models:
@@ -470,10 +507,6 @@ def process_controversial_clusters(
             - Dictionary mapping cluster IDs to updated entropy scores
 
     """
-
-    from .prompts import create_consensus_check_prompt
-    from .url_utils import resolve_provider_base_url
-
     # Resolve base URL
     base_url = resolve_provider_base_url(provider, base_urls)
 
@@ -536,34 +569,20 @@ def process_controversial_clusters(
             base_url,
         )
 
-        # Parse response to get consensus metrics
-        try:
-            lines = consensus_check_response.strip().split("\n")
-            if len(lines) >= 3:
-                # Extract consensus proportion
-                cp_value = float(lines[1].strip())
+        # Parse response to get consensus metrics using unified parser
+        cp_value, h_value, _ = _extract_metrics_from_text(consensus_check_response)
 
-                # Extract entropy value
-                h_value = float(lines[2].strip())
-
-                write_log(
-                    f"Initial metrics for cluster {cluster_id} (LLM calculated): CP={cp_value:.2f}, H={h_value:.2f}"
-                )
-            else:
-                # Fallback if LLM response format is unexpected
-                cp_value = 0.25  # Low consensus to ensure discussion happens
-                h_value = 2.0  # High entropy to indicate uncertainty
-                write_log(
-                    f"Could not parse LLM consensus check response, using default values: CP={cp_value:.2f}, H={h_value:.2f}",
-                    level="warning",
-                )
-        except (ValueError, IndexError, AttributeError, TypeError) as e:
-            # Fallback if parsing fails
-            cp_value = 0.25  # Low consensus to ensure discussion happens
-            h_value = 2.0  # High entropy to indicate uncertainty
+        # Use default values if parsing failed
+        if cp_value is None or h_value is None:
+            cp_value = cp_value or 0.25  # Low consensus to ensure discussion happens
+            h_value = h_value or 2.0  # High entropy to indicate uncertainty
             write_log(
-                f"Error parsing LLM consensus check response: {str(e)}, using default values: CP={cp_value:.2f}, H={h_value:.2f}",
+                f"Could not fully parse LLM consensus response, using defaults: CP={cp_value:.2f}, H={h_value:.2f}",
                 level="warning",
+            )
+        else:
+            write_log(
+                f"Initial metrics for cluster {cluster_id} (LLM calculated): CP={cp_value:.2f}, H={h_value:.2f}"
             )
 
         rounds_history.append(
@@ -821,43 +840,8 @@ def extract_consensus_metrics_from_discussion(
         tuple[Optional[float], Optional[float]]: Extracted CP and H values, or None if not found
 
     """
-    # First try to extract from structured format (4 lines)
-    lines = discussion.strip().split("\n")
-    # Clean up lines
-    lines = [line.strip() for line in lines if line.strip()]
-
-    # If we have at least 3 lines, try to extract from structured format
-    if len(lines) >= 3:
-        try:
-            # Line 2 should be CP value
-            cp_value = float(lines[1])
-            # Line 3 should be H value
-            h_value = float(lines[2])
-            return cp_value, h_value
-        except (ValueError, IndexError):
-            # If structured format fails, continue with regex
-            pass
-
-    # Fallback to regex patterns
-    cp_pattern = r"(?i)consensus\s+proportion\s*(?:\(CP\))?\s*[:=]\s*([0-9.]+)"
-    h_pattern = r"(?i)(?:shannon\s+)?entropy\s*(?:\(H\))?\s*[:=]\s*([0-9.]+)"
-
-    cp_value = None
-    h_value = None
-
-    # Find CP value
-    cp_match = re.search(cp_pattern, discussion)
-    if cp_match:
-        with contextlib.suppress(ValueError, IndexError):
-            cp_value = float(cp_match.group(1))
-
-    # Find H value
-    h_match = re.search(h_pattern, discussion)
-    if h_match:
-        with contextlib.suppress(ValueError, IndexError):
-            h_value = float(h_match.group(1))
-
-    return cp_value, h_value
+    cp, h, _ = _extract_metrics_from_text(discussion)
+    return cp, h
 
 
 def extract_cell_type_from_discussion(discussion: str) -> Optional[str]:
@@ -976,9 +960,6 @@ def interactive_consensus_annotation(
         dict[str, Any]: Dictionary containing consensus results and metadata
 
     """
-    from .annotate import annotate_clusters
-    from .functions import get_provider
-
     # Set up logging
     if verbose:
         write_log("Starting interactive consensus annotation")
@@ -1038,8 +1019,6 @@ def interactive_consensus_annotation(
                 provider = get_provider(model_item)
 
             if provider and provider not in api_keys:
-                from .utils import load_api_key
-
                 api_key = load_api_key(provider)
                 if api_key:
                     api_keys[provider] = api_key
@@ -1058,8 +1037,6 @@ def interactive_consensus_annotation(
         # Ensure we have API key for consensus model
         consensus_provider = consensus_model_dict.get("provider")
         if consensus_provider and consensus_provider not in api_keys:
-            from .utils import load_api_key
-
             api_key = load_api_key(consensus_provider)
             if api_key:
                 api_keys[consensus_provider] = api_key
@@ -1396,8 +1373,6 @@ def facilitate_cluster_discussion(
         str: Discussion result
 
     """
-    from .prompts import create_discussion_prompt
-
     # Generate discussion prompt
     prompt = create_discussion_prompt(
         cluster_id=cluster_id,

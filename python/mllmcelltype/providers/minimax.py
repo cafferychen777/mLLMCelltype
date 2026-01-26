@@ -134,5 +134,5 @@ def process_minimax(
             else:
                 raise
 
-    # Should not reach here if all retries fail (exception would be raised)
-    return []
+    # Unreachable: loop always returns or raises
+    raise RuntimeError("Unexpected: retry loop completed without return or raise")

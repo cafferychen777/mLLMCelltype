@@ -29,21 +29,6 @@ def _get_cache_dir(cache_dir: Optional[str] = None) -> str:
     return cache_dir
 
 
-def _handle_cache_error(error: Exception, operation: str, file_path: str = "") -> None:
-    """Handle cache operation errors consistently.
-
-    Args:
-        error: The exception that occurred
-        operation: Description of the operation (e.g., "loading", "saving")
-        file_path: Optional file path for context
-    """
-    context = f" for {file_path}" if file_path else ""
-    write_log(
-        f"Error {operation} cache{context}: {str(error)}",
-        level="error" if "saving" in operation else "warning",
-    )
-
-
 def load_api_key(provider: str) -> str:
     """Load API key for a specific provider from environment variables or .env file.
 
@@ -181,7 +166,7 @@ def save_to_cache(
             json.dump(cache_data, f, indent=2)
         write_log(f"Saved results to cache: {cache_file}")
     except (OSError, TypeError, ValueError) as e:
-        _handle_cache_error(e, "saving", cache_file)
+        write_log(f"Error saving cache for {cache_file}: {e}", level="error")
 
 
 def load_from_cache(
@@ -223,7 +208,7 @@ def load_from_cache(
 
         return results
     except (OSError, json.JSONDecodeError, KeyError, TypeError, ValueError) as e:
-        _handle_cache_error(e, "loading", cache_file)
+        write_log(f"Error loading cache for {cache_file}: {e}", level="warning")
         return None
 
 
@@ -452,8 +437,24 @@ def format_results(results: list[str], clusters: list[str]) -> dict[str, str]:
     return result
 
 
-def _remove_common_prefixes(annotation: str) -> str:
-    """Remove common prefixes from annotations."""
+def clean_annotation(annotation: str) -> str:
+    """Clean up cell type annotation from LLM response.
+
+    Args:
+        annotation: Raw annotation string
+
+    Returns:
+        str: Cleaned annotation
+
+    """
+    # If input is empty or None, return an empty string
+    if not annotation:
+        return ""
+
+    # Basic cleanup
+    annotation = annotation.strip()
+
+    # Step 1: Remove common prefixes
     # Remove "Cluster X:" prefix if present
     if annotation.lower().startswith("cluster ") and ":" in annotation:
         annotation = annotation.split(":", 1)[1].strip()
@@ -470,11 +471,7 @@ def _remove_common_prefixes(annotation: str) -> str:
         if annotation.lower().startswith(prefix):
             annotation = annotation[len(prefix) :].strip()
 
-    return annotation
-
-
-def _extract_cell_type_from_description(annotation: str) -> str:
-    """Extract cell type from descriptive text."""
+    # Step 2: Extract cell type from descriptive text
     patterns = [
         r"([\w\s-]+)\s+(?:is|are)\s+the\s+most\s+accurate\s+cell\s+type",
         r"([\w\s-]+)\s+(?:is|are)\s+the\s+best\s+annotation",
@@ -482,17 +479,13 @@ def _extract_cell_type_from_description(annotation: str) -> str:
         r"final\s+decision\s*:?\s*([\w\s-]+)",
         r"majority\s+prediction\s*:?\s*([\w\s-]+)",
     ]
-
     for pattern in patterns:
         match = re.search(pattern, annotation.lower())
         if match:
-            return match.group(1).strip()
+            annotation = match.group(1).strip()
+            break
 
-    return annotation
-
-
-def _clean_formatting(annotation: str) -> str:
-    """Clean formatting marks and symbols."""
+    # Step 3: Clean formatting marks and symbols
     # Remove quotes
     if annotation.startswith('"') and annotation.endswith('"'):
         annotation = annotation[1:-1]
@@ -518,31 +511,6 @@ def _clean_formatting(annotation: str) -> str:
     # Remove LaTeX formatting
     annotation = re.sub(r"\$\\boxed\{(.+?)\}\$", r"\1", annotation)
     annotation = re.sub(r"\$.+?\$", "", annotation)
-
-    return annotation
-
-
-def clean_annotation(annotation: str) -> str:
-    """Clean up cell type annotation from LLM response.
-
-    Args:
-        annotation: Raw annotation string
-
-    Returns:
-        str: Cleaned annotation
-
-    """
-    # If input is empty or None, return an empty string
-    if not annotation:
-        return ""
-
-    # Basic cleanup
-    annotation = annotation.strip()
-
-    # Apply cleaning steps
-    annotation = _remove_common_prefixes(annotation)
-    annotation = _extract_cell_type_from_description(annotation)
-    annotation = _clean_formatting(annotation)
 
     # Truncate long descriptions
     if len(annotation) > 50:
@@ -724,7 +692,7 @@ def validate_cache(cache_key: str, cache_dir: Optional[str] = None) -> bool:
         write_log(f"Invalid cache format for key {cache_key}", level="warning")
         return False
     except (OSError, json.JSONDecodeError, TypeError, ValueError) as e:
-        _handle_cache_error(e, "validating", cache_file)
+        write_log(f"Error validating cache for {cache_file}: {e}", level="warning")
         return False
 
 

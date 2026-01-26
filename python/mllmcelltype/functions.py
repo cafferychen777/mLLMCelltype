@@ -1,7 +1,5 @@
 from __future__ import annotations
 
-from typing import Literal
-
 from .logger import write_log
 from .providers import (
     process_anthropic,
@@ -31,249 +29,60 @@ PROVIDER_FUNCTIONS = {
     "openrouter": process_openrouter,
 }
 
-# Define supported models as literals for better type checking
-ModelType = Literal[
-    # OpenAI models
-    "gpt-5",
-    "gpt-5-mini",
-    "gpt-5-nano",
-    "gpt-4o",
-    "gpt-4-turbo",
-    "gpt-4.1",
-    "o1",
-    "o1-mini",
-    "o1-pro",
-    "o4-mini",
-    # Anthropic models
-    "claude-sonnet-4-5-20250929",
-    "claude-opus-4-1-20250805",
-    "claude-opus-4-20250514",
-    "claude-sonnet-4-20250514",
-    "claude-3-5-sonnet-latest",
-    "claude-3-5-haiku-latest",
-    "claude-3-opus",
-    # DeepSeek models
-    "deepseek-chat",
-    "deepseek-reasoner",
-    # Gemini models
-    "gemini-2.5-pro",
-    "gemini-2.0-flash",
-    "gemini-2.0-flash-lite",
-    "gemini-2.0-flash-exp",
-    "gemini-1.5-pro",
-    "gemini-1.5-flash",
-    # Qwen models
-    "qwen-max-2025-01-25",
-    "qwen3-72b",
-    "qwen-plus",
-    # StepFun models
-    "step-2-16k",
-    "step-2-mini",
-    "step-1-8k",
-    # Zhipu models
-    "glm-4-plus",
-    "glm-3-turbo",
-    # MiniMax models
-    "minimax-text-01",
-    # Grok models
-    "grok-3-latest",
-    "grok-3",
-]
+# Model prefix patterns for provider detection
+# Each provider maps to a list of model name prefixes
+# Order matters: more specific prefixes should come first
+PROVIDER_MODEL_PREFIXES = {
+    "openai": ["gpt-", "o1", "o3", "o4", "chatgpt-"],
+    "anthropic": ["claude-"],
+    "deepseek": ["deepseek-"],
+    "gemini": ["gemini-"],
+    "qwen": ["qwen", "qwq-"],
+    "stepfun": ["step-"],
+    "zhipu": ["glm-"],
+    "minimax": ["minimax-"],
+    "grok": ["grok-"],
+}
 
 
 def get_provider(model: str) -> str:
-    """Determine the provider based on the model name."""
-    # Special case for OpenRouter models which may contain '/' in the model name
-    if isinstance(model, str) and "/" in model:
-        # OpenRouter models are in the format 'provider/model'
-        # e.g., 'anthropic/claude-3-opus'
+    """Determine the provider based on the model name.
+
+    Uses prefix matching for efficient provider detection.
+    OpenRouter models are identified by the '/' character in the model name.
+
+    Args:
+        model: The model name (e.g., 'gpt-4o', 'claude-3-opus', 'anthropic/claude-3-opus')
+
+    Returns:
+        The provider name (e.g., 'openai', 'anthropic', 'openrouter')
+
+    Raises:
+        ValueError: If the provider cannot be determined from the model name
+    """
+    if not model:
+        raise ValueError("Model name cannot be empty")
+
+    model_lower = model.lower()
+
+    # OpenRouter models contain '/' (e.g., 'anthropic/claude-3-opus')
+    if "/" in model:
         return "openrouter"
 
-    # Common model prefixes for each provider (based on R package and API verification)
-    providers = {
-        "openai": [
-            "gpt-5",
-            "gpt-5-mini",
-            "gpt-5-nano",
-            "gpt-4o",
-            "gpt-4o-mini",
-            "gpt-4.1",
-            "gpt-4.1-mini",
-            "gpt-4.1-nano",
-            "gpt-4-turbo",
-            "gpt-3.5-turbo",
-            "o1",
-            "o1-mini",
-            "o1-preview",
-            "o1-pro",
-            "o3",
-            "o3-mini",
-            "o4-mini",
-            "gpt-4.5-preview",
-            "gpt-4",
-            "chatgpt-4o-latest",
-        ],
-        "anthropic": [
-            "claude-sonnet-4-5-20250929",
-            "claude-opus-4-1-20250805",
-            "claude-opus-4-20250514",
-            "claude-opus-4",
-            "claude-sonnet-4-20250514",
-            "claude-sonnet-4",
-            "claude-3-5-sonnet-20241022",
-            "claude-3-5-sonnet-20240620",
-            "claude-3-5-haiku-20241022",
-            "claude-3-opus-20240229",
-            "claude-3-haiku-20240307",
-            "claude-3-5-sonnet-latest",
-            "claude-3-5-haiku-latest",
-            "claude-3-opus",
-        ],
-        "deepseek": ["deepseek-chat", "deepseek-r1", "deepseek-r1-zero", "deepseek-reasoner"],
-        "gemini": [
-            "gemini-2.5-pro",
-            "gemini-2.5-flash",
-            "gemini-2.5-pro-preview-06-05",
-            "gemini-2.5-pro-preview-05-06",
-            "gemini-2.5-pro-preview-03-25",
-            "gemini-2.5-flash-preview-05-20",
-            "gemini-2.5-flash-preview-04-17",
-            "gemini-2.0-flash",
-            "gemini-2.0-flash-001",
-            "gemini-2.0-flash-lite",
-            "gemini-2.0-flash-lite-001",
-            "gemini-2.0-flash-exp",
-            "gemini-1.5-pro-latest",
-            "gemini-1.5-pro-002",
-            "gemini-1.5-pro",
-            "gemini-1.5-flash-latest",
-            "gemini-1.5-flash-002",
-            "gemini-1.5-flash",
-            "gemini-1.5-flash-8b",
-            "gemini-1.5-flash-8b-001",
-        ],
-        "qwen": [
-            "qwen-max",
-            "qwen-max-2025-01-25",
-            "qwen-plus",
-            "qwen-turbo",
-            "qwen-long",
-            "qwen2.5-72b-instruct",
-            "qwen2.5-32b-instruct",
-            "qwen2.5-14b-instruct",
-            "qwen2.5-7b-instruct",
-            "qwen2.5-3b-instruct",
-            "qwen2.5-1.5b-instruct",
-            "qwen2.5-0.5b-instruct",
-            "qwen3-72b",
-            "qwq-32b-preview",
-        ],
-        "stepfun": ["step-2-mini", "step-2-16k", "step-1-8k"],
-        "zhipu": [
-            "glm-4-plus",
-            "glm-4",
-            "glm-4-0520",
-            "glm-4-air",
-            "glm-4-airx",
-            "glm-4-flash",
-            "glm-4-flashx",
-            "glm-4v",
-            "glm-4v-plus",
-            "glm-3-turbo",
-        ],
-        "minimax": ["minimax-text-01", "minimax-01", "minimax-m1"],
-        "grok": [
-            "grok-3",
-            "grok-3-fast",
-            "grok-3-mini",
-            "grok-3-mini-fast",
-            "grok-2-1212",
-            "grok-3-beta",
-            "grok-3-mini-beta",
-            "grok-beta",
-        ],
-        "openrouter": [
-            # Any model with "/" will be detected as OpenRouter
-            # These are some popular OpenRouter models for reference
-            "anthropic/claude-opus-4",
-            "anthropic/claude-sonnet-4",
-            "anthropic/claude-3.5-sonnet",
-            "openai/gpt-5",
-            "openai/gpt-4.1",
-            "openai/o1",
-            "openai/o3",
-            "meta-llama/llama-3.1-405b-instruct",
-            "meta-llama/llama-4-maverick",
-            "google/gemini-2.5-pro",
-            "mistralai/mistral-large",
-            "deepseek/deepseek-r1",
-            "microsoft/phi-4",
-            "nvidia/llama-3.1-nemotron-70b-instruct",
-            "x-ai/grok-3-beta",
-            "qwen/qwq-32b",
-            "perplexity/sonar-pro",
-        ],
-    }
-
-    # Check for model name in each provider's list
-    for provider, models in providers.items():
-        for supported_model in models:
-            if model.lower() == supported_model.lower() or model.lower().startswith(
-                supported_model.lower()
-            ):
+    # Match by prefix patterns
+    for provider, prefixes in PROVIDER_MODEL_PREFIXES.items():
+        for prefix in prefixes:
+            if model_lower.startswith(prefix.lower()):
                 return provider
 
-    # Check for provider name in the model string (fallback)
-    for provider in providers:
-        if provider.lower() in model.lower():
-            return provider
+    # If no prefix matches, raise an error with helpful message
+    supported_prefixes = []
+    for provider, prefixes in PROVIDER_MODEL_PREFIXES.items():
+        supported_prefixes.extend(f"{p}* ({provider})" for p in prefixes)
 
-    # List all supported models for the error message
-    all_supported = []
-    for _provider, models in providers.items():
-        all_supported.extend(models)
-
-    write_log(
-        f"WARNING: Unsupported model: {model}. Using provider name from model string.",
-        "warning",
-    )
-
-    # Try to extract provider name from the model string
-    for known_provider in [
-        "openai",
-        "anthropic",
-        "claude",
-        "gpt",
-        "deepseek",
-        "gemini",
-        "google",
-        "qwen",
-        "alibaba",
-        "step",
-        "glm",
-        "zhipu",
-        "minimax",
-        "grok",
-        "xai",
-    ]:
-        if known_provider in model.lower():
-            if known_provider == "gpt":
-                return "openai"
-            if known_provider == "claude":
-                return "anthropic"
-            if known_provider == "google":
-                return "gemini"
-            if known_provider == "alibaba":
-                return "qwen"
-            if known_provider == "glm":
-                return "zhipu"
-            if known_provider == "xai":
-                return "grok"
-            return known_provider
-
-    # If we still can't determine the provider, raise an error
     raise ValueError(
-        f"Unsupported model: {model}. Supported models are: {', '.join(all_supported)}"
+        f"Cannot determine provider for model: {model}. "
+        f"Supported model prefixes: {', '.join(supported_prefixes)}"
     )
 
 

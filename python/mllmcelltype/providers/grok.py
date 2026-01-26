@@ -102,5 +102,5 @@ def process_grok(
             else:
                 raise
 
-    # This should not be reached if all retries fail (an exception would be raised)
-    return []
+    # Unreachable: loop always returns or raises
+    raise RuntimeError("Unexpected: retry loop completed without return or raise")

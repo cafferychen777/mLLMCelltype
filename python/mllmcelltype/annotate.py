@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+import json
+import re
 import time
 from typing import Optional, Union
 
@@ -10,6 +12,7 @@ import pandas as pd
 from .functions import PROVIDER_FUNCTIONS
 from .logger import setup_logging, write_log
 from .prompts import create_batch_prompt, create_prompt
+from .url_utils import resolve_provider_base_url
 from .utils import (
     create_cache_key,
     format_results,
@@ -102,8 +105,6 @@ def annotate_clusters(
             return format_results(cached_results, clusters)
 
     # Resolve base URL
-    from .url_utils import resolve_provider_base_url
-
     base_url = resolve_provider_base_url(provider, base_urls)
 
     # Get provider function
@@ -235,8 +236,6 @@ def batch_annotate_clusters(
             return result_sets
 
     # Resolve base URL
-    from .url_utils import resolve_provider_base_url
-
     base_url = resolve_provider_base_url(provider, base_urls)
 
     # Get provider function
@@ -318,10 +317,6 @@ def batch_annotate_clusters(
             try:
                 # Join all results and try to parse as JSON
                 full_text = "\n".join(filtered_results)
-
-                # Try to find JSON in the text
-                import json
-                import re
 
                 # Extract JSON content if it's wrapped in ```json and ``` markers
                 json_match = re.search(r"```(?:json)?\s*([\s\S]*?)\s*```", full_text)
@@ -462,8 +457,6 @@ def get_model_response(
 
     # Get API key if not provided
     if not api_key:
-        from .utils import load_api_key
-
         api_key = load_api_key(provider)
         if not api_key:
             error_msg = f"API key not found for provider: {provider}"
@@ -472,8 +465,6 @@ def get_model_response(
 
     # Check cache
     if use_cache:
-        from .utils import create_cache_key, load_from_cache
-
         cache_key = create_cache_key(prompt, model, provider)
         cached_result = load_from_cache(cache_key, cache_dir)
         if cached_result:
@@ -496,8 +487,6 @@ def get_model_response(
 
         # Save to cache
         if use_cache:
-            from .utils import save_to_cache
-
             save_to_cache(cache_key, result, cache_dir)
 
         # Convert list to string if needed

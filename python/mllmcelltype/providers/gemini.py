@@ -68,5 +68,6 @@ def process_gemini(
                 time.sleep(wait_time)
             else:
                 raise
-    # If all retries fail, return empty result
-    return ["Unknown"]
+
+    # Unreachable: loop always returns or raises
+    raise RuntimeError("Unexpected: retry loop completed without return or raise")
