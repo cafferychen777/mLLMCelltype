@@ -3,9 +3,6 @@
 import time
 from typing import Optional
 
-from google import genai
-from google.genai import types
-
 from ..logger import write_log
 
 
@@ -23,7 +20,20 @@ def process_gemini(
     Returns:
         List[str]: Processed responses, one per cluster
 
+    Raises:
+        ImportError: If google-genai package is not installed
+
     """
+    # Lazy import - only load google-genai when actually using Gemini
+    try:
+        from google import genai
+        from google.genai import types
+    except ImportError as e:
+        raise ImportError(
+            "Gemini provider requires 'google-genai' package. "
+            "Install it with: pip install 'mllmcelltype[gemini]' or pip install google-genai"
+        ) from e
+
     write_log(f"Starting Gemini API request with model: {model}")
 
     # Warn if base_url is provided (Gemini SDK doesn't support custom URLs)

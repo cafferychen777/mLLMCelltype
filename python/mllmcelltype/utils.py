@@ -462,8 +462,13 @@ def clean_annotation(annotation: str) -> str:
 def normalize_annotation_for_comparison(annotation: str) -> str:
     """Normalize cell type annotation for comparison purposes.
 
-    This function performs more aggressive normalization than clean_annotation
-    to help identify semantically similar annotations in the fallback consensus calculation.
+    This function mirrors the R implementation's normalize_annotation function:
+    1. Converts to lowercase
+    2. Trims whitespace
+    3. Converts multiple spaces to single space
+    4. Removes punctuation
+    5. Handles plurals (cells→cell, cytes→cyte) - using singular form for consistency
+    6. Applies specific cell type mappings
 
     Args:
         annotation: Cell type annotation string
@@ -477,36 +482,47 @@ def normalize_annotation_for_comparison(annotation: str) -> str:
     # Start with basic cleaning
     normalized = clean_annotation(annotation)
 
-    # Convert to lowercase for comparison
+    # Convert to lowercase for comparison (mirrors R's tolower)
     normalized = normalized.lower()
 
-    # Remove common punctuation and symbols
-    normalized = normalized.replace("-", " ")
-    normalized = normalized.replace("+", " positive ")
-    normalized = normalized.replace("/", " ")
-    normalized = normalized.replace("_", " ")
+    # Trim whitespace (mirrors R's trimws)
+    normalized = normalized.strip()
 
-    # Normalize common variations
-    replacements = {
-        "t cell": "t cells",
-        "b cell": "b cells",
-        "nk cell": "nk cells",
-        "cd4 ": "cd4+ ",
-        "cd8 ": "cd8+ ",
-        "naive": "naive",
-        "naïve": "naive",
-        "tumour": "tumor",
-        " cell$": " cells",  # Ensure plural at end
-    }
+    # Convert multiple spaces to single (mirrors R's gsub("\\s+", " ", ...))
+    normalized = " ".join(normalized.split())
 
-    for old, new in replacements.items():
-        if "$" in old:
-            # Handle regex patterns
-            normalized = re.sub(old, new, normalized)
-        else:
-            normalized = normalized.replace(old, new)
+    # Remove punctuation (mirrors R's gsub("[[:punct:]]", "", ...))
+    # But preserve '+' as it's meaningful for cell markers
+    # Replace with space first to avoid joining words
+    normalized = re.sub(r"[^\w\s+]", " ", normalized)
+    normalized = " ".join(normalized.split())
 
-    # Remove extra whitespace
+    # Handle plurals - convert to singular for consistency (mirrors R's logic)
+    # cells → cell, cytes → cyte
+    normalized = re.sub(r"cells\b", "cell", normalized)
+    normalized = re.sub(r"cytes\b", "cyte", normalized)
+
+    # Common cell type variations (mirrors R's specific mappings)
+    # t lymphocyte → t cell
+    normalized = re.sub(r"\bt lymphocyte\b", "t cell", normalized)
+    # b lymphocyte → b cell
+    normalized = re.sub(r"\bb lymphocyte\b", "b cell", normalized)
+    # natural killer → nk
+    normalized = re.sub(r"\bnatural killer\b", "nk", normalized)
+
+    # Additional normalizations for common variations
+    # naive/naïve normalization
+    normalized = normalized.replace("naïve", "naive")
+    # tumour/tumor normalization
+    normalized = normalized.replace("tumour", "tumor")
+
+    # Handle CD markers - normalize spacing
+    # cd4+ t cell, cd4 positive t cell → cd4+ t cell
+    normalized = re.sub(r"\bcd(\d+)\s+positive\b", r"cd\1+", normalized)
+    # cd 4 → cd4
+    normalized = re.sub(r"\bcd\s+(\d+)", r"cd\1", normalized)
+
+    # Remove extra whitespace again after all transformations
     normalized = " ".join(normalized.split())
 
     return normalized
@@ -596,7 +612,6 @@ def get_cache_stats(cache_dir: Optional[str] = None, detailed: bool = True) -> d
                 "status": "No cache directory",
                 "oldest": None,
                 "newest": None,
-                "provider_counts": {},
             })
         return result
 
@@ -622,7 +637,6 @@ def get_cache_stats(cache_dir: Optional[str] = None, detailed: bool = True) -> d
             "status": "Empty cache",
             "oldest": None,
             "newest": None,
-            "provider_counts": {},
             "format_counts": {"legacy": 0, "1.0": 0, "unknown": 0},
             "valid_files": 0,
             "invalid_files": 0,
@@ -631,7 +645,6 @@ def get_cache_stats(cache_dir: Optional[str] = None, detailed: bool = True) -> d
 
     oldest = float("inf")
     newest = 0
-    provider_counts = {}
     format_counts = {"legacy": 0, "1.0": 0, "unknown": 0}
     valid_files = 0
     invalid_files = 0
@@ -656,19 +669,9 @@ def get_cache_stats(cache_dir: Optional[str] = None, detailed: bool = True) -> d
                     timestamp = cache_data.get("timestamp", 0)
                     oldest = min(oldest, timestamp)
                     newest = max(newest, timestamp)
-
-                    # Try to extract provider from metadata
-                    if "provider" in cache_data:
-                        provider = cache_data["provider"]
-                        provider_counts[provider] = provider_counts.get(provider, 0) + 1
                 else:
                     # Legacy format or other dict format
                     format_counts["legacy"] += 1
-
-                    # Try to extract provider if available
-                    if "provider" in cache_data:
-                        provider = cache_data["provider"]
-                        provider_counts[provider] = provider_counts.get(provider, 0) + 1
             else:
                 # Unknown format
                 format_counts["unknown"] += 1
@@ -695,7 +698,6 @@ def get_cache_stats(cache_dir: Optional[str] = None, detailed: bool = True) -> d
         "oldest": oldest_str,
         "newest": newest_str,
         "format_counts": format_counts,
-        "provider_counts": provider_counts,
     })
 
     return result

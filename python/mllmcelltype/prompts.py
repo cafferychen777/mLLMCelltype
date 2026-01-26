@@ -83,77 +83,6 @@ Only output these 4 lines, nothing else."""
     return prompt.replace("{annotations}", formatted_annotations)
 
 
-# Template for facilitating discussion for controversial clusters
-DEFAULT_DISCUSSION_TEMPLATE = """You are an expert in single-cell RNA-seq cell type annotation tasked with resolving disagreements between model predictions.
-
-Cluster ID: {cluster_id}
-Species: {species}
-Tissue: {tissue}
-
-Marker genes for this cluster:
-{marker_genes}
-
-Different model predictions:
-{model_votes}
-
-Your task:
-1. Analyze the marker genes for this cluster
-2. Evaluate each model's prediction, considering tissue context and marker gene specificity
-3. Consider which cell types are characterized by these markers
-4. Determine which prediction is most accurate or propose a better cell type annotation
-5. Calculate and provide the following metrics to quantify the consensus:
-
-   a) Consensus Proportion (CP):
-      CP = Number of models supporting the majority prediction / Total number of models
-      Example: If 3 out of 4 models predict the same cell type, CP = 3/4 = 0.75
-
-   b) Shannon Entropy (H):
-      H = -∑(p_i * log2(p_i)) for all unique predictions i
-      where p_i is the proportion of models predicting cell type i
-      Example: If 3 models predict 'T cell' and 1 predicts 'NK cell', then:
-      p_T = 3/4 = 0.75, p_NK = 1/4 = 0.25
-      H = -(0.75*log2(0.75) + 0.25*log2(0.25)) = 0.81
-      H ranges from 0 (perfect consensus) to log2(C) where C is the number of unique predictions
-
-Provide a well-reasoned analysis with evidence from literature or known marker-cell type associations.
-End with a clear final decision on the correct cell type, including:
-- Final cell type determination
-- Key supporting marker genes
-- Consensus Proportion (CP): Calculate and provide the exact value (0-1)
-- Shannon Entropy (H): Calculate and provide the exact value (0 for perfect consensus)
-
-You MUST provide numerical values for both CP and H, not just qualitative descriptions.
-"""
-
-# Template for checking if consensus is reached after discussion
-DEFAULT_DISCUSSION_CONSENSUS_CHECK_TEMPLATE = """You are an expert in single-cell RNA-seq analysis, evaluating whether a consensus has been reached after discussion about a controversial cluster annotation.
-
-Cluster ID: {cluster_id}
-
-Discussion summary:
-{discussion}
-
-Proposed cell type: {proposed_cell_type}
-
-Your task:
-1. Analyze the discussion and determine if there is consensus on the cell type annotation
-2. Normalize minor differences in terminology (e.g., 'NK cells' = 'Natural Killer cells')
-3. Calculate the following metrics:
-   - Consensus Proportion = Number of supporting opinions / Total number of opinions
-   - Shannon Entropy = -sum(p_i * log2(p_i)) where p_i is the proportion of each unique opinion
-
-Determine if consensus is reached (Consensus Proportion > 2/3 AND Entropy <= 1.0)
-
-RESPONSE FORMAT:
-Line 1: 1 if consensus is reached, 0 if not
-Line 2: Consensus Proportion (a decimal between 0 and 1)
-Line 3: Shannon Entropy (a decimal number)
-Line 4: The majority cell type prediction
-
-RESPOND WITH EXACTLY FOUR LINES AS SPECIFIED ABOVE.
-"""
-
-
 def create_prompt(
     marker_genes: dict[str, list[str]],
     species: str,
@@ -204,110 +133,138 @@ def create_prompt(
     return prompt
 
 
-def create_discussion_prompt(
+def create_initial_discussion_prompt(
     cluster_id: str,
     marker_genes: list[str],
-    model_votes: dict[str, str],
+    initial_predictions: dict[str, str],
     species: str,
     tissue: Optional[str] = None,
-    previous_discussion: Optional[str] = None,
-    prompt_template: Optional[str] = None,
 ) -> str:
-    """Create a prompt for facilitating discussion about a controversial cluster.
+    """Create a prompt for the initial round of multi-model discussion.
+
+    This prompt is used when multiple models participate in discussing
+    a controversial cluster annotation.
 
     Args:
         cluster_id: ID of the cluster
         marker_genes: List of marker genes for the cluster
-        model_votes: Dictionary mapping model names to cell type annotations
+        initial_predictions: Dictionary mapping model names to their initial predictions
         species: Species name (e.g., 'human', 'mouse')
         tissue: Tissue name (e.g., 'brain', 'blood')
-        previous_discussion: Optional previous discussion text for iterative rounds
-        prompt_template: Custom prompt template
 
     Returns:
-        str: The generated prompt
-
+        str: The generated prompt for initial discussion round
     """
-    write_log(f"Creating discussion prompt for cluster {cluster_id}")
+    write_log(f"Creating initial discussion prompt for cluster {cluster_id}")
 
-    # Use default template if none provided
-    if not prompt_template:
-        prompt_template = DEFAULT_DISCUSSION_TEMPLATE
-
-    # Default tissue if none provided
     tissue_text = tissue if tissue else "unknown tissue"
-
-    # Format marker genes text
     marker_genes_text = ", ".join(marker_genes)
 
-    # Format model votes text
-    model_votes_lines = []
-    for model, vote in model_votes.items():
-        model_votes_lines.append(f"- {model}: {vote}")
+    # Format initial predictions
+    predictions_text = "\n".join(
+        f"- {model}: {prediction}"
+        for model, prediction in initial_predictions.items()
+    )
 
-    model_votes_text = "\n".join(model_votes_lines)
+    prompt = f"""We are analyzing cluster {cluster_id} with the following marker genes: {marker_genes_text}
+Species: {species}
+Tissue: {tissue_text}
 
-    # Modify template for iterative discussion if previous discussion exists
-    if previous_discussion:
-        # Create a modified template that includes previous discussion
-        iterative_template = prompt_template.replace(
-            "Your task:",
-            "Previous discussion round:\n{previous_discussion}\n\nYour task:",
-        )
+Different models have made different predictions:
+{predictions_text}
 
-        # Fill in the template with previous discussion
-        prompt = iterative_template.format(
-            cluster_id=cluster_id,
-            species=species,
-            tissue=tissue_text,
-            marker_genes=marker_genes_text,
-            model_votes=model_votes_text,
-            previous_discussion=previous_discussion,
-        )
-    else:
-        # Fill in the template without previous discussion
-        prompt = prompt_template.format(
-            cluster_id=cluster_id,
-            species=species,
-            tissue=tissue_text,
-            marker_genes=marker_genes_text,
-            model_votes=model_votes_text,
-        )
+Please provide your cell type prediction using the Toulmin argumentation model:
 
-    write_log(f"Generated discussion prompt with {len(prompt)} characters")
+1. CLAIM: State your clear cell type prediction
+2. GROUNDS: Present specific marker genes that support your claim
+3. WARRANT: Explain why these genes indicate this cell type
+4. BACKING: Provide references or established knowledge
+5. QUALIFIER: Indicate your certainty level (definite, probable, possible)
+6. REBUTTAL: Address counter-arguments or other models' predictions
+
+Format your response as:
+CELL TYPE: [your predicted cell type]
+GROUNDS: [specific marker genes supporting your claim]
+WARRANT: [logical connection between evidence and claim]
+BACKING: [additional support for your reasoning]
+QUALIFIER: [degree of certainty]
+REBUTTAL: [addressing counter-arguments]"""
+
+    write_log(f"Generated initial discussion prompt with {len(prompt)} characters")
     return prompt
 
 
-def create_discussion_consensus_check_prompt(
+def create_discussion_prompt(
     cluster_id: str,
-    discussion: str,
-    proposed_cell_type: str,
-    prompt_template: Optional[str] = None,
+    marker_genes: list[str],
+    previous_rounds: list[dict[str, str]],
+    round_number: int,
+    species: str,
+    tissue: Optional[str] = None,
 ) -> str:
-    """Create a prompt for checking if consensus has been reached after a discussion round.
+    """Create a prompt for subsequent rounds of multi-model discussion.
+
+    This prompt includes the discussion history from all previous rounds,
+    allowing each model to see and respond to other models' arguments.
 
     Args:
-        cluster_id: ID of the cluster being discussed
-        discussion: The discussion text from the current round
-        proposed_cell_type: The proposed cell type from the current round
-        prompt_template: Custom prompt template
+        cluster_id: ID of the cluster
+        marker_genes: List of marker genes for the cluster
+        previous_rounds: List of dicts, each containing model responses for a round
+            Example: [{"gpt-5": "response1", "claude": "response2"}, ...]
+        round_number: Current round number (2, 3, ...)
+        species: Species name (e.g., 'human', 'mouse')
+        tissue: Tissue name (e.g., 'brain', 'blood')
 
     Returns:
-        str: The generated prompt
-
+        str: The generated prompt for the discussion round
     """
-    write_log(f"Creating consensus check prompt for cluster {cluster_id}")
+    write_log(f"Creating discussion prompt for cluster {cluster_id}, round {round_number}")
 
-    # Use default template if none provided
-    if not prompt_template:
-        prompt_template = DEFAULT_DISCUSSION_CONSENSUS_CHECK_TEMPLATE
+    tissue_text = tissue if tissue else "unknown tissue"
+    marker_genes_text = ", ".join(marker_genes)
 
-    # Fill in the template
-    prompt = prompt_template.format(
-        cluster_id=cluster_id,
-        discussion=discussion,
-        proposed_cell_type=proposed_cell_type if proposed_cell_type else "Unclear",
-    )
+    # Format previous discussion history
+    discussion_history_parts = []
+    for round_idx, round_responses in enumerate(previous_rounds, start=1):
+        round_text = f"Round {round_idx}:\n"
+        for model_name, response in round_responses.items():
+            round_text += f"\n{model_name}:\n{response}\n"
+        discussion_history_parts.append(round_text)
 
-    write_log(f"Generated discussion consensus check prompt with {len(prompt)} characters")
+    discussion_history = "\n".join(discussion_history_parts)
+
+    prompt = f"""We are continuing the discussion for cluster {cluster_id}.
+Marker genes: {marker_genes_text}
+Species: {species}
+Tissue: {tissue_text}
+
+Previous discussion:
+{discussion_history}
+
+This is round {round_number} of the discussion.
+
+Using the Toulmin argumentation model, please structure your response:
+
+1. CLAIM: State your clear cell type prediction
+2. GROUNDS: Present specific marker genes that support your claim
+3. WARRANT: Explain why these genes indicate this cell type
+4. BACKING: Provide references or established knowledge
+5. QUALIFIER: Indicate your certainty level
+6. REBUTTAL: Address counter-arguments or other models' predictions
+
+Based on previous discussion, also indicate:
+- Whether you agree or disagree with any emerging consensus
+- If you've revised your previous position, explain why
+
+Format your response as:
+CELL TYPE: [your current prediction]
+GROUNDS: [specific marker genes supporting your claim]
+WARRANT: [logical connection between evidence and claim]
+BACKING: [additional support for your reasoning]
+QUALIFIER: [degree of certainty]
+REBUTTAL: [addressing counter-arguments]
+CONSENSUS STATUS: [Agree/Disagree with emerging consensus]"""
+
+    write_log(f"Generated discussion prompt with {len(prompt)} characters")
     return prompt

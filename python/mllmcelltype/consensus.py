@@ -17,28 +17,25 @@ from .functions import get_provider
 from .logger import write_log
 from .prompts import (
     create_consensus_check_prompt,
-    create_discussion_consensus_check_prompt,
     create_discussion_prompt,
+    create_initial_discussion_prompt,
 )
 from .url_utils import resolve_provider_base_url
 from .utils import clean_annotation, load_api_key, normalize_annotation_for_comparison
 
-# Default fallback values for different uncertainty levels
-#
-# HIGH uncertainty: used when parsing completely fails or result is inconclusive
+# Default fallback values when parsing fails or result is inconclusive
 # These conservative values ensure discussion will be triggered
 DEFAULT_FALLBACK_CONSENSUS_PROPORTION = 0.25
 DEFAULT_FALLBACK_ENTROPY = 2.0
-#
-# MEDIUM uncertainty: used during discussion when metrics extraction fails
-# but discussion is still progressing
-DEFAULT_MEDIUM_CONSENSUS_PROPORTION = 0.5
-DEFAULT_MEDIUM_ENTROPY = 1.0
-#
-# LOW uncertainty: used when we have a final decision but no explicit consensus confirmation
-# These optimistic values reflect that a decision was reached
-DEFAULT_DECIDED_CONSENSUS_PROPORTION = 0.75
-DEFAULT_DECIDED_ENTROPY = 0.5
+
+# Default result structure for discussion round consensus check
+# Used when consensus check fails or has insufficient data
+DEFAULT_CONSENSUS_RESULT = {
+    "reached": False,
+    "consensus_proportion": DEFAULT_FALLBACK_CONSENSUS_PROPORTION,
+    "entropy": DEFAULT_FALLBACK_ENTROPY,
+    "majority_prediction": "Unknown",
+}
 
 # Default fallback LLM for consensus checking
 DEFAULT_FALLBACK_PROVIDER = "anthropic"
@@ -97,10 +94,13 @@ def _call_llm_with_retry(
             json.JSONDecodeError,
         ) as e:
             if attempt < max_retries - 1:
-                write_log(f"Error on {provider} attempt {attempt + 1}/{max_retries}: {str(e)}", level="warning")
+                write_log(
+                    f"Error on {provider} attempt {attempt + 1}/{max_retries}: {e!s}",
+                    level="warning",
+                )
                 time.sleep(5 * (2**attempt))
             else:
-                write_log(f"All {provider} retry attempts failed: {str(e)}", level="warning")
+                write_log(f"All {provider} retry attempts failed: {e!s}", level="warning")
                 write_log(f"Falling back to {fallback_provider}")
 
     # Try fallback provider
@@ -125,7 +125,7 @@ def _call_llm_with_retry(
                 KeyError,
                 json.JSONDecodeError,
             ) as e:
-                write_log(f"Error on {fallback_provider} fallback: {str(e)}", level="warning")
+                write_log(f"Error on {fallback_provider} fallback: {e!s}", level="warning")
         else:
             write_log(f"No {fallback_provider} API key found, falling back to simple consensus")
 
@@ -137,8 +137,10 @@ def _extract_metrics_from_text(
 ) -> tuple[Optional[float], Optional[float], Optional[str]]:
     """Extract consensus metrics (CP, H) and optional annotation from text.
 
-    This is the unified low-level parser for extracting consensus proportion,
-    entropy, and annotation from LLM responses or discussion text.
+    This function mirrors the R implementation's parsing strategies:
+    1. parse_standard_format: Try structured 4-line format [0/1, CP, H, annotation]
+    2. parse_flexible_format: Try labeled patterns like "Consensus Proportion = 0.75"
+    3. find_majority_prediction: Find annotation that's not a numeric pattern
 
     Args:
         text: Text to parse (LLM response or discussion)
@@ -154,18 +156,29 @@ def _extract_metrics_from_text(
     lines = text.strip().split("\n")
     lines = [line.strip() for line in lines if line.strip()]
 
+    if not lines:
+        return None, None, None
+
     cp_value = None
     h_value = None
     annotation = None
 
+    # Regex patterns (mirroring R's .CONSENSUS_CONSTANTS)
+    consensus_indicator_pattern = r"^\s*[01]\s*$"
+    proportion_pattern = r"^\s*(0\.\d+|1\.0*|1)\s*$"
+    entropy_pattern = r"^\s*(\d+\.\d+|\d+)\s*$"
+    general_numeric_pattern = r"^\s*\d+(\.\d+)?\s*$"
+
     # Strategy 1: Try structured 4-line format [0/1, CP, H, annotation]
+    # (mirrors R's parse_standard_format) - only if we have at least 4 lines
     if len(lines) >= 4:
         result_lines = lines[-4:]
-        if (
-            re.match(r"^\s*[01]\s*$", result_lines[0])
-            and re.match(r"^\s*(0\.\d+|1\.0*|1)\s*$", result_lines[1])
-            and re.match(r"^\s*(\d+\.\d+|\d+)\s*$", result_lines[2])
-        ):
+        is_line1_valid = bool(re.match(consensus_indicator_pattern, result_lines[0]))
+        is_line2_valid = bool(re.match(proportion_pattern, result_lines[1]))
+        is_line3_valid = bool(re.match(entropy_pattern, result_lines[2]))
+
+        if is_line1_valid and is_line2_valid and is_line3_valid:
+            write_log("Detected standard 4-line format", level="debug")
             with contextlib.suppress(ValueError, IndexError):
                 cp_value = float(result_lines[1].strip())
                 h_value = float(result_lines[2].strip())
@@ -173,36 +186,112 @@ def _extract_metrics_from_text(
                 annotation = majority if majority and majority != "Unknown" else None
                 return cp_value, h_value, annotation
 
-    # Strategy 2: Try simple numeric format [?, CP, H, ...]
-    if len(lines) >= 3:
-        with contextlib.suppress(ValueError, IndexError):
-            cp_value = float(lines[1])
-            h_value = float(lines[2])
-            # Try to get annotation from line 4 if exists
-            if len(lines) >= 4:
-                annotation = lines[3].strip() or None
-            return cp_value, h_value, annotation
+    # Strategy 2: Parse flexible format (mirrors R's parse_flexible_format)
+    # This handles responses with fewer than 4 lines or non-standard formats
+    write_log(f"Using flexible format parsing for {len(lines)} line(s)", level="debug")
 
-    # Strategy 3: Fallback to regex patterns
-    cp_pattern = r"(?i)consensus\s+proportion\s*(?:\(CP\))?\s*[:=]\s*([0-9.]+)"
-    h_pattern = r"(?i)(?:shannon\s+)?entropy\s*(?:\(H\))?\s*[:=]\s*([0-9.]+)"
+    # Extract consensus indicator (0 or 1)
+    for line in lines:
+        if re.match(consensus_indicator_pattern, line):
+            # Found consensus indicator, but we don't use it directly
+            break
 
-    cp_match = re.search(cp_pattern, text)
-    if cp_match:
-        with contextlib.suppress(ValueError):
-            cp_value = float(cp_match.group(1))
+    # Extract consensus proportion from labeled lines
+    # Pattern: "Consensus Proportion = 0.75" or "Consensus Proportion: 0.75"
+    cp_patterns = [
+        r"(?i)consensus\s+proportion\s*(?:\(CP\))?\s*[:=]\s*([0-9.]+)",
+        r"(?i)CP\s*[:=]\s*([0-9.]+)",
+    ]
+    for line in lines:
+        if "consensus" in line.lower() and "proportion" in line.lower() and "=" in line:
+            parts = line.split("=")
+            if len(parts) > 1:
+                last_part = parts[-1].strip()
+                value_match = re.search(r"(0\.\d+|1\.0*|1)", last_part)
+                if value_match:
+                    with contextlib.suppress(ValueError):
+                        potential_cp = float(value_match.group(1))
+                        if 0 <= potential_cp <= 1:
+                            cp_value = potential_cp
+                            write_log(f"Found CP in line: {cp_value}", level="debug")
+                            break
 
-    h_match = re.search(h_pattern, text)
-    if h_match:
-        with contextlib.suppress(ValueError):
-            h_value = float(h_match.group(1))
+    # If not found, try regex patterns on full text
+    if cp_value is None:
+        for pattern in cp_patterns:
+            cp_match = re.search(pattern, text)
+            if cp_match:
+                with contextlib.suppress(ValueError):
+                    cp_value = float(cp_match.group(1))
+                    if 0 <= cp_value <= 1:
+                        break
+                    else:
+                        cp_value = None
+
+    # Extract entropy from labeled lines
+    # Pattern: "Shannon Entropy = 0.85" or "Entropy = 0.85" or "H = 0.85"
+    h_patterns = [
+        r"(?i)(?:shannon\s+)?entropy\s*(?:\(H\))?\s*[:=]\s*([0-9.]+)",
+        r"(?i)\bH\s*[:=]\s*([0-9.]+)",
+    ]
+    for line in lines:
+        if "entropy" in line.lower() and "=" in line:
+            parts = line.split("=")
+            if len(parts) > 1:
+                last_part = parts[-1].strip()
+                value_match = re.search(r"(\d+\.\d+|\d+)", last_part)
+                if value_match:
+                    with contextlib.suppress(ValueError):
+                        potential_h = float(value_match.group(1))
+                        if potential_h >= 0:
+                            h_value = potential_h
+                            write_log(f"Found H in line: {h_value}", level="debug")
+                            break
+
+    # If not found, try regex patterns on full text
+    if h_value is None:
+        for pattern in h_patterns:
+            h_match = re.search(pattern, text)
+            if h_match:
+                with contextlib.suppress(ValueError):
+                    h_value = float(h_match.group(1))
+                    if h_value >= 0:
+                        break
+                    else:
+                        h_value = None
+
+    # Find majority prediction (mirrors R's find_majority_prediction)
+    # Skip lines that match numeric patterns or contain labels
+    label_patterns = ["consensus", "proportion", "entropy"]
+    for line in lines:
+        line_clean = line.strip()
+        if not line_clean:
+            continue
+
+        # Skip numeric lines
+        if re.match(general_numeric_pattern, line_clean):
+            continue
+        if re.match(consensus_indicator_pattern, line_clean):
+            continue
+        if re.match(proportion_pattern, line_clean):
+            continue
+        if re.match(entropy_pattern, line_clean):
+            continue
+
+        # Skip lines containing labels
+        if any(label in line_clean.lower() for label in label_patterns):
+            continue
+
+        # This line is likely the majority prediction
+        annotation = line_clean
+        break
 
     return cp_value, h_value, annotation
 
 
 def check_consensus(
     predictions: dict[str, dict[str, str]],
-    consensus_threshold: float = 0.6,
+    consensus_threshold: float = 0.7,
     entropy_threshold: float = 1.0,
     api_keys: Optional[dict[str, str]] = None,
     return_controversial: bool = True,
@@ -240,11 +329,30 @@ def check_consensus(
     consensus_proportion = {}
     entropy = {}
 
-    # Ensure we have annotations
-    if not predictions or not all(predictions.values()):
+    # Filter out models with empty results, but keep models with valid annotations
+    # This allows consensus calculation even if some models failed
+    valid_predictions = {
+        model: results
+        for model, results in predictions.items()
+        if results  # Keep only models that returned non-empty results
+    }
+
+    # Check if we have enough valid predictions
+    if not valid_predictions:
+        write_log("No valid predictions from any model", level="warning")
         if return_controversial:
             return {}, {}, {}, []
         return {}, {}, {}
+
+    if len(valid_predictions) < len(predictions):
+        failed_models = set(predictions.keys()) - set(valid_predictions.keys())
+        write_log(
+            f"Some models returned empty results, excluding: {failed_models}",
+            level="warning",
+        )
+
+    # Use filtered predictions for the rest of the function
+    predictions = valid_predictions
 
     # Get all clusters
     all_clusters = set()
@@ -277,55 +385,27 @@ def check_consensus(
         # OPTIMIZATION: First try simple consensus calculation
         write_log(f"Starting with simple consensus calculation for cluster {cluster}", level="info")
 
-        # Normalize annotations for better comparison
-        normalized_annotations = {}
-        for original in cluster_annotations:
-            normalized = normalize_annotation_for_comparison(original)
-            if normalized not in normalized_annotations:
-                normalized_annotations[normalized] = []
-            normalized_annotations[normalized].append(original)
-
-        # Count normalized annotations
-        normalized_counts = {
-            norm: len(originals) for norm, originals in normalized_annotations.items()
-        }
-
-        # Find most common normalized annotation
-        most_common_normalized = max(normalized_counts.items(), key=lambda x: x[1])
-        most_common_norm_key = most_common_normalized[0]
-        most_common_count = most_common_normalized[1]
-
-        # Get the most frequent original annotation from the most common normalized group
-        original_annotations = normalized_annotations[most_common_norm_key]
-        original_counts = Counter(original_annotations)
-        most_common_annotation = original_counts.most_common(1)[0][0]
-
-        # Calculate consensus proportion based on normalized counts
-        prop = most_common_count / len(cluster_annotations)
-
-        # Calculate entropy based on normalized groups
-        ent = 0.0
-        total = len(cluster_annotations)
-        for count in normalized_counts.values():
-            p = count / total
-            ent -= p * (math.log2(p) if p > 0 else 0)
+        # Use unified consensus calculation
+        simple_cp, simple_entropy, majority_annotation = _calculate_simple_consensus(
+            cluster_annotations
+        )
 
         # Check if simple consensus meets thresholds
-        if prop >= consensus_threshold and ent <= entropy_threshold:
+        if simple_cp >= consensus_threshold and simple_entropy <= entropy_threshold:
             # Simple consensus is sufficient
-            consensus_proportion[cluster] = prop
-            entropy[cluster] = ent
-            consensus[cluster] = most_common_annotation
+            consensus_proportion[cluster] = simple_cp
+            entropy[cluster] = simple_entropy
+            consensus[cluster] = majority_annotation
             write_log(
                 f"Cluster {cluster} achieved consensus with simple check: "
-                f"CP={prop:.2f}, H={ent:.2f}",
+                f"CP={simple_cp:.2f}, H={simple_entropy:.2f}",
                 level="info",
             )
             continue
 
         # Simple consensus didn't meet thresholds, use LLM for double-checking
         write_log(
-            f"Cluster {cluster} needs LLM double-check: CP={prop:.2f}, H={ent:.2f}",
+            f"Cluster {cluster} needs LLM double-check: CP={simple_cp:.2f}, H={simple_entropy:.2f}",
             level="info",
         )
 
@@ -342,10 +422,12 @@ def check_consensus(
             primary_model = "qwen-max-2025-01-25"
 
         # Get API key for primary provider
-        primary_api_key = (api_keys.get(primary_provider) if api_keys else None) or load_api_key(primary_provider)
+        primary_api_key = (api_keys.get(primary_provider) if api_keys else None) or load_api_key(
+            primary_provider
+        )
 
         # If primary model is not available and we have available_models, try to use one of them
-        if not primary_api_key and available_models and not consensus_model:
+        if not primary_api_key and available_models and api_keys and not consensus_model:
             write_log(
                 f"Primary consensus model {primary_provider} not available, trying available models",
                 level="info",
@@ -387,29 +469,27 @@ def check_consensus(
 
         # Parse LLM response using unified parser
         if llm_response:
-            prop_value, entropy_value, majority_prediction = _extract_metrics_from_text(
-                llm_response
-            )
+            llm_cp, llm_entropy, llm_prediction = _extract_metrics_from_text(llm_response)
 
-            if prop_value is not None and entropy_value is not None:
-                consensus_proportion[cluster] = prop_value
-                entropy[cluster] = entropy_value
+            if llm_cp is not None and llm_entropy is not None:
+                consensus_proportion[cluster] = llm_cp
+                entropy[cluster] = llm_entropy
                 # Use LLM's annotation if available, otherwise use simple consensus result
-                consensus[cluster] = majority_prediction or most_common_annotation
+                consensus[cluster] = llm_prediction or majority_annotation
                 write_log(
                     f"LLM consensus check for cluster {cluster}: "
-                    f"CP={prop_value:.2f}, H={entropy_value:.2f}",
+                    f"CP={llm_cp:.2f}, H={llm_entropy:.2f}",
                     level="info",
                 )
                 continue
 
         # If LLM failed to provide metrics, use simple consensus results
-        consensus_proportion[cluster] = prop
-        entropy[cluster] = ent
-        consensus[cluster] = most_common_annotation
+        consensus_proportion[cluster] = simple_cp
+        entropy[cluster] = simple_entropy
+        consensus[cluster] = majority_annotation
         write_log(
             f"Using simple consensus for cluster {cluster} after LLM failure: "
-            f"CP={prop:.2f}, H={ent:.2f}",
+            f"CP={simple_cp:.2f}, H={simple_entropy:.2f}",
             level="info",
         )
 
@@ -425,15 +505,283 @@ def check_consensus(
     return consensus, consensus_proportion, entropy
 
 
+def _extract_cell_type_from_response(response: str) -> Optional[str]:
+    """Extract cell type from a discussion response.
+
+    This function mirrors the R implementation's logic:
+    - For multi-line responses (discussion format): Looks for 'CELL TYPE:' pattern
+    - For single-line responses: Returns the response as-is (it's likely already
+      a cell type annotation)
+
+    Args:
+        response: The model's discussion response
+
+    Returns:
+        Optional[str]: Extracted cell type or None
+    """
+    if not response:
+        return None
+
+    response = response.strip()
+    if not response:
+        return None
+
+    # Check if this is a multi-line response (discussion format)
+    lines = response.split("\n")
+    non_empty_lines = [line.strip() for line in lines if line.strip()]
+
+    if len(non_empty_lines) > 1:
+        # Multi-line response - look for CELL TYPE: pattern
+        for line in non_empty_lines:
+            # Match lines starting with "CELL TYPE:" (case-insensitive)
+            if re.match(r"^\s*CELL\s*TYPE\s*:", line, re.IGNORECASE):
+                # Extract the cell type after the colon
+                cell_type = re.sub(r"^\s*CELL\s*TYPE\s*:\s*", "", line, flags=re.IGNORECASE)
+                cell_type = cell_type.strip()
+                # Clean up common artifacts like [bracketed text]
+                cell_type = re.sub(r"\[.*?\]", "", cell_type).strip()
+                if cell_type and cell_type.lower() not in ["unknown", "unclear", "n/a"]:
+                    return cell_type
+        # If no CELL TYPE: found in multi-line, return None
+        return None
+    else:
+        # Single-line response - return as is (it's likely already a cell type)
+        cell_type = non_empty_lines[0] if non_empty_lines else None
+        if cell_type:
+            # Clean up if it has a colon (might be "cluster_id: cell_type" format)
+            if ":" in cell_type:
+                parts = cell_type.split(":", 1)
+                # Check if the first part looks like a cluster ID or "CELL TYPE"
+                first_part = parts[0].strip().lower()
+                if first_part.isdigit() or first_part in ["cell type", "celltype"]:
+                    cell_type = parts[1].strip()
+            # Clean up common artifacts
+            cell_type = re.sub(r"\[.*?\]", "", cell_type).strip()
+            if cell_type and cell_type.lower() not in ["unknown", "unclear", "n/a"]:
+                return cell_type
+        return None
+
+
+def _calculate_simple_consensus(
+    annotations: list[str],
+) -> tuple[float, float, str]:
+    """Calculate simple consensus metrics from a list of annotations.
+
+    This is the core consensus calculation logic used by both check_consensus
+    and check_consensus_for_discussion_round. It implements:
+    1. Normalize annotations for fair comparison
+    2. Count occurrences of each normalized annotation
+    3. Calculate consensus proportion (CP) and Shannon entropy (H)
+    4. Return the majority prediction (original form)
+
+    Args:
+        annotations: List of cell type annotations to analyze
+
+    Returns:
+        tuple[float, float, str]: (consensus_proportion, entropy, majority_prediction)
+    """
+    if not annotations:
+        return 0.0, DEFAULT_FALLBACK_ENTROPY, "Unknown"
+
+    # Normalize annotations and group originals
+    normalized_groups: dict[str, list[str]] = {}
+    for original in annotations:
+        normalized = normalize_annotation_for_comparison(original)
+        if normalized not in normalized_groups:
+            normalized_groups[normalized] = []
+        normalized_groups[normalized].append(original)
+
+    # Count by normalized groups
+    normalized_counts = {norm: len(originals) for norm, originals in normalized_groups.items()}
+    total = len(annotations)
+
+    # Find most common normalized group
+    if not normalized_counts:
+        return 0.0, DEFAULT_FALLBACK_ENTROPY, "Unknown"
+
+    most_common_norm = max(normalized_counts.items(), key=lambda x: x[1])
+    most_common_norm_key = most_common_norm[0]
+    most_common_count = most_common_norm[1]
+
+    # Get the most frequent original annotation from the majority normalized group
+    original_annotations = normalized_groups[most_common_norm_key]
+    original_counts = Counter(original_annotations)
+    majority_prediction = original_counts.most_common(1)[0][0]
+
+    # Calculate consensus proportion
+    consensus_proportion = most_common_count / total
+
+    # Calculate Shannon entropy with epsilon to avoid log(0)
+    # Consistent with R implementation: log2(p + 1e-10)
+    entropy = 0.0
+    for count in normalized_counts.values():
+        p = count / total
+        if p > 0:
+            entropy -= p * math.log2(p + 1e-10)
+
+    return consensus_proportion, entropy, majority_prediction
+
+
+def check_consensus_for_discussion_round(
+    round_responses: dict[str, str],
+    consensus_threshold: float = 0.7,
+    entropy_threshold: float = 1.0,
+    api_keys: Optional[dict[str, str]] = None,
+    consensus_check_model: Optional[dict[str, str]] = None,
+    base_urls: Optional[Union[str, dict[str, str]]] = None,
+) -> dict[str, Any]:
+    """Check consensus among model responses for a single discussion round.
+
+    This function mirrors the R implementation's check_consensus function:
+    1. First tries simple consensus calculation
+    2. If simple consensus meets thresholds, returns immediately
+    3. If not, uses LLM for double-checking
+    4. Falls back to simple consensus if LLM fails
+
+    Args:
+        round_responses: Dictionary mapping model names to their responses
+        consensus_threshold: Agreement threshold (default: 0.7)
+        entropy_threshold: Entropy threshold (default: 1.0)
+        api_keys: Dictionary mapping provider names to API keys
+        consensus_check_model: Optional dict with 'provider' and 'model' keys
+        base_urls: Custom base URLs for API endpoints
+
+    Returns:
+        dict containing:
+            - reached: bool, whether consensus was reached
+            - consensus_proportion: float, the consensus proportion
+            - entropy: float, the Shannon entropy
+            - majority_prediction: str, the majority cell type prediction
+    """
+    # Validate input - need at least 2 responses
+    if len(round_responses) < 2:
+        write_log(
+            f"Not enough responses to check consensus: {len(round_responses)}",
+            level="warning",
+        )
+        if len(round_responses) == 1:
+            # Extract cell type from the single response
+            single_response = list(round_responses.values())[0]
+            cell_type = _extract_cell_type_from_response(single_response)
+            return {
+                "reached": False,
+                "consensus_proportion": 1.0,
+                "entropy": 0.0,
+                "majority_prediction": cell_type or "Unknown",
+            }
+        return DEFAULT_CONSENSUS_RESULT.copy()
+
+    # Extract cell types from responses
+    extracted_cell_types = {}
+    for model_name, response in round_responses.items():
+        cell_type = _extract_cell_type_from_response(response)
+        extracted_cell_types[model_name] = cell_type if cell_type else "Unknown"
+
+    write_log(f"Extracted cell types: {extracted_cell_types}", level="debug")
+
+    # Calculate simple consensus using unified function
+    cell_type_list = list(extracted_cell_types.values())
+    simple_cp, simple_entropy, majority_prediction = _calculate_simple_consensus(cell_type_list)
+
+    write_log(
+        f"Simple consensus: CP={simple_cp:.2f}, H={simple_entropy:.2f}, "
+        f"majority={majority_prediction}",
+        level="info",
+    )
+
+    # Check if simple consensus meets thresholds
+    if simple_cp >= consensus_threshold and simple_entropy <= entropy_threshold:
+        # Simple consensus is sufficient - no LLM needed
+        write_log(
+            "Consensus achieved with simple check - NO LLM NEEDED",
+            level="info",
+        )
+        return {
+            "reached": True,
+            "consensus_proportion": simple_cp,
+            "entropy": simple_entropy,
+            "majority_prediction": majority_prediction,
+        }
+
+    # Simple consensus didn't meet thresholds, use LLM for double-checking
+    write_log(
+        f"Simple consensus below threshold (CP={simple_cp:.2f} < {consensus_threshold} OR "
+        f"H={simple_entropy:.2f} > {entropy_threshold}), using LLM double-check",
+        level="info",
+    )
+
+    # Create prompt for LLM consensus check
+    prompt = create_consensus_check_prompt(cell_type_list)
+
+    # Determine which model to use for consensus checking
+    if consensus_check_model:
+        primary_provider = consensus_check_model.get("provider", DEFAULT_FALLBACK_PROVIDER)
+        primary_model = consensus_check_model.get("model", DEFAULT_FALLBACK_MODEL)
+    else:
+        primary_provider = DEFAULT_FALLBACK_PROVIDER
+        primary_model = DEFAULT_FALLBACK_MODEL
+
+    # Get API key
+    if api_keys is None:
+        api_keys = {}
+    primary_api_key = api_keys.get(primary_provider) or load_api_key(primary_provider)
+
+    # Call LLM with retry logic
+    llm_response = _call_llm_with_retry(
+        prompt=prompt,
+        provider=primary_provider,
+        model=primary_model,
+        api_key=primary_api_key,
+        max_retries=3,
+        fallback_provider=DEFAULT_FALLBACK_PROVIDER,
+        fallback_model=DEFAULT_FALLBACK_MODEL,
+        api_keys=api_keys,
+        base_urls=base_urls,
+    )
+
+    # Parse LLM response
+    if llm_response:
+        cp_value, entropy_value, llm_prediction = _extract_metrics_from_text(llm_response)
+
+        if cp_value is not None and entropy_value is not None:
+            # Use LLM's metrics
+            reached = cp_value >= consensus_threshold and entropy_value <= entropy_threshold
+
+            write_log(
+                f"LLM consensus check: CP={cp_value:.2f}, H={entropy_value:.2f}, reached={reached}",
+                level="info",
+            )
+
+            return {
+                "reached": reached,
+                "consensus_proportion": cp_value,
+                "entropy": entropy_value,
+                "majority_prediction": llm_prediction or majority_prediction,
+            }
+
+    # LLM failed - fall back to simple consensus results
+    write_log(
+        "LLM consensus check failed, using simple consensus results",
+        level="warning",
+    )
+
+    reached = simple_cp >= consensus_threshold and simple_entropy <= entropy_threshold
+    return {
+        "reached": reached,
+        "consensus_proportion": simple_cp,
+        "entropy": simple_entropy,
+        "majority_prediction": majority_prediction,
+    }
+
+
 def process_controversial_clusters(
     marker_genes: dict[str, list[str]],
     controversial_clusters: list[str],
     model_predictions: dict[str, dict[str, str]],
     species: str,
     tissue: Optional[str] = None,
-    provider: str = "openai",
-    model: Optional[str] = None,
-    api_key: Optional[str] = None,
+    models: Optional[list[Union[str, dict[str, str]]]] = None,
+    api_keys: Optional[dict[str, str]] = None,
     max_discussion_rounds: int = 3,
     consensus_threshold: float = 0.7,
     entropy_threshold: float = 1.0,
@@ -441,42 +789,89 @@ def process_controversial_clusters(
     cache_dir: Optional[str] = None,
     base_urls: Optional[Union[str, dict[str, str]]] = None,
     force_rerun: bool = False,
-) -> tuple[dict[str, str], dict[str, list[str]], dict[str, float], dict[str, float]]:
-    """Process controversial clusters by facilitating a discussion between models.
+    consensus_check_model: Optional[dict[str, str]] = None,
+) -> tuple[dict[str, str], dict[str, list[dict]], dict[str, float], dict[str, float]]:
+    """Process controversial clusters through multi-model discussion.
+
+    This function facilitates a real discussion between multiple LLMs, where each
+    model can see and respond to other models' arguments. This mirrors the R
+    implementation where all models participate in each round of discussion.
 
     Args:
         marker_genes: Dictionary mapping cluster names to lists of marker genes
         controversial_clusters: List of controversial cluster IDs
         model_predictions: Dictionary mapping model names to dictionaries of
-            cluster annotations
+            cluster annotations (from initial annotation phase)
         species: Species name (e.g., 'human', 'mouse')
         tissue: Optional tissue name (e.g., 'brain', 'liver')
-        provider: LLM provider for the discussion
-        model: Model name for the discussion
-        api_key: API key for the provider
-        max_discussion_rounds: Maximum number of discussion rounds for controversial clusters
-        consensus_threshold: Agreement threshold for determining when consensus is reached
-        entropy_threshold: Entropy threshold for determining when consensus is reached
+        models: List of models to participate in the discussion. Each item can be
+            a string (model name) or dict with 'provider' and 'model' keys.
+        api_keys: Dictionary mapping provider names to API keys
+        max_discussion_rounds: Maximum number of discussion rounds
+        consensus_threshold: Consensus proportion threshold for agreement
+        entropy_threshold: Entropy threshold for agreement
         use_cache: Whether to use cache
         cache_dir: Directory to store cache files
-        force_rerun: If True, ignore cached results and force re-analysis of controversial
-            clusters. When combined with use_cache, effectively becomes use_cache and not force_rerun.
+        base_urls: Custom base URLs for API endpoints
+        force_rerun: If True, ignore cached results
+        consensus_check_model: Optional dict with 'provider' and 'model' keys
+            to specify which model to use for consensus checking with LLM.
+            If not provided, uses default fallback model.
 
     Returns:
-        tuple[dict[str, str], dict[str, list[str]], dict[str, float], dict[str, float]]:
-            - Dictionary mapping cluster IDs to resolved annotations
-            - Dictionary mapping cluster IDs to discussion history for each round
-            - Dictionary mapping cluster IDs to updated consensus proportion scores
-            - Dictionary mapping cluster IDs to updated entropy scores
-
+        tuple containing:
+            - results: Dict mapping cluster IDs to resolved annotations
+            - discussion_history: Dict mapping cluster IDs to list of round responses
+            - updated_consensus_proportion: Dict mapping cluster IDs to CP scores
+            - updated_entropy: Dict mapping cluster IDs to entropy scores
     """
-    # Resolve base URL
-    base_url = resolve_provider_base_url(provider, base_urls)
+    if not models:
+        write_log("No models provided for discussion", level="error")
+        return {}, {}, {}, {}
+
+    if not api_keys:
+        api_keys = {}
 
     results = {}
     discussion_history = {}
     updated_consensus_proportion = {}
     updated_entropy = {}
+
+    # Prepare model information
+    model_info_list = []
+    for model_item in models:
+        if isinstance(model_item, dict):
+            provider = model_item.get("provider")
+            model_name = model_item.get("model")
+            if not provider and model_name:
+                provider = get_provider(model_name)
+        else:
+            model_name = model_item
+            provider = get_provider(model_name)
+
+        api_key = api_keys.get(provider) or load_api_key(provider)
+        if not api_key:
+            write_log(f"No API key for {provider}, skipping {model_name}", level="warning")
+            continue
+
+        base_url = resolve_provider_base_url(provider, base_urls)
+        model_info_list.append(
+            {
+                "name": model_name,
+                "provider": provider,
+                "api_key": api_key,
+                "base_url": base_url,
+            }
+        )
+
+    if len(model_info_list) < 2:
+        write_log(
+            f"Need at least 2 models for discussion, only have {len(model_info_list)}",
+            level="error",
+        )
+        return {}, {}, {}, {}
+
+    write_log(f"Starting multi-model discussion with {len(model_info_list)} models")
 
     for cluster_id in controversial_clusters:
         write_log(f"Processing controversial cluster {cluster_id}")
@@ -484,367 +879,163 @@ def process_controversial_clusters(
         # Get marker genes for this cluster
         current_marker_genes = marker_genes.get(cluster_id, [])
         if not current_marker_genes:
-            write_log(
-                f"Warning: No marker genes found for cluster {cluster_id}",
-                level="warning",
-            )
+            write_log(f"No marker genes found for cluster {cluster_id}", level="warning")
             results[cluster_id] = "Unknown (no markers)"
-            discussion_history[cluster_id] = ["No marker genes found for this cluster"]
+            discussion_history[cluster_id] = []
+            # Ensure CP/H are populated for consistency
+            updated_consensus_proportion[cluster_id] = DEFAULT_FALLBACK_CONSENSUS_PROPORTION
+            updated_entropy[cluster_id] = DEFAULT_FALLBACK_ENTROPY
             continue
 
-        # Get model predictions for this cluster
-        model_votes = {
-            model: predictions.get(cluster_id, "Unknown")
-            for model, predictions in model_predictions.items()
+        # Get initial predictions for this cluster
+        initial_predictions = {
+            model_name: predictions.get(cluster_id, "Unknown")
+            for model_name, predictions in model_predictions.items()
             if cluster_id in predictions
         }
 
-        # Use a more capable model for discussion if possible
-        discussion_model = model
-        if provider == "openai" and not discussion_model:
-            discussion_model = "gpt-5"
-        elif provider == "anthropic" and not discussion_model:
-            discussion_model = "claude-sonnet-4-5-20250929"
-
-        # Initialize variables for iterative discussion
-        current_round = 1
-        consensus_reached = False
+        # Initialize discussion tracking
+        rounds_history = []  # List of dicts: [{model: response, ...}, ...]
         final_decision = None
-        rounds_history = []
-        current_votes = model_votes.copy()
-        consensus_response = None  # Initialize for later use
+        current_cp = DEFAULT_FALLBACK_CONSENSUS_PROPORTION
+        current_h = DEFAULT_FALLBACK_ENTROPY
 
-        # Create initial consensus check prompt for LLM to calculate metrics
-
-        # Get all annotations for this cluster
-        annotations = list(current_votes.values())
-
-        # Create prompt for LLM to check consensus
-        consensus_check_prompt = create_consensus_check_prompt(annotations)
-
-        # Get response from LLM
-        consensus_check_response = get_model_response(
-            consensus_check_prompt,
-            provider,
-            discussion_model,
-            api_key,
-            use_cache and not force_rerun,
-            cache_dir,
-            base_url,
-        )
-
-        # Parse response to get consensus metrics using unified parser
-        cp_value, h_value, _ = _extract_metrics_from_text(consensus_check_response)
-
-        # Use default values if parsing failed
-        if cp_value is None or h_value is None:
-            cp_value = cp_value or DEFAULT_FALLBACK_CONSENSUS_PROPORTION
-            h_value = h_value or DEFAULT_FALLBACK_ENTROPY
-            write_log(
-                f"Could not fully parse LLM consensus response, using defaults: CP={cp_value:.2f}, H={h_value:.2f}",
-                level="warning",
-            )
-        else:
-            write_log(
-                f"Initial metrics for cluster {cluster_id} (LLM calculated): CP={cp_value:.2f}, H={h_value:.2f}"
-            )
-
-        rounds_history.append(
-            f"Initial votes: {current_votes}\nConsensus Proportion (CP): {cp_value:.2f}\nShannon Entropy (H): {h_value:.2f}"
-        )
-
-        # Start iterative discussion process
         try:
-            while current_round <= max_discussion_rounds and not consensus_reached:
-                write_log(f"Starting discussion round {current_round} for cluster {cluster_id}")
+            for current_round in range(1, max_discussion_rounds + 1):
+                write_log(f"Starting round {current_round} for cluster {cluster_id}")
 
-                # Generate discussion prompt based on current round
+                round_responses = {}
+
+                # Generate prompt for this round
                 if current_round == 1:
-                    # Initial discussion round
-                    prompt = create_discussion_prompt(
+                    # Initial round - each model sees the initial predictions
+                    prompt = create_initial_discussion_prompt(
                         cluster_id=cluster_id,
                         marker_genes=current_marker_genes,
-                        model_votes=current_votes,
+                        initial_predictions=initial_predictions,
                         species=species,
                         tissue=tissue,
                     )
                 else:
-                    # Follow-up rounds include previous discussion
+                    # Subsequent rounds - each model sees all previous discussions
                     prompt = create_discussion_prompt(
                         cluster_id=cluster_id,
                         marker_genes=current_marker_genes,
-                        model_votes=current_votes,
+                        previous_rounds=rounds_history,
+                        round_number=current_round,
                         species=species,
                         tissue=tissue,
-                        previous_discussion=rounds_history[-1],
                     )
 
-                # Get response for this round
-                response = get_model_response(
-                    prompt,
-                    provider,
-                    discussion_model,
-                    api_key,
-                    use_cache and not force_rerun,
-                    cache_dir,
-                    base_url,
-                )
-
-                # Extract potential decision from this round
-                round_decision = extract_cell_type_from_discussion(response)
-
-                # Record this round's discussion
-                round_summary = f"Round {current_round} Discussion:\n{response}\n\nProposed cell type: {round_decision or 'Unclear'}"
-                rounds_history.append(round_summary)
-
-                # Check if we've reached consensus
-                if current_round < max_discussion_rounds and round_decision:
-                    # Create a consensus check prompt
-                    consensus_prompt = create_discussion_consensus_check_prompt(
-                        cluster_id=cluster_id,
-                        discussion=response,
-                        proposed_cell_type=round_decision,
-                    )
-
-                    # Get consensus check response
-                    consensus_response = get_model_response(
-                        consensus_prompt,
-                        provider,
-                        discussion_model,
-                        api_key,
-                        use_cache and not force_rerun,
-                        cache_dir,
-                        base_url,
-                    )
-
-                    # Add consensus checker result to history
-                    rounds_history.append(f"Consensus Check {current_round}:\n{consensus_response}")
-
-                    # Previously had consensus indicators check here, now using metrics extraction
-
-                    # Extract consensus proportion and entropy values for the current round
-                    cp_value, h_value = _extract_metrics_from_text(response)[:2]
-
-                    # If unable to extract from discussion, try to extract from consensus check response
-                    if cp_value is None or h_value is None:
-                        cp_value, h_value = _extract_metrics_from_text(consensus_response)[:2]
-
-                    # If still unable to extract, use medium uncertainty defaults
-                    # (discussion is progressing, so not as pessimistic as initial fallback)
-                    if cp_value is None:
-                        cp_value = DEFAULT_MEDIUM_CONSENSUS_PROPORTION
-                        write_log(
-                            f"Could not extract consensus proportion for cluster {cluster_id} "
-                            f"in round {current_round}, using default value: {cp_value}",
-                            level="warning",
-                        )
-
-                    if h_value is None:
-                        h_value = DEFAULT_MEDIUM_ENTROPY
-                        write_log(
-                            f"Could not extract entropy for cluster {cluster_id} "
-                            f"in round {current_round}, using default value: {h_value}",
-                            level="warning",
-                        )
-
-                    # Use consensus proportion and entropy values to compare with thresholds
-                    consensus_reached = (
-                        cp_value >= consensus_threshold and h_value <= entropy_threshold
-                    )
-                    write_log(
-                        f"Consensus check for cluster {cluster_id} in round {current_round}: "
-                        f"CP={cp_value:.2f}, H={h_value:.2f}, threshold CP>={consensus_threshold:.2f}, "
-                        f"H<={entropy_threshold:.2f}",
-                        level="info",
-                    )
-
-                    if consensus_reached:
-                        final_decision = round_decision
-                        write_log(
-                            f"Consensus reached for cluster {cluster_id} in round {current_round}",
-                            level="info",
-                        )
-
-                        # Use already computed cp_value and h_value from above
-                        updated_consensus_proportion[cluster_id] = cp_value
-                        updated_entropy[cluster_id] = h_value
-
-                        rounds_history.append(
-                            f"Consensus reached in round {current_round}\n"
-                            f"Final cell type: {final_decision}\n"
-                            f"Consensus Proportion (CP): {updated_consensus_proportion[cluster_id]:.2f}\n"
-                            f"Shannon Entropy (H): {updated_entropy[cluster_id]:.2f}"
-                        )
-
-                # Move to next round if no consensus yet
-                if not consensus_reached:
-                    current_round += 1
-
-            # After all rounds, use the last round's decision if no consensus was reached
-            if not final_decision:
-                # Try to extract majority_prediction from the last consensus check
-                # Only try to access consensus_response if it was actually created in this iteration
-                last_consensus_check = None
-                if rounds_history and consensus_response is not None:
-                    # Get the response from the last consensus check
-                    last_consensus_check = consensus_response
-
-                if last_consensus_check is not None:
-                    # Try to extract majority_prediction
+                # Get response from each model
+                for model_info in model_info_list:
+                    model_name = model_info["name"]
                     try:
-                        lines = last_consensus_check.strip().split("\n")
-                        lines = [line.strip() for line in lines if line.strip()]
-
-                        # If it's the standard format (4 lines), the 4th line should be the
-                        # majority_prediction
-                        if (
-                            len(lines) >= 4
-                            and re.match(r"^\s*[01]\s*$", lines[0])
-                            and re.match(r"^\s*(0\.\d+|1\.0*|1)\s*$", lines[1])
-                        ):
-                            majority_prediction = lines[3].strip()
-                            if majority_prediction and majority_prediction != "Unknown":
-                                final_decision = clean_annotation(majority_prediction)
-                                write_log(
-                                    f"Using majority prediction from last consensus check "
-                                    f"for cluster {cluster_id}: {final_decision}",
-                                    level="info",
-                                )
-                    except (KeyError, ValueError, AttributeError, IndexError) as e:
+                        response = get_model_response(
+                            prompt=prompt,
+                            provider=model_info["provider"],
+                            model=model_name,
+                            api_key=model_info["api_key"],
+                            use_cache=use_cache and not force_rerun,
+                            cache_dir=cache_dir,
+                            base_url=model_info["base_url"],
+                        )
+                        round_responses[model_name] = response
+                        write_log(f"Got response from {model_name} in round {current_round}")
+                    except Exception as e:
                         write_log(
-                            f"Error extracting majority prediction: {str(e)}",
+                            f"Error getting response from {model_name}: {e!s}",
                             level="warning",
                         )
+                        round_responses[model_name] = f"Error: {e!s}"
 
-                # If unable to extract majority_prediction, use the decision from the
-                # last round
-                if not final_decision and round_decision:
-                    final_decision = round_decision
+                # Store this round's responses
+                rounds_history.append(round_responses)
+
+                # Filter out error responses for consensus check
+                valid_responses = {
+                    k: v for k, v in round_responses.items() if not v.startswith("Error:")
+                }
+
+                if len(valid_responses) < 2:
                     write_log(
-                        f"Using final round decision for cluster {cluster_id} "
-                        f"after {max_discussion_rounds} rounds",
+                        f"Only {len(valid_responses)} valid responses in round {current_round}",
+                        level="warning",
+                    )
+                    continue
+
+                # Check consensus using LLM double-check (mirrors R implementation)
+                consensus_result = check_consensus_for_discussion_round(
+                    round_responses=valid_responses,
+                    consensus_threshold=consensus_threshold,
+                    entropy_threshold=entropy_threshold,
+                    api_keys=api_keys,
+                    consensus_check_model=consensus_check_model,
+                    base_urls=base_urls,
+                )
+
+                current_cp = consensus_result["consensus_proportion"]
+                current_h = consensus_result["entropy"]
+                majority = consensus_result["majority_prediction"]
+
+                write_log(
+                    f"Round {current_round} consensus: CP={current_cp:.2f}, H={current_h:.2f}, "
+                    f"majority={majority}, reached={consensus_result['reached']}",
+                    level="info",
+                )
+
+                # Check if consensus is reached (using the result from check_consensus_for_discussion_round)
+                if consensus_result["reached"]:
+                    final_decision = majority
+                    write_log(
+                        f"Consensus reached in round {current_round} for cluster {cluster_id}: {final_decision}",
+                        level="info",
+                    )
+                    break
+
+            # After all rounds, determine final result
+            if not final_decision and rounds_history:
+                # Use the majority from the last round with LLM verification
+                last_round = rounds_history[-1]
+                valid_last = {k: v for k, v in last_round.items() if not v.startswith("Error:")}
+                if valid_last:
+                    last_consensus = check_consensus_for_discussion_round(
+                        round_responses=valid_last,
+                        consensus_threshold=consensus_threshold,
+                        entropy_threshold=entropy_threshold,
+                        api_keys=api_keys,
+                        consensus_check_model=consensus_check_model,
+                        base_urls=base_urls,
+                    )
+                    final_decision = last_consensus["majority_prediction"]
+                    current_cp = last_consensus["consensus_proportion"]
+                    current_h = last_consensus["entropy"]
+                    write_log(
+                        f"Using last round majority for cluster {cluster_id}: {final_decision} "
+                        f"(CP={current_cp:.2f}, H={current_h:.2f})",
                         level="info",
                     )
 
-            # Store the final result
-            if not final_decision:
-                write_log(
-                    f"Warning: Could not reach a decision for cluster {cluster_id} "
-                    f"after {max_discussion_rounds} rounds",
-                    level="warning",
-                )
-                results[cluster_id] = "Inconclusive"
-                # For inconclusive results, extract metrics from the last round
-                # if available
-                if rounds_history:
-                    last_round = rounds_history[-1]
-                    cp_value, h_value = _extract_metrics_from_text(last_round)[:2]
-                    if cp_value is not None and h_value is not None:
-                        updated_consensus_proportion[cluster_id] = cp_value
-                        updated_entropy[cluster_id] = h_value
-                    else:
-                        # If not found, set high uncertainty values
-                        updated_consensus_proportion[cluster_id] = DEFAULT_FALLBACK_CONSENSUS_PROPORTION
-                        updated_entropy[cluster_id] = DEFAULT_FALLBACK_ENTROPY
-                else:
-                    # If no discussion history, set high uncertainty values
-                    updated_consensus_proportion[cluster_id] = DEFAULT_FALLBACK_CONSENSUS_PROPORTION
-                    updated_entropy[cluster_id] = DEFAULT_FALLBACK_ENTROPY
+            # Store results
+            if final_decision and final_decision != "Unknown":
+                results[cluster_id] = clean_annotation(final_decision)
+                updated_consensus_proportion[cluster_id] = current_cp
+                updated_entropy[cluster_id] = current_h
             else:
-                results[cluster_id] = final_decision
-                # If consensus wasn't explicitly reached but we have a final decision
-                # Extract metrics from the last round if available
-                if cluster_id not in updated_consensus_proportion and rounds_history:
-                    last_round = rounds_history[-1]
-                    cp_value, h_value = _extract_metrics_from_text(last_round)[:2]
-                    if cp_value is not None and h_value is not None:
-                        updated_consensus_proportion[cluster_id] = cp_value
-                        updated_entropy[cluster_id] = h_value
-                    else:
-                        # If not found, use decided defaults (we have a decision, just no metrics)
-                        updated_consensus_proportion[cluster_id] = DEFAULT_DECIDED_CONSENSUS_PROPORTION
-                        updated_entropy[cluster_id] = DEFAULT_DECIDED_ENTROPY
+                results[cluster_id] = "Inconclusive"
+                updated_consensus_proportion[cluster_id] = DEFAULT_FALLBACK_CONSENSUS_PROPORTION
+                updated_entropy[cluster_id] = DEFAULT_FALLBACK_ENTROPY
 
-            # Store the full discussion history
             discussion_history[cluster_id] = rounds_history
 
-        except (
-            requests.RequestException,
-            ValueError,
-            KeyError,
-            json.JSONDecodeError,
-            AttributeError,
-        ) as e:
-            write_log(
-                f"Error during discussion for cluster {cluster_id}: {str(e)}",
-                level="error",
-            )
-            results[cluster_id] = f"Error during discussion: {str(e)}"
-            discussion_history[cluster_id] = [f"Error occurred: {str(e)}"]
+        except Exception as e:
+            write_log(f"Error during discussion for cluster {cluster_id}: {e!s}", level="error")
+            results[cluster_id] = f"Error: {e!s}"
+            discussion_history[cluster_id] = []
+            updated_consensus_proportion[cluster_id] = DEFAULT_FALLBACK_CONSENSUS_PROPORTION
+            updated_entropy[cluster_id] = DEFAULT_FALLBACK_ENTROPY
 
     return results, discussion_history, updated_consensus_proportion, updated_entropy
-
-
-def extract_cell_type_from_discussion(discussion: str) -> Optional[str]:
-    """Extract the final cell type determination from a discussion.
-
-    Args:
-        discussion: Text of the model discussion
-
-    Returns:
-        Optional[str]: Extracted cell type or None if not found
-
-    """
-    # Look for common patterns in discussion summaries
-    patterns = [
-        r"(?i)final\s+cell\s+type\s+determination:?\s*(.*)",
-        r"(?i)final\s+decision:?\s*(.*)",
-        r"(?i)conclusion:?\s*(.*)",
-        r"(?i)the\s+best\s+annotation\s+is:?\s*(.*)",
-        r"(?i)I\s+conclude\s+that\s+this\s+cluster\s+(?:is|represents)\s+(.*)",
-        r"(?i)based\s+on\s+[^,]+,\s+this\s+cluster\s+is\s+(.*)",
-        r"(?i)proposed\s+cell\s+type:?\s*(.*)",
-    ]
-
-    for pattern in patterns:
-        match = re.search(pattern, discussion)
-        if match:
-            # Clean up the result
-            result = match.group(1).strip()
-
-            # Remove trailing punctuation
-            if result and result[-1] in [".", ",", ";"]:
-                result = result[:-1].strip()
-
-            # Remove quotes if present
-            if result.startswith('"') and result.endswith('"'):
-                result = result[1:-1].strip()
-
-            # Skip invalid results
-            if result.lower() in ["unclear", "none", "n/a", "on cell type"]:
-                continue
-
-            return result
-
-    # If no match with specific patterns, look for the last line that mentions "cell" or "type"
-    lines = discussion.strip().split("\n")
-    for line in reversed(lines):
-        if "cell" in line.lower() or "type" in line.lower():
-            # Try to extract a short phrase
-            if ":" in line:
-                parts = line.split(":", 1)
-                result = parts[1].strip()
-                # Skip invalid results
-                if result.lower() in ["unclear", "none", "n/a", "on cell type"]:
-                    continue
-                return result
-            result = line.strip()
-            # Skip invalid results
-            if result.lower() in ["unclear", "none", "n/a", "on cell type"]:
-                continue
-            return result
-
-    return None
 
 
 def interactive_consensus_annotation(
@@ -1039,7 +1230,7 @@ def interactive_consensus_annotation(
             AttributeError,
             ImportError,
         ) as e:
-            write_log(f"Error annotating with {model_name}: {str(e)}", level="error")
+            write_log(f"Error annotating with {model_name}: {e!s}", level="error")
 
     # Check if we have any results
     if not model_results:
@@ -1059,101 +1250,51 @@ def interactive_consensus_annotation(
     if verbose:
         write_log(f"Found {len(controversial)} controversial clusters out of {len(consensus)}")
 
-    # If there are controversial clusters, resolve them
+    # If there are controversial clusters, resolve them through multi-model discussion
     resolved = {}
     discussion_logs = {}
     if controversial:
-        # Choose model for discussion
-        discussion_model = None
-        discussion_provider = None
+        if verbose:
+            write_log(
+                f"Resolving {len(controversial)} controversial clusters through multi-model discussion"
+            )
 
-        # First priority: use consensus_model if specified
-        if consensus_model_dict:
-            discussion_provider = consensus_model_dict.get("provider")
-            discussion_model = consensus_model_dict.get("model")
+        try:
+            resolved, discussion_logs, updated_cp, updated_h = process_controversial_clusters(
+                marker_genes=marker_genes,
+                controversial_clusters=controversial,
+                model_predictions=model_results,
+                species=species,
+                tissue=tissue,
+                models=models,  # Pass all models for multi-model discussion
+                api_keys=api_keys,
+                max_discussion_rounds=max_discussion_rounds,
+                consensus_threshold=consensus_threshold,
+                entropy_threshold=entropy_threshold,
+                use_cache=use_cache,
+                cache_dir=cache_dir,
+                base_urls=base_urls,
+                force_rerun=force_rerun,
+                consensus_check_model=consensus_model_dict,  # Pass consensus model for LLM verification
+            )
+
+            # Update consensus proportion and entropy for resolved clusters
+            for cluster_id, cp_value in updated_cp.items():
+                consensus_proportion[cluster_id] = cp_value
+
+            for cluster_id, h_value in updated_h.items():
+                entropy[cluster_id] = h_value
+
             if verbose:
-                write_log(f"Using specified consensus model for discussion: {discussion_model}")
-        else:
-            # Otherwise, try to use the most capable model available from the input models
-            for preferred_model_name in ["gpt-5", "claude-sonnet-4-5-20250929", "gemini-3-pro"]:
-                # Check if the preferred model is in the models list
-                for model_item in models:
-                    if isinstance(model_item, dict):
-                        # For dictionary models, check the 'model' key
-                        if model_item.get("model") == preferred_model_name:
-                            discussion_provider = model_item.get("provider")
-                            discussion_model = preferred_model_name
-                            # If provider is not explicitly provided, try to get it from model name
-                            if not discussion_provider:
-                                discussion_provider = get_provider(discussion_model)
-                            if discussion_provider in api_keys:
-                                break
-                    elif model_item == preferred_model_name:
-                        # For string models
-                        provider = get_provider(preferred_model_name)
-                        if provider in api_keys:
-                            discussion_model = preferred_model_name
-                            discussion_provider = provider
-                            break
-                # If we found a model, break out of the outer loop too
-                if discussion_model:
-                    break
-
-            # If no preferred model is available, use the first one
-            if not discussion_model and models:
-                first_model = models[0]
-                # Handle both string models and dict models
-                if isinstance(first_model, dict):
-                    discussion_provider = first_model.get("provider")
-                    discussion_model = first_model.get("model")
-
-                    # If provider is not explicitly provided, try to get it from model name
-                    if not discussion_provider and discussion_model:
-                        discussion_provider = get_provider(discussion_model)
-                else:
-                    discussion_model = first_model
-                    discussion_provider = get_provider(discussion_model)
-
-        if discussion_model:
-            if verbose:
-                write_log(f"Resolving controversial clusters using {discussion_model}")
-
-            try:
-                resolved, discussion_logs, updated_cp, updated_h = process_controversial_clusters(
-                    marker_genes=marker_genes,
-                    controversial_clusters=controversial,
-                    model_predictions=model_results,
-                    species=species,
-                    tissue=tissue,
-                    provider=discussion_provider,
-                    model=discussion_model,
-                    api_key=api_keys.get(discussion_provider),
-                    max_discussion_rounds=max_discussion_rounds,
-                    consensus_threshold=consensus_threshold,
-                    entropy_threshold=entropy_threshold,
-                    use_cache=use_cache,
-                    cache_dir=cache_dir,
-                    base_urls=base_urls,
-                    force_rerun=force_rerun,
-                )
-
-                # Update consensus proportion and entropy for resolved clusters
-                for cluster_id, cp_value in updated_cp.items():
-                    consensus_proportion[cluster_id] = cp_value
-
-                for cluster_id, h_value in updated_h.items():
-                    entropy[cluster_id] = h_value
-
-                if verbose:
-                    write_log(f"Successfully resolved {len(resolved)} controversial clusters")
-            except (
-                requests.RequestException,
-                ValueError,
-                KeyError,
-                json.JSONDecodeError,
-                AttributeError,
-            ) as e:
-                write_log(f"Error resolving controversial clusters: {str(e)}", level="error")
+                write_log(f"Successfully resolved {len(resolved)} controversial clusters")
+        except (
+            requests.RequestException,
+            ValueError,
+            KeyError,
+            json.JSONDecodeError,
+            AttributeError,
+        ) as e:
+            write_log(f"Error resolving controversial clusters: {e!s}", level="error")
 
     # Merge consensus and resolved
     final_annotations = consensus.copy()

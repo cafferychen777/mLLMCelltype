@@ -148,12 +148,12 @@ def get_default_model(provider: str) -> str:
     """
     default_models = {
         "openai": "gpt-5.2",
-        "anthropic": "claude-sonnet-4-5-20250929",
-        "deepseek": "deepseek-chat",
+        "anthropic": "claude-opus-4-5-20251101",
+        "deepseek": "deepseek-chat",  # V3.2
         "gemini": "gemini-3-pro",
         "qwen": "qwen3-max",
         "stepfun": "step-3",
-        "zhipu": "glm-4-plus",
+        "zhipu": "glm-4-plus",  # Stable model (glm-4.7 has rate limits)
         "minimax": "MiniMax-Text-01",
         "grok": "grok-3",
         "openrouter": "openai/gpt-5.2",

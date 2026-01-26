@@ -36,7 +36,7 @@ PROVIDER_MODEL_PREFIXES = {
     "gemini": ["gemini-"],
     "qwen": ["qwen", "qwq-"],
     "stepfun": ["step-"],
-    "zhipu": ["glm-"],
+    "zhipu": ["glm-"],  # Supports glm-4.7, glm-4-plus, etc.
     "minimax": ["minimax-"],
     "grok": ["grok-"],
 }
