@@ -46,15 +46,10 @@ def process_openrouter(
     write_log(f"Using model: {model}")
 
     # Ensure model ID is in the correct format for OpenRouter (provider/model)
-    if (
-        "/" not in model
-        and not model.startswith("anthropic/")
-        and not model.startswith("openai/")
-        and not model.startswith("meta-llama/")
-        and not model.startswith("mistralai/")
-    ):
+    if "/" not in model:
         write_log(
-            f"Model ID '{model}' may not be in the correct format for OpenRouter. Expected format: 'provider/model'",
+            f"Model ID '{model}' may not be in the correct format for OpenRouter. "
+            "Expected format: 'provider/model'",
             level="warning",
         )
 

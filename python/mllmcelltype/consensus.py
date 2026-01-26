@@ -29,6 +29,10 @@ DEFAULT_FALLBACK_CONSENSUS_PROPORTION = 0.25
 # High entropy indicates high uncertainty
 DEFAULT_FALLBACK_ENTROPY = 2.0
 
+# Default fallback LLM for consensus checking
+DEFAULT_FALLBACK_PROVIDER = "anthropic"
+DEFAULT_FALLBACK_MODEL = "claude-sonnet-4-5-20250929"
+
 
 def _call_llm_with_retry(
     prompt: str,
@@ -36,8 +40,8 @@ def _call_llm_with_retry(
     model: str,
     api_key: Optional[str],
     max_retries: int = 3,
-    fallback_provider: str = "anthropic",
-    fallback_model: str = "claude-sonnet-4-5-20250929",
+    fallback_provider: str = DEFAULT_FALLBACK_PROVIDER,
+    fallback_model: str = DEFAULT_FALLBACK_MODEL,
     api_keys: Optional[dict[str, str]] = None,
     base_urls: Optional[Union[str, dict[str, str]]] = None,
 ) -> Optional[str]:
@@ -383,8 +387,8 @@ def check_consensus(
             model=primary_model,
             api_key=primary_api_key,
             max_retries=3,
-            fallback_provider="anthropic",
-            fallback_model="claude-sonnet-4-5-20250929",
+            fallback_provider=DEFAULT_FALLBACK_PROVIDER,
+            fallback_model=DEFAULT_FALLBACK_MODEL,
             api_keys=api_keys,
         )
 

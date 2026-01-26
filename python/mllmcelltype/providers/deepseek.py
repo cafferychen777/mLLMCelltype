@@ -4,8 +4,6 @@ import time
 from typing import Optional
 
 import requests
-from requests.adapters import HTTPAdapter
-from urllib3.util.retry import Retry
 
 from ..logger import write_log
 from ..url_utils import get_default_api_url, validate_base_url
@@ -60,35 +58,14 @@ def process_deepseek(
         "Authorization": f"Bearer {api_key}",
     }
 
-    # Increase retry parameters for DeepSeek
+    # DeepSeek-specific config: longer timeout and more retries for stability
     max_retries = 5
     retry_delay = 3
     timeout = 90
 
-    # Create a session with retry strategy
-    session = requests.Session()
-
-    # Configure retry strategy for the session
-    retry_strategy = Retry(
-        total=max_retries,
-        backoff_factor=retry_delay,
-        status_forcelist=[429, 500, 502, 503, 504],
-        allowed_methods=["POST"],
-    )
-
-    # Mount the adapter to the session
-    adapter = HTTPAdapter(max_retries=retry_strategy)
-    session.mount("https://", adapter)
-    session.mount("http://", adapter)
-
-    write_log(
-        f"Configured session with {max_retries} retries, {retry_delay}s backoff factor, and {timeout}s timeout"
-    )
-
     for attempt in range(max_retries):
         try:
-            write_log(f"Sending request (attempt {attempt + 1}/{max_retries})...")
-            response = session.post(url=url, headers=headers, json=body, timeout=timeout)
+            response = requests.post(url=url, headers=headers, json=body, timeout=timeout)
 
             # Check for errors
             if response.status_code != 200:
@@ -116,36 +93,6 @@ def process_deepseek(
             # Clean up results (remove commas at the end of lines)
             return [line.rstrip(",") for line in res]
 
-        except requests.exceptions.Timeout as e:
-            write_log(
-                f"Timeout during API call (attempt {attempt + 1}/{max_retries}): {str(e)}"
-            )
-            if attempt < max_retries - 1:
-                wait_time = retry_delay * (2**attempt)
-                write_log(f"Waiting {wait_time} seconds before retrying...")
-                time.sleep(wait_time)
-            else:
-                write_log(
-                    f"All retry attempts failed with timeout. Last error: {str(e)}",
-                    level="error",
-                )
-                raise
-
-        except requests.exceptions.ConnectionError as e:
-            write_log(
-                f"Connection error during API call (attempt {attempt + 1}/{max_retries}): {str(e)}"
-            )
-            if attempt < max_retries - 1:
-                wait_time = retry_delay * (2**attempt)
-                write_log(f"Waiting {wait_time} seconds before retrying...")
-                time.sleep(wait_time)
-            else:
-                write_log(
-                    f"All retry attempts failed with connection error. Last error: {str(e)}",
-                    level="error",
-                )
-                raise
-
         except Exception as e:
             write_log(f"Error during API call (attempt {attempt + 1}/{max_retries}): {str(e)}")
             if attempt < max_retries - 1:
@@ -153,5 +100,4 @@ def process_deepseek(
                 write_log(f"Waiting {wait_time} seconds before retrying...")
                 time.sleep(wait_time)
             else:
-                write_log(f"All retry attempts failed. Last error: {str(e)}", level="error")
                 raise

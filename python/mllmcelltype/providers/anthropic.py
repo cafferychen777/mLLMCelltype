@@ -12,12 +12,15 @@ from ..url_utils import get_default_api_url, validate_base_url
 
 # Model alias mapping: user-friendly names -> official API model IDs
 MODEL_ALIASES = {
-    # Claude 4.5 series (latest - Sep 2025)
+    # Claude 4.5 series (latest - Nov 2025)
+    "claude-opus-4.5": "claude-opus-4-5-20251101",
+    "claude-opus-latest": "claude-opus-4-5-20251101",
     "claude-sonnet-4.5": "claude-sonnet-4-5-20250929",
     "claude-sonnet-latest": "claude-sonnet-4-5-20250929",
+    "claude-haiku-4.5": "claude-haiku-4-5-20251001",
+    "claude-haiku-latest": "claude-haiku-4-5-20251001",
     # Claude 4.1 series (Aug 2025)
     "claude-opus-4.1": "claude-opus-4-1-20250805",
-    "claude-opus-latest": "claude-opus-4-1-20250805",
     # Claude 4 series (May 2025)
     "claude-opus-4": "claude-opus-4-20250514",
     "claude-sonnet-4": "claude-sonnet-4-20250514",
