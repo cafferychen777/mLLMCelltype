@@ -1,6 +1,6 @@
 """mLLMCelltype: A Python module for cell type annotation using various LLMs."""
 
-from .annotate import annotate_clusters, batch_annotate_clusters, get_model_response
+from .annotate import annotate_clusters, get_model_response
 from .cache_manager import get_cache_info
 from .consensus import (
     check_consensus,
@@ -11,7 +11,6 @@ from .consensus import (
 from .functions import get_provider
 from .logger import setup_logging, write_log
 from .prompts import (
-    create_batch_prompt,
     create_consensus_check_prompt,
     create_discussion_prompt,
     create_prompt,
@@ -37,7 +36,6 @@ __version__ = "1.3.3"
 __all__ = [
     # Core annotation
     "annotate_clusters",
-    "batch_annotate_clusters",
     "get_model_response",
     # Functions
     "get_provider",
@@ -56,7 +54,6 @@ __all__ = [
     "format_results",
     # Prompts
     "create_prompt",
-    "create_batch_prompt",
     "create_discussion_prompt",
     "create_consensus_check_prompt",
     # Consensus

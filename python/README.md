@@ -241,30 +241,6 @@ consensus_results = interactive_consensus_annotation(
 
 ## Advanced Usage
 
-### Batch Annotation
-
-```python
-from mllmcelltype import batch_annotate_clusters
-
-# Prepare multiple sets of marker genes (e.g., from different samples)
-marker_genes_list = [marker_genes_df1, marker_genes_df2, marker_genes_df3]
-
-# Batch annotate multiple datasets efficiently
-batch_annotations = batch_annotate_clusters(
-    marker_genes_list=marker_genes_list,
-    species='mouse',                      # Organism species
-    provider='anthropic',                 # LLM provider
-    model='claude-sonnet-4-5-20250929',  # Latest Sonnet model (recommended)
-    tissue='brain'                       # Optional tissue context
-)
-
-# Process and utilize results
-for i, annotations in enumerate(batch_annotations):
-    print(f"Dataset {i+1} annotations:")
-    for cluster, annotation in annotations.items():
-        print(f"  Cluster {cluster}: {annotation}")
-```
-
 ### Targeted Analysis: New Enhanced Parameters
 
 mLLMCelltype v1.3.0+ introduces two powerful parameters for more precise control over cell type annotation:

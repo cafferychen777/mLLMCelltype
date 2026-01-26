@@ -8,10 +8,8 @@ Tests for prompt generation functionality in mLLMCelltype.
 import pytest
 
 from mllmcelltype.prompts import (
-    create_batch_prompt,
     create_consensus_check_prompt,
     create_discussion_prompt,
-    create_json_prompt,
     create_prompt,
 )
 
@@ -65,37 +63,6 @@ Marker genes: {markers}"""
 
         # Check that the custom template was used
         assert "Custom template for human cells from blood" in prompt
-
-    def test_create_batch_prompt(self):
-        """Test batch prompt creation."""
-        prompt = create_batch_prompt(
-            marker_genes_list=self.marker_genes_list, species="human", tissue="blood"
-        )
-
-        # Check that the prompt contains the expected elements
-        assert isinstance(prompt, str)
-        assert "human" in prompt
-        assert "blood" in prompt
-        assert "Set 1:" in prompt or "Dataset 1:" in prompt
-        assert "Set 2:" in prompt or "Dataset 2:" in prompt
-
-        # Check if the prompt contains necessary guidance information, rather than specific genes
-        # Current implementation does not include specific marker genes
-        assert "cell type" in prompt.lower()
-        assert "cluster" in prompt.lower()
-
-    def test_create_json_prompt(self):
-        """Test JSON prompt creation."""
-        prompt = create_json_prompt(marker_genes=self.marker_genes, species="human", tissue="blood")
-
-        # Check that the prompt contains the expected elements
-        assert isinstance(prompt, str)
-        assert "human" in prompt
-        assert "blood" in prompt
-        assert "CD3D" in prompt
-        assert "JSON" in prompt.upper() or "json" in prompt
-        assert "cluster" in prompt
-        assert "cell_type" in prompt
 
     def test_create_discussion_prompt(self):
         """Test discussion prompt creation."""

@@ -45,27 +45,6 @@ Here are the marker genes for each cluster:
 """
 
 
-# Default prompt template for batch annotation
-DEFAULT_BATCH_PROMPT_TEMPLATE = """You are an expert single-cell RNA-seq analyst specializing in cell type annotation.
-I need you to identify cell types of {species} cells from {tissue}.
-Below are lists of marker genes for clusters from multiple datasets.
-Please assign the most likely cell type to each cluster based on the marker genes.
-
-IMPORTANT: Format your response EXACTLY as follows for each set:
-Set 1:
-Cluster 0: [cell type]
-Cluster 1: [cell type]
-...and so on, IN NUMERICAL ORDER.
-
-Set 2:
-Cluster 0: [cell type]
-Cluster 1: [cell type]
-...and so on, IN NUMERICAL ORDER.
-
-Only provide the cell type name for each cluster. Be concise but specific.
-"""
-
-
 def create_consensus_check_prompt(annotations: list[str]) -> str:
     """Create a prompt for checking consensus among different annotations.
 
@@ -222,61 +201,6 @@ def create_prompt(
             prompt = f"{prompt}{context_text}"
 
     write_log(f"Generated prompt with {len(prompt)} characters")
-    return prompt
-
-
-def create_batch_prompt(
-    marker_genes_list: list[dict[str, list[str]]],
-    species: str,
-    tissue: Optional[str] = None,
-    additional_context: Optional[str] = None,
-    prompt_template: Optional[str] = None,
-) -> str:
-    """Create a batch prompt for multiple sets of clusters.
-
-    Args:
-        marker_genes_list: List of dictionaries mapping cluster names to lists of marker genes
-        species: Species name (e.g., 'human', 'mouse')
-        tissue: Tissue name (e.g., 'brain', 'liver')
-        additional_context: Additional context to include in the prompt
-        prompt_template: Custom prompt template
-
-    Returns:
-        str: The generated batch prompt
-
-    """
-    write_log(f"Creating batch prompt for {len(marker_genes_list)} sets of clusters")
-
-    # Use default template if not provided
-    if not prompt_template:
-        prompt_template = DEFAULT_BATCH_PROMPT_TEMPLATE
-
-    # Default tissue if none provided
-    tissue_text = tissue if tissue else "unknown tissue"
-
-    # Format marker genes text using helper function
-    marker_text_lines = []
-    for i, marker_genes in enumerate(marker_genes_list):
-        marker_text_lines.append(f"\nSet {i + 1}:")
-        marker_text_lines.append(_format_marker_genes_for_prompt(marker_genes))
-
-    marker_text = "\n".join(marker_text_lines)
-
-    # Add additional context if provided
-    context_text = f"\nAdditional context: {additional_context}\n" if additional_context else ""
-
-    # Fill in the template
-    prompt = prompt_template.format(species=species, tissue=tissue_text, markers=marker_text)
-
-    # Add context
-    if context_text:
-        sections = prompt.split("Here are the marker genes for each cluster:")
-        if len(sections) == 2:
-            prompt = f"{sections[0]}{context_text}Here are the marker genes for each cluster:{sections[1]}"
-        else:
-            prompt = f"{prompt}{context_text}"
-
-    write_log(f"Generated batch prompt with {len(prompt)} characters")
     return prompt
 
 

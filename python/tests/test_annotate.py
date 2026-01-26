@@ -12,7 +12,6 @@ import pytest
 
 from mllmcelltype.annotate import (
     annotate_clusters,
-    batch_annotate_clusters,
     get_model_response,
 )
 
@@ -77,49 +76,6 @@ class TestAnnotation:
         assert "2" in result
         assert result["1"] == "T cells"
         assert result["2"] == "B cells"
-
-    @patch("mllmcelltype.annotate.load_api_key")
-    @patch("mllmcelltype.annotate.get_default_model")
-    @patch("mllmcelltype.annotate.PROVIDER_FUNCTIONS", {"mock_provider": MagicMock()})
-    def test_batch_annotate_clusters(self, mock_get_default_model, mock_load_api_key):
-        """Test batch_annotate_clusters function."""
-        # Setup mocks
-        from mllmcelltype.annotate import PROVIDER_FUNCTIONS
-
-        # Return a list because format_results function expects a list
-        PROVIDER_FUNCTIONS["mock_provider"] = lambda *args, **kwargs: [
-            "Set 1:",
-            "Cluster 1: T cells",
-            "Cluster 2: B cells",
-            "Set 2:",
-            "Cluster 3: NK cells",
-            "Cluster 4: Monocytes",
-        ]
-        mock_load_api_key.return_value = "test-key"
-        mock_get_default_model.return_value = "mock_model"
-
-        # Create a list of marker genes DataFrames
-        marker_genes_list = [self.marker_genes_df, self.marker_genes_df]
-
-        # Test function - disable cache
-        result = batch_annotate_clusters(
-            marker_genes_list=marker_genes_list,
-            species="human",
-            provider="mock_provider",
-            model="mock_model",
-            tissue="blood",
-            use_cache=False,  # disable cache
-        )
-
-        # Verify results
-        assert isinstance(result, list)
-        assert len(result) == 2
-        assert isinstance(result[0], dict)
-        assert isinstance(result[1], dict)
-        assert "1" in result[0]
-        assert "2" in result[0]
-        assert result[0]["1"] == "T cells"
-        assert result[0]["2"] == "B cells"
 
     # Fix parameter name issues
     @patch("mllmcelltype.annotate.PROVIDER_FUNCTIONS")
