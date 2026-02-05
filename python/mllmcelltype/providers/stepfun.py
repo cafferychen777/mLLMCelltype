@@ -1,8 +1,9 @@
 """StepFun provider module for LLMCellType."""
 
+from __future__ import annotations
+
 import json
 import time
-from typing import Optional
 
 import requests
 
@@ -11,7 +12,7 @@ from ..url_utils import get_default_api_url, validate_base_url
 
 
 def process_stepfun(
-    prompt: str, model: str, api_key: str, base_url: Optional[str] = None
+    prompt: str, model: str, api_key: str, base_url: str | None = None
 ) -> list[str]:
     """Process request using StepFun models.
 

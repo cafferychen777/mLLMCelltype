@@ -1,13 +1,18 @@
 """URL utilities for base URL resolution."""
 
-from typing import Optional, Union
+from __future__ import annotations
 
 import requests
 
+from .config import get_default_api_url
 from .logger import write_log
 
+# Re-export get_default_api_url for backward compatibility
+# The actual implementation is in config.py (Single Source of Truth)
+__all__ = ["get_default_api_url", "get_working_qwen_endpoint", "resolve_provider_base_url", "validate_base_url"]
 
-def resolve_provider_base_url(provider: str, base_urls: Union[str, dict, None]) -> Optional[str]:
+
+def resolve_provider_base_url(provider: str, base_urls: str | dict | None) -> str | None:
     """Resolve provider-specific base URL.
 
     Args:
@@ -27,30 +32,6 @@ def resolve_provider_base_url(provider: str, base_urls: Union[str, dict, None]) 
         return base_urls[provider]  # Provider-specific URL
 
     return None
-
-
-def get_default_api_url(provider: str) -> str:
-    """Get default API URL for a provider.
-
-    Args:
-        provider: Provider name
-
-    Returns:
-        Default API URL for the provider
-    """
-    default_urls = {
-        "openai": "https://api.openai.com/v1/chat/completions",
-        "anthropic": "https://api.anthropic.com/v1/messages",
-        "qwen": "https://dashscope-intl.aliyuncs.com/compatible-mode/v1/chat/completions",
-        "deepseek": "https://api.deepseek.com/v1/chat/completions",
-        "gemini": "https://generativelanguage.googleapis.com/v1beta/models",
-        "zhipu": "https://open.bigmodel.cn/api/paas/v4/chat/completions",
-        "grok": "https://api.x.ai/v1/chat/completions",
-        "openrouter": "https://openrouter.ai/api/v1/chat/completions",
-        "stepfun": "https://api.stepfun.com/v1/chat/completions",
-        "minimax": "https://api.minimaxi.chat/v1/text/chatcompletion_v2",
-    }
-    return default_urls.get(provider, "")
 
 
 def validate_base_url(url: str) -> bool:

@@ -1,8 +1,9 @@
 """Qwen provider module for LLMCellType."""
 
+from __future__ import annotations
+
 import json
 import time
-from typing import Optional
 
 import requests
 
@@ -11,7 +12,7 @@ from ..url_utils import get_working_qwen_endpoint, validate_base_url
 
 
 def process_qwen(
-    prompt: str, model: str, api_key: str, base_url: Optional[str] = None
+    prompt: str, model: str, api_key: str, base_url: str | None = None
 ) -> list[str]:
     """Process request using Alibaba Qwen models with smart endpoint selection.
 

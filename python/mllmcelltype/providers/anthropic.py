@@ -1,8 +1,9 @@
 """Anthropic provider module for LLMCellType."""
 
+from __future__ import annotations
+
 import json
 import time
-from typing import Optional
 
 import requests
 
@@ -68,7 +69,7 @@ def _check_deprecated_model(model: str) -> None:
 
 
 def process_anthropic(
-    prompt: str, model: str, api_key: str, base_url: Optional[str] = None
+    prompt: str, model: str, api_key: str, base_url: str | None = None
 ) -> list[str]:
     """Process request using Anthropic Claude models.
 

@@ -13,6 +13,12 @@ from typing import Any
 import requests
 
 from .annotate import annotate_clusters, get_model_response
+from .config import (
+    DEFAULT_CONSENSUS_CONFIG,
+    DEFAULT_FALLBACK_CONSENSUS_PROPORTION,
+    DEFAULT_FALLBACK_ENTROPY,
+    get_default_model,
+)
 from .functions import get_provider
 from .logger import write_log
 from .prompts import (
@@ -23,11 +29,6 @@ from .prompts import (
 from .url_utils import resolve_provider_base_url
 from .utils import clean_annotation, load_api_key, normalize_annotation_for_comparison
 
-# Default fallback values when parsing fails or result is inconclusive
-# These conservative values ensure discussion will be triggered
-DEFAULT_FALLBACK_CONSENSUS_PROPORTION = 0.25
-DEFAULT_FALLBACK_ENTROPY = 2.0
-
 # Default result structure for discussion round consensus check
 # Used when consensus check fails or has insufficient data
 DEFAULT_CONSENSUS_RESULT = {
@@ -37,10 +38,6 @@ DEFAULT_CONSENSUS_RESULT = {
     "majority_prediction": "Unknown",
 }
 
-# Default fallback LLM for consensus checking
-DEFAULT_FALLBACK_PROVIDER = "anthropic"
-DEFAULT_FALLBACK_MODEL = "claude-sonnet-4-5-20250929"
-
 
 def _call_llm_with_retry(
     prompt: str,
@@ -48,8 +45,8 @@ def _call_llm_with_retry(
     model: str,
     api_key: str | None,
     max_retries: int = 3,
-    fallback_provider: str = DEFAULT_FALLBACK_PROVIDER,
-    fallback_model: str = DEFAULT_FALLBACK_MODEL,
+    fallback_provider: str | None = None,
+    fallback_model: str | None = None,
     api_keys: dict[str, str] | None = None,
     base_urls: str | dict[str, str] | None = None,
 ) -> str | None:
@@ -66,8 +63,14 @@ def _call_llm_with_retry(
         api_keys: Dictionary of API keys for fallback
 
     Returns:
-        Optional[str]: LLM response or None if all attempts failed
+        str | None: LLM response or None if all attempts failed
     """
+    # Use defaults from config if not specified
+    if fallback_provider is None:
+        fallback_provider = DEFAULT_CONSENSUS_CONFIG.fallback_provider
+    if fallback_model is None:
+        fallback_model = DEFAULT_CONSENSUS_CONFIG.fallback_model
+
     # Resolve base URL
     primary_base_url = resolve_provider_base_url(provider, base_urls)
 
@@ -146,7 +149,7 @@ def _extract_metrics_from_text(
         text: Text to parse (LLM response or discussion)
 
     Returns:
-        tuple[Optional[float], Optional[float], Optional[str]]:
+        tuple[float | None, float | None, str | None]:
             (consensus_proportion, entropy, annotation)
             annotation may be None if not found
     """
@@ -414,12 +417,16 @@ def check_consensus(
 
         # Determine which model to use
         if consensus_model:
-            primary_provider = consensus_model.get("provider", "qwen")
-            primary_model = consensus_model.get("model", "qwen-max-2025-01-25")
+            primary_provider = consensus_model.get(
+                "provider", DEFAULT_CONSENSUS_CONFIG.primary_provider
+            )
+            primary_model = consensus_model.get(
+                "model", get_default_model(primary_provider)
+            )
         else:
-            # Default to Qwen if not specified
-            primary_provider = "qwen"
-            primary_model = "qwen-max-2025-01-25"
+            # Use default consensus config
+            primary_provider = DEFAULT_CONSENSUS_CONFIG.primary_provider
+            primary_model = DEFAULT_CONSENSUS_CONFIG.primary_model
 
         # Get API key for primary provider
         primary_api_key = (api_keys.get(primary_provider) if api_keys else None) or load_api_key(
@@ -462,8 +469,8 @@ def check_consensus(
             model=primary_model,
             api_key=primary_api_key,
             max_retries=3,
-            fallback_provider=DEFAULT_FALLBACK_PROVIDER,
-            fallback_model=DEFAULT_FALLBACK_MODEL,
+            fallback_provider=DEFAULT_CONSENSUS_CONFIG.fallback_provider,
+            fallback_model=DEFAULT_CONSENSUS_CONFIG.fallback_model,
             api_keys=api_keys,
         )
 
@@ -517,7 +524,7 @@ def _extract_cell_type_from_response(response: str) -> str | None:
         response: The model's discussion response
 
     Returns:
-        Optional[str]: Extracted cell type or None
+        str | None: Extracted cell type or None
     """
     if not response:
         return None
@@ -718,11 +725,15 @@ def check_consensus_for_discussion_round(
 
     # Determine which model to use for consensus checking
     if consensus_check_model:
-        primary_provider = consensus_check_model.get("provider", DEFAULT_FALLBACK_PROVIDER)
-        primary_model = consensus_check_model.get("model", DEFAULT_FALLBACK_MODEL)
+        primary_provider = consensus_check_model.get(
+            "provider", DEFAULT_CONSENSUS_CONFIG.fallback_provider
+        )
+        primary_model = consensus_check_model.get(
+            "model", DEFAULT_CONSENSUS_CONFIG.fallback_model
+        )
     else:
-        primary_provider = DEFAULT_FALLBACK_PROVIDER
-        primary_model = DEFAULT_FALLBACK_MODEL
+        primary_provider = DEFAULT_CONSENSUS_CONFIG.fallback_provider
+        primary_model = DEFAULT_CONSENSUS_CONFIG.fallback_model
 
     # Get API key
     if api_keys is None:
@@ -736,8 +747,8 @@ def check_consensus_for_discussion_round(
         model=primary_model,
         api_key=primary_api_key,
         max_retries=3,
-        fallback_provider=DEFAULT_FALLBACK_PROVIDER,
-        fallback_model=DEFAULT_FALLBACK_MODEL,
+        fallback_provider=DEFAULT_CONSENSUS_CONFIG.fallback_provider,
+        fallback_model=DEFAULT_CONSENSUS_CONFIG.fallback_model,
         api_keys=api_keys,
         base_urls=base_urls,
     )

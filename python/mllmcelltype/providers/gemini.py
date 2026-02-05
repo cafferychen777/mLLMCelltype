@@ -1,13 +1,14 @@
 """Gemini provider module for LLMCellType."""
 
+from __future__ import annotations
+
 import time
-from typing import Optional
 
 from ..logger import write_log
 
 
 def process_gemini(
-    prompt: str, model: str, api_key: str, base_url: Optional[str] = None
+    prompt: str, model: str, api_key: str, base_url: str | None = None
 ) -> list[str]:
     """Process request using Google Gemini models.
 

@@ -11,6 +11,7 @@ from typing import Any
 
 import pandas as pd
 
+from .config import get_api_key_env_var
 from .logger import write_log
 
 
@@ -38,25 +39,8 @@ def load_api_key(provider: str) -> str:
         str: The API key
 
     """
-    # Map of provider names to environment variable names
-    env_var_map = {
-        "openai": "OPENAI_API_KEY",
-        "anthropic": "ANTHROPIC_API_KEY",
-        "deepseek": "DEEPSEEK_API_KEY",
-        "gemini": "GEMINI_API_KEY",  # Changed from GOOGLE_API_KEY to match .env file
-        "qwen": "QWEN_API_KEY",  # Changed from DASHSCOPE_API_KEY to match .env file
-        "stepfun": "STEPFUN_API_KEY",
-        "zhipu": "ZHIPU_API_KEY",
-        "minimax": "MINIMAX_API_KEY",
-        "grok": "GROK_API_KEY",
-        "openrouter": "OPENROUTER_API_KEY",
-    }
-
-    # Get environment variable name for provider
-    env_var = env_var_map.get(provider.lower())
-    if not env_var:
-        write_log(f"Unknown provider: {provider}", level="warning")
-        env_var = f"{provider.upper()}_API_KEY"
+    # Get environment variable name from centralized config
+    env_var = get_api_key_env_var(provider)
 
     # Get API key from environment variable
     api_key = os.getenv(env_var)
@@ -178,7 +162,7 @@ def load_from_cache(
         cache_dir: The cache directory. If None, uses default directory.
 
     Returns:
-        Optional[Union[list[str], dict[str, Any]]]: The cached results, or None if not found
+        list[str] | dict[str, Any] | None: The cached results, or None if not found
 
     """
     cache_dir = _get_cache_dir(cache_dir)
