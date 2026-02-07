@@ -165,6 +165,7 @@ log rotation, and performance monitoring capabilities.</p>
 <li><p><a href="#method-UnifiedLogger-log_cache_operation"><code>UnifiedLogger$log_cache_operation()</code></a></p></li>
 <li><p><a href="#method-UnifiedLogger-log_cluster_progress"><code>UnifiedLogger$log_cluster_progress()</code></a></p></li>
 <li><p><a href="#method-UnifiedLogger-log_discussion"><code>UnifiedLogger$log_discussion()</code></a></p></li>
+<li><p><a href="#method-UnifiedLogger-log_model_response"><code>UnifiedLogger$log_model_response()</code></a></p></li>
 <li><p><a href="#method-UnifiedLogger-get_performance_summary"><code>UnifiedLogger$get_performance_summary()</code></a></p></li>
 <li><p><a href="#method-UnifiedLogger-cleanup_logs"><code>UnifiedLogger$cleanup_logs()</code></a></p></li>
 <li><p><a href="#method-UnifiedLogger-set_level"><code>UnifiedLogger$set_level()</code></a></p></li>
@@ -269,10 +270,24 @@ log rotation, and performance monitoring capabilities.</p>
 </div>
 
 
+</div><p></p><hr><a id="method-UnifiedLogger-log_model_response"></a><div class="section">
+<h3 id="method-log-model-response-">Method <code>log_model_response()</code><a class="anchor" aria-label="anchor" href="#method-log-model-response-"></a></h3>
+<p>Log model response with concise summary in main log and full text in file</p><div class="section">
+<h4 id="usage-10">Usage<a class="anchor" aria-label="anchor" href="#usage-10"></a></h4>
+<p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">UnifiedLogger</span><span class="op">$</span><span class="fu">log_model_response</span><span class="op">(</span></span>
+<span>  <span class="va">provider</span>,</span>
+<span>  <span class="va">model</span>,</span>
+<span>  <span class="va">response</span>,</span>
+<span>  stage <span class="op">=</span> <span class="st">"annotation"</span>,</span>
+<span>  cluster_id <span class="op">=</span> <span class="cn">NULL</span></span>
+<span><span class="op">)</span></span></code></pre></div><p></p></div>
+</div>
+
+
 </div><p></p><hr><a id="method-UnifiedLogger-get_performance_summary"></a><div class="section">
 <h3 id="method-get-performance-summary-">Method <code>get_performance_summary()</code><a class="anchor" aria-label="anchor" href="#method-get-performance-summary-"></a></h3>
 <p>Get performance summary</p><div class="section">
-<h4 id="usage-10">Usage<a class="anchor" aria-label="anchor" href="#usage-10"></a></h4>
+<h4 id="usage-11">Usage<a class="anchor" aria-label="anchor" href="#usage-11"></a></h4>
 <p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">UnifiedLogger</span><span class="op">$</span><span class="fu">get_performance_summary</span><span class="op">(</span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
 
@@ -280,7 +295,7 @@ log rotation, and performance monitoring capabilities.</p>
 </div><p></p><hr><a id="method-UnifiedLogger-cleanup_logs"></a><div class="section">
 <h3 id="method-cleanup-logs-">Method <code>cleanup_logs()</code><a class="anchor" aria-label="anchor" href="#method-cleanup-logs-"></a></h3>
 <p>Clean up old log files</p><div class="section">
-<h4 id="usage-11">Usage<a class="anchor" aria-label="anchor" href="#usage-11"></a></h4>
+<h4 id="usage-12">Usage<a class="anchor" aria-label="anchor" href="#usage-12"></a></h4>
 <p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">UnifiedLogger</span><span class="op">$</span><span class="fu">cleanup_logs</span><span class="op">(</span>force <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
 
@@ -288,7 +303,7 @@ log rotation, and performance monitoring capabilities.</p>
 </div><p></p><hr><a id="method-UnifiedLogger-set_level"></a><div class="section">
 <h3 id="method-set-level-">Method <code>set_level()</code><a class="anchor" aria-label="anchor" href="#method-set-level-"></a></h3>
 <p>Set logging level</p><div class="section">
-<h4 id="usage-12">Usage<a class="anchor" aria-label="anchor" href="#usage-12"></a></h4>
+<h4 id="usage-13">Usage<a class="anchor" aria-label="anchor" href="#usage-13"></a></h4>
 <p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">UnifiedLogger</span><span class="op">$</span><span class="fu">set_level</span><span class="op">(</span><span class="va">level</span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
 
@@ -296,7 +311,7 @@ log rotation, and performance monitoring capabilities.</p>
 </div><p></p><hr><a id="method-UnifiedLogger-clone"></a><div class="section">
 <h3 id="method-clone-">Method <code>clone()</code><a class="anchor" aria-label="anchor" href="#method-clone-"></a></h3>
 <p>The objects of this class are cloneable with this method.</p><div class="section">
-<h4 id="usage-13">Usage<a class="anchor" aria-label="anchor" href="#usage-13"></a></h4>
+<h4 id="usage-14">Usage<a class="anchor" aria-label="anchor" href="#usage-14"></a></h4>
 <p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">UnifiedLogger</span><span class="op">$</span><span class="fu">clone</span><span class="op">(</span>deep <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
 

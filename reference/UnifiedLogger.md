@@ -67,6 +67,8 @@ output, log rotation, and performance monitoring capabilities.
 
 - [`UnifiedLogger$log_discussion()`](#method-UnifiedLogger-log_discussion)
 
+- [`UnifiedLogger$log_model_response()`](#method-UnifiedLogger-log_model_response)
+
 - [`UnifiedLogger$get_performance_summary()`](#method-UnifiedLogger-get_performance_summary)
 
 - [`UnifiedLogger$cleanup_logs()`](#method-UnifiedLogger-cleanup_logs)
@@ -194,6 +196,23 @@ Log detailed cluster discussion with complete model conversations
 #### Usage
 
     UnifiedLogger$log_discussion(cluster_id, event_type, data = NULL)
+
+------------------------------------------------------------------------
+
+### Method `log_model_response()`
+
+Log model response with concise summary in main log and full text in
+file
+
+#### Usage
+
+    UnifiedLogger$log_model_response(
+      provider,
+      model,
+      response,
+      stage = "annotation",
+      cluster_id = NULL
+    )
 
 ------------------------------------------------------------------------
 
