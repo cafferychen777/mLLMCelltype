@@ -18,7 +18,7 @@ def process_minimax(
 
     Args:
         prompt: The prompt to send to the API
-        model: The model name (e.g., 'minimax-text-02', 'abab6-chat', 'abab5.5-chat')
+        model: The model name (e.g., 'minimax-m2.1', 'minimax-m2', 'MiniMax-Text-01')
         api_key: MiniMax API key
         base_url: Optional custom base URL
 

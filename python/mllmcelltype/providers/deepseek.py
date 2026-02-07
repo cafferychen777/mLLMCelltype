@@ -17,7 +17,7 @@ def process_deepseek(
 
     Args:
         prompt: The prompt to send to the API
-        model: The model name (e.g., 'deepseek-chat', 'deepseek-coder')
+        model: The model name (e.g., 'deepseek-chat', 'deepseek-reasoner')
         api_key: DeepSeek API key
         base_url: Optional custom base URL
 

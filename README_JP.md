@@ -22,7 +22,7 @@
 
 # mLLMCelltype: 単一細胞 RNA シーケンシングのためのマルチ大規模言語モデルコンセンサスフレームワーク
 
-mLLMCelltypeは、単一細胞RNAシーケンシング(scRNA-seq)データにおける細胞タイプアノテーションのための反復型マルチLLMコンセンサスフレームワークです。複数の大規模言語モデル（OpenAI GPT-5/4.1、Anthropic Claude-4/3.7/3.5、Google Gemini-2.0、X.AI Grok-3、DeepSeek-V3、Alibaba Qwen2.5、Zhipu GLM-4、MiniMax、Stepfun、OpenRouterなど）の予測結果を組み合わせることで、このフレームワークはアノテーションの精度向上を目指しながら、バイオインフォマティクスおよび計算生物学研究のための透明性のある不確実性の定量化を提供します。
+mLLMCelltypeは、単一細胞RNAシーケンシング(scRNA-seq)データにおける細胞タイプアノテーションのための反復型マルチLLMコンセンサスフレームワークです。複数の大規模言語モデル（OpenAI GPT-5.2/5、Anthropic Claude-4.6/4.5、Google Gemini-3、X.AI Grok-4、DeepSeek-V3、Alibaba Qwen3、Zhipu GLM-4、MiniMax、Stepfun、OpenRouterなど）の予測結果を組み合わせることで、このフレームワークはアノテーションの精度向上を目指しながら、バイオインフォマティクスおよび計算生物学研究のための透明性のある不確実性の定量化を提供します。
 
 ## 概要
 
@@ -144,18 +144,18 @@ Anthropicは2025年7月21日に複数のClaudeモデルを廃止します：
 
 ### サポートされているモデル
 
-- **OpenAI**: GPT-4.1/GPT-4.5/GPT-5 ([APIキー](https://platform.openai.com/settings/organization/billing/overview))
-- **Anthropic**: Claude-3.7-Sonnet/Claude-3.5-Haiku ([APIキー](https://console.anthropic.com/))
-- **Google**: Gemini-2.5-Pro/Gemini-2.5-Flash ([APIキー](https://ai.google.dev/?authuser=2))
-- **Alibaba**: Qwen2.5-Max ([APIキー](https://www.alibabacloud.com/en/product/modelstudio))
+- **OpenAI**: GPT-5.2/GPT-5/GPT-4.1 ([APIキー](https://platform.openai.com/settings/organization/billing/overview))
+- **Anthropic**: Claude-4.6-Opus/Claude-4.5-Sonnet/Claude-4.5-Haiku ([APIキー](https://console.anthropic.com/))
+- **Google**: Gemini-3-Pro/Gemini-3-Flash ([APIキー](https://ai.google.dev/?authuser=2))
+- **Alibaba**: Qwen3-Max ([APIキー](https://www.alibabacloud.com/en/product/modelstudio))
 - **DeepSeek**: DeepSeek-V3/DeepSeek-R1 ([APIキー](https://platform.deepseek.com/usage))
-- **Minimax**: MiniMax-Text-01 ([APIキー](https://intl.minimaxi.com/user-center/basic-information/interface-key))
-- **Stepfun**: Step-2-16K ([APIキー](https://platform.stepfun.com/account-info))
-- **Zhipu**: GLM-4 ([APIキー](https://bigmodel.cn/))
-- **X.AI**: Grok-3/Grok-3-mini ([APIキー](https://accounts.x.ai/))
+- **Minimax**: MiniMax-M2.1 ([APIキー](https://intl.minimaxi.com/user-center/basic-information/interface-key))
+- **Stepfun**: Step-3 ([APIキー](https://platform.stepfun.com/account-info))
+- **Zhipu**: GLM-4.7/GLM-4-Plus ([APIキー](https://bigmodel.cn/))
+- **X.AI**: Grok-4/Grok-3 ([APIキー](https://accounts.x.ai/))
 - **OpenRouter**: 単一APIで複数のモデルにアクセス ([APIキー](https://openrouter.ai/keys))
   - OpenAI、Anthropic、Meta、Google、Mistralなどのモデルをサポート
-  - 形式: 'provider/model-name'（例: 'openai/gpt-5'、'anthropic/claude-opus-4.1'）
+  - 形式: 'provider/model-name'（例: 'openai/gpt-5.2'、'anthropic/claude-opus-4.5'）
   - `:free`接尾辞付きの無料モデルが利用可能（例: 'deepseek/deepseek-r1:free'、'deepseek/deepseek-chat:free'）
 
 ## ディレクトリ構造
@@ -231,7 +231,7 @@ markers <- FindAllMarkers(seurat_obj, only.pos = TRUE, min.pct = 0.25, logfc.thr
 consensus_results <- interactive_consensus_annotation(
   input = markers,
   tissue_name = "human PBMC",
-  models = c("gpt-5", "claude-sonnet-4-5-20250929", "gemini-3-pro"),
+  models = c("gpt-5.2", "claude-sonnet-4-5-20250929", "gemini-3-pro"),
   api_keys = list(
     openai = "your_openai_api_key",
     anthropic = "your_anthropic_api_key",
@@ -323,10 +323,10 @@ consensus_results <-
     tissue_name = "your tissue type", # 例："human heart"
     models = c("gemini-3-flash",
               "gemini-3-pro",
-              "qwen-max-2025-01-25",
-              "grok-3-latest",
+              "qwen3-max",
+              "grok-4",
               "anthropic/claude-sonnet-4",
-              "openai/gpt-5"),
+              "openai/gpt-5.2"),
     api_keys = api_keys,
     controversy_threshold = 0.6,
     entropy_threshold = 1.0,
@@ -431,10 +431,10 @@ for i in range(len(adata.obs['leiden'].cat.categories)):
 
 # コンセンサスアノテーションで使用される大規模言語モデルのAPIキーを設定
 # マルチLLMコンセンサスアノテーションには少なくとも1つのAPIキーが必要
-os.environ["OPENAI_API_KEY"] = "your-openai-api-key"      # GPT-5/4.1モデル用（推奨）
-os.environ["ANTHROPIC_API_KEY"] = "your-anthropic-api-key"  # Claude-3.7/3.5モデル用
-os.environ["GEMINI_API_KEY"] = "your-gemini-api-key"      # Google Gemini-2.5モデル用
-os.environ["QWEN_API_KEY"] = "your-qwen-api-key"        # Alibaba Qwen2.5モデル用
+os.environ["OPENAI_API_KEY"] = "your-openai-api-key"      # GPT-5.2/5モデル用（推奨）
+os.environ["ANTHROPIC_API_KEY"] = "your-anthropic-api-key"  # Claude-4.6/4.5モデル用
+os.environ["GEMINI_API_KEY"] = "your-gemini-api-key"      # Google Gemini-3モデル用
+os.environ["QWEN_API_KEY"] = "your-qwen-api-key"        # Alibaba Qwen3モデル用
 # コンセンサスの多様性を向上させるための追加のオプションLLMプロバイダー：
 # os.environ["DEEPSEEK_API_KEY"] = "your-deepseek-api-key"   # DeepSeek-V3モデル用
 # os.environ["ZHIPU_API_KEY"] = "your-zhipu-api-key"       # Zhipu GLM-4モデル用
@@ -447,7 +447,7 @@ consensus_results = interactive_consensus_annotation(
     marker_genes=marker_genes,  # 各クラスターのマーカー遺伝子辞書
     species="human",            # 適切な細胞タイプアノテーションのために生物種を指定
     tissue="blood",            # より正確なアノテーションのために組織コンテキストを指定
-    models=["gpt-5", "claude-sonnet-4-5-20250929", "gemini-3-pro", "qwen-max-2025-01-25"],  # コンセンサス用の複数LLM
+    models=["gpt-5.2", "claude-sonnet-4-5-20250929", "gemini-3-pro", "qwen3-max"],  # コンセンサス用の複数LLM
     consensus_threshold=1,     # コンセンサス合意に必要な最小比率
     max_discussion_rounds=3    # 改善のためのモデル間議論ラウンド数
 )
@@ -688,18 +688,18 @@ pbmc_markers <- FindAllMarkers(pbmc,
 
 # サポートされている任意のプロバイダーからモデルを選択
 # サポートされているモデルには以下が含まれます：
-# - OpenAI: 'gpt-5', 'gpt-5-mini', 'gpt-4.1', 'gpt-4.1-mini', 'gpt-4.1-nano', 'gpt-4-turbo', 'gpt-3.5-turbo', 'o1', 'o1-mini', 'o1-preview', 'o1-pro'
-# - Anthropic: 'claude-sonnet-4-5-20250929', 'claude-3-5-sonnet-latest', 'claude-3-5-haiku-latest', 'claude-3-opus'
+# - OpenAI: 'gpt-5.2', 'gpt-5', 'gpt-4.1', 'o3-pro', 'o3', 'o4-mini', 'o1', 'o1-pro'
+# - Anthropic: 'claude-opus-4-6-20260205', 'claude-sonnet-4-5-20250929', 'claude-haiku-4-5-20251001'
 # - DeepSeek: 'deepseek-chat', 'deepseek-reasoner'
-# - Google: 'gemini-3-pro', 'gemini-3-flash', 'gemini-2.0-flash', 'gemini-1.5-pro', 'gemini-1.5-flash'
-# - Qwen: 'qwen-max-2025-01-25'
-# - Stepfun: 'step-2-mini', 'step-2-16k', 'step-1-8k'
-# - Zhipu: 'glm-4-plus', 'glm-3-turbo'
-# - MiniMax: 'minimax-text-01'
-# - Grok: 'grok-3', 'grok-3-latest', 'grok-3-fast', 'grok-3-fast-latest', 'grok-3-mini', 'grok-3-mini-latest', 'grok-3-mini-fast', 'grok-3-mini-fast-latest'
+# - Google: 'gemini-3-pro', 'gemini-3-flash', 'gemini-2.5-pro', 'gemini-2.0-flash'
+# - Qwen: 'qwen3-max', 'qwen-max-2025-01-25'
+# - Stepfun: 'step-3', 'step-2-16k', 'step-2-mini'
+# - Zhipu: 'glm-4.7', 'glm-4-plus'
+# - MiniMax: 'minimax-m2.1', 'minimax-m2'
+# - Grok: 'grok-4', 'grok-4.1', 'grok-4-heavy', 'grok-3', 'grok-3-fast', 'grok-3-mini'
 # - OpenRouter: 単一APIで複数のモデルにアクセス。形式: 'provider/model-name'
-#   - OpenAIモデル: 'openai/gpt-5', 'openai/gpt-5-mini', 'openai/gpt-4-turbo', 'openai/gpt-4', 'openai/gpt-3.5-turbo'
-#   - Anthropicモデル: 'anthropic/claude-sonnet-4', 'anthropic/claude-3-5-sonnet-latest', 'anthropic/claude-3-5-haiku-latest', 'anthropic/claude-opus-4.1'
+#   - OpenAIモデル: 'openai/gpt-5.2', 'openai/gpt-5', 'openai/o3-pro'
+#   - Anthropicモデル: 'anthropic/claude-opus-4.5', 'anthropic/claude-sonnet-4.5', 'anthropic/claude-haiku-4.5'
 #   - Metaモデル: 'meta-llama/llama-3-70b-instruct', 'meta-llama/llama-3-8b-instruct', 'meta-llama/llama-2-70b-chat'
 #   - Googleモデル: 'google/gemini-3-pro', 'google/gemini-3-flash', 'google/gemini-1.5-pro-latest', 'google/gemini-1.5-flash'
 #   - Mistralモデル: 'mistralai/mistral-large', 'mistralai/mistral-medium', 'mistralai/mistral-small'
@@ -736,7 +736,7 @@ DimPlot(pbmc, group.by = "cell_type", label = TRUE) +
 
 ```r
 # 異なるモデルを使用してアノテーションを行う
-models <- c("claude-sonnet-4-5-20250929", "gpt-5", "gemini-3-pro", "qwen-max-2025-01-25", "grok-3")
+models <- c("claude-sonnet-4-5-20250929", "gpt-5.2", "gemini-3-pro", "qwen3-max", "grok-3")
 api_keys <- c("your-anthropic-key", "your-openai-key", "your-google-key", "your-qwen-key", "your-xai-key")
 
 # 各モデルの結果を格納する列を作成
@@ -790,7 +790,7 @@ cowplot::plot_grid(p1, p2, p3, p4, p5, ncol = 3)
 
 2. **OpenAIモデル**
    - `o1` / `o1-pro` - 高度な推論能力
-   - `gpt-5` - 様々な細胞タイプでの強固なパフォーマンス
+   - `gpt-5.2` / `gpt-5` - 様々な細胞タイプでの強固なパフォーマンス
    - `gpt-4.1` - 最新のGPT-4バリアント
 
 3. **Google Geminiモデル**
@@ -799,8 +799,8 @@ cowplot::plot_grid(p1, p2, p3, p4, p5, ncol = 3)
 
 4. **その他の高パフォーマンスモデル**
    - `deepseek-r1` / `deepseek-reasoner` - 強力な推論能力
-   - `qwen-max-2025-01-25` - 科学的コンテキストに優秀
-   - `grok-3-latest` - 高度な言語理解
+   - `qwen3-max` - 科学的コンテキストに優秀
+   - `grok-4` - 高度な言語理解
 
 #### Rパッケージの使用
 
@@ -809,7 +809,7 @@ cowplot::plot_grid(p1, p2, p3, p4, p5, ncol = 3)
 consensus_results <- interactive_consensus_annotation(
   input = marker_genes_list,
   tissue_name = "human brain",
-  models = c("gpt-5", "claude-sonnet-4-5-20250929", "gemini-3-flash", "qwen-max-2025-01-25"),
+  models = c("gpt-5.2", "claude-sonnet-4-5-20250929", "gemini-3-flash", "qwen3-max"),
   api_keys = api_keys,
   consensus_check_model = "claude-sonnet-4-5-20250929",  # 最も有能なモデルを使用
   controversy_threshold = 0.7,
@@ -820,7 +820,7 @@ consensus_results <- interactive_consensus_annotation(
 consensus_results <- interactive_consensus_annotation(
   input = marker_genes_list,
   tissue_name = "mouse liver",
-  models = c("gpt-5", "gemini-3-flash", "qwen-max-2025-01-25"),
+  models = c("gpt-5.2", "gemini-3-flash", "qwen3-max"),
   api_keys = api_keys,
   consensus_check_model = "claude-sonnet-4-5-20250929",  # 代替高パフォーマンスモデル
   controversy_threshold = 0.7,
@@ -831,7 +831,7 @@ consensus_results <- interactive_consensus_annotation(
 consensus_results <- interactive_consensus_annotation(
   input = marker_genes_list,
   tissue_name = "human immune cells",
-  models = c("gpt-5", "claude-sonnet-4-5-20250929", "gemini-3-flash"),
+  models = c("gpt-5.2", "claude-sonnet-4-5-20250929", "gemini-3-flash"),
   api_keys = api_keys,
   consensus_check_model = "o1",  # OpenAIの高度推論モデル
   controversy_threshold = 0.7,
@@ -850,7 +850,7 @@ consensus_results = interactive_consensus_annotation(
     marker_genes=marker_genes,
     species="human",
     tissue="brain",
-    models=["gpt-5", "claude-sonnet-4-5-20250929", "gemini-3-flash", "qwen-max-2025-01-25"],
+    models=["gpt-5.2", "claude-sonnet-4-5-20250929", "gemini-3-flash", "qwen3-max"],
     consensus_model="claude-sonnet-4-5-20250929",  # 最も有能なモデルを使用
     consensus_threshold=0.7,
     entropy_threshold=1.0
@@ -861,7 +861,7 @@ consensus_results = interactive_consensus_annotation(
     marker_genes=marker_genes,
     species="mouse",
     tissue="liver",
-    models=["gpt-5", "gemini-3-flash", "qwen-max-2025-01-25"],
+    models=["gpt-5.2", "gemini-3-flash", "qwen3-max"],
     consensus_model={"provider": "anthropic", "model": "claude-sonnet-4-5-20250929"},
     consensus_threshold=0.7,
     entropy_threshold=1.0
@@ -872,7 +872,7 @@ consensus_results = interactive_consensus_annotation(
     marker_genes=marker_genes,
     species="human",
     tissue="heart",
-    models=["gpt-5", "claude-sonnet-4-5-20250929", "qwen-max-2025-01-25"],
+    models=["gpt-5.2", "claude-sonnet-4-5-20250929", "qwen3-max"],
     consensus_model={"provider": "google", "model": "gemini-3-pro"},
     consensus_threshold=0.7,
     entropy_threshold=1.0
@@ -883,8 +883,8 @@ consensus_results = interactive_consensus_annotation(
     marker_genes=marker_genes,
     species="human",
     tissue="blood",
-    models=["gpt-5", "claude-sonnet-4-5-20250929", "gemini-3-flash"],
-    # 指定しない場合、デフォルトでqwen-max-2025-01-25（高パフォーマンスモデル）を使用
+    models=["gpt-5.2", "claude-sonnet-4-5-20250929", "gemini-3-flash"],
+    # 指定しない場合、デフォルトでqwen3-max（高パフォーマンスモデル）を使用
     consensus_threshold=0.7,
     entropy_threshold=1.0
 )
@@ -902,7 +902,7 @@ consensus_results = interactive_consensus_annotation(
 
 5. **デフォルト動作**：
    - R：指定されていない場合は`models`リストの最初のモデルを使用
-   - Python：デフォルトで`qwen-max-2025-01-25`（高パフォーマンスモデル）を使用、`claude-3-5-sonnet-latest`をフォールバックとして使用
+   - Python：デフォルトで`qwen3-max`（高パフォーマンスモデル）を使用、`claude-sonnet-4-5-20250929`をフォールバックとして使用
 
 #### コンセンサスチェックでのモデル品質の重要性
 
@@ -942,7 +942,7 @@ library(ggplot2)
 consensus_results <- interactive_consensus_annotation(
   input = markers_df,
   tissue_name = "human PBMC",
-  models = c("anthropic/claude-sonnet-4.5", "openai/gpt-5"),
+  models = c("anthropic/claude-sonnet-4.5", "openai/gpt-5.2"),
   api_keys = list(openrouter = "your_api_key")
 )
 

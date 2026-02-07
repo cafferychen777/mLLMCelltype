@@ -33,15 +33,15 @@ mLLMCelltype is an R package that leverages various large language models (LLMs)
 * **Uncertainty Quantification**: Explicitly quantifies annotation uncertainty through consensus proportion and Shannon entropy
 * **No Reference Dataset Required**: Does not rely on pre-existing reference datasets, can annotate various tissues and species
 * **Support for Multiple LLM Providers**:
-  - OpenAI (GPT-4o, GPT-4.1, GPT-3.5-Turbo, O1 series)
-  - Anthropic (Claude 3.7 Sonnet, Claude 3.5 Sonnet/Haiku/Opus)
-  - Google (Gemini 2.5 Pro, Gemini 2.0, Gemini 1.5 series)
-  - X.AI (Grok-3, Grok-3 Fast, Grok-3 Mini series)
+  - OpenAI (GPT-5.2, GPT-5, GPT-4.1, O3/O4 series)
+  - Anthropic (Claude 4.6 Opus, Claude 4.5 Sonnet/Haiku)
+  - Google (Gemini 3 Pro, Gemini 3 Flash, Gemini 2.5 series)
+  - X.AI (Grok-4, Grok-3 series)
   - DeepSeek (DeepSeek Chat, DeepSeek Reasoner)
-  - Qwen (Qwen Max)
-  - Zhipu (GLM-4 Plus, GLM-3 Turbo)
-  - MiniMax (MiniMax Text)
-  - Stepfun (Step-2, Step-1 series)
+  - Qwen (Qwen3 Max, Qwen Max)
+  - Zhipu (GLM-4.7, GLM-4 Plus)
+  - MiniMax (MiniMax M2.1, MiniMax M2)
+  - Stepfun (Step-3, Step-2 series)
   - OpenRouter (access to Meta Llama, Mistral, Microsoft, Perplexity, Cohere, and more)
 * **Seurat Integration**: Can directly use Seurat's FindAllMarkers() output as input
 

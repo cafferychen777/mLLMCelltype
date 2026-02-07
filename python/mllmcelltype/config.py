@@ -33,7 +33,7 @@ PROVIDER_CONFIGS: dict[str, ProviderConfig] = {
         default_api_url="https://api.openai.com/v1/chat/completions",
     ),
     "anthropic": ProviderConfig(
-        default_model="claude-opus-4-5-20251101",
+        default_model="claude-opus-4-6-20260205",
         api_key_env_var="ANTHROPIC_API_KEY",
         default_api_url="https://api.anthropic.com/v1/messages",
     ),
@@ -63,12 +63,12 @@ PROVIDER_CONFIGS: dict[str, ProviderConfig] = {
         default_api_url="https://open.bigmodel.cn/api/paas/v4/chat/completions",
     ),
     "minimax": ProviderConfig(
-        default_model="MiniMax-Text-01",
+        default_model="minimax-m2.1",
         api_key_env_var="MINIMAX_API_KEY",
         default_api_url="https://api.minimaxi.chat/v1/text/chatcompletion_v2",
     ),
     "grok": ProviderConfig(
-        default_model="grok-3",
+        default_model="grok-4",
         api_key_env_var="GROK_API_KEY",
         default_api_url="https://api.x.ai/v1/chat/completions",
     ),

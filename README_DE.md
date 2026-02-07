@@ -22,7 +22,7 @@
 
 # mLLMCelltype: Multi-Sprachmodell-Konsensus-Framework für die Zelltyp-Annotation
 
-mLLMCelltype ist ein iteratives Multi-LLM-Konsensus-Framework für die Zelltyp-Annotation in Einzelzell-RNA-Sequenzierungsdaten (scRNA-seq). Durch die Kombination der Vorhersagen mehrerer großer Sprachmodelle (OpenAI GPT-5/4.1, Anthropic Claude-4/3.7/3.5, Google Gemini-2.0, X.AI Grok-3, DeepSeek-V3, Alibaba Qwen2.5, Zhipu GLM-4, MiniMax, Stepfun, und OpenRouter) zielt dieses Framework darauf ab, die Annotationsgenauigkeit zu verbessern und bietet gleichzeitig eine transparente Quantifizierung der Unsicherheit für die Forschung in Bioinformatik und Computational Biology.
+mLLMCelltype ist ein iteratives Multi-LLM-Konsensus-Framework für die Zelltyp-Annotation in Einzelzell-RNA-Sequenzierungsdaten (scRNA-seq). Durch die Kombination der Vorhersagen mehrerer großer Sprachmodelle (OpenAI GPT-5.2/5, Anthropic Claude-4.6/4.5, Google Gemini-3, X.AI Grok-4, DeepSeek-V3, Alibaba Qwen3, Zhipu GLM-4, MiniMax, Stepfun, und OpenRouter) zielt dieses Framework darauf ab, die Annotationsgenauigkeit zu verbessern und bietet gleichzeitig eine transparente Quantifizierung der Unsicherheit für die Forschung in Bioinformatik und Computational Biology.
 
 ## Zusammenfassung
 
@@ -200,18 +200,18 @@ pip install google-genai
 
 ### Unterstützte Modelle
 
-- **OpenAI**: GPT-4.1/GPT-4.5/GPT-5 ([API-Schlüssel](https://platform.openai.com/settings/organization/billing/overview))
-- **Anthropic**: Claude-3.7-Sonnet/Claude-3.5-Haiku ([API-Schlüssel](https://console.anthropic.com/))
-- **Google**: Gemini-2.5-Pro/Gemini-2.5-Flash ([API-Schlüssel](https://ai.google.dev/?authuser=2))
-- **Alibaba**: Qwen2.5-Max ([API-Schlüssel](https://www.alibabacloud.com/en/product/modelstudio))
+- **OpenAI**: GPT-5.2/GPT-5/GPT-4.1 ([API-Schlüssel](https://platform.openai.com/settings/organization/billing/overview))
+- **Anthropic**: Claude-4.6-Opus/Claude-4.5-Sonnet/Claude-4.5-Haiku ([API-Schlüssel](https://console.anthropic.com/))
+- **Google**: Gemini-3-Pro/Gemini-3-Flash ([API-Schlüssel](https://ai.google.dev/?authuser=2))
+- **Alibaba**: Qwen3-Max ([API-Schlüssel](https://www.alibabacloud.com/en/product/modelstudio))
 - **DeepSeek**: DeepSeek-V3/DeepSeek-R1 ([API-Schlüssel](https://platform.deepseek.com/usage))
-- **Minimax**: MiniMax-Text-01 ([API-Schlüssel](https://intl.minimaxi.com/user-center/basic-information/interface-key))
-- **Stepfun**: Step-2-16K ([API-Schlüssel](https://platform.stepfun.com/account-info))
-- **Zhipu**: GLM-4 ([API-Schlüssel](https://bigmodel.cn/))
-- **X.AI**: Grok-3/Grok-3-mini ([API-Schlüssel](https://accounts.x.ai/))
+- **Minimax**: MiniMax-M2.1 ([API-Schlüssel](https://intl.minimaxi.com/user-center/basic-information/interface-key))
+- **Stepfun**: Step-3 ([API-Schlüssel](https://platform.stepfun.com/account-info))
+- **Zhipu**: GLM-4.7/GLM-4-Plus ([API-Schlüssel](https://bigmodel.cn/))
+- **X.AI**: Grok-4/Grok-3 ([API-Schlüssel](https://accounts.x.ai/))
 - **OpenRouter**: Zugriff auf mehrere Modelle über eine einzige API ([API-Schlüssel](https://openrouter.ai/keys))
   - Unterstützt Modelle von OpenAI, Anthropic, Meta, Google, Mistral und mehr
-  - Format: 'provider/model-name' (z.B. 'openai/gpt-5', 'anthropic/claude-opus-4.1')
+  - Format: 'provider/model-name' (z.B. 'openai/gpt-5.2', 'anthropic/claude-opus-4.5')
   - Kostenlose Modelle verfügbar mit `:free` Suffix (z.B. 'deepseek/deepseek-r1:free', 'deepseek/deepseek-chat:free')
 
 ## Nutzungsbeispiele
@@ -278,10 +278,10 @@ for i in range(len(adata.obs['leiden'].cat.categories)):
 
 # API-Schlüssel für die in der Konsensus-Annotation verwendeten großen Sprachmodelle konfigurieren
 # Mindestens ein API-Schlüssel ist für die Multi-LLM-Konsensus-Annotation erforderlich
-os.environ["OPENAI_API_KEY"] = "your-openai-api-key"      # Für GPT-5/4.1-Modelle (empfohlen)
-os.environ["ANTHROPIC_API_KEY"] = "your-anthropic-api-key"  # Für Claude-3.7/3.5-Modelle
-os.environ["GEMINI_API_KEY"] = "your-gemini-api-key"      # Für Google Gemini-2.5-Modelle
-os.environ["QWEN_API_KEY"] = "your-qwen-api-key"        # Für Alibaba Qwen2.5-Modelle
+os.environ["OPENAI_API_KEY"] = "your-openai-api-key"      # Für GPT-5.2/5-Modelle (empfohlen)
+os.environ["ANTHROPIC_API_KEY"] = "your-anthropic-api-key"  # Für Claude-4.6/4.5-Modelle
+os.environ["GEMINI_API_KEY"] = "your-gemini-api-key"      # Für Google Gemini-3-Modelle
+os.environ["QWEN_API_KEY"] = "your-qwen-api-key"        # Für Alibaba Qwen3-Modelle
 # Zusätzliche optionale LLM-Anbieter für erweiterte Konsensus-Diversität:
 # os.environ["DEEPSEEK_API_KEY"] = "your-deepseek-api-key"   # Für DeepSeek-V3-Modelle
 # os.environ["ZHIPU_API_KEY"] = "your-zhipu-api-key"       # Für Zhipu GLM-4-Modelle
@@ -294,7 +294,7 @@ consensus_results = interactive_consensus_annotation(
     marker_genes=marker_genes,  # Wörterbuch der Markergene für jeden Cluster
     species="human",            # Organismus für angemessene Zelltyp-Annotation angeben
     tissue="blood",            # Gewebekontext für genauere Annotation angeben
-    models=["gpt-5", "claude-sonnet-4-5-20250929", "gemini-3-pro", "qwen-max-2025-01-25"],  # Mehrere LLMs für Konsensus
+    models=["gpt-5.2", "claude-sonnet-4-5-20250929", "gemini-3-pro", "qwen3-max"],  # Mehrere LLMs für Konsensus
     consensus_threshold=1,     # Minimaler Anteil für Konsensusübereinstimmung erforderlich
     max_discussion_rounds=3    # Anzahl der Beratungsrunden zwischen Modellen zur Verfeinerung
 )
@@ -492,18 +492,18 @@ dir.create(cache_dir, showWarnings = FALSE, recursive = TRUE)
 
 # Wählen Sie ein Modell von einem unterstützten Anbieter
 # Unterstützte Modelle umfassen:
-# - OpenAI: 'gpt-5', 'gpt-5-mini', 'gpt-4.1', 'gpt-4.1-mini', 'gpt-4.1-nano', 'gpt-4-turbo', 'gpt-3.5-turbo', 'o1', 'o1-mini', 'o1-preview', 'o1-pro'
-# - Anthropic: 'claude-sonnet-4-5-20250929', 'claude-3-5-sonnet-20241022', 'claude-3-5-haiku-20241022', 'claude-3-opus-20240229'
+# - OpenAI: 'gpt-5.2', 'gpt-5', 'gpt-4.1', 'o3-pro', 'o3', 'o4-mini', 'o1', 'o1-pro'
+# - Anthropic: 'claude-opus-4-6-20260205', 'claude-sonnet-4-5-20250929', 'claude-haiku-4-5-20251001'
 # - DeepSeek: 'deepseek-chat', 'deepseek-reasoner'
-# - Google: 'gemini-3-pro', 'gemini-3-flash', 'gemini-2.0-flash', 'gemini-1.5-pro', 'gemini-1.5-flash'
-# - Qwen: 'qwen-max-2025-01-25'
-# - Stepfun: 'step-2-mini', 'step-2-16k', 'step-1-8k'
-# - Zhipu: 'glm-4-plus', 'glm-3-turbo'
-# - MiniMax: 'minimax-text-01'
-# - Grok: 'grok-3', 'grok-3-latest', 'grok-3-fast', 'grok-3-fast-latest', 'grok-3-mini', 'grok-3-mini-latest', 'grok-3-mini-fast', 'grok-3-mini-fast-latest'
+# - Google: 'gemini-3-pro', 'gemini-3-flash', 'gemini-2.5-pro', 'gemini-2.0-flash'
+# - Qwen: 'qwen3-max', 'qwen-max-2025-01-25'
+# - Stepfun: 'step-3', 'step-2-16k', 'step-2-mini'
+# - Zhipu: 'glm-4.7', 'glm-4-plus'
+# - MiniMax: 'minimax-m2.1', 'minimax-m2'
+# - Grok: 'grok-4', 'grok-4.1', 'grok-4-heavy', 'grok-3', 'grok-3-fast', 'grok-3-mini'
 # - OpenRouter: Zugriff auf Modelle von mehreren Anbietern über eine einzige API. Format: 'provider/model-name'
-#   - OpenAI-Modelle: 'openai/gpt-5', 'openai/gpt-5-mini', 'openai/gpt-4-turbo', 'openai/gpt-4', 'openai/gpt-3.5-turbo'
-#   - Anthropic-Modelle: 'anthropic/claude-sonnet-4.5', 'anthropic/claude-sonnet-4.5', 'anthropic/claude-haiku-4', 'anthropic/claude-opus-4.1'
+#   - OpenAI-Modelle: 'openai/gpt-5.2', 'openai/gpt-5', 'openai/o3-pro'
+#   - Anthropic-Modelle: 'anthropic/claude-opus-4.5', 'anthropic/claude-sonnet-4.5', 'anthropic/claude-haiku-4.5'
 #   - Meta-Modelle: 'meta-llama/llama-3-70b-instruct', 'meta-llama/llama-3-8b-instruct', 'meta-llama/llama-2-70b-chat'
 #   - Google-Modelle: 'google/gemini-3-pro', 'google/gemini-3-flash', 'google/gemini-1.5-pro-latest', 'google/gemini-1.5-flash'
 #   - Mistral-Modelle: 'mistralai/mistral-large', 'mistralai/mistral-medium', 'mistralai/mistral-small'
@@ -515,9 +515,9 @@ consensus_results <- interactive_consensus_annotation(
   tissue_name = "human PBMC",  # Gewebekontext bereitstellen
   models = c(
     "claude-sonnet-4-5-20250929",  # Anthropic
-    "gpt-5",                   # OpenAI
+    "gpt-5.2",                   # OpenAI
     "gemini-3-pro",           # Google
-    "qwen-max-2025-01-25"       # Alibaba
+    "qwen3-max"       # Alibaba
   ),
   api_keys = list(
     anthropic = "your-anthropic-key",
@@ -745,10 +745,10 @@ consensus_results <-
     tissue_name = "your tissue type", # z.B. "human heart"
     models = c("gemini-3-flash",
               "gemini-3-pro",
-              "qwen-max-2025-01-25",
-              "grok-3-latest",
+              "qwen3-max",
+              "grok-4",
               "claude-sonnet-4-5-20250929",
-              "gpt-5"),
+              "gpt-5.2"),
     api_keys = api_keys,
     controversy_threshold = 0.6,
     entropy_threshold = 1.0,
@@ -833,18 +833,18 @@ pbmc_markers <- FindAllMarkers(pbmc,
 
 # Wählen Sie ein Modell von einem unterstützten Anbieter
 # Unterstützte Modelle umfassen:
-# - OpenAI: 'gpt-5', 'gpt-5-mini', 'gpt-4.1', 'gpt-4.1-mini', 'gpt-4.1-nano', 'gpt-4-turbo', 'gpt-3.5-turbo', 'o1', 'o1-mini', 'o1-preview', 'o1-pro'
-# - Anthropic: 'claude-sonnet-4-5-20250929', 'claude-3-5-sonnet-20241022', 'claude-3-5-haiku-20241022', 'claude-3-opus-20240229'
+# - OpenAI: 'gpt-5.2', 'gpt-5', 'gpt-4.1', 'o3-pro', 'o3', 'o4-mini', 'o1', 'o1-pro'
+# - Anthropic: 'claude-opus-4-6-20260205', 'claude-sonnet-4-5-20250929', 'claude-haiku-4-5-20251001'
 # - DeepSeek: 'deepseek-chat', 'deepseek-reasoner'
-# - Google: 'gemini-3-pro', 'gemini-3-flash', 'gemini-2.0-flash', 'gemini-1.5-pro', 'gemini-1.5-flash'
-# - Qwen: 'qwen-max-2025-01-25'
-# - Stepfun: 'step-2-mini', 'step-2-16k', 'step-1-8k'
-# - Zhipu: 'glm-4-plus', 'glm-3-turbo'
-# - MiniMax: 'minimax-text-01'
-# - Grok: 'grok-3', 'grok-3-latest', 'grok-3-fast', 'grok-3-fast-latest', 'grok-3-mini', 'grok-3-mini-latest', 'grok-3-mini-fast', 'grok-3-mini-fast-latest'
+# - Google: 'gemini-3-pro', 'gemini-3-flash', 'gemini-2.5-pro', 'gemini-2.0-flash'
+# - Qwen: 'qwen3-max', 'qwen-max-2025-01-25'
+# - Stepfun: 'step-3', 'step-2-16k', 'step-2-mini'
+# - Zhipu: 'glm-4.7', 'glm-4-plus'
+# - MiniMax: 'minimax-m2.1', 'minimax-m2'
+# - Grok: 'grok-4', 'grok-4.1', 'grok-4-heavy', 'grok-3', 'grok-3-fast', 'grok-3-mini'
 # - OpenRouter: Zugriff auf Modelle von mehreren Anbietern über eine einzige API. Format: 'provider/model-name'
-#   - OpenAI-Modelle: 'openai/gpt-5', 'openai/gpt-5-mini', 'openai/gpt-4-turbo', 'openai/gpt-4', 'openai/gpt-3.5-turbo'
-#   - Anthropic-Modelle: 'anthropic/claude-sonnet-4.5', 'anthropic/claude-sonnet-4.5', 'anthropic/claude-haiku-4', 'anthropic/claude-opus-4.1'
+#   - OpenAI-Modelle: 'openai/gpt-5.2', 'openai/gpt-5', 'openai/o3-pro'
+#   - Anthropic-Modelle: 'anthropic/claude-opus-4.5', 'anthropic/claude-sonnet-4.5', 'anthropic/claude-haiku-4.5'
 #   - Meta-Modelle: 'meta-llama/llama-3-70b-instruct', 'meta-llama/llama-3-8b-instruct', 'meta-llama/llama-2-70b-chat'
 #   - Google-Modelle: 'google/gemini-3-pro', 'google/gemini-3-flash', 'google/gemini-1.5-pro-latest', 'google/gemini-1.5-flash'
 #   - Mistral-Modelle: 'mistralai/mistral-large', 'mistralai/mistral-medium', 'mistralai/mistral-small'
@@ -892,9 +892,9 @@ Sie können auch Annotationen verschiedener Modelle vergleichen, indem Sie `anno
 # Zu testende Modelle definieren
 models_to_test <- c(
   "claude-sonnet-4-5-20250929",  # Anthropic
-  "gpt-5",                      # OpenAI
+  "gpt-5.2",                      # OpenAI
   "gemini-3-pro",              # Google
-  "qwen-max-2025-01-25"          # Alibaba
+  "qwen3-max"          # Alibaba
 )
 
 # API-Schlüssel für verschiedene Anbieter
@@ -949,7 +949,7 @@ Der Parameter `consensus_check_model` (R) / `consensus_model` (Python) ermöglic
 
 2. **OpenAI-Modelle**
    - `o1` / `o1-pro` - Erweiterte Argumentationsfähigkeiten
-   - `gpt-5` - Starke Leistung bei verschiedenen Zelltypen
+   - `gpt-5.2` / `gpt-5` - Starke Leistung bei verschiedenen Zelltypen
    - `gpt-4.1` - Neueste GPT-4-Variante
 
 3. **Google Gemini-Modelle**
@@ -958,8 +958,8 @@ Der Parameter `consensus_check_model` (R) / `consensus_model` (Python) ermöglic
 
 4. **Andere leistungsstarke Modelle**
    - `deepseek-r1` / `deepseek-reasoner` - Starke Argumentationsfähigkeiten
-   - `qwen-max-2025-01-25` - Hervorragend für wissenschaftliche Kontexte
-   - `grok-3-latest` - Fortgeschrittenes Sprachverständnis
+   - `qwen3-max` - Hervorragend für wissenschaftliche Kontexte
+   - `grok-4` - Fortgeschrittenes Sprachverständnis
 
 #### R-Paket-Verwendung
 
@@ -968,7 +968,7 @@ Der Parameter `consensus_check_model` (R) / `consensus_model` (Python) ermöglic
 consensus_results <- interactive_consensus_annotation(
   input = marker_genes_list,
   tissue_name = "human brain",
-  models = c("gpt-5", "claude-sonnet-4-5-20250929", "gemini-3-flash", "qwen-max-2025-01-25"),
+  models = c("gpt-5.2", "claude-sonnet-4-5-20250929", "gemini-3-flash", "qwen3-max"),
   api_keys = api_keys,
   consensus_check_model = "claude-sonnet-4-5-20250929",  # Das leistungsfähigste Modell verwenden
   controversy_threshold = 0.7,
@@ -979,7 +979,7 @@ consensus_results <- interactive_consensus_annotation(
 consensus_results <- interactive_consensus_annotation(
   input = marker_genes_list,
   tissue_name = "mouse liver",
-  models = c("gpt-5", "gemini-3-flash", "qwen-max-2025-01-25"),
+  models = c("gpt-5.2", "gemini-3-flash", "qwen3-max"),
   api_keys = api_keys,
   consensus_check_model = "claude-sonnet-4-5-20250929",  # Alternatives leistungsstarkes Modell
   controversy_threshold = 0.7,
@@ -990,7 +990,7 @@ consensus_results <- interactive_consensus_annotation(
 consensus_results <- interactive_consensus_annotation(
   input = marker_genes_list,
   tissue_name = "human immune cells",
-  models = c("gpt-5", "claude-sonnet-4-5-20250929", "gemini-3-flash"),
+  models = c("gpt-5.2", "claude-sonnet-4-5-20250929", "gemini-3-flash"),
   api_keys = api_keys,
   consensus_check_model = "o1",  # OpenAIs fortgeschrittenes Argumentationsmodell
   controversy_threshold = 0.7,
@@ -1009,7 +1009,7 @@ consensus_results = interactive_consensus_annotation(
     marker_genes=marker_genes,
     species="human",
     tissue="brain",
-    models=["gpt-5", "claude-sonnet-4-5-20250929", "gemini-3-flash", "qwen-max-2025-01-25"],
+    models=["gpt-5.2", "claude-sonnet-4-5-20250929", "gemini-3-flash", "qwen3-max"],
     consensus_model="claude-sonnet-4-5-20250929",  # Das leistungsfähigste Modell verwenden
     consensus_threshold=0.7,
     entropy_threshold=1.0
@@ -1020,7 +1020,7 @@ consensus_results = interactive_consensus_annotation(
     marker_genes=marker_genes,
     species="mouse",
     tissue="liver",
-    models=["gpt-5", "gemini-3-flash", "qwen-max-2025-01-25"],
+    models=["gpt-5.2", "gemini-3-flash", "qwen3-max"],
     consensus_model={"provider": "anthropic", "model": "claude-sonnet-4-5-20250929"},
     consensus_threshold=0.7,
     entropy_threshold=1.0
@@ -1031,7 +1031,7 @@ consensus_results = interactive_consensus_annotation(
     marker_genes=marker_genes,
     species="human",
     tissue="heart",
-    models=["gpt-5", "claude-sonnet-4-5-20250929", "qwen-max-2025-01-25"],
+    models=["gpt-5.2", "claude-sonnet-4-5-20250929", "qwen3-max"],
     consensus_model={"provider": "google", "model": "gemini-3-pro"},
     consensus_threshold=0.7,
     entropy_threshold=1.0
@@ -1042,8 +1042,8 @@ consensus_results = interactive_consensus_annotation(
     marker_genes=marker_genes,
     species="human",
     tissue="blood",
-    models=["gpt-5", "claude-sonnet-4-5-20250929", "gemini-3-flash"],
-    # Wenn nicht angegeben, standardmäßig qwen-max-2025-01-25 (ein leistungsstarkes Modell)
+    models=["gpt-5.2", "claude-sonnet-4-5-20250929", "gemini-3-flash"],
+    # Wenn nicht angegeben, standardmäßig qwen3-max (ein leistungsstarkes Modell)
     consensus_threshold=0.7,
     entropy_threshold=1.0
 )
@@ -1061,7 +1061,7 @@ consensus_results = interactive_consensus_annotation(
 
 5. **Standardverhalten**: 
    - R: Verwendet das erste Modell in der `models`-Liste, wenn nicht angegeben
-   - Python: Standardmäßig `qwen-max-2025-01-25` (ein leistungsstarkes Modell) mit `claude-3-5-sonnet-latest` als Fallback
+   - Python: Standardmäßig `qwen3-max` (ein leistungsstarkes Modell) mit `claude-sonnet-4-5-20250929` als Fallback
 
 #### Warum die Modellqualität für die Konsensprüfung wichtig ist
 
@@ -1103,7 +1103,7 @@ library(ggplot2)
 consensus_results <- interactive_consensus_annotation(
   input = markers_df,
   tissue_name = "human PBMC",
-  models = c("anthropic/claude-sonnet-4.5", "openai/gpt-5"),
+  models = c("anthropic/claude-sonnet-4.5", "openai/gpt-5.2"),
   api_keys = list(openrouter = "your_api_key")
 )
 

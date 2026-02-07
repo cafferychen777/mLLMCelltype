@@ -18,7 +18,7 @@ def process_stepfun(
 
     Args:
         prompt: The prompt to send to the API
-        model: The model name (e.g., 'step-1-8k', 'step-2-16k', 'step-1-flash')
+        model: The model name (e.g., 'step-3', 'step-2-16k', 'step-2-mini')
         api_key: StepFun API key
         base_url: Optional custom base URL
 

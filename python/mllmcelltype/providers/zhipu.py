@@ -18,7 +18,7 @@ def process_zhipu(
 
     Args:
         prompt: The prompt to send to the API
-        model: The model name (e.g., 'glm-4', 'glm-4v')
+        model: The model name (e.g., 'glm-4-plus', 'glm-4.7')
         api_key: Zhipu AI API key
         base_url: Optional custom base URL
 

@@ -18,7 +18,7 @@ def process_qwen(
 
     Args:
         prompt: The prompt to send to the API
-        model: The model name (e.g., 'qwen-plus', 'qwen-max-2025-01-25')
+        model: The model name (e.g., 'qwen3-max', 'qwen-plus', 'qwen-max-2025-01-25')
         api_key: DashScope API key
         base_url: Optional custom base URL (overrides smart selection)
 

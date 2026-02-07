@@ -18,7 +18,7 @@ def process_grok(
 
     Args:
         prompt: The prompt to send to the API
-        model: The model name (e.g., 'grok-3-latest')
+        model: The model name (e.g., 'grok-4', 'grok-3')
         api_key: xAI API key
         base_url: Optional custom base URL
 

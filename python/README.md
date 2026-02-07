@@ -40,7 +40,7 @@ annotations = annotate_clusters(
     marker_genes=marker_genes_df,
     species='human',
     provider='openai',
-    model='gpt-5',
+    model='gpt-5.2',
     tissue='brain'
 )
 
@@ -52,15 +52,15 @@ for cluster, annotation in annotations.items():
 
 | Provider | Models | API Key Variable |
 |----------|--------|-----------------|
-| OpenAI | GPT-5, O1, etc. | `OPENAI_API_KEY` |
-| Anthropic | Claude 4 Opus, Claude 4 Sonnet, Claude 3.5 Haiku, etc. | `ANTHROPIC_API_KEY` |
-| Google | Gemini 3 Pro, Gemini 3 Flash, Gemini 2.5 Pro, etc. | `GOOGLE_API_KEY` |
-| Alibaba | Qwen-Max-2025-01-25, Qwen-Plus, etc. | `QWEN_API_KEY` |
+| OpenAI | GPT-5.2, GPT-5, O3-Pro, etc. | `OPENAI_API_KEY` |
+| Anthropic | Claude 4.6 Opus, Claude 4.5 Sonnet/Haiku, etc. | `ANTHROPIC_API_KEY` |
+| Google | Gemini 3 Pro, Gemini 3 Flash, etc. | `GOOGLE_API_KEY` |
+| Alibaba | Qwen3-Max, Qwen-Plus, etc. | `QWEN_API_KEY` |
 | DeepSeek | DeepSeek-Chat, DeepSeek-Reasoner | `DEEPSEEK_API_KEY` |
-| StepFun | Step-2-16k, Step-2-Mini, Step-1-Flash, etc. | `STEPFUN_API_KEY` |
-| Zhipu AI | GLM-4, GLM-3-Turbo | `ZHIPU_API_KEY` |
-| MiniMax | MiniMax-Text-01 | `MINIMAX_API_KEY` |
-| X.AI | Grok-3-latest | `GROK_API_KEY` |
+| StepFun | Step-3, Step-2-16k, Step-2-Mini | `STEPFUN_API_KEY` |
+| Zhipu AI | GLM-4.7, GLM-4-Plus | `ZHIPU_API_KEY` |
+| MiniMax | MiniMax-M2.1, MiniMax-M2 | `MINIMAX_API_KEY` |
+| X.AI | Grok-4 | `GROK_API_KEY` |
 | OpenRouter | Access to multiple models via single API | `OPENROUTER_API_KEY` |
 
 API keys can be set via environment variables, passed directly as parameters, or loaded from a `.env` file.
@@ -83,7 +83,7 @@ result = interactive_consensus_annotation(
     marker_genes=marker_genes,
     species='human',
     tissue='peripheral blood',
-    models=['gpt-5', 'claude-sonnet-4-5-20250929', 'gemini-3-pro', 'qwen-max-2025-01-25'],
+    models=['gpt-5.2', 'claude-sonnet-4-5-20250929', 'gemini-3-pro', 'qwen3-max'],
     consensus_threshold=0.7,
     max_discussion_rounds=3,
     verbose=True
@@ -97,23 +97,23 @@ print_consensus_summary(result)
 The `consensus_model` parameter specifies which LLM evaluates semantic similarity, calculates consensus metrics, and moderates discussions. Recommended models for consensus checking:
 
 - **Anthropic**: `claude-sonnet-4-5-20250929`, `claude-opus-4-1-20250805`
-- **OpenAI**: `o1`, `gpt-5`, `gpt-4.1`
+- **OpenAI**: `o1`, `gpt-5.2`, `gpt-4.1`
 - **Google**: `gemini-3-pro`, `gemini-3-flash`
-- **Other**: `deepseek-r1`, `qwen-max-2025-01-25`, `grok-3-latest`
+- **Other**: `deepseek-r1`, `qwen3-max`, `grok-4`
 
 ```python
 result = interactive_consensus_annotation(
     marker_genes=marker_genes,
     species="human",
     tissue="brain",
-    models=["gpt-5", "claude-sonnet-4-5-20250929", "gemini-3-pro"],
+    models=["gpt-5.2", "claude-sonnet-4-5-20250929", "gemini-3-pro"],
     consensus_model="claude-sonnet-4-5-20250929",
     consensus_threshold=0.7,
     entropy_threshold=1.0
 )
 ```
 
-If not specified, defaults to `qwen-max-2025-01-25` with `claude-sonnet-4-5-20250929` as fallback.
+If not specified, defaults to `qwen3-max` with `claude-sonnet-4-5-20250929` as fallback.
 
 ## Targeted Analysis
 
@@ -123,7 +123,7 @@ If not specified, defaults to `qwen-max-2025-01-25` with `claude-sonnet-4-5-2025
 result = interactive_consensus_annotation(
     marker_genes=all_marker_genes,
     species="human",
-    models=["gpt-5", "claude-sonnet-4-5-20250929", "gemini-3-pro"],
+    models=["gpt-5.2", "claude-sonnet-4-5-20250929", "gemini-3-pro"],
     clusters_to_analyze=["cluster_0", "cluster_1", "cluster_2"],
     tissue="peripheral blood"
 )
@@ -135,7 +135,7 @@ result = interactive_consensus_annotation(
 result = interactive_consensus_annotation(
     marker_genes=marker_genes,
     species="human",
-    models=["gpt-5", "claude-sonnet-4-5-20250929"],
+    models=["gpt-5.2", "claude-sonnet-4-5-20250929"],
     tissue="peripheral blood",
     additional_context="Patient with autoimmune disease",
     force_rerun=True
@@ -153,7 +153,7 @@ annotations = annotate_clusters(
     marker_genes=marker_genes,
     species='human',
     tissue='peripheral blood',
-    provider_config={"provider": "openrouter", "model": "openai/gpt-5"}
+    provider_config={"provider": "openrouter", "model": "openai/gpt-5.2"}
 )
 ```
 
@@ -171,7 +171,7 @@ base_urls = {
 result = interactive_consensus_annotation(
     marker_genes=marker_genes,
     species='human',
-    models=['gpt-5', 'claude-3-opus', 'qwen-max'],
+    models=['gpt-5.2', 'claude-3-opus', 'qwen-max'],
     api_keys=your_api_keys,
     base_urls=base_urls
 )
@@ -197,7 +197,7 @@ annotations = mct.annotate_clusters(
     marker_genes=marker_genes,
     species='human',
     provider='openai',
-    model='gpt-5'
+    model='gpt-5.2'
 )
 adata.obs['cell_type'] = adata.obs['leiden'].astype(str).map(annotations)
 
@@ -205,7 +205,7 @@ adata.obs['cell_type'] = adata.obs['leiden'].astype(str).map(annotations)
 consensus_results = mct.interactive_consensus_annotation(
     marker_genes=marker_genes,
     species='human',
-    models=['gpt-5', 'claude-sonnet-4-5-20250929', 'gemini-3-pro'],
+    models=['gpt-5.2', 'claude-sonnet-4-5-20250929', 'gemini-3-pro'],
     consensus_threshold=0.7
 )
 adata.obs['consensus_cell_type'] = adata.obs['leiden'].astype(str).map(consensus_results["consensus"])

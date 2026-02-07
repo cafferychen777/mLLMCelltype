@@ -11,7 +11,7 @@ utils::globalVariables(c("custom_models"))
 #' Supported providers and models include:
 #' \itemize{
 #'   \item OpenAI: 'gpt-5.2' (latest flagship), 'gpt-5.1', 'gpt-5', 'gpt-4.1', 'gpt-4o', 'o3-pro', 'o3', 'o4-mini' and more with date variants
-#'   \item Anthropic: 'claude-opus-4.5' (latest), 'claude-sonnet-4.5', 'claude-haiku-4.5', 'claude-opus-4.1', 'claude-sonnet-4', 'claude-3.7-sonnet' and more with date variants
+#'   \item Anthropic: 'claude-opus-4.6' (latest), 'claude-opus-4.5', 'claude-sonnet-4.5', 'claude-haiku-4.5', 'claude-opus-4.1', 'claude-sonnet-4', 'claude-3.7-sonnet' and more with date variants
 #'   \item DeepSeek: 'deepseek-chat', 'deepseek-r1', 'deepseek-v3.1', 'deepseek-v3.2', 'deepseek-prover-v2'
 #'   \item Google: 'gemini-3-pro' (latest), 'gemini-3-flash', 'gemini-2.5-pro', 'gemini-2.5-flash', 'gemini-2.0-flash'
 #'   \item Qwen: 'qwen3-max', 'qwen3-coder-plus', 'qwen3-235b-a22b', 'qwen-max', 'qwen-plus'
@@ -131,7 +131,10 @@ get_provider <- function(model) {
     "codex-mini"
   )
   anthropic_models <- c(
-    # Claude Opus 4.5 series (latest - Nov 2025)
+    # Claude Opus 4.6 series (latest - Feb 2026)
+    "claude-opus-4-6-20260205",
+    "claude-opus-4.6",
+    # Claude Opus 4.5 series (Nov 2025)
     "claude-opus-4-5-20251119",
     "claude-opus-4.5",
     # Claude Sonnet 4.5 series (Sep 2025)
