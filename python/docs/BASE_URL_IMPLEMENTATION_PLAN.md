@@ -538,7 +538,7 @@ result = annotate_clusters(
     marker_genes=marker_genes,
     species="human",
     provider="openai",
-    model="gpt-5",
+    model="gpt-5.2",
     base_urls="https://api.your-proxy.com/v1"  # 所有provider使用相同代理
 )
 
@@ -547,7 +547,7 @@ result = annotate_clusters(
     marker_genes=marker_genes,
     species="human",
     provider="openai",
-    model="gpt-5",
+    model="gpt-5.2",
     base_urls={
         "openai": "https://openai-proxy.com/v1",
         "anthropic": "https://anthropic-proxy.com/v1"
@@ -558,7 +558,7 @@ result = annotate_clusters(
 consensus_results = interactive_consensus_annotation(
     marker_genes=marker_genes,
     species="human",
-    models=["gpt-5", "claude-3-opus", "qwen-max"],
+    models=["gpt-5.2", "claude-sonnet-4-5-20250929", "qwen3-max"],
     api_keys={
         "openai": "your-openai-key",
         "anthropic": "your-anthropic-key",
@@ -591,8 +591,8 @@ consensus_results = interactive_consensus_annotation(
     species="human",
     models=[
         "gpt-4o",           # 通过代理访问
-        "claude-3-opus",    # 通过代理访问
-        "qwen-max",         # 直接访问（智能端点选择）
+        "claude-sonnet-4-5-20250929",    # 通过代理访问
+        "qwen3-max",         # 直接访问（智能端点选择）
         "deepseek-chat",    # 直接访问
         "glm-4-plus"        # 直接访问
     ],

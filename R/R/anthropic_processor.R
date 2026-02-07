@@ -30,20 +30,6 @@ AnthropicProcessor <- R6::R6Class("AnthropicProcessor",
     #
     #
     make_api_call = function(chunk_content, model, api_key) {
-      # Check for deprecated models that will be retired on July 21, 2025
-      deprecated_models <- c("claude-2", "claude-2.0", "claude-2.1", "claude-3-sonnet", "claude-3-opus")
-      if (model %in% deprecated_models) {
-        warning(sprintf("Model '%s' will be retired on July 21, 2025. Please migrate to a newer model.", model))
-        message("Recommended migrations:")
-        if (startsWith(model, "claude-2")) {
-          message("  - Use 'claude-sonnet-4-20250514' or 'claude-3-5-sonnet-20241022'")
-        } else if (model == "claude-3-sonnet") {
-          message("  - Use 'claude-sonnet-4-20250514' or 'claude-3-7-sonnet-20250219'")
-        } else if (model == "claude-3-opus") {
-          message("  - Use 'claude-opus-4-20250514' or 'claude-3-opus-20240229'")
-        }
-      }
-      
       # Prepare request body
       body <- list(
         model = model,
@@ -71,27 +57,21 @@ AnthropicProcessor <- R6::R6Class("AnthropicProcessor",
         encode = "json"
       )
       
-      # Check for errors
-      if (!inherits(response, "response")) {
-        self$logger$error("Invalid response object from Anthropic",
-                         list(provider = self$provider_name, model = model))
-        stop("Invalid response object from Anthropic API")
-      }
-      
-      if (response$status_code >= 400) {
+      # Check for HTTP errors
+      if (httr::http_error(response)) {
         error_content <- httr::content(response, "parsed")
         error_message <- if (!is.null(error_content$error$message)) {
           error_content$error$message
         } else {
-          sprintf("HTTP %d error", response$status_code)
+          sprintf("HTTP %d error", httr::status_code(response))
         }
-        
+
         self$logger$error("Anthropic API request failed",
-                         list(provider = self$provider_name,
+                         list(error = error_message,
+                              provider = self$provider_name,
                               model = model,
-                              status_code = response$status_code,
-                              error = error_message))
-        
+                              status_code = httr::status_code(response)))
+
         stop(sprintf("Anthropic API request failed: %s", error_message))
       }
       

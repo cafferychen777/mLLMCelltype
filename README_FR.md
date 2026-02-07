@@ -709,10 +709,10 @@ pbmc_markers <- FindAllMarkers(pbmc,
 # - OpenRouter : Accès à plusieurs modèles via une seule API. Format : 'fournisseur/nom-du-modèle'
 #   - Modèles OpenAI : 'openai/gpt-5.2', 'openai/gpt-5', 'openai/o3-pro'
 #   - Modèles Anthropic : 'anthropic/claude-opus-4.5', 'anthropic/claude-sonnet-4.5', 'anthropic/claude-haiku-4.5'
-#   - Modèles Meta : 'meta-llama/llama-3-70b-instruct', 'meta-llama/llama-3-8b-instruct', 'meta-llama/llama-2-70b-chat'
-#   - Modèles Google : 'google/gemini-3-pro', 'google/gemini-3-flash', 'google/gemini-1.5-pro-latest', 'google/gemini-1.5-flash'
-#   - Modèles Mistral : 'mistralai/mistral-large', 'mistralai/mistral-medium', 'mistralai/mistral-small'
-#   - Autres modèles : 'microsoft/mai-ds-r1', 'perplexity/sonar-small-chat', 'cohere/command-r', 'deepseek/deepseek-chat', 'thudm/glm-z1-32b'
+#   - Modèles Meta : 'meta-llama/llama-4-maverick', 'meta-llama/llama-4-scout', 'meta-llama/llama-3.3-70b-instruct'
+#   - Modèles Google : 'google/gemini-3-pro', 'google/gemini-3-flash', 'google/gemini-2.5-pro'
+#   - Modèles Mistral : 'mistralai/mistral-large', 'mistralai/magistral-medium-2506'
+#   - Autres modèles : 'deepseek/deepseek-r1', 'deepseek/deepseek-chat-v3.1', 'microsoft/mai-ds-r1'
 
 # Exécuter l'annotation des types cellulaires avec un seul modèle LLM
 single_model_results <- annotate_cell_types(

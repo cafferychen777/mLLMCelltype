@@ -7,7 +7,6 @@
 process_zhipu(prompt, model, api_key, base_url = NULL)
 }
 \description{
-This function uses the new BaseAPIProcessor architecture for improved
-maintainability and consistent logging across all API providers.
+Process request using Zhipu models
 }
 \keyword{internal}

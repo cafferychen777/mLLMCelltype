@@ -142,15 +142,6 @@ print_consensus_summary <- function(results) {
             !is.null(results$initial_results$individual_predictions) &&
             length(names(results$initial_results$individual_predictions)) > 0) { # Ensure there are models
           
-          # Try to get the first model name
-          tryCatch({
-            first_model <- names(results$initial_results$individual_predictions)[1]
-            predictions <- results$initial_results$individual_predictions[[first_model]]
-            has_names <- all(names(results$initial_results$individual_predictions) %in% names(results$discussion_logs[[char_cluster_id]]$initial_predictions))
-          }, error = function(e) {
-            has_names <- FALSE
-          })
-          
           # Collect predictions from all models
           all_predictions <- list()
           # Validation using discussion log predictions

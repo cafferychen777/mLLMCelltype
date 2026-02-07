@@ -36,7 +36,7 @@
 #'     "openai" = Sys.getenv("OPENAI_API_KEY"),
 #'     "anthropic" = Sys.getenv("ANTHROPIC_API_KEY"),
 #'     "openrouter" = Sys.getenv("OPENROUTER_API_KEY"),
-#'     "claude-3-opus" = "sk-ant-api03-specific-key-for-opus"
+#'     "claude-opus-4-6-20260205" = "sk-ant-api03-specific-key-for-opus"
 #'   )
 #'   ```
 #'
@@ -53,10 +53,10 @@
 #' \dontrun{
 #' # Compare predictions using different models
 #' api_keys <- list(
-#'   "claude-sonnet-4-20250514" = "your-anthropic-key",
+#'   "claude-sonnet-4-5-20250929" = "your-anthropic-key",
 #'   "deepseek-reasoner" = "your-deepseek-key",
-#'   "gemini-1.5-pro" = "your-gemini-key",
-#'   "qwen-max-2025-01-25" = "your-qwen-key"
+#'   "gemini-3-pro" = "your-gemini-key",
+#'   "qwen3-max" = "your-qwen-key"
 #' )
 #' 
 #' results <- compare_model_predictions(
@@ -67,7 +67,7 @@
 #' }
 compare_model_predictions <- function(input,
                                       tissue_name,
-                                      models = c("claude-opus-4.5",
+                                      models = c("claude-opus-4.6",
                                                  "gpt-5.2",
                                                  "gemini-3-pro",
                                                  "deepseek-r1",
@@ -82,8 +82,12 @@ compare_model_predictions <- function(input,
     stop("api_keys must be a non-empty list with named elements corresponding to models")
   }
   
-  if (any(!models %in% names(api_keys))) {
-    stop("All models must have corresponding API keys in api_keys")
+  # Validate that each model can resolve an API key (via provider name or model name)
+  for (m in models) {
+    if (is.null(get_api_key(m, api_keys))) {
+      stop(sprintf("No API key found for model '%s'. Provide a key using the provider name '%s' or the model name as the key.",
+                   m, get_provider(m)))
+    }
   }
   
   # Initialize results storage

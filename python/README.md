@@ -171,7 +171,7 @@ base_urls = {
 result = interactive_consensus_annotation(
     marker_genes=marker_genes,
     species='human',
-    models=['gpt-5.2', 'claude-3-opus', 'qwen-max'],
+    models=['gpt-5.2', 'claude-sonnet-4-5-20250929', 'qwen3-max'],
     api_keys=your_api_keys,
     base_urls=base_urls
 )

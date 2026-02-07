@@ -698,10 +698,10 @@ pbmc_markers <- FindAllMarkers(pbmc,
 # - OpenRouter: 단일 API로 여러 모델에 액세스. 형식: 'provider/model-name'
 #   - OpenAI 모델: 'openai/gpt-5.2', 'openai/gpt-5', 'openai/o3-pro'
 #   - Anthropic 모델: 'anthropic/claude-opus-4.5', 'anthropic/claude-sonnet-4.5', 'anthropic/claude-haiku-4.5'
-#   - Meta 모델: 'meta-llama/llama-3-70b-instruct', 'meta-llama/llama-3-8b-instruct', 'meta-llama/llama-2-70b-chat'
-#   - Google 모델: 'google/gemini-3-pro', 'google/gemini-3-flash', 'google/gemini-1.5-pro-latest', 'google/gemini-1.5-flash'
-#   - Mistral 모델: 'mistralai/mistral-large', 'mistralai/mistral-medium', 'mistralai/mistral-small'
-#   - 기타 모델: 'microsoft/mai-ds-r1', 'perplexity/sonar-small-chat', 'cohere/command-r', 'deepseek/deepseek-chat', 'thudm/glm-z1-32b'
+#   - Meta 모델: 'meta-llama/llama-4-maverick', 'meta-llama/llama-4-scout', 'meta-llama/llama-3.3-70b-instruct'
+#   - Google 모델: 'google/gemini-3-pro', 'google/gemini-3-flash', 'google/gemini-2.5-pro'
+#   - Mistral 모델: 'mistralai/mistral-large', 'mistralai/magistral-medium-2506'
+#   - 기타 모델: 'deepseek/deepseek-r1', 'deepseek/deepseek-chat-v3.1', 'microsoft/mai-ds-r1'
 
 # 단일 LLM 모델로 세포 유형 주석 실행
 single_model_results <- annotate_cell_types(

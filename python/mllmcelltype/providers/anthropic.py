@@ -38,36 +38,12 @@ MODEL_ALIASES = {
     # Claude 3 series (2024)
     "claude-3-opus": "claude-3-opus-20240229",
     "claude-3-haiku": "claude-3-haiku-20240307",
-    # Deprecated models - map to recommended alternatives
-    "claude-2": "claude-sonnet-4-5-20250929",
-    "claude-2.0": "claude-sonnet-4-5-20250929",
-    "claude-2.1": "claude-sonnet-4-5-20250929",
-    "claude-3-sonnet": "claude-3-7-sonnet-20250219",
-}
-
-# Models that will be retired
-DEPRECATED_MODELS = {
-    "claude-2": "July 21, 2025",
-    "claude-2.0": "July 21, 2025",
-    "claude-2.1": "July 21, 2025",
-    "claude-3-sonnet": "July 21, 2025",
-    "claude-3-opus": "July 21, 2025",
 }
 
 
 def _resolve_model_name(model: str) -> str:
     """Resolve model alias to official API model ID."""
     return MODEL_ALIASES.get(model, model)
-
-
-def _check_deprecated_model(model: str) -> None:
-    """Log warning if model is deprecated."""
-    if model in DEPRECATED_MODELS:
-        write_log(
-            f"Model '{model}' will be retired on {DEPRECATED_MODELS[model]}. "
-            "Please migrate to a newer model.",
-            level="warning",
-        )
 
 
 def process_anthropic(
@@ -92,8 +68,7 @@ def process_anthropic(
         write_log(error_msg, level="error")
         raise ValueError(error_msg)
 
-    # Check for deprecated models and resolve aliases
-    _check_deprecated_model(model)
+    # Resolve model aliases (e.g., claude-opus-4.5 -> claude-opus-4-5-20251101)
     model = _resolve_model_name(model)
     write_log(f"Using model: {model}")
 

@@ -279,7 +279,7 @@ parse_consensus_response <- function(response) {
       trimws(split_lines[nchar(split_lines) > 0])
     }, error = function(e) {
       get_logger()$error("Failed to split response", list(error = e$message))
-      return(c(response))
+      c(response)
     })
   } else {
     c(response)
@@ -397,7 +397,7 @@ execute_consensus_check <- function(formatted_responses, api_keys, models_to_try
 #
 #
 #' @note This function uses create_consensus_check_prompt from prompt_templates.R
-#' @importFrom utils write.table tail
+#' @importFrom utils tail
 #' @keywords internal
 check_consensus <- function(round_responses, api_keys = NULL, controversy_threshold = 2/3, entropy_threshold = 1.0, consensus_check_model = NULL) {
   # Initialize logging

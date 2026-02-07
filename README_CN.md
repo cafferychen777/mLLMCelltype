@@ -64,7 +64,7 @@ Google已经停用了几个Gemini 1.5模型，并将在2025年9月24日停用更
 - **已停用**：Gemini 1.5 Pro 001、Gemini 1.5 Flash 001
 - **将于2025年9月24日停用**：Gemini 1.5 Pro 002、Gemini 1.5 Flash 002、Gemini 1.5 Flash-8B -001
 
-**推荐迁移**：使用`gemini-2.0-flash`或`gemini-2.0-flash-lite`以获得更好的性能和持续支持。别名`gemini-1.5-pro`和`gemini-1.5-flash`将继续工作到2025年9月24日，因为它们指向-002版本。
+**推荐迁移**：使用`gemini-3-pro`或`gemini-3-flash`以获得更好的性能和推理能力。别名`gemini-1.5-pro`和`gemini-1.5-flash`将继续工作到2025年9月24日，因为它们指向-002版本。
 
 **📢 重要提示：Claude模型弃用（2025-07-21）**
 
@@ -500,7 +500,7 @@ results <- annotate_cell_types(
 consensus_results <- interactive_consensus_annotation(
   input = pbmc_markers,
   tissue_name = "human PBMC",
-  models = c("gpt-5.2", "claude-3-opus", "qwen-max"),
+  models = c("gpt-5.2", "claude-sonnet-4-5-20250929", "qwen3-max"),
   api_keys = list(
     openai = "your-openai-key",
     anthropic = "your-anthropic-key",
@@ -944,10 +944,10 @@ dir.create(cache_dir, showWarnings = FALSE, recursive = TRUE)
 # - OpenRouter: 通过单一API访问多个提供商的模型。格式：'provider/model-name'
 #   - OpenAI模型：'openai/gpt-5.2', 'openai/gpt-5', 'openai/o3-pro'
 #   - Anthropic模型：'anthropic/claude-opus-4.5', 'anthropic/claude-sonnet-4.5', 'anthropic/claude-haiku-4.5'
-#   - Meta模型：'meta-llama/llama-3-70b-instruct', 'meta-llama/llama-3-8b-instruct', 'meta-llama/llama-2-70b-chat'
-#   - Google模型：'google/gemini-3-pro', 'google/gemini-3-flash', 'google/gemini-1.5-pro-latest', 'google/gemini-1.5-flash'
-#   - Mistral模型：'mistralai/mistral-large', 'mistralai/mistral-medium', 'mistralai/mistral-small'
-#   - 其他模型：'microsoft/mai-ds-r1', 'perplexity/sonar-small-chat', 'cohere/command-r', 'deepseek/deepseek-chat', 'thudm/glm-z1-32b'
+#   - Meta模型：'meta-llama/llama-4-maverick', 'meta-llama/llama-4-scout', 'meta-llama/llama-3.3-70b-instruct'
+#   - Google模型：'google/gemini-3-pro', 'google/gemini-3-flash', 'google/gemini-2.5-pro'
+#   - Mistral模型：'mistralai/mistral-large', 'mistralai/magistral-medium-2506'
+#   - 其他模型：'deepseek/deepseek-r1', 'deepseek/deepseek-chat-v3.1', 'microsoft/mai-ds-r1'
 
 # 使用多个LLM模型运行LLMCelltype注释
 consensus_results <- interactive_consensus_annotation(
@@ -1285,10 +1285,10 @@ pbmc_markers <- FindAllMarkers(pbmc,
 # - OpenRouter: 通过单一API访问多个提供商的模型。格式：'provider/model-name'
 #   - OpenAI模型：'openai/gpt-5.2', 'openai/gpt-5', 'openai/o3-pro'
 #   - Anthropic模型：'anthropic/claude-opus-4.5', 'anthropic/claude-sonnet-4.5', 'anthropic/claude-haiku-4.5'
-#   - Meta模型：'meta-llama/llama-3-70b-instruct', 'meta-llama/llama-3-8b-instruct', 'meta-llama/llama-2-70b-chat'
-#   - Google模型：'google/gemini-3-pro', 'google/gemini-3-flash', 'google/gemini-1.5-pro-latest', 'google/gemini-1.5-flash'
-#   - Mistral模型：'mistralai/mistral-large', 'mistralai/mistral-medium', 'mistralai/mistral-small'
-#   - 其他模型：'microsoft/mai-ds-r1', 'perplexity/sonar-small-chat', 'cohere/command-r', 'deepseek/deepseek-chat', 'thudm/glm-z1-32b'
+#   - Meta模型：'meta-llama/llama-4-maverick', 'meta-llama/llama-4-scout', 'meta-llama/llama-3.3-70b-instruct'
+#   - Google模型：'google/gemini-3-pro', 'google/gemini-3-flash', 'google/gemini-2.5-pro'
+#   - Mistral模型：'mistralai/mistral-large', 'mistralai/magistral-medium-2506'
+#   - 其他模型：'deepseek/deepseek-r1', 'deepseek/deepseek-chat-v3.1', 'microsoft/mai-ds-r1'
 
 # 使用单个LLM模型运行细胞类型注释
 single_model_results <- annotate_cell_types(
@@ -1486,7 +1486,7 @@ result <- annotate_cell_types(
 consensus_results <- interactive_consensus_annotation(
   input = marker_genes_list,
   tissue_name = "human PBMC",
-  models = c("gpt-5.2", "claude-3-opus", "qwen3-max"),
+  models = c("gpt-5.2", "claude-sonnet-4-5-20250929", "qwen3-max"),
   api_keys = list(
     openai = Sys.getenv("OPENAI_API_KEY"),
     anthropic = Sys.getenv("ANTHROPIC_API_KEY"),
@@ -1528,7 +1528,7 @@ result <- annotate_cell_types(
 consensus_results <- interactive_consensus_annotation(
   input = marker_genes_list,
   tissue_name = "human PBMC",
-  models = c("gpt-5.2", "claude-3-opus", "qwen3-max"),
+  models = c("gpt-5.2", "claude-sonnet-4-5-20250929", "qwen3-max"),
   api_keys = list(
     openai = "your-openai-key",
     anthropic = "your-anthropic-key",

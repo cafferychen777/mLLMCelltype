@@ -627,7 +627,7 @@ combine_results <- function(initial_results, controversy_results, discussion_res
 #' @export
 interactive_consensus_annotation <- function(input,
                                            tissue_name = NULL,
-                                           models = c("claude-opus-4.5",
+                                           models = c("claude-opus-4.6",
                                                      "gpt-5.2",
                                                      "gemini-3-pro",
                                                      "deepseek-r1",

@@ -18,7 +18,7 @@ def process_openai(
 
     Args:
         prompt: The prompt to send to the API
-        model: The model name (e.g., 'gpt-5', 'o1')
+        model: The model name (e.g., 'gpt-5.2', 'o1')
         api_key: OpenAI API key
         base_url: Optional custom base URL
 

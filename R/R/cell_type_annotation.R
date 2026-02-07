@@ -4,7 +4,7 @@
 # Define global variables
 utils::globalVariables(c("cluster", "avg_log2FC", "gene"))
 
-#' @importFrom dplyr group_by top_n group_split slice_head pull
+#' @importFrom dplyr group_by top_n group_split
 #' @importFrom utils head
 
 #' @title Cell Type Annotation with Multi-LLM Framework
@@ -83,7 +83,7 @@ utils::globalVariables(c("cluster", "avg_log2FC", "gene"))
 #'   The API key can be provided directly or stored in environment variables:
 #'   ```r
 #'   # Direct API key
-#'   result <- annotate_cell_types(input, tissue_name, model="gpt-5",
+#'   result <- annotate_cell_types(input, tissue_name, model="gpt-5.2",
 #'                                api_key="sk-...")
 #'
 #'   # Using environment variables
@@ -92,7 +92,7 @@ utils::globalVariables(c("cluster", "avg_log2FC", "gene"))
 #'   Sys.setenv(OPENROUTER_API_KEY="sk-or-...")
 #'
 #'   # Then use with environment variables
-#'   result <- annotate_cell_types(input, tissue_name, model="claude-3-opus",
+#'   result <- annotate_cell_types(input, tissue_name, model="claude-sonnet-4-5-20250929",
 #'                                api_key=Sys.getenv("ANTHROPIC_API_KEY"))
 #'   ```
 #'
@@ -112,7 +112,7 @@ utils::globalVariables(c("cluster", "avg_log2FC", "gene"))
 #'
 #' @param input Either a data frame from Seurat's FindAllMarkers() containing columns 'cluster', 'gene', and 'avg_log2FC', or a list with 'genes' field for each cluster
 #' @param tissue_name Optional tissue context (e.g., 'human PBMC', 'mouse brain') for more accurate annotations
-#' @param model Model name to use. Default: 'gpt-5'. See details for supported models
+#' @param model Model name to use. Default: 'gpt-5.2'. See details for supported models
 #' @param api_key API key for the selected model provider. If NA, returns prompt only
 #' @param top_gene_count Number of top genes to use per cluster when input is from Seurat. Default: 10
 #' @param debug Logical indicating whether to enable debug output. Default: FALSE
@@ -131,7 +131,7 @@ utils::globalVariables(c("cluster", "avg_log2FC", "gene"))
 #'     monocytes = list(genes = c('CD14', 'CD68', 'CSF1R', 'FCGR3A'))
 #'   ),
 #'   tissue_name = 'human PBMC',
-#'   model = 'gpt-5',
+#'   model = 'gpt-5.2',
 #'   api_key = NA  # Returns prompt only without making API call
 #' )
 #'
@@ -157,7 +157,7 @@ utils::globalVariables(c("cluster", "avg_log2FC", "gene"))
 #' openai_annotations <- annotate_cell_types(
 #'   input = all.markers,
 #'   tissue_name = 'human PBMC',
-#'   model = 'gpt-5',
+#'   model = 'gpt-5.2',
 #'   api_key = Sys.getenv("OPENAI_API_KEY"),
 #'   top_gene_count = 15
 #' )
@@ -168,7 +168,7 @@ utils::globalVariables(c("cluster", "avg_log2FC", "gene"))
 #' claude_annotations <- annotate_cell_types(
 #'   input = all.markers,
 #'   tissue_name = 'human PBMC',
-#'   model = 'claude-3-opus',
+#'   model = 'claude-opus-4-6-20260205',
 #'   api_key = Sys.getenv("ANTHROPIC_API_KEY"),
 #'   top_gene_count = 15
 #' )
@@ -180,7 +180,7 @@ utils::globalVariables(c("cluster", "avg_log2FC", "gene"))
 #' openrouter_gpt4_annotations <- annotate_cell_types(
 #'   input = all.markers,
 #'   tissue_name = 'human PBMC',
-#'   model = 'openai/gpt-5',  # Note the provider/model format
+#'   model = 'openai/gpt-5.2',  # Note the provider/model format
 #'   api_key = Sys.getenv("OPENROUTER_API_KEY"),
 #'   top_gene_count = 15
 #' )
@@ -189,7 +189,7 @@ utils::globalVariables(c("cluster", "avg_log2FC", "gene"))
 #' openrouter_claude_annotations <- annotate_cell_types(
 #'   input = all.markers,
 #'   tissue_name = 'human PBMC',
-#'   model = 'anthropic/claude-3-opus',  # Note the provider/model format
+#'   model = 'anthropic/claude-opus-4.6',  # Note the provider/model format
 #'   api_key = Sys.getenv("OPENROUTER_API_KEY"),
 #'   top_gene_count = 15
 #' )
@@ -198,7 +198,7 @@ utils::globalVariables(c("cluster", "avg_log2FC", "gene"))
 #' mouse_annotations <- annotate_cell_types(
 #'   input = mouse_markers,  # Your mouse marker genes
 #'   tissue_name = 'mouse brain',  # Specify correct tissue for context
-#'   model = 'gpt-5',
+#'   model = 'gpt-5.2',
 #'   api_key = Sys.getenv("OPENAI_API_KEY"),
 #'   top_gene_count = 20,  # Use more genes for complex tissues
 #'   debug = TRUE  # Enable debug output
@@ -212,7 +212,7 @@ utils::globalVariables(c("cluster", "avg_log2FC", "gene"))
 #' @export
 annotate_cell_types <- function(input,
                                tissue_name = NULL,
-                               model = 'gpt-5',
+                               model = 'gpt-5.2',
                                api_key = NA,
                                top_gene_count = 10,
                                debug = FALSE,
@@ -271,7 +271,8 @@ annotate_cell_types <- function(input,
     "zhipu" = process_zhipu(prompt, model, api_key, provider_base_url),
     "minimax" = process_minimax(prompt, model, api_key, provider_base_url),
     "grok" = process_grok(prompt, model, api_key, provider_base_url),
-    "openrouter" = process_openrouter(prompt, model, api_key, provider_base_url)
+    "openrouter" = process_openrouter(prompt, model, api_key, provider_base_url),
+    stop("Unsupported model provider: ", provider)
   )
 
   log_info("Model response received", list(response = result))

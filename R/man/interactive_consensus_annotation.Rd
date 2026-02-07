@@ -7,8 +7,7 @@
 interactive_consensus_annotation(
   input,
   tissue_name = NULL,
-  models = c("claude-sonnet-4-5-20250929", "claude-opus-4-1-20250805", "gpt-5",
-    "gemini-2.5-pro", "grok-3-latest"),
+  models = c("claude-opus-4.6", "gpt-5.2", "gemini-3-pro", "deepseek-r1", "grok-4.1"),
   api_keys,
   top_gene_count = 10,
   controversy_threshold = 0.7,

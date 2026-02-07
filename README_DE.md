@@ -504,10 +504,10 @@ dir.create(cache_dir, showWarnings = FALSE, recursive = TRUE)
 # - OpenRouter: Zugriff auf Modelle von mehreren Anbietern über eine einzige API. Format: 'provider/model-name'
 #   - OpenAI-Modelle: 'openai/gpt-5.2', 'openai/gpt-5', 'openai/o3-pro'
 #   - Anthropic-Modelle: 'anthropic/claude-opus-4.5', 'anthropic/claude-sonnet-4.5', 'anthropic/claude-haiku-4.5'
-#   - Meta-Modelle: 'meta-llama/llama-3-70b-instruct', 'meta-llama/llama-3-8b-instruct', 'meta-llama/llama-2-70b-chat'
-#   - Google-Modelle: 'google/gemini-3-pro', 'google/gemini-3-flash', 'google/gemini-1.5-pro-latest', 'google/gemini-1.5-flash'
-#   - Mistral-Modelle: 'mistralai/mistral-large', 'mistralai/mistral-medium', 'mistralai/mistral-small'
-#   - Andere Modelle: 'microsoft/mai-ds-r1', 'perplexity/sonar-small-chat', 'cohere/command-r', 'deepseek/deepseek-chat', 'thudm/glm-z1-32b'
+#   - Meta-Modelle: 'meta-llama/llama-4-maverick', 'meta-llama/llama-4-scout', 'meta-llama/llama-3.3-70b-instruct'
+#   - Google-Modelle: 'google/gemini-3-pro', 'google/gemini-3-flash', 'google/gemini-2.5-pro'
+#   - Mistral-Modelle: 'mistralai/mistral-large', 'mistralai/magistral-medium-2506'
+#   - Andere Modelle: 'deepseek/deepseek-r1', 'deepseek/deepseek-chat-v3.1', 'microsoft/mai-ds-r1'
 
 # LLMCelltype-Annotation mit mehreren LLM-Modellen ausführen
 consensus_results <- interactive_consensus_annotation(
@@ -845,10 +845,10 @@ pbmc_markers <- FindAllMarkers(pbmc,
 # - OpenRouter: Zugriff auf Modelle von mehreren Anbietern über eine einzige API. Format: 'provider/model-name'
 #   - OpenAI-Modelle: 'openai/gpt-5.2', 'openai/gpt-5', 'openai/o3-pro'
 #   - Anthropic-Modelle: 'anthropic/claude-opus-4.5', 'anthropic/claude-sonnet-4.5', 'anthropic/claude-haiku-4.5'
-#   - Meta-Modelle: 'meta-llama/llama-3-70b-instruct', 'meta-llama/llama-3-8b-instruct', 'meta-llama/llama-2-70b-chat'
-#   - Google-Modelle: 'google/gemini-3-pro', 'google/gemini-3-flash', 'google/gemini-1.5-pro-latest', 'google/gemini-1.5-flash'
-#   - Mistral-Modelle: 'mistralai/mistral-large', 'mistralai/mistral-medium', 'mistralai/mistral-small'
-#   - Andere Modelle: 'microsoft/mai-ds-r1', 'perplexity/sonar-small-chat', 'cohere/command-r', 'deepseek/deepseek-chat', 'thudm/glm-z1-32b'
+#   - Meta-Modelle: 'meta-llama/llama-4-maverick', 'meta-llama/llama-4-scout', 'meta-llama/llama-3.3-70b-instruct'
+#   - Google-Modelle: 'google/gemini-3-pro', 'google/gemini-3-flash', 'google/gemini-2.5-pro'
+#   - Mistral-Modelle: 'mistralai/mistral-large', 'mistralai/magistral-medium-2506'
+#   - Andere Modelle: 'deepseek/deepseek-r1', 'deepseek/deepseek-chat-v3.1', 'microsoft/mai-ds-r1'
 
 # Zelltyp-Annotation mit einem einzelnen LLM-Modell ausführen
 single_model_results <- annotate_cell_types(

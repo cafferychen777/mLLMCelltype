@@ -122,13 +122,7 @@ create_annotation_prompt <- function(input, tissue_name, top_gene_count = 10) {
     ordered_indices <- order(num_indices)
     formatted_lines <- formatted_lines[ordered_indices]
   }
-  
-  # Print debug information
-  cat("DEBUG: Formatted lines for prompt:\n")
-  for (line in formatted_lines) {
-    cat(line, "\n")
-  }
-  
+
   prompt <- paste0("You are a cell type annotation expert. Below are marker genes for different cell clusters in ", 
                   tissue_name, ".\n\n",
                   paste(formatted_lines, collapse = "\n"),

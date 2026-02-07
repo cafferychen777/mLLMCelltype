@@ -35,10 +35,6 @@ DeepSeekProcessor <- R6::R6Class("DeepSeekProcessor",
         model = model,
         messages = list(
           list(
-            role = "system",
-            content = "You are a cell type annotation expert. Based on the gene markers provided, identify the most likely cell type. Only provide the cell type name, without any additional explanation or numbering."
-          ),
-          list(
             role = "user",
             content = chunk_content
           )

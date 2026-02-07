@@ -700,10 +700,10 @@ pbmc_markers <- FindAllMarkers(pbmc,
 # - OpenRouter: 単一APIで複数のモデルにアクセス。形式: 'provider/model-name'
 #   - OpenAIモデル: 'openai/gpt-5.2', 'openai/gpt-5', 'openai/o3-pro'
 #   - Anthropicモデル: 'anthropic/claude-opus-4.5', 'anthropic/claude-sonnet-4.5', 'anthropic/claude-haiku-4.5'
-#   - Metaモデル: 'meta-llama/llama-3-70b-instruct', 'meta-llama/llama-3-8b-instruct', 'meta-llama/llama-2-70b-chat'
-#   - Googleモデル: 'google/gemini-3-pro', 'google/gemini-3-flash', 'google/gemini-1.5-pro-latest', 'google/gemini-1.5-flash'
-#   - Mistralモデル: 'mistralai/mistral-large', 'mistralai/mistral-medium', 'mistralai/mistral-small'
-#   - その他のモデル: 'microsoft/mai-ds-r1', 'perplexity/sonar-small-chat', 'cohere/command-r', 'deepseek/deepseek-chat', 'thudm/glm-z1-32b'
+#   - Metaモデル: 'meta-llama/llama-4-maverick', 'meta-llama/llama-4-scout', 'meta-llama/llama-3.3-70b-instruct'
+#   - Googleモデル: 'google/gemini-3-pro', 'google/gemini-3-flash', 'google/gemini-2.5-pro'
+#   - Mistralモデル: 'mistralai/mistral-large', 'mistralai/magistral-medium-2506'
+#   - その他のモデル: 'deepseek/deepseek-r1', 'deepseek/deepseek-chat-v3.1', 'microsoft/mai-ds-r1'
 
 # 単一LLMモデルで細胞タイプアノテーションを実行
 single_model_results <- annotate_cell_types(

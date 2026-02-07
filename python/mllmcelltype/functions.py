@@ -31,13 +31,13 @@ PROVIDER_FUNCTIONS = {
 # Each provider maps to a list of model name prefixes
 # Order matters: more specific prefixes should come first
 PROVIDER_MODEL_PREFIXES = {
-    "openai": ["gpt-", "o1", "o3", "o4", "chatgpt-"],
+    "openai": ["gpt-", "o1", "o3", "o4", "chatgpt-", "codex-"],
     "anthropic": ["claude-"],
     "deepseek": ["deepseek-"],
     "gemini": ["gemini-"],
     "qwen": ["qwen", "qwq-"],
     "stepfun": ["step-"],
-    "zhipu": ["glm-"],  # Supports glm-4.7, glm-4-plus, etc.
+    "zhipu": ["glm-", "chatglm"],
     "minimax": ["minimax-"],
     "grok": ["grok-"],
 }
@@ -50,7 +50,7 @@ def get_provider(model: str) -> str:
     OpenRouter models are identified by the '/' character in the model name.
 
     Args:
-        model: The model name (e.g., 'gpt-4o', 'claude-3-opus', 'anthropic/claude-3-opus')
+        model: The model name (e.g., 'gpt-5.2', 'claude-sonnet-4-5-20250929', 'anthropic/claude-sonnet-4.5')
 
     Returns:
         The provider name (e.g., 'openai', 'anthropic', 'openrouter')
@@ -63,7 +63,7 @@ def get_provider(model: str) -> str:
 
     model_lower = model.lower()
 
-    # OpenRouter models contain '/' (e.g., 'anthropic/claude-3-opus')
+    # OpenRouter models contain '/' (e.g., 'anthropic/claude-sonnet-4.5')
     if "/" in model:
         return "openrouter"
 

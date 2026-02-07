@@ -320,9 +320,6 @@ facilitate_cluster_discussion <- function(cluster_id,
     # Store consensus result in discussion log
     discussion_log$rounds[[round]]$consensus_result <- consensus_result
 
-    # Add extracted cell types to the discussion log
-    discussion_log$rounds[[round]]$extracted_cell_types <- consensus_result$extracted_cell_types
-    
     # Log consensus result
     get_logger()$log_discussion(char_cluster_id, "consensus", consensus_result)
 

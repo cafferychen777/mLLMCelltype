@@ -9,7 +9,7 @@ Users encountered cache issues when switching between different models using the
 
 ## Root Cause
 
-The cache key generation did not properly handle the special case of OpenRouter models. OpenRouter models use the "provider/model" format (e.g., "openai/gpt-5-mini"), but the cache system might use incorrect provider information when generating cache keys.
+The cache key generation did not properly handle the special case of OpenRouter models. OpenRouter models use the "provider/model" format (e.g., "openai/gpt-5.2"), but the cache system might use incorrect provider information when generating cache keys.
 
 ## Implemented Long-term Solution
 
@@ -77,16 +77,16 @@ python -m mllmcelltype.cache_manager --clear
 ```python
 # OpenRouter models
 models = [
-    {"provider": "openrouter", "model": "openai/gpt-5-mini"},
-    {"provider": "openrouter", "model": "anthropic/claude-3-opus"},
+    {"provider": "openrouter", "model": "openai/gpt-5.2"},
+    {"provider": "openrouter", "model": "anthropic/claude-sonnet-4.5"},
 ]
 
 # Or let the system auto-detect (recommended)
 models = [
     "openai/gpt-4o-mini",  # Auto-detected as openrouter
-    "anthropic/claude-3-opus",  # Auto-detected as openrouter
+    "anthropic/claude-sonnet-4.5",  # Auto-detected as openrouter
     "gpt-4o",  # Auto-detected as openai
-    "claude-3-opus",  # Auto-detected as anthropic
+    "claude-sonnet-4-5-20250929",  # Auto-detected as anthropic
 ]
 ```
 

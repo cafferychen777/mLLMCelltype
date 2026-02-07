@@ -2,12 +2,11 @@
 % Please edit documentation in R/process_minimax.R
 \name{process_minimax}
 \alias{process_minimax}
-\title{Process request using Minimax models}
+\title{Process request using MiniMax models}
 \usage{
 process_minimax(prompt, model, api_key, base_url = NULL)
 }
 \description{
-This function uses the new BaseAPIProcessor architecture for improved
-maintainability and consistent logging across all API providers.
+Process request using MiniMax models
 }
 \keyword{internal}
