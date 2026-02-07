@@ -1,8 +1,6 @@
-# Prompt templates for mLLMCelltype
+# Create prompt for cell type annotation
 
-This file contains all prompt template functions used in mLLMCelltype.
-These functions create various prompts for different stages of the cell
-type annotation process. Create prompt for cell type annotation
+Create prompt for cell type annotation
 
 ## Usage
 
@@ -14,8 +12,9 @@ create_annotation_prompt(input, tissue_name, top_gene_count = 10)
 
 - input:
 
-  Either a data frame from Seurat's FindAllMarkers() or a list with
-  'genes' field for each cluster
+  Either a data frame from Seurat's FindAllMarkers() or a list for each
+  cluster where each element is either a character vector of genes or a
+  list containing a `genes` field
 
 - tissue_name:
 

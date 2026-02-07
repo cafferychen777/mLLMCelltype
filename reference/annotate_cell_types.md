@@ -226,9 +226,9 @@ annotate_cell_types(
   model = 'gpt-5.2',
   api_key = NA  # Returns prompt only without making API call
 )
-#> {"timestamp":"2026-02-07 03:58:42","session_id":"20260207_035842","level":"INFO","message":"Unified logger initialized","context":{"session_id":"20260207_035842","log_level":"INFO","log_dir":"logs"},"pid":10529} 
-#> {"timestamp":"2026-02-07 03:58:42","session_id":"20260207_035842","level":"INFO","message":"Processing input with model and provider","context":{"model":"gpt-5.2","provider":"openai","custom_url":false},"pid":10529} 
-#> [1] "You are a cell type annotation expert. Below are marker genes for different cell clusters in human PBMC.\n\n\n\nFor each numbered cluster, provide only the cell type name in a new line, without any explanation."
+#> {"timestamp":"2026-02-07 05:35:02","session_id":"20260207_053502","level":"INFO","message":"Unified logger initialized","context":{"session_id":"20260207_053502","log_level":"INFO","log_dir":"logs"},"pid":10441} 
+#> {"timestamp":"2026-02-07 05:35:02","session_id":"20260207_053502","level":"INFO","message":"Processing input with model and provider","context":{"model":"gpt-5.2","provider":"openai","custom_url":false},"pid":10441} 
+#> [1] "You are a cell type annotation expert. Below are marker genes for different cell clusters in human PBMC.\n\nt_cells: CD3D, CD3E, CD3G, CD28\nb_cells: CD19, CD79A, CD79B, MS4A1\nmonocytes: CD14, CD68, CSF1R, FCGR3A\n\nFor each numbered cluster, provide only the cell type name in a new line, without any explanation."
 
 # Example 2: Using with Seurat pipeline and OpenAI model
 if (FALSE) { # \dontrun{

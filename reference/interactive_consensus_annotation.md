@@ -19,7 +19,8 @@ process includes:
 interactive_consensus_annotation(
   input,
   tissue_name = NULL,
-  models = c("claude-opus-4.6", "gpt-5.2", "gemini-3-pro", "deepseek-r1", "grok-4.1"),
+  models = c("claude-opus-4-6-20260205", "gpt-5.2", "gemini-3-pro", "deepseek-r1",
+    "grok-4.1"),
   api_keys,
   top_gene_count = 10,
   controversy_threshold = 0.7,
@@ -41,9 +42,8 @@ interactive_consensus_annotation(
 
   Either a data frame from Seurat's FindAllMarkers() function containing
   differential gene expression results (must have columns: 'cluster',
-  'gene', and 'avg_log2FC'), or a list where each element has a 'genes'
-  field containing marker genes for a cluster. Cluster IDs must be
-  numeric starting from 0.
+  'gene', and 'avg_log2FC'), or a list where each element is either a
+  character vector of genes or a list containing a `genes` field.
 
 - tissue_name:
 
@@ -91,7 +91,9 @@ interactive_consensus_annotation(
 
 - log_dir:
 
-  Character string specifying directory for log files (default: "logs").
+  Character scalar specifying directory for log files (default: "logs").
+  This function reinitializes the session logger with this directory at
+  the start of each call.
 
 - cache_dir:
 
@@ -124,11 +126,19 @@ interactive_consensus_annotation(
 
 A list containing:
 
-- `voting_results`: Initial voting results from all models
+- `initial_results`: Initial voting results, consensus checks, and
+  controversial cluster IDs
+
+- `final_annotations`: Final annotations keyed by cluster ID
 
 - `controversial_clusters`: Clusters identified as controversial
 
-- `discussion_results`: Detailed discussion results for controversial
-  clusters
+- `discussion_logs`: Detailed discussion logs for controversial clusters
 
-- `final_consensus`: Final consensus annotations for all clusters
+- `session_id`: Logger session identifier
+
+- `voting_results`: Backward-compatible alias of `initial_results`
+
+- `discussion_results`: Backward-compatible alias of `discussion_logs`
+
+- `final_consensus`: Backward-compatible alias of `final_annotations`

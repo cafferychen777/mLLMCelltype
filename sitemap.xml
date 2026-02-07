@@ -60,6 +60,7 @@
 <url><loc>https://cafferyang.com/mLLMCelltype/reference/execute_consensus_check.html</loc></url>
 <url><loc>https://cafferyang.com/mLLMCelltype/reference/extract_labeled_value.html</loc></url>
 <url><loc>https://cafferyang.com/mLLMCelltype/reference/facilitate_cluster_discussion.html</loc></url>
+<url><loc>https://cafferyang.com/mLLMCelltype/reference/filter_valid_responses.html</loc></url>
 <url><loc>https://cafferyang.com/mLLMCelltype/reference/find_majority_prediction.html</loc></url>
 <url><loc>https://cafferyang.com/mLLMCelltype/reference/get_api_key.html</loc></url>
 <url><loc>https://cafferyang.com/mLLMCelltype/reference/get_initial_predictions.html</loc></url>
@@ -68,6 +69,7 @@
 <url><loc>https://cafferyang.com/mLLMCelltype/reference/get_provider.html</loc></url>
 <url><loc>https://cafferyang.com/mLLMCelltype/reference/identify_controversial_clusters.html</loc></url>
 <url><loc>https://cafferyang.com/mLLMCelltype/reference/index.html</loc></url>
+<url><loc>https://cafferyang.com/mLLMCelltype/reference/initialize_logger.html</loc></url>
 <url><loc>https://cafferyang.com/mLLMCelltype/reference/interactive_consensus_annotation.html</loc></url>
 <url><loc>https://cafferyang.com/mLLMCelltype/reference/list_custom_models.html</loc></url>
 <url><loc>https://cafferyang.com/mLLMCelltype/reference/list_custom_providers.html</loc></url>
@@ -76,9 +78,11 @@
 <url><loc>https://cafferyang.com/mLLMCelltype/reference/mllmcelltype_cache_dir.html</loc></url>
 <url><loc>https://cafferyang.com/mLLMCelltype/reference/mllmcelltype_clear_cache.html</loc></url>
 <url><loc>https://cafferyang.com/mLLMCelltype/reference/normalize_annotation.html</loc></url>
+<url><loc>https://cafferyang.com/mLLMCelltype/reference/normalize_cluster_gene_list.html</loc></url>
 <url><loc>https://cafferyang.com/mLLMCelltype/reference/parse_consensus_response.html</loc></url>
 <url><loc>https://cafferyang.com/mLLMCelltype/reference/parse_flexible_format.html</loc></url>
 <url><loc>https://cafferyang.com/mLLMCelltype/reference/parse_standard_format.html</loc></url>
+<url><loc>https://cafferyang.com/mLLMCelltype/reference/parse_text_predictions.html</loc></url>
 <url><loc>https://cafferyang.com/mLLMCelltype/reference/prepare_models_list.html</loc></url>
 <url><loc>https://cafferyang.com/mLLMCelltype/reference/print_consensus_summary.html</loc></url>
 <url><loc>https://cafferyang.com/mLLMCelltype/reference/process_anthropic.html</loc></url>

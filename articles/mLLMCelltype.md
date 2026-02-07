@@ -135,9 +135,6 @@ p2 <- FeaturePlot(pbmc, features = "consensus_proportion",
   scale_color_gradientn(colors = c("blue", "green", "red")) +
   ggtitle("Consensus Proportion") +
   theme(legend.position = "right")
-
-# Print consensus summary
-print_consensus_summary(consensus_results)
 ```
 
 ## Supported Models

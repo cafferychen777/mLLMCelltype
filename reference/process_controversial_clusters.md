@@ -19,6 +19,7 @@ process_controversial_clusters(
   cache_manager,
   use_cache,
   consensus_check_model = NULL,
-  force_rerun = FALSE
+  force_rerun = FALSE,
+  base_urls = NULL
 )
 ```

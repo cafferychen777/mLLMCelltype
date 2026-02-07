@@ -102,9 +102,6 @@ consensus_results <- interactive_consensus_annotation(
   max_discussion_rounds = 3,
   consensus_check_model = "claude-3-7-sonnet-20250219"
 )
-
-# Print consensus results summary
-print_consensus_summary(consensus_results)
 ```
 
 ### Visualization
@@ -220,7 +217,7 @@ Logging system and utility functions
 - [`mllmcelltype_clear_cache()`](https://cafferyang.com/mLLMCelltype/reference/mllmcelltype_clear_cache.md)
   : Clear mLLMCelltype cache
 - [`create_annotation_prompt()`](https://cafferyang.com/mLLMCelltype/reference/create_annotation_prompt.md)
-  : Prompt templates for mLLMCelltype
+  : Create prompt for cell type annotation
 
 # Articles
 

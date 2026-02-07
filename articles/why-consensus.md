@@ -131,9 +131,6 @@ results <- interactive_consensus_annotation(
   models = c("gpt-4o", "claude-sonnet-4-5-20250929", "gemini-2.5-pro"),
   consensus_method = "iterative"
 )
-
-# View consensus metrics
-print_consensus_summary(results)
 ```
 
 #### Understanding Your Results

@@ -112,8 +112,8 @@ It provides both individual predictions and a consensus analysis.</p>
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">compare_model_predictions</span><span class="op">(</span></span>
 <span>  <span class="va">input</span>,</span>
 <span>  <span class="va">tissue_name</span>,</span>
-<span>  models <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"claude-opus-4.6"</span>, <span class="st">"gpt-5.2"</span>, <span class="st">"gemini-3-pro"</span>, <span class="st">"deepseek-r1"</span>, <span class="st">"o3-pro"</span>,</span>
-<span>    <span class="st">"grok-4.1"</span><span class="op">)</span>,</span>
+<span>  models <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"claude-opus-4-6-20260205"</span>, <span class="st">"gpt-5.2"</span>, <span class="st">"gemini-3-pro"</span>, <span class="st">"deepseek-r1"</span>,</span>
+<span>    <span class="st">"o3-pro"</span>, <span class="st">"grok-4.1"</span><span class="op">)</span>,</span>
 <span>  <span class="va">api_keys</span>,</span>
 <span>  top_gene_count <span class="op">=</span> <span class="fl">10</span>,</span>
 <span>  consensus_threshold <span class="op">=</span> <span class="fl">0.5</span></span>
@@ -137,7 +137,8 @@ It provides both individual predictions and a consensus analysis.</p>
 
 
 <dt id="arg-api-keys">api_keys<a class="anchor" aria-label="anchor" href="#arg-api-keys"></a></dt>
-<dd><p>Named list of API keys for the models, with provider or model names as keys</p></dd>
+<dd><p>Named list of API keys for the models, with provider or model names as keys.
+Every model in <code>models</code> must resolve to a non-NULL API key.</p></dd>
 
 
 <dt id="arg-top-gene-count">top_gene_count<a class="anchor" aria-label="anchor" href="#arg-top-gene-count"></a></dt>
@@ -145,12 +146,15 @@ It provides both individual predictions and a consensus analysis.</p>
 
 
 <dt id="arg-consensus-threshold">consensus_threshold<a class="anchor" aria-label="anchor" href="#arg-consensus-threshold"></a></dt>
-<dd><p>Minimum agreement threshold for consensus (0-1). Default: 0.5</p></dd>
+<dd><p>Minimum agreement threshold for consensus (0-1). Default: 0.5.
+Consensus is only evaluated when at least two non-missing model predictions are available for a cluster.</p></dd>
 
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
-    <p>List containing individual model predictions and consensus analysis</p>
+    <p>List containing individual model predictions and consensus analysis
+If a cluster has fewer than two valid predictions after alignment/padding,
+its consensus-related outputs are <code>NA</code>.</p>
     </div>
     <div class="section level2">
     <h2 id="note">Note<a class="anchor" aria-label="anchor" href="#note"></a></h2>

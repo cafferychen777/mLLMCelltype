@@ -130,7 +130,8 @@ clusters with low agreement. The process includes:</p><ol><li><p>Initial voting 
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">interactive_consensus_annotation</span><span class="op">(</span></span>
 <span>  <span class="va">input</span>,</span>
 <span>  tissue_name <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  models <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"claude-opus-4.6"</span>, <span class="st">"gpt-5.2"</span>, <span class="st">"gemini-3-pro"</span>, <span class="st">"deepseek-r1"</span>, <span class="st">"grok-4.1"</span><span class="op">)</span>,</span>
+<span>  models <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"claude-opus-4-6-20260205"</span>, <span class="st">"gpt-5.2"</span>, <span class="st">"gemini-3-pro"</span>, <span class="st">"deepseek-r1"</span>,</span>
+<span>    <span class="st">"grok-4.1"</span><span class="op">)</span>,</span>
 <span>  <span class="va">api_keys</span>,</span>
 <span>  top_gene_count <span class="op">=</span> <span class="fl">10</span>,</span>
 <span>  controversy_threshold <span class="op">=</span> <span class="fl">0.7</span>,</span>
@@ -153,8 +154,8 @@ clusters with low agreement. The process includes:</p><ol><li><p>Initial voting 
 <dl><dt id="arg-input">input<a class="anchor" aria-label="anchor" href="#arg-input"></a></dt>
 <dd><p>Either a data frame from Seurat's FindAllMarkers() function containing
 differential gene expression results (must have columns: 'cluster', 'gene',
-and 'avg_log2FC'), or a list where each element has a 'genes' field containing
-marker genes for a cluster. Cluster IDs must be numeric starting from 0.</p></dd>
+and 'avg_log2FC'), or a list where each element is either a character vector
+of genes or a list containing a <code>genes</code> field.</p></dd>
 
 
 <dt id="arg-tissue-name">tissue_name<a class="anchor" aria-label="anchor" href="#arg-tissue-name"></a></dt>
@@ -199,7 +200,9 @@ consensus checking. If NULL, uses the first model from the models list.</p></dd>
 
 
 <dt id="arg-log-dir">log_dir<a class="anchor" aria-label="anchor" href="#arg-log-dir"></a></dt>
-<dd><p>Character string specifying directory for log files (default: "logs").</p></dd>
+<dd><p>Character scalar specifying directory for log files (default: "logs").
+This function reinitializes the session logger with this directory at the start
+of each call.</p></dd>
 
 
 <dt id="arg-cache-dir">cache_dir<a class="anchor" aria-label="anchor" href="#arg-cache-dir"></a></dt>
@@ -230,10 +233,14 @@ clusters, ignoring cache. Only affects controversial cluster discussions
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
-    <p>A list containing:</p><ul><li><p><code>voting_results</code>: Initial voting results from all models</p></li>
+    <p>A list containing:</p><ul><li><p><code>initial_results</code>: Initial voting results, consensus checks, and controversial cluster IDs</p></li>
+<li><p><code>final_annotations</code>: Final annotations keyed by cluster ID</p></li>
 <li><p><code>controversial_clusters</code>: Clusters identified as controversial</p></li>
-<li><p><code>discussion_results</code>: Detailed discussion results for controversial clusters</p></li>
-<li><p><code>final_consensus</code>: Final consensus annotations for all clusters</p></li>
+<li><p><code>discussion_logs</code>: Detailed discussion logs for controversial clusters</p></li>
+<li><p><code>session_id</code>: Logger session identifier</p></li>
+<li><p><code>voting_results</code>: Backward-compatible alias of <code>initial_results</code></p></li>
+<li><p><code>discussion_results</code>: Backward-compatible alias of <code>discussion_logs</code></p></li>
+<li><p><code>final_consensus</code>: Backward-compatible alias of <code>final_annotations</code></p></li>
 </ul></div>
 
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

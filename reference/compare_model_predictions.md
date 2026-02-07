@@ -10,8 +10,8 @@ consensus analysis.
 compare_model_predictions(
   input,
   tissue_name,
-  models = c("claude-opus-4.6", "gpt-5.2", "gemini-3-pro", "deepseek-r1", "o3-pro",
-    "grok-4.1"),
+  models = c("claude-opus-4-6-20260205", "gpt-5.2", "gemini-3-pro", "deepseek-r1",
+    "o3-pro", "grok-4.1"),
   api_keys,
   top_gene_count = 10,
   consensus_threshold = 0.5
@@ -39,7 +39,7 @@ compare_model_predictions(
 - api_keys:
 
   Named list of API keys for the models, with provider or model names as
-  keys
+  keys. Every model in `models` must resolve to a non-NULL API key.
 
 - top_gene_count:
 
@@ -48,11 +48,15 @@ compare_model_predictions(
 
 - consensus_threshold:
 
-  Minimum agreement threshold for consensus (0-1). Default: 0.5
+  Minimum agreement threshold for consensus (0-1). Default: 0.5.
+  Consensus is only evaluated when at least two non-missing model
+  predictions are available for a cluster.
 
 ## Value
 
-List containing individual model predictions and consensus analysis
+List containing individual model predictions and consensus analysis If a
+cluster has fewer than two valid predictions after alignment/padding,
+its consensus-related outputs are `NA`.
 
 ## Note
 

@@ -7,3 +7,13 @@ Validate base URL format
 ``` r
 validate_base_url(url)
 ```
+
+## Arguments
+
+- url:
+
+  URL to validate
+
+## Value
+
+TRUE if valid, FALSE otherwise

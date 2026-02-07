@@ -77,4 +77,4 @@ Logging system and utility functions
 - [`mllmcelltype_clear_cache()`](https://cafferyang.com/mLLMCelltype/reference/mllmcelltype_clear_cache.md)
   : Clear mLLMCelltype cache
 - [`create_annotation_prompt()`](https://cafferyang.com/mLLMCelltype/reference/create_annotation_prompt.md)
-  : Prompt templates for mLLMCelltype
+  : Create prompt for cell type annotation
