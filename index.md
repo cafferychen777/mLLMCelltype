@@ -5,7 +5,6 @@
 **Multi-LLM Consensus Framework for Cell Type Annotation in scRNA-seq
 Data**
 
-[![Tweet](https://img.shields.io/twitter/url?style=social&url=https%3A%2F%2Fgithub.com%2Fcafferychen777%2FmLLMCelltype)](https://twitter.com/intent/tweet?text=Check%20out%20mLLMCelltype%3A%20A%20multi-LLM%20consensus%20framework%20for%20cell%20type%20annotation%20in%20scRNA-seq%20data%21&url=https%3A%2F%2Fgithub.com%2Fcafferychen777%2FmLLMCelltype)
 [![Stars](https://img.shields.io/github/stars/cafferychen777/mLLMCelltype?style=social)](https://github.com/cafferychen777/mLLMCelltype/stargazers)
 [![Forks](https://img.shields.io/github/forks/cafferychen777/mLLMCelltype?style=social)](https://github.com/cafferychen777/mLLMCelltype/network/members)
 [![Discord](https://img.shields.io/badge/Discord-Join%20Chat-7289da?logo=discord&logoColor=white)](https://discord.gg/pb2aZdG4)
@@ -19,13 +18,13 @@ mLLMCelltype is an R package that leverages various large language
 models (LLMs) for automated cell type annotation in single-cell RNA
 sequencing data. The package implements a **multi-LLM consensus
 architecture** where multiple LLMs collaborate through structured
-deliberation to provide more reliable annotations than any single model
-could achieve alone.
+deliberation that aims to improve annotation reliability by combining
+multiple model predictions.
 
 ### Key Features
 
-- **Multi-LLM Consensus Mechanism**: Harnesses collective intelligence
-  from diverse LLMs to overcome single-model limitations and biases
+- **Multi-LLM Consensus Mechanism**: Combines predictions from multiple
+  LLMs to reduce individual model biases
 - **Structured Deliberation Process**: For controversial clusters, LLMs
   engage in collaborative discussion across multiple rounds, evaluating
   evidence and refining annotations together

@@ -9,13 +9,12 @@
 mLLMCelltype is an iterative multi-LLM consensus framework for cell type
 annotation in single-cell RNA sequencing data. By leveraging the
 complementary strengths of multiple large language models, this
-framework significantly improves annotation accuracy while providing
+framework aims to improve annotation accuracy while providing
 transparent uncertainty quantification.
 
 The package implements a novel approach where multiple large language
 models (LLMs) collaborate through structured deliberation to achieve
-more accurate and reliable cell type annotations than any single model
-could provide alone.
+potentially more reliable annotations by cross-validating across models.
 
 ### Background
 
@@ -39,9 +38,9 @@ reliable annotations.
 
 #### Multi-LLM Consensus Architecture
 
-mLLMCelltype harnesses collective intelligence from diverse LLMs to
-overcome single-model limitations and biases. The package currently
-supports a wide range of models:
+mLLMCelltype combines predictions from multiple LLMs to reduce
+individual model biases. The package currently supports a wide range of
+models:
 
 - OpenAI GPT-4o/4.1
 - Anthropic Claude-3.7/3.5
@@ -55,8 +54,8 @@ supports a wide range of models:
 - OpenRouter
 
 By integrating multiple models with different architectures and training
-data, mLLMCelltype can achieve more robust and accurate annotations than
-any single model.
+data, mLLMCelltype can produce annotations less sensitive to individual
+model biases.
 
 #### Structured Deliberation Process
 
@@ -86,14 +85,14 @@ confidence annotations and which may require further investigation.
 
 #### Other Advanced Features
 
-- **Hallucination Reduction**: Cross-model deliberation actively
-  suppresses inaccurate or unsupported predictions
+- **Hallucination Reduction**: Cross-model comparison may help identify
+  inconsistent predictions
 - **Robust to Input Noise**: Maintains high accuracy even with imperfect
   marker gene lists
 - **Hierarchical Annotation Support**: Optional extension for
   multi-resolution analysis
-- **No Reference Dataset Required**: Performs accurate annotation
-  without pre-training or reference data
+- **No Reference Dataset Required**: Performs annotation without
+  pre-training or reference data
 - **Complete Reasoning Chains**: Documents the full deliberation process
 - **Seamless Integration**: Works directly with standard Scanpy/Seurat
   workflows

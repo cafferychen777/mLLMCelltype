@@ -5,16 +5,15 @@
 - [Why Choose Consensus? The Scientific Foundation of Multi-LLM
   Annotation](https://cafferyang.com/mLLMCelltype/articles/why-consensus.md):
 
-  Discover why consensus-based approaches outperform single-model
-  methods in cell type annotation accuracy, reliability, and uncertainty
-  quantification.
+  Overview of the consensus-based approach to cell type annotation,
+  including its scientific basis, methodology, and trade-offs.
 
-- [Consensus vs Single-Agent: A Comprehensive Methodology
+- [Consensus vs Single-Agent: A Methodology
   Comparison](https://cafferyang.com/mLLMCelltype/articles/vs-single-agent.md):
 
-  In-depth analysis comparing multi-LLM consensus frameworks with
-  single-agent systems for cell type annotation, covering accuracy,
-  reliability, and practical applications.
+  Comparison of multi-LLM consensus and single-agent approaches for cell
+  type annotation, covering architecture, trade-offs, and practical
+  considerations.
 
 ### Getting Started
 

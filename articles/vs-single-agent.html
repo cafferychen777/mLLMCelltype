@@ -5,7 +5,7 @@
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<title>Consensus vs Single-Agent: A Comprehensive Methodology Comparison • mLLMCelltype</title>
+<title>Consensus vs Single-Agent: A Methodology Comparison • mLLMCelltype</title>
 <!-- favicons --><link rel="icon" type="image/png" sizes="96x96" href="../favicon-96x96.png">
 <link rel="icon" type="”image/svg+xml”" href="../favicon.svg">
 <link rel="apple-touch-icon" sizes="180x180" href="../apple-touch-icon.png">
@@ -19,9 +19,9 @@
 <link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
 <link href="../deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
 <script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><link href="../extra.css" rel="stylesheet">
-<meta property="og:title" content="Consensus vs Single-Agent: A Comprehensive Methodology Comparison">
-<meta name="description" content="In-depth analysis comparing multi-LLM consensus frameworks with single-agent systems for cell type annotation, covering accuracy, reliability, and practical applications.">
-<meta property="og:description" content="In-depth analysis comparing multi-LLM consensus frameworks with single-agent systems for cell type annotation, covering accuracy, reliability, and practical applications.">
+<meta property="og:title" content="Consensus vs Single-Agent: A Methodology Comparison">
+<meta name="description" content="Comparison of multi-LLM consensus and single-agent approaches for cell type annotation, covering architecture, trade-offs, and practical considerations.">
+<meta property="og:description" content="Comparison of multi-LLM consensus and single-agent approaches for cell type annotation, covering architecture, trade-offs, and practical considerations.">
 <meta property="og:image" content="https://cafferyang.com/mLLMCelltype/reference/figures/social-card.png">
 <meta property="og:image:alt" content="mLLMCelltype - Cell Type Annotation Using Large Language Models">
 <meta name="twitter:card" content="summary_large_image">
@@ -145,7 +145,7 @@
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
 
-      <h1>Consensus vs Single-Agent: A Comprehensive Methodology Comparison</h1>
+      <h1>Consensus vs Single-Agent: A Methodology Comparison</h1>
             
       
       <small class="dont-index">Source: <a href="https://github.com/cafferychen777/mLLMCelltype/blob/main/vignettes/vs-single-agent.Rmd" class="external-link"><code>vignettes/vs-single-agent.Rmd</code></a></small>
@@ -155,19 +155,16 @@
     
     
 <div class="section level2">
-<h2 id="consensus-vs-single-agent-a-comprehensive-methodology-comparison">Consensus vs Single-Agent: A Comprehensive Methodology
-Comparison<a class="anchor" aria-label="anchor" href="#consensus-vs-single-agent-a-comprehensive-methodology-comparison"></a>
+<h2 id="consensus-vs-single-agent-a-methodology-comparison">Consensus vs Single-Agent: A Methodology Comparison<a class="anchor" aria-label="anchor" href="#consensus-vs-single-agent-a-methodology-comparison"></a>
 </h2>
-<div class="alert alert-primary">
-<p><strong>🔬 Research Question:</strong> Which architectural approach
-delivers superior cell type annotation performance: multi-LLM consensus
-or specialized single-agent systems?</p>
-</div>
+<p>This vignette describes the architectural differences between
+multi-LLM consensus and single-agent approaches for cell type
+annotation, along with their respective trade-offs.</p>
 <div class="section level3">
 <h3 id="architectural-overview">Architectural Overview<a class="anchor" aria-label="anchor" href="#architectural-overview"></a>
 </h3>
 <div class="section level4">
-<h4 id="single-agent-systems">🤖 <strong>Single-Agent Systems</strong><a class="anchor" aria-label="anchor" href="#single-agent-systems"></a>
+<h4 id="single-agent-systems">Single-Agent Systems<a class="anchor" aria-label="anchor" href="#single-agent-systems"></a>
 </h4>
 <p>Single-agent approaches use specialized AI systems with predefined
 roles:</p>
@@ -177,8 +174,7 @@ roles:</p>
 annotation tasks</li>
 <li>
 <strong>Sequential processing</strong>: Agents work in a pipeline
-fashion<br>
-</li>
+fashion</li>
 <li>
 <strong>Role-based validation</strong>: Quality control through
 dedicated validation agents</li>
@@ -188,7 +184,7 @@ sequences</li>
 </ul>
 </div>
 <div class="section level4">
-<h4 id="multi-llm-consensus-systems">🔄 <strong>Multi-LLM Consensus Systems</strong><a class="anchor" aria-label="anchor" href="#multi-llm-consensus-systems"></a>
+<h4 id="multi-llm-consensus-systems">Multi-LLM Consensus Systems<a class="anchor" aria-label="anchor" href="#multi-llm-consensus-systems"></a>
 </h4>
 <p>Consensus frameworks leverage multiple independent models:</p>
 <ul>
@@ -196,433 +192,129 @@ sequences</li>
 <strong>Parallel processing</strong>: Multiple models analyze
 simultaneously</li>
 <li>
-<strong>Democratic decision-making</strong>: Collective intelligence
-drives results</li>
+<strong>Collective decision-making</strong>: Annotations are
+determined by agreement across models</li>
 <li>
-<strong>Iterative refinement</strong>: Continuous improvement
-through discussion</li>
+<strong>Iterative refinement</strong>: Discussion rounds for
+clusters where models disagree</li>
 <li>
-<strong>Adaptive complexity</strong>: More discussion for difficult
-cases</li>
+<strong>Adaptive complexity</strong>: More discussion is allocated
+to difficult cases</li>
 </ul>
 </div>
 </div>
 <div class="section level3">
-<h3 id="performance-comparison-matrix">Performance Comparison Matrix<a class="anchor" aria-label="anchor" href="#performance-comparison-matrix"></a>
+<h3 id="methodological-differences">Methodological Differences<a class="anchor" aria-label="anchor" href="#methodological-differences"></a>
 </h3>
 <div class="section level4">
-<h4 id="accuracy-metrics">📊 <strong>Accuracy Metrics</strong><a class="anchor" aria-label="anchor" href="#accuracy-metrics"></a>
+<h4 id="single-agent-approach">Single-Agent Approach<a class="anchor" aria-label="anchor" href="#single-agent-approach"></a>
 </h4>
-<table class="table">
-<thead><tr class="header">
-<th>Metric</th>
-<th>Single-Agent Systems</th>
-<th>Multi-LLM Consensus</th>
-<th>Advantage</th>
-</tr></thead>
-<tbody>
-<tr class="odd">
-<td><strong>Overall Accuracy</strong></td>
-<td>75-85%</td>
-<td>95%</td>
-<td>Consensus +15%</td>
-</tr>
-<tr class="even">
-<td><strong>Rare Cell Types</strong></td>
-<td>60-70%</td>
-<td>88%</td>
-<td>Consensus +23%</td>
-</tr>
-<tr class="odd">
-<td><strong>Novel Datasets</strong></td>
-<td>65-75%</td>
-<td>92%</td>
-<td>Consensus +22%</td>
-</tr>
-<tr class="even">
-<td><strong>Cross-species</strong></td>
-<td>70-80%</td>
-<td>89%</td>
-<td>Consensus +14%</td>
-</tr>
-</tbody>
-</table>
+<p><strong>Strengths:</strong> - Clear role definition: Each agent has
+specific responsibilities - Streamlined workflows: Predictable
+processing pipelines - Focused optimization: Agents can be fine-tuned
+for specific tasks - Lower initial complexity: Easier to implement and
+understand</p>
+<p><strong>Limitations:</strong> - Sequential bottlenecks: Failure in
+one agent affects the entire pipeline - Limited model diversity:
+Typically relies on one underlying LLM family - Rigid processing:
+Difficult to adapt to edge cases - Single point of failure: Agent
+malfunction can compromise results</p>
 </div>
 <div class="section level4">
-<h4 id="reliability-assessment">⚡ <strong>Reliability Assessment</strong><a class="anchor" aria-label="anchor" href="#reliability-assessment"></a>
+<h4 id="consensus-approach">Consensus Approach<a class="anchor" aria-label="anchor" href="#consensus-approach"></a>
 </h4>
-<table class="table">
-<colgroup>
-<col width="21%">
-<col width="30%">
-<col width="26%">
-<col width="21%">
-</colgroup>
-<thead><tr class="header">
-<th>Feature</th>
-<th>Single-Agent</th>
-<th>Consensus</th>
-<th>Winner</th>
-</tr></thead>
-<tbody>
-<tr class="odd">
-<td><strong>Hallucination Rate</strong></td>
-<td>8-12%</td>
-<td>2-4%</td>
-<td>🏆 Consensus</td>
-</tr>
-<tr class="even">
-<td><strong>Uncertainty Quantification</strong></td>
-<td>Basic</td>
-<td>Comprehensive</td>
-<td>🏆 Consensus</td>
-</tr>
-<tr class="odd">
-<td><strong>Reproducibility</strong></td>
-<td>Good</td>
-<td>Excellent</td>
-<td>🏆 Consensus</td>
-</tr>
-<tr class="even">
-<td><strong>Error Detection</strong></td>
-<td>Limited</td>
-<td>Automated</td>
-<td>🏆 Consensus</td>
-</tr>
-</tbody>
-</table>
+<p><strong>Strengths:</strong> - Error correction: Multiple models can
+catch each other’s mistakes - Model diversity: Leverages different
+training approaches and strengths - Adaptive processing: More resources
+allocated to difficult cases - Transparent uncertainty: Clear metrics
+for prediction confidence</p>
+<p><strong>Challenges:</strong> - Initial complexity: Requires
+coordination between multiple models - Resource coordination: Must
+manage multiple API calls efficiently - Consensus building: Additional
+time for deliberation processes - Model compatibility: Ensuring
+different models work together effectively</p>
 </div>
-<div class="section level4">
-<h4 id="resource-efficiency">💰 <strong>Resource Efficiency</strong><a class="anchor" aria-label="anchor" href="#resource-efficiency"></a>
-</h4>
+</div>
+<div class="section level3">
+<h3 id="performance">Performance<a class="anchor" aria-label="anchor" href="#performance"></a>
+</h3>
+<p>For benchmark results comparing the two approaches, see Yang et
+al. (2025):</p>
+<p>Yang, C., Zhang, X., &amp; Chen, J. (2025). Large Language Model
+Consensus Substantially Improves the Cell Type Annotation Accuracy for
+scRNA-seq Data. <em>bioRxiv</em>. <a href="https://doi.org/10.1101/2025.04.10.647852" class="external-link uri">https://doi.org/10.1101/2025.04.10.647852</a></p>
+</div>
+<div class="section level3">
+<h3 id="cost-and-resource-trade-offs">Cost and Resource Trade-offs<a class="anchor" aria-label="anchor" href="#cost-and-resource-trade-offs"></a>
+</h3>
 <table class="table">
 <colgroup>
-<col width="19%">
-<col width="30%">
-<col width="26%">
-<col width="23%">
+<col width="25%">
+<col width="40%">
+<col width="34%">
 </colgroup>
 <thead><tr class="header">
 <th>Aspect</th>
 <th>Single-Agent</th>
 <th>Consensus</th>
-<th>Analysis</th>
 </tr></thead>
 <tbody>
 <tr class="odd">
-<td><strong>Initial Cost</strong></td>
-<td>Lower</td>
-<td>Higher*</td>
-<td>*Offset by accuracy gains</td>
+<td><strong>API calls per cluster</strong></td>
+<td>Fewer</td>
+<td>More (multiple models)</td>
 </tr>
 <tr class="even">
-<td><strong>Long-term Value</strong></td>
-<td>Moderate</td>
-<td>High</td>
-<td>Better cost per correct annotation</td>
+<td><strong>Cost per run</strong></td>
+<td>Lower</td>
+<td>Higher per run</td>
 </tr>
 <tr class="odd">
+<td><strong>Two-stage optimization</strong></td>
+<td>N/A</td>
+<td>Reduces calls when models agree early</td>
+</tr>
+<tr class="even">
 <td><strong>Scalability</strong></td>
 <td>Good</td>
-<td>Excellent</td>
-<td>Consensus optimizes resource usage</td>
-</tr>
-<tr class="even">
-<td><strong>API Optimization</strong></td>
-<td>Basic</td>
-<td>Advanced</td>
-<td>70-80% cost reduction possible</td>
+<td>Good, with caching support</td>
 </tr>
 </tbody>
 </table>
+<p>The two-stage consensus approach in mLLMCelltype can reduce API calls
+when models agree early, since only clusters without initial consensus
+proceed to the deliberation stage.</p>
+</div>
+<div class="section level3">
+<h3 id="practical-considerations">Practical Considerations<a class="anchor" aria-label="anchor" href="#practical-considerations"></a>
+</h3>
+<div class="section level4">
+<h4 id="when-single-agent-approaches-may-suffice">When single-agent approaches may suffice:<a class="anchor" aria-label="anchor" href="#when-single-agent-approaches-may-suffice"></a>
+</h4>
+<ul>
+<li>Standardized datasets with well-characterized tissues</li>
+<li>High-throughput screening of many similar datasets</li>
+<li>Limited API budget</li>
+<li>Straightforward annotation tasks</li>
+</ul>
+</div>
+<div class="section level4">
+<h4 id="when-consensus-approaches-may-be-preferable">When consensus approaches may be preferable:<a class="anchor" aria-label="anchor" href="#when-consensus-approaches-may-be-preferable"></a>
+</h4>
+<ul>
+<li>Novel biological contexts where model agreement provides additional
+confidence</li>
+<li>Work intended for publication, where uncertainty quantification is
+useful</li>
+<li>Complex tissues with many similar cell types</li>
+<li>Cases where identifying uncertain annotations is important</li>
+</ul>
 </div>
 </div>
 <div class="section level3">
-<h3 id="deep-dive-methodological-differences">Deep Dive: Methodological Differences<a class="anchor" aria-label="anchor" href="#deep-dive-methodological-differences"></a>
+<h3 id="hybrid-approaches">Hybrid Approaches<a class="anchor" aria-label="anchor" href="#hybrid-approaches"></a>
 </h3>
-<div class="section level4">
-<h4 id="single-agent-approach-specialized-expertise">🎯 <strong>Single-Agent Approach: Specialized
-Expertise</strong><a class="anchor" aria-label="anchor" href="#single-agent-approach-specialized-expertise"></a>
-</h4>
-<div class="section level5">
-<h5 id="strengths">
-<strong>Strengths:</strong><a class="anchor" aria-label="anchor" href="#strengths"></a>
-</h5>
-<ul>
-<li>
-<strong>Clear role definition</strong>: Each agent has specific
-responsibilities</li>
-<li>
-<strong>Streamlined workflows</strong>: Predictable processing
-pipelines<br>
-</li>
-<li>
-<strong>Focused optimization</strong>: Agents can be fine-tuned for
-specific tasks</li>
-<li>
-<strong>Lower initial complexity</strong>: Easier to implement and
-understand</li>
-</ul>
-</div>
-<div class="section level5">
-<h5 id="limitations">
-<strong>Limitations:</strong><a class="anchor" aria-label="anchor" href="#limitations"></a>
-</h5>
-<ul>
-<li>
-<strong>Sequential bottlenecks</strong>: Failure in one agent
-affects the entire pipeline</li>
-<li>
-<strong>Limited model diversity</strong>: Typically relies on one
-underlying LLM family</li>
-<li>
-<strong>Rigid processing</strong>: Difficult to adapt to edge
-cases</li>
-<li>
-<strong>Single point of failure</strong>: Agent malfunction can
-compromise results</li>
-</ul>
-</div>
-</div>
-<div class="section level4">
-<h4 id="consensus-approach-collective-intelligence">🔄 <strong>Consensus Approach: Collective Intelligence</strong><a class="anchor" aria-label="anchor" href="#consensus-approach-collective-intelligence"></a>
-</h4>
-<div class="section level5">
-<h5 id="strengths-1">
-<strong>Strengths:</strong><a class="anchor" aria-label="anchor" href="#strengths-1"></a>
-</h5>
-<ul>
-<li>
-<strong>Robust error correction</strong>: Multiple models catch each
-other’s mistakes</li>
-<li>
-<strong>Model diversity</strong>: Leverages different training
-approaches and strengths</li>
-<li>
-<strong>Adaptive processing</strong>: More resources allocated to
-difficult cases</li>
-<li>
-<strong>Transparent uncertainty</strong>: Clear metrics for
-prediction confidence</li>
-</ul>
-</div>
-<div class="section level5">
-<h5 id="challenges">
-<strong>Challenges:</strong><a class="anchor" aria-label="anchor" href="#challenges"></a>
-</h5>
-<ul>
-<li>
-<strong>Initial complexity</strong>: Requires coordination between
-multiple models</li>
-<li>
-<strong>Resource coordination</strong>: Must manage multiple API
-calls efficiently</li>
-<li>
-<strong>Consensus building</strong>: Additional time for
-deliberation processes</li>
-<li>
-<strong>Model compatibility</strong>: Ensuring different models work
-together effectively</li>
-</ul>
-</div>
-</div>
-</div>
-<div class="section level3">
-<h3 id="real-world-performance-analysis">Real-World Performance Analysis<a class="anchor" aria-label="anchor" href="#real-world-performance-analysis"></a>
-</h3>
-<div class="section level4">
-<h4 id="case-study-1-human-pbmc-analysis">🧬 <strong>Case Study 1: Human PBMC Analysis</strong><a class="anchor" aria-label="anchor" href="#case-study-1-human-pbmc-analysis"></a>
-</h4>
-<p><strong>Dataset</strong>: 10,000 cells, 8 major cell types</p>
-<table class="table">
-<thead><tr class="header">
-<th>Approach</th>
-<th>Accuracy</th>
-<th>Time (min)</th>
-<th>Cost ($)</th>
-<th>Uncertain Cases</th>
-</tr></thead>
-<tbody>
-<tr class="odd">
-<td>Single-Agent</td>
-<td>82%</td>
-<td>3.2</td>
-<td>$2.40</td>
-<td>15%</td>
-</tr>
-<tr class="even">
-<td>Consensus</td>
-<td>96%</td>
-<td>4.1</td>
-<td>$2.80</td>
-<td>4%</td>
-</tr>
-</tbody>
-</table>
-<p><strong>Key Insight</strong>: Consensus achieved 14% higher accuracy
-with only 17% cost increase.</p>
-</div>
-<div class="section level4">
-<h4 id="case-study-2-mouse-brain-annotation">🐭 <strong>Case Study 2: Mouse Brain Annotation</strong><a class="anchor" aria-label="anchor" href="#case-study-2-mouse-brain-annotation"></a>
-</h4>
-<p><strong>Dataset</strong>: 25,000 cells, 15 neuronal subtypes</p>
-<table class="table">
-<thead><tr class="header">
-<th>Approach</th>
-<th>Rare Cell Detection</th>
-<th>Novel Subtype ID</th>
-<th>Expert Agreement</th>
-</tr></thead>
-<tbody>
-<tr class="odd">
-<td>Single-Agent</td>
-<td>68%</td>
-<td>45%</td>
-<td>72%</td>
-</tr>
-<tr class="even">
-<td>Consensus</td>
-<td>89%</td>
-<td>78%</td>
-<td>94%</td>
-</tr>
-</tbody>
-</table>
-<p><strong>Key Insight</strong>: Consensus excels at challenging
-annotation tasks requiring nuanced biological understanding.</p>
-</div>
-<div class="section level4">
-<h4 id="case-study-3-cross-species-analysis">🔬 <strong>Case Study 3: Cross-Species Analysis</strong><a class="anchor" aria-label="anchor" href="#case-study-3-cross-species-analysis"></a>
-</h4>
-<p><strong>Dataset</strong>: Comparative study across human, mouse, and
-zebrafish</p>
-<table class="table">
-<colgroup>
-<col width="17%">
-<col width="28%">
-<col width="24%">
-<col width="28%">
-</colgroup>
-<thead><tr class="header">
-<th>Metric</th>
-<th>Single-Agent</th>
-<th>Consensus</th>
-<th>Improvement</th>
-</tr></thead>
-<tbody>
-<tr class="odd">
-<td><strong>Species Consistency</strong></td>
-<td>71%</td>
-<td>87%</td>
-<td>+16%</td>
-</tr>
-<tr class="even">
-<td><strong>Homolog Recognition</strong></td>
-<td>63%</td>
-<td>84%</td>
-<td>+21%</td>
-</tr>
-<tr class="odd">
-<td><strong>Evolutionary Insights</strong></td>
-<td>Limited</td>
-<td>Comprehensive</td>
-<td>Qualitative gain</td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
-<div class="section level3">
-<h3 id="practical-implementation-considerations">Practical Implementation Considerations<a class="anchor" aria-label="anchor" href="#practical-implementation-considerations"></a>
-</h3>
-<div class="section level4">
-<h4 id="when-to-choose-single-agent-systems">🚀 <strong>When to Choose Single-Agent Systems</strong><a class="anchor" aria-label="anchor" href="#when-to-choose-single-agent-systems"></a>
-</h4>
-<div class="section level5">
-<h5 id="ideal-scenarios">
-<strong>Ideal Scenarios:</strong><a class="anchor" aria-label="anchor" href="#ideal-scenarios"></a>
-</h5>
-<ul>
-<li>
-<strong>Standardized datasets</strong>: Well-characterized tissues
-with established annotations</li>
-<li>
-<strong>High-throughput screening</strong>: Many similar datasets
-requiring fast processing</li>
-<li>
-<strong>Budget constraints</strong>: Very limited API resources
-available</li>
-<li>
-<strong>Simple workflows</strong>: Straightforward annotation
-tasks</li>
-</ul>
-</div>
-<div class="section level5">
-<h5 id="example-use-cases">
-<strong>Example Use Cases:</strong><a class="anchor" aria-label="anchor" href="#example-use-cases"></a>
-</h5>
-<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># Quick PBMC annotation for standard analysis</span></span>
-<span><span class="fu">quick_pbmc_annotation</span><span class="op">(</span><span class="va">seurat_obj</span>, agent <span class="op">=</span> <span class="st">"specialized"</span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># Batch processing of similar samples</span></span>
-<span><span class="fu">batch_annotate</span><span class="op">(</span><span class="va">sample_list</span>, method <span class="op">=</span> <span class="st">"single_agent"</span><span class="op">)</span></span></code></pre></div>
-</div>
-</div>
-<div class="section level4">
-<h4 id="when-to-choose-consensus-systems">🎯 <strong>When to Choose Consensus Systems</strong><a class="anchor" aria-label="anchor" href="#when-to-choose-consensus-systems"></a>
-</h4>
-<div class="section level5">
-<h5 id="optimal-applications">
-<strong>Optimal Applications:</strong><a class="anchor" aria-label="anchor" href="#optimal-applications"></a>
-</h5>
-<ul>
-<li>
-<strong>Research publications</strong>: Where accuracy and
-defensibility are crucial</li>
-<li>
-<strong>Novel biological contexts</strong>: Unexplored tissues or
-disease states</li>
-<li>
-<strong>Clinical applications</strong>: Where annotation errors have
-real consequences</li>
-<li>
-<strong>Comparative studies</strong>: Requiring robust, reproducible
-results</li>
-</ul>
-</div>
-<div class="section level5">
-<h5 id="implementation-examples">
-<strong>Implementation Examples:</strong><a class="anchor" aria-label="anchor" href="#implementation-examples"></a>
-</h5>
-<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># High-accuracy research annotation</span></span>
-<span><span class="va">research_results</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/interactive_consensus_annotation.html">interactive_consensus_annotation</a></span><span class="op">(</span></span>
-<span>  seurat_obj <span class="op">=</span> <span class="va">novel_tissue_data</span>,</span>
-<span>  models <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"gpt-5"</span>, <span class="st">"claude-sonnet-4-5-20250929"</span>, <span class="st">"gemini-1.5-pro"</span><span class="op">)</span>,</span>
-<span>  consensus_method <span class="op">=</span> <span class="st">"iterative"</span></span>
-<span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># Clinical-grade annotation with uncertainty quantification</span></span>
-<span><span class="va">clinical_annotation</span> <span class="op">&lt;-</span> <span class="fu">consensus_annotate</span><span class="op">(</span></span>
-<span>  <span class="va">patient_sample</span>,</span>
-<span>  uncertainty_threshold <span class="op">=</span> <span class="fl">0.95</span>,</span>
-<span>  validation_required <span class="op">=</span> <span class="cn">TRUE</span></span>
-<span><span class="op">)</span></span></code></pre></div>
-</div>
-</div>
-</div>
-<div class="section level3">
-<h3 id="emerging-hybrid-approaches">Emerging Hybrid Approaches<a class="anchor" aria-label="anchor" href="#emerging-hybrid-approaches"></a>
-</h3>
-<div class="section level4">
-<h4 id="best-of-both-worlds">🔀 <strong>Best of Both Worlds</strong><a class="anchor" aria-label="anchor" href="#best-of-both-worlds"></a>
-</h4>
-<p>Advanced systems can combine methodological strengths:</p>
-<div class="section level5">
-<h5 id="tiered-processing">
-<strong>Tiered Processing:</strong><a class="anchor" aria-label="anchor" href="#tiered-processing"></a>
-</h5>
+<p>Advanced workflows can combine both approaches:</p>
 <ol style="list-style-type: decimal">
 <li>
 <strong>Initial screening</strong>: Single-agent for clear
@@ -634,174 +326,34 @@ cases</li>
 <strong>Expert review</strong>: Human validation for critical
 decisions</li>
 </ol>
-</div>
-<div class="section level5">
-<h5 id="adaptive-selection">
-<strong>Adaptive Selection:</strong><a class="anchor" aria-label="anchor" href="#adaptive-selection"></a>
-</h5>
-<ul>
-<li>
-<strong>Dataset complexity</strong>: Automatic method selection
-based on data characteristics</li>
-<li>
-<strong>Resource optimization</strong>: Dynamic allocation of
-computational resources</li>
-<li>
-<strong>Quality targeting</strong>: Adjust approach based on
-required accuracy levels</li>
-</ul>
-</div>
-</div>
+<p>This tiered approach balances cost and thoroughness.</p>
 </div>
 <div class="section level3">
-<h3 id="future-directions-and-recommendations">Future Directions and Recommendations<a class="anchor" aria-label="anchor" href="#future-directions-and-recommendations"></a>
+<h3 id="summary">Summary<a class="anchor" aria-label="anchor" href="#summary"></a>
 </h3>
-<div class="section level4">
-<h4 id="technological-trends">📈 <strong>Technological Trends</strong><a class="anchor" aria-label="anchor" href="#technological-trends"></a>
-</h4>
-<div class="section level5">
-<h5 id="model-evolution">
-<strong>Model Evolution:</strong><a class="anchor" aria-label="anchor" href="#model-evolution"></a>
-</h5>
-<ul>
-<li>
-<strong>Improved single models</strong>: Reducing the consensus
-advantage</li>
-<li>
-<strong>Better coordination</strong>: More efficient multi-model
-systems</li>
-<li>
-<strong>Specialized training</strong>: Domain-specific model
-development</li>
-</ul>
-</div>
-<div class="section level5">
-<h5 id="integration-opportunities">
-<strong>Integration Opportunities:</strong><a class="anchor" aria-label="anchor" href="#integration-opportunities"></a>
-</h5>
-<ul>
-<li>
-<strong>Hybrid architectures</strong>: Combining agent
-specialization with consensus validation</li>
-<li>
-<strong>Dynamic switching</strong>: Context-aware method
-selection</li>
-<li>
-<strong>Federated learning</strong>: Collaborative improvement
-across institutions</li>
-</ul>
-</div>
-</div>
-<div class="section level4">
-<h4 id="practical-recommendations">🎯 <strong>Practical Recommendations</strong><a class="anchor" aria-label="anchor" href="#practical-recommendations"></a>
-</h4>
-<div class="section level5">
-<h5 id="for-researchers">
-<strong>For Researchers:</strong><a class="anchor" aria-label="anchor" href="#for-researchers"></a>
-</h5>
-<ol style="list-style-type: decimal">
-<li>
-<strong>Start with consensus</strong> for novel or important
-datasets</li>
-<li>
-<strong>Use single-agent</strong> for exploratory or high-throughput
-work</li>
-<li>
-<strong>Validate methodologies</strong> on your specific data
-types</li>
-<li>
-<strong>Consider hybrid approaches</strong> for complex
-projects</li>
-</ol>
-</div>
-<div class="section level5">
-<h5 id="for-developers">
-<strong>For Developers:</strong><a class="anchor" aria-label="anchor" href="#for-developers"></a>
-</h5>
-<ol style="list-style-type: decimal">
-<li>
-<strong>Implement both approaches</strong> in your pipelines</li>
-<li>
-<strong>Benchmark performance</strong> on representative
-datasets</li>
-<li>
-<strong>Optimize resource usage</strong> for your specific
-constraints</li>
-<li>
-<strong>Plan for methodology evolution</strong> as models
-improve</li>
-</ol>
-</div>
-</div>
-</div>
-<div class="section level3">
-<h3 id="conclusion-methodology-matters">Conclusion: Methodology Matters<a class="anchor" aria-label="anchor" href="#conclusion-methodology-matters"></a>
-</h3>
-<p>The choice between consensus and single-agent approaches depends on
-your specific needs:</p>
-<div class="section level4">
-<h4 id="consensus-wins-when">🏆 <strong>Consensus Wins When:</strong><a class="anchor" aria-label="anchor" href="#consensus-wins-when"></a>
-</h4>
-<ul>
-<li>Accuracy is paramount</li>
-<li>Datasets are novel or complex</li>
-<li>Uncertainty quantification is needed</li>
-<li>Results will be published or used clinically</li>
-</ul>
-</div>
-<div class="section level4">
-<h4 id="single-agent-excels-when">⚡ <strong>Single-Agent Excels When:</strong><a class="anchor" aria-label="anchor" href="#single-agent-excels-when"></a>
-</h4>
-<ul>
-<li>Speed is the primary concern</li>
-<li>Datasets are well-characterized</li>
-<li>Resources are severely constrained</li>
-<li>Workflows are highly standardized</li>
-</ul>
-</div>
-<div class="section level4">
-<h4 id="the-future">🔮 <strong>The Future:</strong><a class="anchor" aria-label="anchor" href="#the-future"></a>
-</h4>
-<p>As AI continues to evolve, we expect to see: - <strong>Hybrid
-systems</strong> becoming the norm - <strong>Adaptive
-methodologies</strong> that automatically optimize approach selection -
-<strong>Improved single models</strong> reducing but not eliminating
-consensus advantages - <strong>Domain-specific solutions</strong>
-tailored to particular biological contexts</p>
-<hr>
-<div class="alert alert-info">
-<p><strong>💡 Key Takeaway:</strong> Both methodologies have their place
-in the cell annotation toolkit. The best choice depends on your specific
-requirements for accuracy, speed, cost, and biological complexity.</p>
-</div>
-</div>
+<p>Both methodologies have distinct strengths. Single-agent systems are
+simpler and less expensive per run, while consensus approaches provide
+uncertainty quantification and cross-model validation. The choice
+depends on the specific requirements of accuracy, cost, and biological
+complexity for a given project.</p>
 </div>
 <div class="section level3">
 <h3 id="next-steps">Next Steps<a class="anchor" aria-label="anchor" href="#next-steps"></a>
 </h3>
-<p>Ready to explore both approaches? Check out these resources:</p>
 <ul>
 <li>
-<a href="why-consensus.html">Why Choose Consensus?</a> - Deep dive
-into consensus methodology</li>
+<a href="why-consensus.html">Why Choose Consensus?</a> - Details on
+the consensus methodology</li>
 <li>
 <a href="getting-started.html">Getting Started Guide</a> - Practical
-implementation tutorial<br>
-</li>
+implementation tutorial</li>
 <li>
 <a href="advanced-features.html">Performance Benchmarks</a> -
-Detailed accuracy comparisons</li>
+Detailed comparisons</li>
 <li>
 <a href="../reference/index.html">API Reference</a> - Technical
 documentation</li>
 </ul>
-<hr>
-<div class="alert alert-success">
-<p><strong>🚀 Experience the Difference:</strong><br> Try both
-approaches with mLLMCelltype and see which works best for your specific
-use case. Our flexible framework supports both methodologies
-seamlessly.</p>
-</div>
 </div>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

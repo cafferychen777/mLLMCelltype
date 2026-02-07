@@ -141,7 +141,7 @@
       <h1>Usage Tutorial</h1>
                         <h4 data-toc-skip class="author">Chen Yang</h4>
             
-            <h4 data-toc-skip class="date">2026-02-05</h4>
+            <h4 data-toc-skip class="date">2026-02-07</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/cafferychen777/mLLMCelltype/blob/main/vignettes/usage-tutorial.Rmd" class="external-link"><code>vignettes/usage-tutorial.Rmd</code></a></small>
       <div class="d-none name"><code>usage-tutorial.Rmd</code></div>
@@ -197,15 +197,13 @@ through interactive discussion:</p>
 <span>  use_cache <span class="op">=</span> <span class="cn">TRUE</span>      <span class="co"># Whether to use cache</span></span>
 <span><span class="op">)</span></span></code></pre></div>
 <p><strong>Important Note on
-<code>consensus_check_model</code></strong>: This parameter is critical
-for annotation accuracy. The consensus check model evaluates semantic
-similarity, calculates consensus metrics, and moderates discussions. We
-strongly recommend using high-performance models like: -
-<code>claude-sonnet-4-5-20250929</code> (best overall, latest and most
-intelligent) - <code>claude-opus-4-1-20250805</code> (excellent for
-complex reasoning) - <code>o1</code> (advanced reasoning) -
-<code>gpt-5</code> (strong performance) - <code>gemini-2.5-pro</code>
-(top-tier)</p>
+<code>consensus_check_model</code></strong>: This parameter is used for
+evaluating semantic similarity, calculating consensus metrics, and
+moderating discussions. We recommend using capable models such as: -
+<code>claude-sonnet-4-5-20250929</code> (Anthropic) -
+<code>claude-opus-4-1-20250805</code> (Anthropic) - <code>o1</code>
+(OpenAI) - <code>gpt-5</code> (OpenAI) - <code>gemini-2.5-pro</code>
+(Google)</p>
 <p>See the main README for detailed recommendations and examples.</p>
 </div>
 </div>
@@ -438,19 +436,15 @@ help you choose:</p>
 <ul>
 <li>
 <strong>Anthropic Claude Sonnet 4.5</strong>
-(<code>claude-sonnet-4-5-20250929</code>): Latest and most intelligent,
-excellent biological knowledge</li>
+(<code>claude-sonnet-4-5-20250929</code>)</li>
 <li>
 <strong>Anthropic Claude Opus 4.1</strong>
-(<code>claude-opus-4-1-20250805</code>): Best for complex reasoning and
-detailed analysis</li>
+(<code>claude-opus-4-1-20250805</code>)</li>
 <li>
-<strong>OpenAI GPT-5</strong> (<code>gpt-5</code>): Strong overall
-performance, good biological knowledge</li>
+<strong>OpenAI GPT-5</strong> (<code>gpt-5</code>)</li>
 <li>
 <strong>Google Gemini 2.5 Pro</strong>
-(<code>gemini-2.5-pro</code>): Top-tier performance with detailed
-reasoning</li>
+(<code>gemini-2.5-pro</code>)</li>
 </ul>
 </div>
 <div class="section level4">

@@ -141,7 +141,7 @@
       <h1>Introduction to mLLMCelltype</h1>
                         <h4 data-toc-skip class="author">Chen Yang</h4>
             
-            <h4 data-toc-skip class="date">2026-02-05</h4>
+            <h4 data-toc-skip class="date">2026-02-07</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/cafferychen777/mLLMCelltype/blob/main/vignettes/introduction.Rmd" class="external-link"><code>vignettes/introduction.Rmd</code></a></small>
       <div class="d-none name"><code>introduction.Rmd</code></div>
@@ -159,12 +159,12 @@
 <p>mLLMCelltype is an iterative multi-LLM consensus framework for cell
 type annotation in single-cell RNA sequencing data. By leveraging the
 complementary strengths of multiple large language models, this
-framework significantly improves annotation accuracy while providing
+framework aims to improve annotation accuracy while providing
 transparent uncertainty quantification.</p>
 <p>The package implements a novel approach where multiple large language
 models (LLMs) collaborate through structured deliberation to achieve
-more accurate and reliable cell type annotations than any single model
-could provide alone.</p>
+potentially more reliable annotations by cross-validating across
+models.</p>
 </div>
 <div class="section level3">
 <h3 id="background">Background<a class="anchor" aria-label="anchor" href="#background"></a>
@@ -189,9 +189,9 @@ reliable annotations.</p>
 <div class="section level4">
 <h4 id="multi-llm-consensus-architecture">Multi-LLM Consensus Architecture<a class="anchor" aria-label="anchor" href="#multi-llm-consensus-architecture"></a>
 </h4>
-<p>mLLMCelltype harnesses collective intelligence from diverse LLMs to
-overcome single-model limitations and biases. The package currently
-supports a wide range of models:</p>
+<p>mLLMCelltype combines predictions from multiple LLMs to reduce
+individual model biases. The package currently supports a wide range of
+models:</p>
 <ul>
 <li>OpenAI GPT-4o/4.1</li>
 <li>Anthropic Claude-3.7/3.5</li>
@@ -205,8 +205,8 @@ supports a wide range of models:</p>
 <li>OpenRouter</li>
 </ul>
 <p>By integrating multiple models with different architectures and
-training data, mLLMCelltype can achieve more robust and accurate
-annotations than any single model.</p>
+training data, mLLMCelltype can produce annotations less sensitive to
+individual model biases.</p>
 </div>
 <div class="section level4">
 <h4 id="structured-deliberation-process">Structured Deliberation Process<a class="anchor" aria-label="anchor" href="#structured-deliberation-process"></a>
@@ -251,8 +251,8 @@ confidence annotations and which may require further investigation.</p>
 </h4>
 <ul>
 <li>
-<strong>Hallucination Reduction</strong>: Cross-model deliberation
-actively suppresses inaccurate or unsupported predictions</li>
+<strong>Hallucination Reduction</strong>: Cross-model comparison may
+help identify inconsistent predictions</li>
 <li>
 <strong>Robust to Input Noise</strong>: Maintains high accuracy even
 with imperfect marker gene lists</li>
@@ -260,8 +260,8 @@ with imperfect marker gene lists</li>
 <strong>Hierarchical Annotation Support</strong>: Optional extension
 for multi-resolution analysis</li>
 <li>
-<strong>No Reference Dataset Required</strong>: Performs accurate
-annotation without pre-training or reference data</li>
+<strong>No Reference Dataset Required</strong>: Performs annotation
+without pre-training or reference data</li>
 <li>
 <strong>Complete Reasoning Chains</strong>: Documents the full
 deliberation process</li>

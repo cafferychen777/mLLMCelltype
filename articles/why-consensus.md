@@ -2,24 +2,22 @@
 
 ## Why Choose Consensus? The Scientific Foundation of Multi-LLM Annotation
 
-**🏆 Key Insight:** Multi-LLM consensus delivers 95% annotation accuracy
-by combining the strengths of diverse AI models while minimizing
-individual model limitations.
+Multi-LLM consensus can improve annotation accuracy by combining the
+strengths of diverse AI models while reducing the impact of individual
+model limitations (see Yang et al., 2025).
 
 ### The Challenge with Single-Model Approaches
 
-Traditional single-model annotation systems, while innovative, face
-inherent limitations:
+Traditional single-model annotation systems face inherent limitations:
 
-#### 📊 **Accuracy Limitations**
+#### Accuracy Limitations
 
 - **Single-point failure**: One model’s bias affects all results
 - **Limited perspective**: Each model has unique strengths and blind
   spots
-- **Inconsistent performance**: Varies significantly across cell types
-  and tissues
+- **Inconsistent performance**: Varies across cell types and tissues
 
-#### ⚡ **Reliability Issues**
+#### Reliability Issues
 
 - **Model hallucinations**: Confident but incorrect predictions
 - **Lack of uncertainty**: Difficult to identify questionable
@@ -27,15 +25,15 @@ inherent limitations:
 - **Reproducibility challenges**: Different model versions may yield
   different results
 
-### The Consensus Advantage: I nspired by Scientific Peer Review
+### The Consensus Approach: Inspired by Scientific Peer Review
 
-mLLMCelltype’s consensus framework mirrors the gold standard of
-scientific validation: **peer review**.
+mLLMCelltype’s consensus framework is analogous to the peer review
+process in scientific publishing.
 
-#### 🧬 **The Scientific Parallel**
+#### The Scientific Parallel
 
-Just as scientific papers are improved through multiple expert
-reviewers, cell annotations benefit from multiple AI “experts”:
+Just as scientific papers benefit from multiple expert reviewers, cell
+annotations can benefit from multiple AI models:
 
 | Scientific Peer Review    | mLLMCelltype Consensus        |
 |---------------------------|-------------------------------|
@@ -45,128 +43,83 @@ reviewers, cell annotations benefit from multiple AI “experts”:
 | Consensus building        | Agreement quantification      |
 | Quality assurance         | Uncertainty metrics           |
 
-#### 🎯 **Proven Performance Benefits**
+#### How It Works
 
-##### **1. Superior Accuracy**
+**1. Error Detection Through Cross-Validation** - Models check each
+other’s work - Individual model biases can be averaged out - Outlier
+predictions are identified
 
-    Single Model:     70-85% accuracy
-    Consensus Method: 95% accuracy
-    Improvement:      +15-25 percentage points
+**2. Transparent Uncertainty Quantification** - **Consensus Proportion
+(CP)**: Measures inter-model agreement - **Shannon Entropy**: Quantifies
+prediction uncertainty - **Controversy Detection**: Automatically
+identifies clusters requiring expert review
 
-##### **2. Robust Error Detection**
-
-- **Cross-validation**: Models check each other’s work
-- **Bias reduction**: Individual model biases are averaged out
-- **Hallucination prevention**: Outlier predictions are identified and
-  corrected
-
-##### **3. Transparent Uncertainty Quantification**
-
-- **Consensus Proportion (CP)**: Measures inter-model agreement
-- **Shannon Entropy**: Quantifies prediction uncertainty
-- **Controversy Detection**: Automatically identifies clusters requiring
-  expert review
-
-### Real-World Evidence: Why Consensus Works
-
-#### 🔬 **Biological Complexity Demands Multiple Perspectives**
+### Why Multiple Perspectives Help
 
 Cell type annotation involves:
 
-- **Marker gene interpretation**: Different models excel at different
-  gene families
-- **Context understanding**: Various models capture different biological
-  contexts
-- **Rare cell types**: Ensemble approaches improve detection of uncommon
-  populations
-- **Batch effects**: Multiple models provide robustness against
+- **Marker gene interpretation**: Different models may have different
+  strengths across gene families
+- **Context understanding**: Various models may capture different
+  biological contexts
+- **Rare cell types**: Ensemble approaches can improve detection of
+  uncommon populations
+- **Batch effects**: Multiple models may provide robustness against
   technical artifacts
 
-#### 📈 **Performance Across Diverse Datasets**
+For benchmark results, see Yang et al. (2025):
 
-Consensus methodology shows consistent advantages across:
+Yang, C., Zhang, X., & Chen, J. (2025). Large Language Model Consensus
+Substantially Improves the Cell Type Annotation Accuracy for scRNA-seq
+Data. *bioRxiv*. <https://doi.org/10.1101/2025.04.10.647852>
 
-- **Species**: Human, mouse, non-model organisms
-- **Tissues**: Brain, blood, heart, immune system
-- **Technologies**: 10X, Smart-seq, Drop-seq
-- **Cell counts**: From hundreds to hundreds of thousands
+### Cost Considerations
 
-### The Cost-Efficiency Advantage
+The two-stage approach can reduce API calls when models agree early:
 
-#### 💰 **Smart Resource Usage**
+- **Stage 1**: Initial consensus check – clusters where models agree
+  skip further processing
+- **Stage 2**: Deliberation only for clusters without initial agreement
+- **Caching**: Results can be reused across similar analyses
 
-Contrary to expectations, consensus approaches are more cost-efficient:
+This means the cost overhead of using multiple models is partially
+offset by skipping deliberation for clear cases.
 
-- **Two-stage process**: Initial consensus → detailed discussion only
-  for controversial cases
-- **70-80% API cost reduction**: Through intelligent conflict resolution
-- **Higher accuracy per dollar**: Better results with optimized resource
-  usage
+### Technical Implementation
 
-#### ⚡ **Scalable Performance**
+#### The Three-Stage Process
 
-- **Parallel processing**: Multiple models work simultaneously
-- **Adaptive complexity**: More discussion for difficult cases, quick
-  consensus for clear cases
-- **Caching optimization**: Reuse results across similar analyses
+**Stage 1: Independent Analysis** Each LLM analyzes marker genes and
+provides: - Cell type predictions - Confidence scores - Reasoning chains
 
-### Technical Implementation: How Consensus Works
+**Stage 2: Consensus Building** The system: - Compares predictions
+across models - Identifies areas of agreement and disagreement -
+Calculates uncertainty metrics
 
-#### 🔄 **The Three-Stage Process**
+**Stage 3: Deliberation (when needed)** For controversial clusters: -
+Models share their reasoning - Structured debate occurs - Final
+consensus emerges
 
-##### **Stage 1: Independent Analysis**
+#### Quality Metrics
 
-Each LLM analyzes marker genes and provides: - Cell type predictions -
-Confidence scores - Reasoning chains
-
-##### **Stage 2: Consensus Building**
-
-The system: - Compares predictions across models - Identifies areas of
-agreement and disagreement - Calculates uncertainty metrics
-
-##### **Stage 3: Deliberation (when needed)**
-
-For controversial clusters: - Models share their reasoning - Structured
-debate occurs - Final consensus emerges
-
-#### 🎯 **Quality Assurance Features**
-
-- **Semantic similarity analysis**: Ensures meaningful disagreements
-- **Evidence-based reasoning**: All predictions must cite supporting
+- **Semantic similarity analysis**: Ensures meaningful disagreements are
+  detected
+- **Evidence-based reasoning**: All predictions include supporting
   evidence
 - **Iterative refinement**: Multiple rounds of discussion when needed
 
-### When to Choose Consensus Over Alternatives
+### When to Choose Consensus
 
-#### ✅ **Consensus is Ideal For:**
+**Consensus may be preferable when:** - Uncertainty quantification is
+needed - Datasets involve novel or complex tissues - Results will be
+published or used in downstream analyses - Identifying low-confidence
+annotations is important
 
-- **High-stakes research**: Where accuracy is paramount
-- **Novel datasets**: Unexplored tissues or conditions
-- **Publication-ready work**: Transparent, defensible results
-- **Clinical applications**: Where errors have consequences
-- **Comparative studies**: Requiring robust, reproducible annotations
+**Consider alternatives when:** - Quick exploratory analysis is the
+goal - Datasets are well-characterized with clear markers - API budget
+is very limited - Proof-of-concept work in early stages
 
-#### 🤔 **Consider Alternatives When:**
-
-- **Quick exploratory analysis**: Speed over accuracy
-- **Well-characterized datasets**: Standard tissue types with clear
-  markers
-- **Computational constraints**: Very limited API budget
-- **Proof-of-concept work**: Early-stage investigations
-
-### Visualizing the Consensus Advantage
-
-![mLLMCelltype consensus framework workflow diagram showing multi-LLM
-collaboration, uncertainty quantification, and superior accuracy over
-single-agent approaches](../reference/figures/logo.png)
-
-*mLLMCelltype employs a sophisticated consensus mechanism that combines
-multiple LLM perspectives for more accurate cell type annotation than
-any single model approach.*
-
-### Getting Started with Consensus Annotation
-
-#### 🚀 **Quick Start Example**
+### Quick Start Example
 
 ``` r
 library(mLLMCelltype)
@@ -175,7 +128,7 @@ library(mLLMCelltype)
 results <- interactive_consensus_annotation(
   seurat_obj = your_data,
   tissue_name = "PBMC",
-  models = c("gpt-5", "claude-sonnet-4-5-20250929", "gemini-1.5-pro"),
+  models = c("gpt-4o", "claude-sonnet-4-5-20250929", "gemini-2.5-pro"),
   consensus_method = "iterative"
 )
 
@@ -183,32 +136,18 @@ results <- interactive_consensus_annotation(
 print_consensus_summary(results)
 ```
 
-#### 📊 **Understanding Your Results**
+#### Understanding Your Results
 
 - **High consensus (CP \> 0.8)**: Reliable annotations
 - **Medium consensus (0.5 \< CP \< 0.8)**: Review recommended
 - **Low consensus (CP \< 0.5)**: Expert validation needed
 
-### Conclusion: The Future is Consensus
+### Summary
 
-As AI models become increasingly sophisticated, the value of consensus
-approaches grows:
-
-- **Leverages collective intelligence**: Better than any single model
-- **Provides transparency**: Clear reasoning and uncertainty metrics
-- **Ensures reproducibility**: Consistent results across analyses
-- **Adapts to new models**: Framework accommodates future AI advances
-
-The scientific method has relied on consensus and peer review for
-centuries. mLLMCelltype brings this time-tested approach to the age of
-artificial intelligence, delivering unprecedented accuracy and
-reliability in cell type annotation.
-
-------------------------------------------------------------------------
-
-**🎯 Ready to Experience the Consensus Advantage?**  
-Try mLLMCelltype today and discover why leading researchers choose
-consensus-based annotation for their most important work.
+The consensus approach provides a framework for combining multiple LLM
+predictions with built-in uncertainty quantification. As new models
+become available, the framework can incorporate them without changes to
+the overall methodology.
 
 ### Learn More
 
