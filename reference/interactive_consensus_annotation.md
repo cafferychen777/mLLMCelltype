@@ -60,8 +60,8 @@ interactive_consensus_annotation(
 
 - api_keys:
 
-  Named list of API keys. Can use provider names as keys (e.g.,
-  "openai", "anthropic") or model names as keys (e.g., "gpt-5").
+  Named, non-empty list of API keys. Can use provider names as keys
+  (e.g., "openai", "anthropic") or model names as keys (e.g., "gpt-5").
 
 - top_gene_count:
 

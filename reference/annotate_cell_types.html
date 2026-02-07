@@ -234,7 +234,7 @@ If NULL (default), uses official API endpoints for each provider.
 
     <a class="navbar-brand me-2" href="../index.html">mLLMCelltype</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">1.3.4</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">2.0.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -396,7 +396,8 @@ If NULL (default), uses official API endpoints for each provider.</p></li>
 
 
 <dt id="arg-api-key">api_key<a class="anchor" aria-label="anchor" href="#arg-api-key"></a></dt>
-<dd><p>API key for the selected model provider. If NA, returns prompt only</p></dd>
+<dd><p>API key for the selected model provider as a non-empty character scalar.
+If <code>NA</code>, returns prompt only.</p></dd>
 
 
 <dt id="arg-top-gene-count">top_gene_count<a class="anchor" aria-label="anchor" href="#arg-top-gene-count"></a></dt>
@@ -437,8 +438,8 @@ If NULL (default), uses official API endpoints for each provider.</p></li>
 <span class="r-in"><span>  model <span class="op">=</span> <span class="st">'gpt-5.2'</span>,</span></span>
 <span class="r-in"><span>  api_key <span class="op">=</span> <span class="cn">NA</span>  <span class="co"># Returns prompt only without making API call</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> {"timestamp":"2026-02-07 05:35:02","session_id":"20260207_053502","level":"INFO","message":"Unified logger initialized","context":{"session_id":"20260207_053502","log_level":"INFO","log_dir":"logs"},"pid":10441} </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> {"timestamp":"2026-02-07 05:35:02","session_id":"20260207_053502","level":"INFO","message":"Processing input with model and provider","context":{"model":"gpt-5.2","provider":"openai","custom_url":false},"pid":10441} </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> {"timestamp":"2026-02-07 06:32:58","session_id":"20260207_063258","level":"INFO","message":"Unified logger initialized","context":{"session_id":"20260207_063258","log_level":"INFO","log_dir":"logs"},"pid":10458} </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> {"timestamp":"2026-02-07 06:32:58","session_id":"20260207_063258","level":"INFO","message":"Processing input with model and provider","context":{"model":"gpt-5.2","provider":"openai","custom_url":false},"pid":10458} </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "You are a cell type annotation expert. Below are marker genes for different cell clusters in human PBMC.\n\nt_cells: CD3D, CD3E, CD3G, CD28\nb_cells: CD19, CD79A, CD79B, MS4A1\nmonocytes: CD14, CD68, CSF1R, FCGR3A\n\nFor each numbered cluster, provide only the cell type name in a new line, without any explanation."</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Example 2: Using with Seurat pipeline and OpenAI model</span></span></span>

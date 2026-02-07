@@ -14,7 +14,8 @@ compare_model_predictions(
     "o3-pro", "grok-4.1"),
   api_keys,
   top_gene_count = 10,
-  consensus_threshold = 0.5
+  consensus_threshold = 0.5,
+  base_urls = NULL
 )
 ```
 
@@ -51,6 +52,11 @@ compare_model_predictions(
   Minimum agreement threshold for consensus (0-1). Default: 0.5.
   Consensus is only evaluated when at least two non-missing model
   predictions are available for a cluster.
+
+- base_urls:
+
+  Optional base URLs for API endpoints. Can be a string or named list
+  for provider-specific custom endpoints.
 
 ## Value
 

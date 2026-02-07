@@ -50,7 +50,7 @@ It provides both individual predictions and a consensus analysis."><meta propert
 
     <a class="navbar-brand me-2" href="../index.html">mLLMCelltype</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">1.3.4</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">2.0.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -116,7 +116,8 @@ It provides both individual predictions and a consensus analysis.</p>
 <span>    <span class="st">"o3-pro"</span>, <span class="st">"grok-4.1"</span><span class="op">)</span>,</span>
 <span>  <span class="va">api_keys</span>,</span>
 <span>  top_gene_count <span class="op">=</span> <span class="fl">10</span>,</span>
-<span>  consensus_threshold <span class="op">=</span> <span class="fl">0.5</span></span>
+<span>  consensus_threshold <span class="op">=</span> <span class="fl">0.5</span>,</span>
+<span>  base_urls <span class="op">=</span> <span class="cn">NULL</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -148,6 +149,10 @@ Every model in <code>models</code> must resolve to a non-NULL API key.</p></dd>
 <dt id="arg-consensus-threshold">consensus_threshold<a class="anchor" aria-label="anchor" href="#arg-consensus-threshold"></a></dt>
 <dd><p>Minimum agreement threshold for consensus (0-1). Default: 0.5.
 Consensus is only evaluated when at least two non-missing model predictions are available for a cluster.</p></dd>
+
+
+<dt id="arg-base-urls">base_urls<a class="anchor" aria-label="anchor" href="#arg-base-urls"></a></dt>
+<dd><p>Optional base URLs for API endpoints. Can be a string or named list for provider-specific custom endpoints.</p></dd>
 
 </dl></div>
     <div class="section level2">
