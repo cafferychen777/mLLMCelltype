@@ -10,8 +10,8 @@ consensus analysis.
 compare_model_predictions(
   input,
   tissue_name,
-  models = c("claude-sonnet-4-5-20250929", "claude-opus-4-1-20250805", "gpt-5",
-    "gemini-2.5-pro", "deepseek-r1", "o1", "grok-3-latest"),
+  models = c("claude-opus-4.6", "gpt-5.2", "gemini-3-pro", "deepseek-r1", "o3-pro",
+    "grok-4.1"),
   api_keys,
   top_gene_count = 10,
   consensus_threshold = 0.5
@@ -59,58 +59,50 @@ List containing individual model predictions and consensus analysis
 This function uses create_standardization_prompt from prompt_templates.R
 Supported models:
 
-- OpenAI: 'gpt-5', 'gpt-5-mini', 'gpt-5-nano', 'gpt-4o', 'gpt-4o-mini',
-  'gpt-4.1', 'gpt-4.1-mini', 'gpt-4.1-nano', 'gpt-4-turbo',
-  'gpt-3.5-turbo', 'o1', 'o1-mini', 'o1-preview', 'o1-pro'
+- OpenAI: 'gpt-5.2', 'gpt-5.1', 'gpt-5', 'gpt-4.1', 'gpt-4o', 'o3-pro',
+  'o3', 'o4-mini', 'o1', 'o1-pro'
 
-- Anthropic: 'claude-opus-4-1-20250805', 'claude-sonnet-4-20250514',
-  'claude-opus-4-20250514', 'claude-3-7-sonnet-20250219',
-  'claude-3-5-sonnet-20241022', 'claude-3-5-haiku-20241022',
-  'claude-3-opus-20240229'
+- Anthropic: 'claude-opus-4-6-20260205', 'claude-opus-4-5-20251101',
+  'claude-sonnet-4-5-20250929', 'claude-haiku-4-5-20251001',
+  'claude-opus-4-1-20250805', 'claude-sonnet-4-20250514',
+  'claude-3-7-sonnet-20250219'
 
-- DeepSeek: 'deepseek-chat', 'deepseek-r1', 'deepseek-r1-zero',
-  'deepseek-reasoner'
+- DeepSeek: 'deepseek-chat', 'deepseek-reasoner', 'deepseek-r1'
 
-- Google: 'gemini-2.5-pro', 'gemini-2.5-flash', 'gemini-2.0-flash',
-  'gemini-2.0-flash-lite', 'gemini-1.5-pro-latest',
-  'gemini-1.5-flash-latest', 'gemini-1.5-flash-8b'
+- Google: 'gemini-3-pro', 'gemini-3-flash', 'gemini-2.5-pro',
+  'gemini-2.5-flash', 'gemini-2.0-flash'
 
-- Alibaba: 'qwen-max-2025-01-25', 'qwen3-72b'
+- Alibaba: 'qwen3-max', 'qwen-max-2025-01-25', 'qwen-plus'
 
-- Stepfun: 'step-2-16k', 'step-2-mini', 'step-1-8k'
+- Stepfun: 'step-3', 'step-2-16k', 'step-2-mini'
 
-- Zhipu: 'glm-4-plus', 'glm-3-turbo'
+- Zhipu: 'glm-4.7', 'glm-4-plus'
 
-- MiniMax: 'minimax-text-01'
+- MiniMax: 'minimax-m2.1', 'minimax-m2', 'MiniMax-Text-01'
 
-- X.AI: 'grok-3-latest', 'grok-3', 'grok-3-fast', 'grok-3-fast-latest',
-  'grok-3-mini', 'grok-3-mini-latest', 'grok-3-mini-fast',
-  'grok-3-mini-fast-latest'
+- X.AI: 'grok-4', 'grok-4.1', 'grok-4-heavy', 'grok-3', 'grok-3-fast',
+  'grok-3-mini'
 
 - OpenRouter: Provides access to models from multiple providers through
   a single API. Format: 'provider/model-name'
 
-  - OpenAI models: 'openai/gpt-5', 'openai/gpt-5-mini', 'openai/gpt-4o',
-    'openai/gpt-4o-mini', 'openai/gpt-4-turbo', 'openai/gpt-4',
-    'openai/gpt-3.5-turbo'
+  - OpenAI models: 'openai/gpt-5.2', 'openai/gpt-5', 'openai/o3-pro',
+    'openai/o4-mini'
 
-  - Anthropic models: 'anthropic/claude-opus-4.1',
-    'anthropic/claude-sonnet-4', 'anthropic/claude-opus-4',
-    'anthropic/claude-3.7-sonnet', 'anthropic/claude-3.5-sonnet',
-    'anthropic/claude-3.5-haiku', 'anthropic/claude-3-opus'
+  - Anthropic models: 'anthropic/claude-opus-4.5',
+    'anthropic/claude-sonnet-4.5', 'anthropic/claude-haiku-4.5'
 
-  - Meta models: 'meta-llama/llama-3-70b-instruct',
-    'meta-llama/llama-3-8b-instruct', 'meta-llama/llama-2-70b-chat'
+  - Meta models: 'meta-llama/llama-4-maverick',
+    'meta-llama/llama-4-scout', 'meta-llama/llama-3.3-70b-instruct'
 
-  - Google models: 'google/gemini-2.5-pro', 'google/gemini-2.5-flash',
-    'google/gemini-2.0-flash', 'google/gemini-1.5-pro-latest',
-    'google/gemini-1.5-flash'
+  - Google models: 'google/gemini-3-pro', 'google/gemini-3-flash',
+    'google/gemini-2.5-pro'
 
   - Mistral models: 'mistralai/mistral-large',
-    'mistralai/mistral-medium', 'mistralai/mistral-small'
+    'mistralai/magistral-medium-2506'
 
-  - Other models: 'microsoft/mai-ds-r1', 'perplexity/sonar-small-chat',
-    'cohere/command-r', 'deepseek/deepseek-chat', 'thudm/glm-z1-32b'
+  - Other models: 'deepseek/deepseek-r1', 'deepseek/deepseek-chat-v3.1',
+    'microsoft/mai-ds-r1'
 
 1.  With provider names as keys:
     `list("openai" = "sk-...", "anthropic" = "sk-ant-...", "openrouter" = "sk-or-...")`
@@ -125,7 +117,7 @@ not found, it then tries using the model name. Example:
       "openai" = Sys.getenv("OPENAI_API_KEY"),
       "anthropic" = Sys.getenv("ANTHROPIC_API_KEY"),
       "openrouter" = Sys.getenv("OPENROUTER_API_KEY"),
-      "claude-3-opus" = "sk-ant-api03-specific-key-for-opus"
+      "claude-opus-4-6-20260205" = "sk-ant-api03-specific-key-for-opus"
     )
 
 ## Examples
@@ -134,10 +126,10 @@ not found, it then tries using the model name. Example:
 if (FALSE) { # \dontrun{
 # Compare predictions using different models
 api_keys <- list(
-  "claude-sonnet-4-20250514" = "your-anthropic-key",
+  "claude-sonnet-4-5-20250929" = "your-anthropic-key",
   "deepseek-reasoner" = "your-deepseek-key",
-  "gemini-1.5-pro" = "your-gemini-key",
-  "qwen-max-2025-01-25" = "your-qwen-key"
+  "gemini-3-pro" = "your-gemini-key",
+  "qwen3-max" = "your-qwen-key"
 )
 
 results <- compare_model_predictions(

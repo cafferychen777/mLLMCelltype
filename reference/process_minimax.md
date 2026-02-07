@@ -1,7 +1,6 @@
-# Process request using Minimax models
+# Process request using MiniMax models
 
-This function uses the new BaseAPIProcessor architecture for improved
-maintainability and consistent logging across all API providers.
+Process request using MiniMax models
 
 ## Usage
 

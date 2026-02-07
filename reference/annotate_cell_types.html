@@ -34,24 +34,23 @@ markers$cluster &amp;lt;- id_mapping$numeric[match(markers$cluster, id_mapping$o
 
 
 'mouse brain'). This helps provide context for more accurate annotations.
-OpenAI: 'gpt-5', 'gpt-5-mini', 'gpt-5-nano', 'gpt-4o', 'gpt-4o-mini', 'gpt-4.1', 'gpt-4.1-mini', 'gpt-4.1-nano', 'gpt-4-turbo', 'gpt-3.5-turbo', 'o1', 'o1-mini', 'o1-preview', 'o1-pro'
-Anthropic: 'claude-opus-4-1-20250805', 'claude-sonnet-4-20250514', 'claude-opus-4-20250514', 'claude-3-7-sonnet-20250219', 'claude-3-5-sonnet-20241022',
-'claude-3-5-haiku-20241022', 'claude-3-opus-20240229'
-DeepSeek: 'deepseek-chat', 'deepseek-r1', 'deepseek-r1-zero', 'deepseek-reasoner'
-Google: 'gemini-2.5-pro', 'gemini-2.5-flash', 'gemini-2.0-flash', 'gemini-2.0-flash-lite', 'gemini-1.5-pro-latest', 'gemini-1.5-flash-latest', 'gemini-1.5-flash-8b'
-Alibaba: 'qwen-max-2025-01-25', 'qwen3-72b'
-Stepfun: 'step-2-16k', 'step-2-mini', 'step-1-8k'
-Zhipu: 'glm-4-plus', 'glm-3-turbo'
-MiniMax: 'minimax-text-01'
-X.AI: 'grok-3-latest', 'grok-3', 'grok-3-fast', 'grok-3-fast-latest', 'grok-3-mini', 'grok-3-mini-latest', 'grok-3-mini-fast', 'grok-3-mini-fast-latest'
+OpenAI: 'gpt-5.2', 'gpt-5.1', 'gpt-5', 'gpt-4.1', 'gpt-4o', 'o3-pro', 'o3', 'o4-mini', 'o1', 'o1-pro'
+Anthropic: 'claude-opus-4-6-20260205', 'claude-opus-4-5-20251101', 'claude-sonnet-4-5-20250929', 'claude-haiku-4-5-20251001',
+'claude-opus-4-1-20250805', 'claude-sonnet-4-20250514', 'claude-3-7-sonnet-20250219'
+DeepSeek: 'deepseek-chat', 'deepseek-reasoner', 'deepseek-r1'
+Google: 'gemini-3-pro', 'gemini-3-flash', 'gemini-2.5-pro', 'gemini-2.5-flash', 'gemini-2.0-flash'
+Alibaba: 'qwen3-max', 'qwen-max-2025-01-25', 'qwen-plus'
+Stepfun: 'step-3', 'step-2-16k', 'step-2-mini'
+Zhipu: 'glm-4.7', 'glm-4-plus'
+MiniMax: 'minimax-m2.1', 'minimax-m2', 'MiniMax-Text-01'
+X.AI: 'grok-4', 'grok-4.1', 'grok-4-heavy', 'grok-3', 'grok-3-fast', 'grok-3-mini'
 OpenRouter: Provides access to models from multiple providers through a single API. Format: 'provider/model-name'
-OpenAI models: 'openai/gpt-5', 'openai/gpt-5-mini', 'openai/gpt-4o', 'openai/gpt-4o-mini', 'openai/gpt-4-turbo', 'openai/gpt-4', 'openai/gpt-3.5-turbo'
-Anthropic models: 'anthropic/claude-opus-4.1', 'anthropic/claude-sonnet-4', 'anthropic/claude-opus-4', 'anthropic/claude-3.7-sonnet',
-'anthropic/claude-3.5-sonnet', 'anthropic/claude-3.5-haiku', 'anthropic/claude-3-opus'
-Meta models: 'meta-llama/llama-3-70b-instruct', 'meta-llama/llama-3-8b-instruct', 'meta-llama/llama-2-70b-chat'
-Google models: 'google/gemini-2.5-pro', 'google/gemini-2.5-flash', 'google/gemini-2.0-flash', 'google/gemini-1.5-pro-latest', 'google/gemini-1.5-flash'
-Mistral models: 'mistralai/mistral-large', 'mistralai/mistral-medium', 'mistralai/mistral-small'
-Other models: 'microsoft/mai-ds-r1', 'perplexity/sonar-small-chat', 'cohere/command-r', 'deepseek/deepseek-chat', 'thudm/glm-z1-32b'
+OpenAI models: 'openai/gpt-5.2', 'openai/gpt-5', 'openai/o3-pro', 'openai/o4-mini'
+Anthropic models: 'anthropic/claude-opus-4.5', 'anthropic/claude-sonnet-4.5', 'anthropic/claude-haiku-4.5'
+Meta models: 'meta-llama/llama-4-maverick', 'meta-llama/llama-4-scout', 'meta-llama/llama-3.3-70b-instruct'
+Google models: 'google/gemini-3-pro', 'google/gemini-3-flash', 'google/gemini-2.5-pro'
+Mistral models: 'mistralai/mistral-large', 'mistralai/magistral-medium-2506'
+Other models: 'deepseek/deepseek-r1', 'deepseek/deepseek-chat-v3.1', 'microsoft/mai-ds-r1'
 Each provider requires a specific API key format and authentication method:
 
 OpenAI: &quot;sk-...&quot; (obtain from OpenAI platform)
@@ -69,7 +68,7 @@ OpenRouter provides access to multiple models through a single API key
 
 The API key can be provided directly or stored in environment variables:
 # Direct API key
-result &amp;lt;- annotate_cell_types(input, tissue_name, model=&quot;gpt-5&quot;,
+result &amp;lt;- annotate_cell_types(input, tissue_name, model=&quot;gpt-5.2&quot;,
                              api_key=&quot;sk-...&quot;)
 
 # Using environment variables
@@ -78,7 +77,7 @@ Sys.setenv(ANTHROPIC_API_KEY=&quot;sk-ant-...&quot;)
 Sys.setenv(OPENROUTER_API_KEY=&quot;sk-or-...&quot;)
 
 # Then use with environment variables
-result &amp;lt;- annotate_cell_types(input, tissue_name, model=&quot;claude-3-opus&quot;,
+result &amp;lt;- annotate_cell_types(input, tissue_name, model=&quot;claude-sonnet-4-5-20250929&quot;,
                              api_key=Sys.getenv(&quot;ANTHROPIC_API_KEY&quot;))
 
 If NA, returns the generated prompt without making an API call, which is useful for
@@ -128,24 +127,23 @@ markers$cluster &amp;lt;- id_mapping$numeric[match(markers$cluster, id_mapping$o
 
 
 'mouse brain'). This helps provide context for more accurate annotations.
-OpenAI: 'gpt-5', 'gpt-5-mini', 'gpt-5-nano', 'gpt-4o', 'gpt-4o-mini', 'gpt-4.1', 'gpt-4.1-mini', 'gpt-4.1-nano', 'gpt-4-turbo', 'gpt-3.5-turbo', 'o1', 'o1-mini', 'o1-preview', 'o1-pro'
-Anthropic: 'claude-opus-4-1-20250805', 'claude-sonnet-4-20250514', 'claude-opus-4-20250514', 'claude-3-7-sonnet-20250219', 'claude-3-5-sonnet-20241022',
-'claude-3-5-haiku-20241022', 'claude-3-opus-20240229'
-DeepSeek: 'deepseek-chat', 'deepseek-r1', 'deepseek-r1-zero', 'deepseek-reasoner'
-Google: 'gemini-2.5-pro', 'gemini-2.5-flash', 'gemini-2.0-flash', 'gemini-2.0-flash-lite', 'gemini-1.5-pro-latest', 'gemini-1.5-flash-latest', 'gemini-1.5-flash-8b'
-Alibaba: 'qwen-max-2025-01-25', 'qwen3-72b'
-Stepfun: 'step-2-16k', 'step-2-mini', 'step-1-8k'
-Zhipu: 'glm-4-plus', 'glm-3-turbo'
-MiniMax: 'minimax-text-01'
-X.AI: 'grok-3-latest', 'grok-3', 'grok-3-fast', 'grok-3-fast-latest', 'grok-3-mini', 'grok-3-mini-latest', 'grok-3-mini-fast', 'grok-3-mini-fast-latest'
+OpenAI: 'gpt-5.2', 'gpt-5.1', 'gpt-5', 'gpt-4.1', 'gpt-4o', 'o3-pro', 'o3', 'o4-mini', 'o1', 'o1-pro'
+Anthropic: 'claude-opus-4-6-20260205', 'claude-opus-4-5-20251101', 'claude-sonnet-4-5-20250929', 'claude-haiku-4-5-20251001',
+'claude-opus-4-1-20250805', 'claude-sonnet-4-20250514', 'claude-3-7-sonnet-20250219'
+DeepSeek: 'deepseek-chat', 'deepseek-reasoner', 'deepseek-r1'
+Google: 'gemini-3-pro', 'gemini-3-flash', 'gemini-2.5-pro', 'gemini-2.5-flash', 'gemini-2.0-flash'
+Alibaba: 'qwen3-max', 'qwen-max-2025-01-25', 'qwen-plus'
+Stepfun: 'step-3', 'step-2-16k', 'step-2-mini'
+Zhipu: 'glm-4.7', 'glm-4-plus'
+MiniMax: 'minimax-m2.1', 'minimax-m2', 'MiniMax-Text-01'
+X.AI: 'grok-4', 'grok-4.1', 'grok-4-heavy', 'grok-3', 'grok-3-fast', 'grok-3-mini'
 OpenRouter: Provides access to models from multiple providers through a single API. Format: 'provider/model-name'
-OpenAI models: 'openai/gpt-5', 'openai/gpt-5-mini', 'openai/gpt-4o', 'openai/gpt-4o-mini', 'openai/gpt-4-turbo', 'openai/gpt-4', 'openai/gpt-3.5-turbo'
-Anthropic models: 'anthropic/claude-opus-4.1', 'anthropic/claude-sonnet-4', 'anthropic/claude-opus-4', 'anthropic/claude-3.7-sonnet',
-'anthropic/claude-3.5-sonnet', 'anthropic/claude-3.5-haiku', 'anthropic/claude-3-opus'
-Meta models: 'meta-llama/llama-3-70b-instruct', 'meta-llama/llama-3-8b-instruct', 'meta-llama/llama-2-70b-chat'
-Google models: 'google/gemini-2.5-pro', 'google/gemini-2.5-flash', 'google/gemini-2.0-flash', 'google/gemini-1.5-pro-latest', 'google/gemini-1.5-flash'
-Mistral models: 'mistralai/mistral-large', 'mistralai/mistral-medium', 'mistralai/mistral-small'
-Other models: 'microsoft/mai-ds-r1', 'perplexity/sonar-small-chat', 'cohere/command-r', 'deepseek/deepseek-chat', 'thudm/glm-z1-32b'
+OpenAI models: 'openai/gpt-5.2', 'openai/gpt-5', 'openai/o3-pro', 'openai/o4-mini'
+Anthropic models: 'anthropic/claude-opus-4.5', 'anthropic/claude-sonnet-4.5', 'anthropic/claude-haiku-4.5'
+Meta models: 'meta-llama/llama-4-maverick', 'meta-llama/llama-4-scout', 'meta-llama/llama-3.3-70b-instruct'
+Google models: 'google/gemini-3-pro', 'google/gemini-3-flash', 'google/gemini-2.5-pro'
+Mistral models: 'mistralai/mistral-large', 'mistralai/magistral-medium-2506'
+Other models: 'deepseek/deepseek-r1', 'deepseek/deepseek-chat-v3.1', 'microsoft/mai-ds-r1'
 Each provider requires a specific API key format and authentication method:
 
 OpenAI: &quot;sk-...&quot; (obtain from OpenAI platform)
@@ -163,7 +161,7 @@ OpenRouter provides access to multiple models through a single API key
 
 The API key can be provided directly or stored in environment variables:
 # Direct API key
-result &amp;lt;- annotate_cell_types(input, tissue_name, model=&quot;gpt-5&quot;,
+result &amp;lt;- annotate_cell_types(input, tissue_name, model=&quot;gpt-5.2&quot;,
                              api_key=&quot;sk-...&quot;)
 
 # Using environment variables
@@ -172,7 +170,7 @@ Sys.setenv(ANTHROPIC_API_KEY=&quot;sk-ant-...&quot;)
 Sys.setenv(OPENROUTER_API_KEY=&quot;sk-or-...&quot;)
 
 # Then use with environment variables
-result &amp;lt;- annotate_cell_types(input, tissue_name, model=&quot;claude-3-opus&quot;,
+result &amp;lt;- annotate_cell_types(input, tissue_name, model=&quot;claude-sonnet-4-5-20250929&quot;,
                              api_key=Sys.getenv(&quot;ANTHROPIC_API_KEY&quot;))
 
 If NA, returns the generated prompt without making an API call, which is useful for
@@ -315,23 +313,22 @@ original IDs and numeric IDs:</p>
 <span>  numeric <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">original_ids</span><span class="op">)</span> <span class="op">-</span> <span class="fl">1</span><span class="op">)</span></span>
 <span><span class="op">)</span></span>
 <span><span class="va">markers</span><span class="op">$</span><span class="va">cluster</span> <span class="op">&lt;-</span> <span class="va">id_mapping</span><span class="op">$</span><span class="va">numeric</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/match.html" class="external-link">match</a></span><span class="op">(</span><span class="va">markers</span><span class="op">$</span><span class="va">cluster</span>, <span class="va">id_mapping</span><span class="op">$</span><span class="va">original</span><span class="op">)</span><span class="op">]</span></span></code></pre><p></p></div></li>
-</ol><p>'mouse brain'). This helps provide context for more accurate annotations.</p><ul><li><p>OpenAI: 'gpt-5', 'gpt-5-mini', 'gpt-5-nano', 'gpt-4o', 'gpt-4o-mini', 'gpt-4.1', 'gpt-4.1-mini', 'gpt-4.1-nano', 'gpt-4-turbo', 'gpt-3.5-turbo', 'o1', 'o1-mini', 'o1-preview', 'o1-pro'</p></li>
-<li><p>Anthropic: 'claude-opus-4-1-20250805', 'claude-sonnet-4-20250514', 'claude-opus-4-20250514', 'claude-3-7-sonnet-20250219', 'claude-3-5-sonnet-20241022',
-'claude-3-5-haiku-20241022', 'claude-3-opus-20240229'</p></li>
-<li><p>DeepSeek: 'deepseek-chat', 'deepseek-r1', 'deepseek-r1-zero', 'deepseek-reasoner'</p></li>
-<li><p>Google: 'gemini-2.5-pro', 'gemini-2.5-flash', 'gemini-2.0-flash', 'gemini-2.0-flash-lite', 'gemini-1.5-pro-latest', 'gemini-1.5-flash-latest', 'gemini-1.5-flash-8b'</p></li>
-<li><p>Alibaba: 'qwen-max-2025-01-25', 'qwen3-72b'</p></li>
-<li><p>Stepfun: 'step-2-16k', 'step-2-mini', 'step-1-8k'</p></li>
-<li><p>Zhipu: 'glm-4-plus', 'glm-3-turbo'</p></li>
-<li><p>MiniMax: 'minimax-text-01'</p></li>
-<li><p>X.AI: 'grok-3-latest', 'grok-3', 'grok-3-fast', 'grok-3-fast-latest', 'grok-3-mini', 'grok-3-mini-latest', 'grok-3-mini-fast', 'grok-3-mini-fast-latest'</p></li>
-<li><p>OpenRouter: Provides access to models from multiple providers through a single API. Format: 'provider/model-name'</p><ul><li><p>OpenAI models: 'openai/gpt-5', 'openai/gpt-5-mini', 'openai/gpt-4o', 'openai/gpt-4o-mini', 'openai/gpt-4-turbo', 'openai/gpt-4', 'openai/gpt-3.5-turbo'</p></li>
-<li><p>Anthropic models: 'anthropic/claude-opus-4.1', 'anthropic/claude-sonnet-4', 'anthropic/claude-opus-4', 'anthropic/claude-3.7-sonnet',
-'anthropic/claude-3.5-sonnet', 'anthropic/claude-3.5-haiku', 'anthropic/claude-3-opus'</p></li>
-<li><p>Meta models: 'meta-llama/llama-3-70b-instruct', 'meta-llama/llama-3-8b-instruct', 'meta-llama/llama-2-70b-chat'</p></li>
-<li><p>Google models: 'google/gemini-2.5-pro', 'google/gemini-2.5-flash', 'google/gemini-2.0-flash', 'google/gemini-1.5-pro-latest', 'google/gemini-1.5-flash'</p></li>
-<li><p>Mistral models: 'mistralai/mistral-large', 'mistralai/mistral-medium', 'mistralai/mistral-small'</p></li>
-<li><p>Other models: 'microsoft/mai-ds-r1', 'perplexity/sonar-small-chat', 'cohere/command-r', 'deepseek/deepseek-chat', 'thudm/glm-z1-32b'
+</ol><p>'mouse brain'). This helps provide context for more accurate annotations.</p><ul><li><p>OpenAI: 'gpt-5.2', 'gpt-5.1', 'gpt-5', 'gpt-4.1', 'gpt-4o', 'o3-pro', 'o3', 'o4-mini', 'o1', 'o1-pro'</p></li>
+<li><p>Anthropic: 'claude-opus-4-6-20260205', 'claude-opus-4-5-20251101', 'claude-sonnet-4-5-20250929', 'claude-haiku-4-5-20251001',
+'claude-opus-4-1-20250805', 'claude-sonnet-4-20250514', 'claude-3-7-sonnet-20250219'</p></li>
+<li><p>DeepSeek: 'deepseek-chat', 'deepseek-reasoner', 'deepseek-r1'</p></li>
+<li><p>Google: 'gemini-3-pro', 'gemini-3-flash', 'gemini-2.5-pro', 'gemini-2.5-flash', 'gemini-2.0-flash'</p></li>
+<li><p>Alibaba: 'qwen3-max', 'qwen-max-2025-01-25', 'qwen-plus'</p></li>
+<li><p>Stepfun: 'step-3', 'step-2-16k', 'step-2-mini'</p></li>
+<li><p>Zhipu: 'glm-4.7', 'glm-4-plus'</p></li>
+<li><p>MiniMax: 'minimax-m2.1', 'minimax-m2', 'MiniMax-Text-01'</p></li>
+<li><p>X.AI: 'grok-4', 'grok-4.1', 'grok-4-heavy', 'grok-3', 'grok-3-fast', 'grok-3-mini'</p></li>
+<li><p>OpenRouter: Provides access to models from multiple providers through a single API. Format: 'provider/model-name'</p><ul><li><p>OpenAI models: 'openai/gpt-5.2', 'openai/gpt-5', 'openai/o3-pro', 'openai/o4-mini'</p></li>
+<li><p>Anthropic models: 'anthropic/claude-opus-4.5', 'anthropic/claude-sonnet-4.5', 'anthropic/claude-haiku-4.5'</p></li>
+<li><p>Meta models: 'meta-llama/llama-4-maverick', 'meta-llama/llama-4-scout', 'meta-llama/llama-3.3-70b-instruct'</p></li>
+<li><p>Google models: 'google/gemini-3-pro', 'google/gemini-3-flash', 'google/gemini-2.5-pro'</p></li>
+<li><p>Mistral models: 'mistralai/mistral-large', 'mistralai/magistral-medium-2506'</p></li>
+<li><p>Other models: 'deepseek/deepseek-r1', 'deepseek/deepseek-chat-v3.1', 'microsoft/mai-ds-r1'
 Each provider requires a specific API key format and authentication method:</p></li>
 </ul></li>
 <li><p>OpenAI: "sk-..." (obtain from OpenAI platform)</p></li>
@@ -347,7 +344,7 @@ Each provider requires a specific API key format and authentication method:</p><
 OpenRouter provides access to multiple models through a single API key</p></li>
 </ul><p>The API key can be provided directly or stored in environment variables:</p>
 <p></p><div class="sourceCode r"><pre><code><span><span class="co"># Direct API key</span></span>
-<span><span class="va">result</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/annotate_cell_types.html">annotate_cell_types</a></span><span class="op">(</span><span class="va">input</span>, <span class="va">tissue_name</span>, model<span class="op">=</span><span class="st">"gpt-5"</span>,</span>
+<span><span class="va">result</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/annotate_cell_types.html">annotate_cell_types</a></span><span class="op">(</span><span class="va">input</span>, <span class="va">tissue_name</span>, model<span class="op">=</span><span class="st">"gpt-5.2"</span>,</span>
 <span>                             api_key<span class="op">=</span><span class="st">"sk-..."</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Using environment variables</span></span>
@@ -356,7 +353,7 @@ OpenRouter provides access to multiple models through a single API key</p></li>
 <span><span class="fu"><a href="https://rdrr.io/r/base/Sys.setenv.html" class="external-link">Sys.setenv</a></span><span class="op">(</span>OPENROUTER_API_KEY<span class="op">=</span><span class="st">"sk-or-..."</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Then use with environment variables</span></span>
-<span><span class="va">result</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/annotate_cell_types.html">annotate_cell_types</a></span><span class="op">(</span><span class="va">input</span>, <span class="va">tissue_name</span>, model<span class="op">=</span><span class="st">"claude-3-opus"</span>,</span>
+<span><span class="va">result</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/annotate_cell_types.html">annotate_cell_types</a></span><span class="op">(</span><span class="va">input</span>, <span class="va">tissue_name</span>, model<span class="op">=</span><span class="st">"claude-sonnet-4-5-20250929"</span>,</span>
 <span>                             api_key<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/Sys.getenv.html" class="external-link">Sys.getenv</a></span><span class="op">(</span><span class="st">"ANTHROPIC_API_KEY"</span><span class="op">)</span><span class="op">)</span></span></code></pre><p></p></div>
 <p>If NA, returns the generated prompt without making an API call, which is useful for
 reviewing the prompt before sending it to the API.
@@ -374,7 +371,7 @@ If NULL (default), uses official API endpoints for each provider.</p></li>
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">annotate_cell_types</span><span class="op">(</span></span>
 <span>  <span class="va">input</span>,</span>
 <span>  tissue_name <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  model <span class="op">=</span> <span class="st">"gpt-5"</span>,</span>
+<span>  model <span class="op">=</span> <span class="st">"gpt-5.2"</span>,</span>
 <span>  api_key <span class="op">=</span> <span class="cn">NA</span>,</span>
 <span>  top_gene_count <span class="op">=</span> <span class="fl">10</span>,</span>
 <span>  debug <span class="op">=</span> <span class="cn">FALSE</span>,</span>
@@ -395,7 +392,7 @@ If NULL (default), uses official API endpoints for each provider.</p></li>
 
 
 <dt id="arg-model">model<a class="anchor" aria-label="anchor" href="#arg-model"></a></dt>
-<dd><p>Model name to use. Default: 'gpt-5'. See details for supported models</p></dd>
+<dd><p>Model name to use. Default: 'gpt-5.2'. See details for supported models</p></dd>
 
 
 <dt id="arg-api-key">api_key<a class="anchor" aria-label="anchor" href="#arg-api-key"></a></dt>
@@ -437,12 +434,11 @@ If NULL (default), uses official API endpoints for each provider.</p></li>
 <span class="r-in"><span>    monocytes <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>genes <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'CD14'</span>, <span class="st">'CD68'</span>, <span class="st">'CSF1R'</span>, <span class="st">'FCGR3A'</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-in"><span>  <span class="op">)</span>,</span></span>
 <span class="r-in"><span>  tissue_name <span class="op">=</span> <span class="st">'human PBMC'</span>,</span></span>
-<span class="r-in"><span>  model <span class="op">=</span> <span class="st">'gpt-5'</span>,</span></span>
+<span class="r-in"><span>  model <span class="op">=</span> <span class="st">'gpt-5.2'</span>,</span></span>
 <span class="r-in"><span>  api_key <span class="op">=</span> <span class="cn">NA</span>  <span class="co"># Returns prompt only without making API call</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> {"timestamp":"2026-02-07 02:30:15","session_id":"20260207_023015","level":"INFO","message":"Unified logger initialized","context":{"session_id":"20260207_023015","log_level":"INFO","log_dir":"logs"},"pid":10480} </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> {"timestamp":"2026-02-07 02:30:15","session_id":"20260207_023015","level":"INFO","message":"Processing input with model and provider","context":{"model":"gpt-5","provider":"openai","custom_url":false},"pid":10480} </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> DEBUG: Formatted lines for prompt:</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> {"timestamp":"2026-02-07 03:58:42","session_id":"20260207_035842","level":"INFO","message":"Unified logger initialized","context":{"session_id":"20260207_035842","log_level":"INFO","log_dir":"logs"},"pid":10529} </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> {"timestamp":"2026-02-07 03:58:42","session_id":"20260207_035842","level":"INFO","message":"Processing input with model and provider","context":{"model":"gpt-5.2","provider":"openai","custom_url":false},"pid":10529} </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "You are a cell type annotation expert. Below are marker genes for different cell clusters in human PBMC.\n\n\n\nFor each numbered cluster, provide only the cell type name in a new line, without any explanation."</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Example 2: Using with Seurat pipeline and OpenAI model</span></span></span>
@@ -467,7 +463,7 @@ If NULL (default), uses official API endpoints for each provider.</p></li>
 <span class="r-in"><span><span class="va">openai_annotations</span> <span class="op">&lt;-</span> <span class="fu">annotate_cell_types</span><span class="op">(</span></span></span>
 <span class="r-in"><span>  input <span class="op">=</span> <span class="va">all.markers</span>,</span></span>
 <span class="r-in"><span>  tissue_name <span class="op">=</span> <span class="st">'human PBMC'</span>,</span></span>
-<span class="r-in"><span>  model <span class="op">=</span> <span class="st">'gpt-5'</span>,</span></span>
+<span class="r-in"><span>  model <span class="op">=</span> <span class="st">'gpt-5.2'</span>,</span></span>
 <span class="r-in"><span>  api_key <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Sys.getenv.html" class="external-link">Sys.getenv</a></span><span class="op">(</span><span class="st">"OPENAI_API_KEY"</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>  top_gene_count <span class="op">=</span> <span class="fl">15</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
@@ -478,7 +474,7 @@ If NULL (default), uses official API endpoints for each provider.</p></li>
 <span class="r-in"><span><span class="va">claude_annotations</span> <span class="op">&lt;-</span> <span class="fu">annotate_cell_types</span><span class="op">(</span></span></span>
 <span class="r-in"><span>  input <span class="op">=</span> <span class="va">all.markers</span>,</span></span>
 <span class="r-in"><span>  tissue_name <span class="op">=</span> <span class="st">'human PBMC'</span>,</span></span>
-<span class="r-in"><span>  model <span class="op">=</span> <span class="st">'claude-3-opus'</span>,</span></span>
+<span class="r-in"><span>  model <span class="op">=</span> <span class="st">'claude-opus-4-6-20260205'</span>,</span></span>
 <span class="r-in"><span>  api_key <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Sys.getenv.html" class="external-link">Sys.getenv</a></span><span class="op">(</span><span class="st">"ANTHROPIC_API_KEY"</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>  top_gene_count <span class="op">=</span> <span class="fl">15</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
@@ -490,7 +486,7 @@ If NULL (default), uses official API endpoints for each provider.</p></li>
 <span class="r-in"><span><span class="va">openrouter_gpt4_annotations</span> <span class="op">&lt;-</span> <span class="fu">annotate_cell_types</span><span class="op">(</span></span></span>
 <span class="r-in"><span>  input <span class="op">=</span> <span class="va">all.markers</span>,</span></span>
 <span class="r-in"><span>  tissue_name <span class="op">=</span> <span class="st">'human PBMC'</span>,</span></span>
-<span class="r-in"><span>  model <span class="op">=</span> <span class="st">'openai/gpt-5'</span>,  <span class="co"># Note the provider/model format</span></span></span>
+<span class="r-in"><span>  model <span class="op">=</span> <span class="st">'openai/gpt-5.2'</span>,  <span class="co"># Note the provider/model format</span></span></span>
 <span class="r-in"><span>  api_key <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Sys.getenv.html" class="external-link">Sys.getenv</a></span><span class="op">(</span><span class="st">"OPENROUTER_API_KEY"</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>  top_gene_count <span class="op">=</span> <span class="fl">15</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
@@ -499,7 +495,7 @@ If NULL (default), uses official API endpoints for each provider.</p></li>
 <span class="r-in"><span><span class="va">openrouter_claude_annotations</span> <span class="op">&lt;-</span> <span class="fu">annotate_cell_types</span><span class="op">(</span></span></span>
 <span class="r-in"><span>  input <span class="op">=</span> <span class="va">all.markers</span>,</span></span>
 <span class="r-in"><span>  tissue_name <span class="op">=</span> <span class="st">'human PBMC'</span>,</span></span>
-<span class="r-in"><span>  model <span class="op">=</span> <span class="st">'anthropic/claude-3-opus'</span>,  <span class="co"># Note the provider/model format</span></span></span>
+<span class="r-in"><span>  model <span class="op">=</span> <span class="st">'anthropic/claude-opus-4.6'</span>,  <span class="co"># Note the provider/model format</span></span></span>
 <span class="r-in"><span>  api_key <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Sys.getenv.html" class="external-link">Sys.getenv</a></span><span class="op">(</span><span class="st">"OPENROUTER_API_KEY"</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>  top_gene_count <span class="op">=</span> <span class="fl">15</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
@@ -508,7 +504,7 @@ If NULL (default), uses official API endpoints for each provider.</p></li>
 <span class="r-in"><span><span class="va">mouse_annotations</span> <span class="op">&lt;-</span> <span class="fu">annotate_cell_types</span><span class="op">(</span></span></span>
 <span class="r-in"><span>  input <span class="op">=</span> <span class="va">mouse_markers</span>,  <span class="co"># Your mouse marker genes</span></span></span>
 <span class="r-in"><span>  tissue_name <span class="op">=</span> <span class="st">'mouse brain'</span>,  <span class="co"># Specify correct tissue for context</span></span></span>
-<span class="r-in"><span>  model <span class="op">=</span> <span class="st">'gpt-5'</span>,</span></span>
+<span class="r-in"><span>  model <span class="op">=</span> <span class="st">'gpt-5.2'</span>,</span></span>
 <span class="r-in"><span>  api_key <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Sys.getenv.html" class="external-link">Sys.getenv</a></span><span class="op">(</span><span class="st">"OPENAI_API_KEY"</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>  top_gene_count <span class="op">=</span> <span class="fl">20</span>,  <span class="co"># Use more genes for complex tissues</span></span></span>
 <span class="r-in"><span>  debug <span class="op">=</span> <span class="cn">TRUE</span>  <span class="co"># Enable debug output</span></span></span>

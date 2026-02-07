@@ -49,60 +49,51 @@ behavior. Before using this function, it is recommended to:
 'mouse brain'). This helps provide context for more accurate
 annotations.
 
-- OpenAI: 'gpt-5', 'gpt-5-mini', 'gpt-5-nano', 'gpt-4o', 'gpt-4o-mini',
-  'gpt-4.1', 'gpt-4.1-mini', 'gpt-4.1-nano', 'gpt-4-turbo',
-  'gpt-3.5-turbo', 'o1', 'o1-mini', 'o1-preview', 'o1-pro'
+- OpenAI: 'gpt-5.2', 'gpt-5.1', 'gpt-5', 'gpt-4.1', 'gpt-4o', 'o3-pro',
+  'o3', 'o4-mini', 'o1', 'o1-pro'
 
-- Anthropic: 'claude-opus-4-1-20250805', 'claude-sonnet-4-20250514',
-  'claude-opus-4-20250514', 'claude-3-7-sonnet-20250219',
-  'claude-3-5-sonnet-20241022', 'claude-3-5-haiku-20241022',
-  'claude-3-opus-20240229'
+- Anthropic: 'claude-opus-4-6-20260205', 'claude-opus-4-5-20251101',
+  'claude-sonnet-4-5-20250929', 'claude-haiku-4-5-20251001',
+  'claude-opus-4-1-20250805', 'claude-sonnet-4-20250514',
+  'claude-3-7-sonnet-20250219'
 
-- DeepSeek: 'deepseek-chat', 'deepseek-r1', 'deepseek-r1-zero',
-  'deepseek-reasoner'
+- DeepSeek: 'deepseek-chat', 'deepseek-reasoner', 'deepseek-r1'
 
-- Google: 'gemini-2.5-pro', 'gemini-2.5-flash', 'gemini-2.0-flash',
-  'gemini-2.0-flash-lite', 'gemini-1.5-pro-latest',
-  'gemini-1.5-flash-latest', 'gemini-1.5-flash-8b'
+- Google: 'gemini-3-pro', 'gemini-3-flash', 'gemini-2.5-pro',
+  'gemini-2.5-flash', 'gemini-2.0-flash'
 
-- Alibaba: 'qwen-max-2025-01-25', 'qwen3-72b'
+- Alibaba: 'qwen3-max', 'qwen-max-2025-01-25', 'qwen-plus'
 
-- Stepfun: 'step-2-16k', 'step-2-mini', 'step-1-8k'
+- Stepfun: 'step-3', 'step-2-16k', 'step-2-mini'
 
-- Zhipu: 'glm-4-plus', 'glm-3-turbo'
+- Zhipu: 'glm-4.7', 'glm-4-plus'
 
-- MiniMax: 'minimax-text-01'
+- MiniMax: 'minimax-m2.1', 'minimax-m2', 'MiniMax-Text-01'
 
-- X.AI: 'grok-3-latest', 'grok-3', 'grok-3-fast', 'grok-3-fast-latest',
-  'grok-3-mini', 'grok-3-mini-latest', 'grok-3-mini-fast',
-  'grok-3-mini-fast-latest'
+- X.AI: 'grok-4', 'grok-4.1', 'grok-4-heavy', 'grok-3', 'grok-3-fast',
+  'grok-3-mini'
 
 - OpenRouter: Provides access to models from multiple providers through
   a single API. Format: 'provider/model-name'
 
-  - OpenAI models: 'openai/gpt-5', 'openai/gpt-5-mini', 'openai/gpt-4o',
-    'openai/gpt-4o-mini', 'openai/gpt-4-turbo', 'openai/gpt-4',
-    'openai/gpt-3.5-turbo'
+  - OpenAI models: 'openai/gpt-5.2', 'openai/gpt-5', 'openai/o3-pro',
+    'openai/o4-mini'
 
-  - Anthropic models: 'anthropic/claude-opus-4.1',
-    'anthropic/claude-sonnet-4', 'anthropic/claude-opus-4',
-    'anthropic/claude-3.7-sonnet', 'anthropic/claude-3.5-sonnet',
-    'anthropic/claude-3.5-haiku', 'anthropic/claude-3-opus'
+  - Anthropic models: 'anthropic/claude-opus-4.5',
+    'anthropic/claude-sonnet-4.5', 'anthropic/claude-haiku-4.5'
 
-  - Meta models: 'meta-llama/llama-3-70b-instruct',
-    'meta-llama/llama-3-8b-instruct', 'meta-llama/llama-2-70b-chat'
+  - Meta models: 'meta-llama/llama-4-maverick',
+    'meta-llama/llama-4-scout', 'meta-llama/llama-3.3-70b-instruct'
 
-  - Google models: 'google/gemini-2.5-pro', 'google/gemini-2.5-flash',
-    'google/gemini-2.0-flash', 'google/gemini-1.5-pro-latest',
-    'google/gemini-1.5-flash'
+  - Google models: 'google/gemini-3-pro', 'google/gemini-3-flash',
+    'google/gemini-2.5-pro'
 
   - Mistral models: 'mistralai/mistral-large',
-    'mistralai/mistral-medium', 'mistralai/mistral-small'
+    'mistralai/magistral-medium-2506'
 
-  - Other models: 'microsoft/mai-ds-r1', 'perplexity/sonar-small-chat',
-    'cohere/command-r', 'deepseek/deepseek-chat', 'thudm/glm-z1-32b'
-    Each provider requires a specific API key format and authentication
-    method:
+  - Other models: 'deepseek/deepseek-r1', 'deepseek/deepseek-chat-v3.1',
+    'microsoft/mai-ds-r1' Each provider requires a specific API key
+    format and authentication method:
 
 - OpenAI: "sk-..." (obtain from OpenAI platform)
 
@@ -128,7 +119,7 @@ annotations.
 The API key can be provided directly or stored in environment variables:
 
     # Direct API key
-    result <- annotate_cell_types(input, tissue_name, model="gpt-5",
+    result <- annotate_cell_types(input, tissue_name, model="gpt-5.2",
                                  api_key="sk-...")
 
     # Using environment variables
@@ -137,7 +128,7 @@ The API key can be provided directly or stored in environment variables:
     Sys.setenv(OPENROUTER_API_KEY="sk-or-...")
 
     # Then use with environment variables
-    result <- annotate_cell_types(input, tissue_name, model="claude-3-opus",
+    result <- annotate_cell_types(input, tissue_name, model="claude-sonnet-4-5-20250929",
                                  api_key=Sys.getenv("ANTHROPIC_API_KEY"))
 
 If NA, returns the generated prompt without making an API call, which is
@@ -164,7 +155,7 @@ is from Seurat's FindAllMarkers(). Default: 10
 annotate_cell_types(
   input,
   tissue_name = NULL,
-  model = "gpt-5",
+  model = "gpt-5.2",
   api_key = NA,
   top_gene_count = 10,
   debug = FALSE,
@@ -187,7 +178,8 @@ annotate_cell_types(
 
 - model:
 
-  Model name to use. Default: 'gpt-5'. See details for supported models
+  Model name to use. Default: 'gpt-5.2'. See details for supported
+  models
 
 - api_key:
 
@@ -231,12 +223,11 @@ annotate_cell_types(
     monocytes = list(genes = c('CD14', 'CD68', 'CSF1R', 'FCGR3A'))
   ),
   tissue_name = 'human PBMC',
-  model = 'gpt-5',
+  model = 'gpt-5.2',
   api_key = NA  # Returns prompt only without making API call
 )
-#> {"timestamp":"2026-02-07 02:30:15","session_id":"20260207_023015","level":"INFO","message":"Unified logger initialized","context":{"session_id":"20260207_023015","log_level":"INFO","log_dir":"logs"},"pid":10480} 
-#> {"timestamp":"2026-02-07 02:30:15","session_id":"20260207_023015","level":"INFO","message":"Processing input with model and provider","context":{"model":"gpt-5","provider":"openai","custom_url":false},"pid":10480} 
-#> DEBUG: Formatted lines for prompt:
+#> {"timestamp":"2026-02-07 03:58:42","session_id":"20260207_035842","level":"INFO","message":"Unified logger initialized","context":{"session_id":"20260207_035842","log_level":"INFO","log_dir":"logs"},"pid":10529} 
+#> {"timestamp":"2026-02-07 03:58:42","session_id":"20260207_035842","level":"INFO","message":"Processing input with model and provider","context":{"model":"gpt-5.2","provider":"openai","custom_url":false},"pid":10529} 
 #> [1] "You are a cell type annotation expert. Below are marker genes for different cell clusters in human PBMC.\n\n\n\nFor each numbered cluster, provide only the cell type name in a new line, without any explanation."
 
 # Example 2: Using with Seurat pipeline and OpenAI model
@@ -261,7 +252,7 @@ Sys.setenv(OPENAI_API_KEY = "your-openai-api-key")
 openai_annotations <- annotate_cell_types(
   input = all.markers,
   tissue_name = 'human PBMC',
-  model = 'gpt-5',
+  model = 'gpt-5.2',
   api_key = Sys.getenv("OPENAI_API_KEY"),
   top_gene_count = 15
 )
@@ -272,7 +263,7 @@ Sys.setenv(ANTHROPIC_API_KEY = "your-anthropic-api-key")
 claude_annotations <- annotate_cell_types(
   input = all.markers,
   tissue_name = 'human PBMC',
-  model = 'claude-3-opus',
+  model = 'claude-opus-4-6-20260205',
   api_key = Sys.getenv("ANTHROPIC_API_KEY"),
   top_gene_count = 15
 )
@@ -284,7 +275,7 @@ Sys.setenv(OPENROUTER_API_KEY = "your-openrouter-api-key")
 openrouter_gpt4_annotations <- annotate_cell_types(
   input = all.markers,
   tissue_name = 'human PBMC',
-  model = 'openai/gpt-5',  # Note the provider/model format
+  model = 'openai/gpt-5.2',  # Note the provider/model format
   api_key = Sys.getenv("OPENROUTER_API_KEY"),
   top_gene_count = 15
 )
@@ -293,7 +284,7 @@ openrouter_gpt4_annotations <- annotate_cell_types(
 openrouter_claude_annotations <- annotate_cell_types(
   input = all.markers,
   tissue_name = 'human PBMC',
-  model = 'anthropic/claude-3-opus',  # Note the provider/model format
+  model = 'anthropic/claude-opus-4.6',  # Note the provider/model format
   api_key = Sys.getenv("OPENROUTER_API_KEY"),
   top_gene_count = 15
 )
@@ -302,7 +293,7 @@ openrouter_claude_annotations <- annotate_cell_types(
 mouse_annotations <- annotate_cell_types(
   input = mouse_markers,  # Your mouse marker genes
   tissue_name = 'mouse brain',  # Specify correct tissue for context
-  model = 'gpt-5',
+  model = 'gpt-5.2',
   api_key = Sys.getenv("OPENAI_API_KEY"),
   top_gene_count = 20,  # Use more genes for complex tissues
   debug = TRUE  # Enable debug output

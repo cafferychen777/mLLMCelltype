@@ -1,87 +1,39 @@
 # Determine provider from model name
 
 This function determines the appropriate provider (e.g., OpenAI,
-Anthropic, Google, OpenRouter) based on the model name.
-
-This is a helper function that extracts the provider name from a model
-identifier. It's used internally to determine which base_url to use from
-a list of provider-specific URLs.
+Anthropic, Google, OpenRouter) based on the model name. Uses
+prefix-based matching for efficient and maintainable provider detection.
+New models following existing naming conventions are automatically
+supported.
 
 ## Usage
 
 ``` r
 get_provider(model)
-
-get_provider(model)
 ```
 
 ## Details
 
-Supported providers and models include:
+Supported providers and model prefixes:
 
-- OpenAI: 'chatgpt-4o-latest', 'gpt-3.5-turbo', 'gpt-4', 'gpt-4-turbo',
-  'gpt-4.1', 'gpt-4.1-mini', 'gpt-4.1-nano', 'gpt-4o', 'gpt-4o-mini',
-  'gpt-5', 'gpt-5-mini', 'gpt-5-nano', 'o1', 'o1-mini', 'o1-pro', 'o3',
-  'o3-mini', 'o4-mini' and more with date variants
+- OpenAI: gpt-*, o1*, o3\*, o4\*, chatgpt-*, codex-* (e.g., 'gpt-5.2',
+  'o3-pro', 'o4-mini')
 
-- Anthropic: 'claude-sonnet-4-5-20250929', 'claude-opus-4-1-20250805',
-  'claude-sonnet-4-20250514', 'claude-opus-4-20250514',
-  'claude-3-7-sonnet-20250219', 'claude-3-5-sonnet-20241022',
-  'claude-3-5-sonnet-20240620', 'claude-3-5-haiku-20241022',
-  'claude-3-opus-20240229', 'claude-3-haiku-20240307' and more with
-  alias variants (e.g., 'claude-sonnet-4.5', 'claude-opus-4.1')
+- Anthropic: claude-\* (e.g., 'claude-opus-4.6', 'claude-sonnet-4.5')
 
-- DeepSeek: 'deepseek-chat', 'deepseek-reasoner'
+- DeepSeek: deepseek-\* (e.g., 'deepseek-chat', 'deepseek-r1')
 
-- Google: 'gemini-2.5-pro', 'gemini-2.5-flash', 'gemini-2.0-flash',
-  'gemini-2.0-flash-lite', 'gemini-1.5-pro-latest',
-  'gemini-1.5-flash-latest', 'gemini-1.5-flash-8b'
+- Google: gemini-\* (e.g., 'gemini-3-pro', 'gemini-2.5-flash')
 
-- Qwen: 'qwen-max-2025-01-25', 'qwen-turbo', 'qwen-plus'
+- Qwen: qwen\*, qwq-\* (e.g., 'qwen3-max', 'qwq-32b')
 
-- Stepfun: 'step-2-mini', 'step-2-16k', 'step-1-8k'
+- Stepfun: step-\* (e.g., 'step-2-mini', 'step-2-16k')
 
-- Zhipu: 'glm-4-plus', 'glm-3-turbo'
+- Zhipu: glm-*, chatglm* (e.g., 'glm-4.7', 'glm-4-plus')
 
-- MiniMax: 'minimax-text-01'
+- MiniMax: minimax-\* (e.g., 'minimax-m2.1', 'minimax-m1')
 
-- Grok: 'grok-3', 'grok-3-latest', 'grok-3-fast', 'grok-3-fast-latest',
-  'grok-3-mini', 'grok-3-mini-latest', 'grok-3-mini-fast',
-  'grok-3-mini-fast-latest'
+- Grok: grok-\* (e.g., 'grok-4', 'grok-4-heavy')
 
-- OpenRouter: Provides access to models from multiple providers through
-  a single API. Format: 'provider/model-name'
-
-  - OpenAI models: 'openai/gpt-4o', 'openai/gpt-4o-mini',
-    'openai/gpt-4-turbo', 'openai/gpt-4', 'openai/gpt-3.5-turbo'
-
-  - Anthropic models: 'anthropic/claude-sonnet-4.5',
-    'anthropic/claude-opus-4.1', 'anthropic/claude-sonnet-4',
-    'anthropic/claude-opus-4', 'anthropic/claude-3.7-sonnet',
-    'anthropic/claude-3.7-sonnet-20250219',
-    'anthropic/claude-3.7-sonnet:thinking',
-    'anthropic/claude-3.5-sonnet',
-    'anthropic/claude-3.5-sonnet-20241022',
-    'anthropic/claude-3.5-haiku', 'anthropic/claude-3-opus',
-    'anthropic/claude-3-opus-20240229', 'anthropic/claude-3-haiku'
-
-  - Meta models: 'meta-llama/llama-3-70b-instruct',
-    'meta-llama/llama-3-8b-instruct', 'meta-llama/llama-2-70b-chat'
-
-  - Google models: 'google/gemini-2.5-pro', 'google/gemini-2.5-flash',
-    'google/gemini-2.0-flash', 'google/gemini-1.5-pro-latest',
-    'google/gemini-1.5-flash'
-
-  - Mistral models: 'mistralai/mistral-large',
-    'mistralai/mistral-medium', 'mistralai/mistral-small'
-
-  - DeepSeek models: 'deepseek/deepseek-r1:free',
-    'tngtech/deepseek-r1t2-chimera:free'
-
-  - Recommended free models (verified Oct 2025):
-    'meta-llama/llama-4-maverick:free',
-    'meta-llama/llama-3.3-70b-instruct:free', 'venice/uncensored:free',
-    'minimax/minimax-m2:free', 'z-ai/glm-4.5-air:free'
-
-  - Note: Free tier limits are 50 requests/day (1000/day with \$10+
-    credits). Some free models may be rate-limited or unavailable.
+- OpenRouter: Any model with '/' in the name (e.g., 'openai/gpt-5.2',
+  'anthropic/claude-sonnet-4.5')
