@@ -6,7 +6,7 @@
 <!-- Highlight the most important new features -->
 - 
 
-### 🚀 **Performance Improvements**
+### **Performance Improvements**
 <!-- Notable performance, speed, or cost optimizations -->
 - 
 

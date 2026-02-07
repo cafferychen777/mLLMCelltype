@@ -251,7 +251,7 @@ clear_cache()
 
 ## Conclusion
 
-mLLMCelltype provides a powerful and flexible framework for automated cell type annotation using large language models. By leveraging the consensus of multiple models, it achieves more reliable annotations than single-model approaches.
+mLLMCelltype is a framework for automated cell type annotation using large language models. By combining predictions from multiple models, it aims to produce more reliable annotations than single-model approaches.
 
 For bug reports or feature requests, please visit: [https://github.com/cafferychen777/mLLMCelltype/issues](https://github.com/cafferychen777/mLLMCelltype/issues).
 

@@ -41,9 +41,9 @@ mLLMCelltype es una herramienta de código abierto para el análisis transcript�
 
 ## Noticias
 
-🚀 **Lanzamiento de la Aplicación Web (18-06-2025)**
+**Lanzamiento de la Aplicación Web (18-06-2025)**
 
-¡Nos complace anunciar el lanzamiento de la Aplicación Web de mLLMCelltype! Ahora puede acceder a las potentes capacidades de anotación de tipos celulares de mLLMCelltype directamente a través de su navegador web sin necesidad de instalación.
+La aplicación web de mLLMCelltype ya está disponible. Puede acceder a la funcionalidad de anotación de tipos celulares directamente a través de su navegador web sin necesidad de instalación.
 
 **✨ Características Principales:**
 - **Interfaz fácil de usar**: Cargue sus datos de scRNA-seq y obtenga anotaciones en minutos

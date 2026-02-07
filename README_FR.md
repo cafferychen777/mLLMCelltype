@@ -41,7 +41,7 @@ mLLMCelltype est un outil open-source pour l'analyse transcriptomique unicellula
 
 ## Actualités
 
-🚀 **Lancement de l'Application Web (18-06-2025)**
+**Lancement de l'Application Web (18-06-2025)**
 
 Nous sommes heureux d'annoncer le lancement de l'Application Web mLLMCelltype ! Vous pouvez maintenant accéder aux puissantes capacités d'annotation de types cellulaires de mLLMCelltype directement via votre navigateur web sans aucune installation requise.
 
@@ -527,7 +527,7 @@ plt.tight_layout()
 
 ### Utilisation d'un Seul Modèle OpenRouter Gratuit
 
-Pour les utilisateurs qui préfèrent une approche plus simple avec un seul modèle, le modèle gratuit Microsoft MAI-DS-R1 via OpenRouter fournit d'excellents résultats :
+Pour les utilisateurs qui préfèrent une approche plus simple avec un seul modèle, le modèle gratuit Microsoft MAI-DS-R1 via OpenRouter peut être utilisé :
 
 ```python
 import os
@@ -803,12 +803,12 @@ Le paramètre `consensus_check_model` (R) / `consensus_model` (Python) vous perm
    - `gpt-4.1` - Dernière variante de GPT-4
 
 3. **Modèles Google Gemini**
-   - `gemini-3-pro` - Performance de premier niveau avec raisonnement amélioré
+   - `gemini-3-pro` - Modèle Gemini avec raisonnement
    - `gemini-3-flash` - Bonne performance avec traitement plus rapide
 
 4. **Autres Modèles Haute Performance**
    - `deepseek-r1` / `deepseek-reasoner` - Fortes capacités de raisonnement
-   - `qwen-max-2025-01-25` - Excellent pour les contextes scientifiques
+   - `qwen-max-2025-01-25` - Modèle Qwen
    - `grok-3-latest` - Compréhension avancée du langage
 
 #### Utilisation du Package R

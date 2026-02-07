@@ -503,11 +503,11 @@ affordable_annotation <- annotate_cell_types(
 )
 
 # For final analysis or challenging datasets
-# Use more powerful models
+# Use larger models
 premium_annotation <- annotate_cell_types(
   input = marker_data,  # Your marker gene data
   tissue_name = "human PBMC",
-  model = "claude-sonnet-4-5-20250929",  # More powerful model
+  model = "claude-sonnet-4-5-20250929",  # Larger model
   api_key = Sys.getenv("ANTHROPIC_API_KEY")
 )
 

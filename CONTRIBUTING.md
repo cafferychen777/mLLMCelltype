@@ -22,7 +22,7 @@ Welcome to the mLLMCelltype community! We appreciate your interest in contributi
 - **Performance Testing**: Evaluate scalability and resource usage
 - **Biological Validation**: Verify annotation accuracy
 
-## 🚀 Getting Started
+## Getting Started
 
 ### 1. **Fork and Clone**
 ```bash
@@ -104,7 +104,7 @@ More detailed description if needed
 - Benefits to the community
 - Willingness to contribute to implementation
 
-## 🏆 Recognition
+## Recognition
 
 ### **Contributors Wall**
 All contributors are recognized in:

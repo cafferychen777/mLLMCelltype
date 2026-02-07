@@ -41,7 +41,7 @@ mLLMCelltype ist ein Open-Source-Tool für die Einzelzell-Transkriptomanalyse, d
 
 ## Neuigkeiten
 
-🚀 **Webanwendung-Launch (18.06.2025)**
+**Webanwendung-Launch (18.06.2025)**
 
 Wir freuen uns, den Launch der mLLMCelltype-Webanwendung bekannt zu geben! Jetzt können Sie die leistungsstarken Funktionen zur Zelltyp-Annotation von mLLMCelltype direkt über Ihren Webbrowser nutzen, ohne Installation.
 

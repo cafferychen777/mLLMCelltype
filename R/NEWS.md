@@ -4,8 +4,8 @@
 
 ### Updated Models
 * Updated Anthropic Claude model support to include latest releases:
-  - Added **Claude Sonnet 4.5** (`claude-sonnet-4-5-20250929`) - Latest and most intelligent Sonnet model, same price as earlier Sonnets
-  - Added **Claude Opus 4.1** (`claude-opus-4-1-20250805`) - Enhanced reasoning capabilities
+  - Added **Claude Sonnet 4.5** (`claude-sonnet-4-5-20250929`) - Newest Sonnet model, same price as earlier Sonnets
+  - Added **Claude Opus 4.1** (`claude-opus-4-1-20250805`) - Updated Opus model
   - Added Claude 4 series models (`claude-sonnet-4-20250514`, `claude-opus-4-20250514`)
   - Added support for both date-versioned and alias formats (e.g., `claude-sonnet-4.5`, `claude-opus-4.1`)
 * Updated all documentation, vignettes, and examples to recommend latest models

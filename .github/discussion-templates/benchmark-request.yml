@@ -1,4 +1,4 @@
-title: "🏆 Benchmark Request: [Dataset/Model Name]"
+title: "Benchmark Request: [Dataset/Model Name]"
 labels: ["benchmark", "performance", "evaluation"]
 body:
   - type: markdown

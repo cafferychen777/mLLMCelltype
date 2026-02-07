@@ -32,67 +32,16 @@ mLLMCelltype is an open-source tool for single-cell transcriptomics analysis tha
 In our benchmarks ([Yang et al., 2025](https://doi.org/10.1101/2025.04.10.647852)), the consensus approach achieved up to 95% accuracy on tested datasets.
 
 ## Table of Contents
-- [News](#news)
 - [Key Features](#key-features)
-- [Recent Updates](#recent-updates)
-- [Directory Structure](#directory-structure)
 - [Installation](#installation)
 - [Usage Examples](#usage-examples)
 - [Visualization Example](#visualization-example)
 - [Citation](#citation)
 - [Contributing](#contributing)
 
-## News
+**Web Application**: A browser-based interface is available at [mllmcelltype.com](https://mllmcelltype.com) (no installation required).
 
-**Web Application Launch (2025-06-18)**
-
-The mLLMCelltype web application is now available. You can access cell type annotation functionality directly through your web browser without any installation required.
-
-**Features:**
-- Upload your scRNA-seq data and get annotations
-- Choose from various AI models including GPT-4, Claude, Gemini, and more
-- Monitor annotation progress with live updates
-- Download results in CSV, TSV, Excel, or JSON formats
-- No setup required
-
-**Access the Web App**: [https://mllmcelltype.com](https://mllmcelltype.com)
-
-**Beta Testing Phase**: The web application is currently in beta testing. We welcome feedback and suggestions through our [GitHub Issues](https://github.com/cafferychen777/mLLMCelltype/issues) or [Discord community](https://discord.gg/pb2aZdG4).
-
-**CRAN Release (2025-09-02)**
-
-mLLMCelltype is now available on CRAN. Install the package using:
-```R
-install.packages("mLLMCelltype")
-```
-
-- **CRAN page**: https://CRAN.R-project.org/package=mLLMCelltype
-- **DOI**: 10.32614/CRAN.package.mLLMCelltype
-
-**Important: Gemini Model Migration (2025-06-02)**
-
-Google has discontinued several Gemini 1.5 models and will discontinue more on September 24, 2025:
-- **Already discontinued**: Gemini 1.5 Pro 001, Gemini 1.5 Flash 001
-- **Will be discontinued on Sept 24, 2025**: Gemini 1.5 Pro 002, Gemini 1.5 Flash 002, Gemini 1.5 Flash-8B -001
-
-**Recommended migration**: Use `gemini-2.0-flash` or `gemini-2.0-flash-lite` for continued support. The aliases `gemini-1.5-pro` and `gemini-1.5-flash` will continue to work until September 24, 2025, as they point to the -002 versions.
-
-**Important: Claude Model Deprecation (2025-07-21)**
-
-Anthropic will retire the following Claude models on July 21, 2025:
-- **Claude 2** (all versions)
-- **Claude 2.1**
-- **Claude 3 Sonnet** (non-versioned)
-- **Claude 3 Opus** (non-versioned)
-
-**Recommended migration**:
-- For Claude 2/2.1 → Use `claude-sonnet-4-5-20250929` (latest)
-- For Claude 3 Sonnet → Use `claude-sonnet-4-5-20250929` (latest)
-- For Claude 3 Opus → Use `claude-opus-4-1-20250805` (latest)
-
-Please update your code before July 21, 2025 to avoid service disruption.
-
-See also: [FlashDeconv](https://github.com/cafferychen777/FlashDeconv) for spatial transcriptomics deconvolution.
+**See also**: [FlashDeconv](https://github.com/cafferychen777/FlashDeconv) — cell type deconvolution for spatial transcriptomics (Visium, Visium HD, Stereo-seq).
 
 ## Key Features
 
@@ -108,63 +57,7 @@ See also: [FlashDeconv](https://github.com/cafferychen777/FlashDeconv) for spati
 - **Integration**: Compatible with Scanpy/Seurat workflows and marker gene outputs
 - **Extensibility**: Supports addition of new LLMs as they become available
 
-## Recent Updates
-
-### v1.2.3 (2025-05-10)
-
-#### Bug Fixes
-- Fixed error handling in consensus checking when API responses are NULL or invalid
-- Improved error logging for OpenRouter API error responses
-- Added robust NULL and type checking in check_consensus function
-
-#### Improvements
-- Enhanced error diagnostics for OpenRouter API errors
-- Added detailed logging of API error messages and response structures
-- Improved robustness when handling unexpected API response formats
-
-### v1.2.2 (2025-05-09)
-
-#### Bug Fixes
-- Fixed the 'non-character argument' error that occurred when processing API responses
-- Added robust type checking for API responses across all model providers
-- Improved error handling for unexpected API response formats
-
-#### Improvements
-- Added detailed error logging for API response issues
-- Implemented consistent error handling patterns across all API processing functions
-- Enhanced response validation to ensure proper structure before processing
-
-### v1.2.1 (2025-05-01)
-
-#### Improvements
-- Added support for OpenRouter API
-- Added support for free models through OpenRouter
-- Updated documentation with examples for using OpenRouter models
-
-### v1.2.0 (2025-04-30)
-
-#### Features
-- Added visualization functions for cell type annotation results
-- Added support for uncertainty metrics visualization
-- Implemented improved consensus building algorithm
-
-### v1.1.5 (2025-04-27)
-
-#### Bug Fixes
-- Fixed an issue with cluster index validation that caused errors when processing certain CSV input files
-- Improved error handling for negative indices with clearer error messages
-
-#### Improvements
-- Added example script for CSV-based annotation workflow (cat_heart_annotation.R)
-- Enhanced input validation with more detailed diagnostics
-- Updated documentation to clarify CSV input format requirements
-
-See [NEWS.md](R/NEWS.md) for a complete changelog.
-
-## Directory Structure
-
-- `R/`: R language interface and implementation
-- `python/`: Python interface and implementation
+For changelog and updates, see [NEWS.md](R/NEWS.md).
 
 ## Installation
 

@@ -2,7 +2,7 @@
 
 ## Overview
 
-Starting from version 1.2.4, mllmcelltype implements an optimized consensus checking strategy that significantly reduces LLM API calls while maintaining annotation accuracy.
+Starting from version 1.2.4, mllmcelltype implements an optimized consensus checking strategy that reduces LLM API calls while maintaining annotation accuracy.
 
 ## How It Works
 
@@ -23,7 +23,7 @@ Starting from version 1.2.4, mllmcelltype implements an optimized consensus chec
 
 ## Benefits
 
-- **Cost Reduction**: ~70-80% fewer LLM API calls
+- **Cost Reduction**: Fewer LLM API calls for clusters with clear agreement
 - **Speed**: Simple consensus is instantaneous compared to LLM calls
 - **Same Accuracy**: Clear consensus cases don't need semantic analysis
 - **Smart Resource Usage**: LLM only used for genuinely ambiguous cases
