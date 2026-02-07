@@ -148,24 +148,46 @@ BaseAPIProcessor <- R6::R6Class("BaseAPIProcessor",
     #
     #
     call_and_extract = function(prompt, model, api_key) {
-      # Make API call (implemented by subclass), logging failures for auditability
-      response <- tryCatch(
-        self$make_api_call(prompt, model, api_key),
-        error = function(e) {
-          self$logger$log_api_request_response(
-            provider = self$provider_name,
-            model = model,
-            prompt_content = prompt,
-            response_content = paste0("ERROR: ", e$message),
-            request_metadata = list(provider = self$provider_name, failed = TRUE),
-            response_metadata = list(error = e$message)
-          )
-          stop(e)
-        }
-      )
+      # Track progress through stages so the error handler knows what failed
+      response <- NULL
 
-      # Extract content (implemented by subclass)
-      content <- self$extract_response_content(response, model)
+      tryCatch({
+        # Stage 1: API call
+        response <- self$make_api_call(prompt, model, api_key)
+        # Stage 2: Response extraction
+        content <- self$extract_response_content(response, model)
+      }, error = function(e) {
+        # Unified audit log for failures at any stage
+        self$logger$log_api_request_response(
+          provider = self$provider_name,
+          model = model,
+          prompt_content = prompt,
+          response_content = paste0("ERROR: ", e$message),
+          request_metadata = list(provider = self$provider_name, failed = TRUE),
+          response_metadata = list(
+            error = e$message,
+            stage = if (is.null(response)) "api_call" else "response_extraction"
+          )
+        )
+        stop(e)
+      })
+
+      # Validate before logging success
+      if (!is.character(content)) {
+        self$logger$log_api_request_response(
+          provider = self$provider_name,
+          model = model,
+          prompt_content = prompt,
+          response_content = paste0("ERROR: Response is not character (", typeof(content), ")"),
+          request_metadata = list(provider = self$provider_name, failed = TRUE),
+          response_metadata = list(
+            error = "Invalid response format",
+            stage = "response_validation",
+            response_type = typeof(content)
+          )
+        )
+        stop("Invalid response format from API")
+      }
 
       # Log successful request and response for audit/debugging
       self$logger$log_api_request_response(
@@ -176,18 +198,9 @@ BaseAPIProcessor <- R6::R6Class("BaseAPIProcessor",
         request_metadata = list(provider = self$provider_name),
         response_metadata = list(
           raw_response_class = class(response),
-          extracted_content_length = if (is.character(content)) nchar(content) else 1
+          extracted_content_length = sum(nchar(content))
         )
       )
-
-      # Split response into lines
-      if (!is.character(content)) {
-        self$logger$error("Response content is not a character string",
-                         list(provider = self$provider_name,
-                              model = model,
-                              response_type = typeof(content)))
-        stop("Invalid response format from API")
-      }
 
       res <- strsplit(content, "\n")[[1]]
       self$logger$debug(sprintf("Processed response from %s", self$provider_name),

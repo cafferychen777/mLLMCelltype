@@ -224,7 +224,10 @@ annotate_cell_types <- function(input,
   provider <- get_provider(model)
 
   # Log model and provider information
-  log_info("Processing input with model and provider", list(model = model, provider = provider, custom_url = !is.null(base_urls)))
+  log_info("Processing input with model and provider", list(
+    model = model, provider = provider,
+    custom_url = !is.null(resolve_provider_base_url(provider, base_urls))
+  ))
 
   # Generate prompt using the dedicated function
   prompt_result <- create_annotation_prompt(input, tissue_name, top_gene_count)
