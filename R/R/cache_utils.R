@@ -34,36 +34,26 @@ mllmcelltype_cache_dir <- function(cache_dir = NULL) {
 #' mllmcelltype_clear_cache("local")
 #' }
 mllmcelltype_clear_cache <- function(cache_dir = NULL) {
-  # Create temporary cache_manager to get actual path
   cm <- CacheManager$new(cache_dir)
-  actual_path <- cm$get_cache_dir()
-  
-  if (!dir.exists(actual_path)) {
-    message("Cache directory does not exist: ", actual_path)
+  stats <- cm$get_cache_stats()
+
+  if (!stats$cache_exists || stats$cache_count == 0) {
+    message("No cache files to clear.")
     return(invisible(NULL))
   }
-  
-  cache_files <- list.files(actual_path, pattern = "\\.rds$", full.names = TRUE)
-  
-  if (length(cache_files) == 0) {
-    message("No cache files found in: ", actual_path)
-    return(invisible(NULL))
-  }
-  
+
   if (interactive()) {
     response <- readline(prompt = sprintf(
       "Delete %d cache files in %s? (yes/no): ",
-      length(cache_files), actual_path
+      stats$cache_count, cm$get_cache_dir()
     ))
-    
+
     if (!tolower(response) %in% c("yes", "y")) {
       message("Cache clearing cancelled.")
       return(invisible(NULL))
     }
   }
-  
-  unlink(cache_files)
-  message(sprintf("Cleared %d cache files from: %s", length(cache_files), actual_path))
-  
+
+  cm$clear_cache(confirm = TRUE)
   invisible(NULL)
 }

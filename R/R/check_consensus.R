@@ -7,9 +7,11 @@ normalize_annotation <- function(annotation) {
   # Convert to lowercase
   normalized <- tolower(trimws(annotation))
   
-  # Remove common variations
-  normalized <- gsub("\\s+", " ", normalized)  # Multiple spaces to single
-  normalized <- gsub("[[:punct:]]", "", normalized)  # Remove punctuation
+  # Replace punctuation with space to preserve word boundaries (e.g., "T-cell" -> "T cell")
+  normalized <- gsub("[[:punct:]]", " ", normalized)
+  # Normalize whitespace
+  normalized <- gsub("\\s+", " ", normalized)
+  normalized <- trimws(normalized)
   
   # Handle plurals (simple approach)
   normalized <- gsub("cells$", "cell", normalized)
@@ -50,7 +52,7 @@ calculate_simple_consensus <- function(round_responses) {
   
   # Calculate Shannon entropy
   proportions <- as.numeric(response_counts) / total_responses
-  entropy <- -sum(proportions * log2(proportions + 1e-10))  # Add small value to avoid log(0)
+  entropy <- -sum(proportions * log2(proportions))
   
   
   return(list(
@@ -271,8 +273,8 @@ parse_consensus_response <- function(response) {
     response <- paste(response, collapse = "\n")
   }
   
-  # Check for empty string after conversion
-  if (length(response) == 0 || nchar(response) == 0) {
+  # Check for empty/NA string after conversion
+  if (length(response) == 0 || is.na(response) || !nzchar(response)) {
     get_logger()$warn("Response is empty string")
     return(.DEFAULT_CONSENSUS_RESULT)
   }

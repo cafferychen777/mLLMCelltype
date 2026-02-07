@@ -36,7 +36,7 @@ cell type annotation. If NULL, generic cell type annotation will be performed.}
 Minimum 2 models required. Supports models from OpenAI, Anthropic, DeepSeek,
 Google, Alibaba, Stepfun, Zhipu, MiniMax, X.AI, and OpenRouter.}
 
-\item{api_keys}{Named list of API keys. Can use provider names as keys
+\item{api_keys}{Named, non-empty list of API keys. Can use provider names as keys
 (e.g., "openai", "anthropic") or model names as keys (e.g., "gpt-5").}
 
 \item{top_gene_count}{Integer specifying the number of top marker genes to use

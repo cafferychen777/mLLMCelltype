@@ -8,7 +8,8 @@ standardize_cell_type_names(
   predictions,
   models,
   api_keys,
-  standardization_model = "claude-sonnet-4-20250514"
+  standardization_model = "claude-sonnet-4-20250514",
+  base_urls = NULL
 )
 }
 \description{

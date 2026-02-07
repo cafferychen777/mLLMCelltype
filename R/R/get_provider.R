@@ -22,6 +22,10 @@
 #' }
 #' @export
 get_provider <- function(model) {
+  if (!is.character(model) || length(model) != 1 || is.na(model) || !nzchar(trimws(model))) {
+    stop("model must be a non-empty character scalar")
+  }
+
   # Normalize model name to lowercase for case-insensitive matching
   model_lower <- tolower(model)
 

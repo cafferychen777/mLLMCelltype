@@ -293,11 +293,15 @@ facilitate_cluster_discussion <- function(cluster_id,
     }
   }
 
-  # End cluster discussion log recording
-  final_result <- if (length(discussion_log$rounds) > 0 && !is.null(discussion_log$rounds[[length(discussion_log$rounds)]]$consensus_result)) {
-    discussion_log$rounds[[length(discussion_log$rounds)]]$consensus_result$majority_prediction
-  } else {
-    "Unknown"
+  # Find the last round that has a consensus_result (the last round may have
+  # broken early without one if valid responses were insufficient)
+  final_result <- "Unknown"
+  for (r in rev(seq_along(discussion_log$rounds))) {
+    cr <- discussion_log$rounds[[r]]$consensus_result
+    if (!is.null(cr)) {
+      final_result <- cr$majority_prediction
+      break
+    }
   }
   
   get_logger()$log_discussion(char_cluster_id, "end", list(

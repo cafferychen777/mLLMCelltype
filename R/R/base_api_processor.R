@@ -111,19 +111,34 @@ BaseAPIProcessor <- R6::R6Class("BaseAPIProcessor",
   private = list(
     # Validate input parameters
     validate_inputs = function(prompt, model, api_key) {
-      if (is.null(api_key) || is.na(api_key) || (is.character(api_key) && api_key == "")) {
+      api_key_missing <- is.null(api_key) ||
+        length(api_key) != 1 ||
+        is.na(api_key) ||
+        !nzchar(trimws(as.character(api_key)))
+
+      if (api_key_missing) {
         self$logger$error(sprintf("%s API key is missing or empty", self$provider_name),
                          list(provider = self$provider_name))
         stop(sprintf("%s API key is required but not provided", self$provider_name))
       }
-      
-      if (is.null(prompt) || prompt == "") {
+
+      prompt_missing <- is.null(prompt) ||
+        length(prompt) != 1 ||
+        is.na(prompt) ||
+        !nzchar(trimws(as.character(prompt)))
+
+      if (prompt_missing) {
         self$logger$error("Prompt is missing or empty",
                          list(provider = self$provider_name))
         stop("Prompt is required but not provided")
       }
-      
-      if (is.null(model) || model == "") {
+
+      model_missing <- is.null(model) ||
+        length(model) != 1 ||
+        is.na(model) ||
+        !nzchar(trimws(as.character(model)))
+
+      if (model_missing) {
         self$logger$error("Model is missing or empty",
                          list(provider = self$provider_name))
         stop("Model is required but not provided")

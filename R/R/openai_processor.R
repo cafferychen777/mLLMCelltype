@@ -57,8 +57,11 @@ OpenAIProcessor <- R6::R6Class("OpenAIProcessor",
       
       # Check for HTTP errors
       if (httr::http_error(response)) {
-        error_content <- httr::content(response, "parsed")
-        error_message <- if (!is.null(error_content$error$message)) {
+        error_content <- tryCatch(
+          httr::content(response, "parsed"),
+          error = function(e) NULL
+        )
+        error_message <- if (is.list(error_content) && !is.null(error_content$error$message)) {
           error_content$error$message
         } else {
           sprintf("HTTP %d error", httr::status_code(response))

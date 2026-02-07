@@ -151,8 +151,11 @@ QwenProcessor <- R6::R6Class("QwenProcessor",
       
       # Check for HTTP errors
       if (httr::http_error(response)) {
-        error_content <- httr::content(response, "parsed")
-        error_message <- if (!is.null(error_content$error$message)) {
+        error_content <- tryCatch(
+          httr::content(response, "parsed"),
+          error = function(e) NULL
+        )
+        error_message <- if (is.list(error_content) && !is.null(error_content$error$message)) {
           error_content$error$message
         } else {
           sprintf("HTTP %d error", httr::status_code(response))
@@ -182,21 +185,22 @@ QwenProcessor <- R6::R6Class("QwenProcessor",
       # Parse the response
       content <- httr::content(response, "parsed")
 
-      # Check if response has the expected Qwen structure
-      if (is.null(content) || is.null(content$output) || is.null(content$output$text)) {
-
+      # Extract from Qwen's format: older models use output$text,
+      # newer models (qwen3-*) use output$choices[[1]]$message$content
+      if (!is.null(content$output$text)) {
+        response_content <- content$output$text
+      } else if (!is.null(content$output$choices) &&
+                 length(content$output$choices) > 0 &&
+                 !is.null(content$output$choices[[1]]$message$content)) {
+        response_content <- content$output$choices[[1]]$message$content
+      } else {
         self$logger$error("Unexpected response format from Qwen API",
                          list(provider = self$provider_name,
                               model = model,
                               content_structure = names(content),
-                              output_available = !is.null(content$output),
-                              text_available = if (!is.null(content$output)) { !is.null(content$output$text) } else { FALSE }))
-
+                              output_keys = if (!is.null(content$output)) names(content$output) else NULL))
         stop("Unexpected response format from Qwen API")
       }
-
-      # Extract the response content from Qwen's format
-      response_content <- content$output$text
 
       return(response_content)
     }

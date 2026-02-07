@@ -48,6 +48,7 @@
 #' @param top_gene_count Number of top genes to use per cluster when input is from Seurat. Default: 10
 #' @param consensus_threshold Minimum agreement threshold for consensus (0-1). Default: 0.5.
 #'   Consensus is only evaluated when at least two non-missing model predictions are available for a cluster.
+#' @param base_urls Optional base URLs for API endpoints. Can be a string or named list for provider-specific custom endpoints.
 #'
 #' @return List containing individual model predictions and consensus analysis
 #'   If a cluster has fewer than two valid predictions after alignment/padding,
@@ -79,7 +80,8 @@ compare_model_predictions <- function(input,
                                                  "grok-4.1"),
                                       api_keys,
                                       top_gene_count = 10,
-                                      consensus_threshold = 0.5) {
+                                      consensus_threshold = 0.5,
+                                      base_urls = NULL) {
   
   # Validate inputs
   if (!is.list(api_keys) || length(api_keys) == 0) {
@@ -94,10 +96,14 @@ compare_model_predictions <- function(input,
     }
   }
   
+  # Extract cluster IDs from input for display
+  prompt_result <- create_annotation_prompt(input, tissue_name, top_gene_count)
+  cluster_ids <- names(prompt_result$gene_lists)
+
   # Initialize results storage
   all_predictions <- list()
   successful_models <- character(0)
-  
+
   # Get predictions from each model
   for (model in models) {
     message(sprintf("\nRunning predictions with model: %s", model))
@@ -109,7 +115,8 @@ compare_model_predictions <- function(input,
         tissue_name = tissue_name,
         model = model,
         api_key = api_key,
-        top_gene_count = top_gene_count
+        top_gene_count = top_gene_count,
+        base_urls = base_urls
       )
       all_predictions[[model]] <- predictions
       successful_models <- c(successful_models, model)
@@ -125,7 +132,7 @@ compare_model_predictions <- function(input,
   
   # Standardize cell type names using LLM
   message("\nStandardizing cell type names...")
-  standardized_predictions <- standardize_cell_type_names(all_predictions, successful_models, api_keys)
+  standardized_predictions <- standardize_cell_type_names(all_predictions, successful_models, api_keys, base_urls = base_urls)
   
   # Pad all prediction vectors to equal length with NA to avoid vector recycling
   all_vectors <- all_predictions[successful_models]
@@ -235,7 +242,8 @@ compare_model_predictions <- function(input,
   
   message("\nDetailed Results:\n")
   for (i in 1:n_clusters) {
-    message(sprintf("\nCluster %d:\n", i))
+    cluster_label <- if (i <= length(cluster_ids)) cluster_ids[i] else as.character(i)
+    message(sprintf("\nCluster %s:\n", cluster_label))
     for (model in successful_models) {
       message(sprintf("  %s: %s (Standardized: %s)\n",
                 model,
@@ -264,10 +272,11 @@ compare_model_predictions <- function(input,
 #
 #
 #' @keywords internal
-standardize_cell_type_names <- function(predictions, 
-                                       models, 
-                                       api_keys, 
-                                       standardization_model = "claude-sonnet-4-20250514") {
+standardize_cell_type_names <- function(predictions,
+                                       models,
+                                       api_keys,
+                                       standardization_model = "claude-sonnet-4-20250514",
+                                       base_urls = NULL) {
   # Get API key for standardization model
   api_key <- get_api_key(standardization_model, api_keys)
   
@@ -299,7 +308,8 @@ standardize_cell_type_names <- function(predictions,
     response <- get_model_response(
       prompt = prompt,
       model = standardization_model,
-      api_key = api_key
+      api_key = api_key,
+      base_urls = base_urls
     )
     
     # Parse the response to extract mappings

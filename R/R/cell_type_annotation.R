@@ -110,7 +110,8 @@
 #' @param input Either a data frame from Seurat's FindAllMarkers() containing columns 'cluster', 'gene', and 'avg_log2FC', or a list with 'genes' field for each cluster
 #' @param tissue_name Optional tissue context (e.g., 'human PBMC', 'mouse brain') for more accurate annotations
 #' @param model Model name to use. Default: 'gpt-5.2'. See details for supported models
-#' @param api_key API key for the selected model provider. If NA, returns prompt only
+#' @param api_key API key for the selected model provider as a non-empty character scalar.
+#'   If \code{NA}, returns prompt only.
 #' @param top_gene_count Number of top genes to use per cluster when input is from Seurat. Default: 10
 #' @param debug Logical indicating whether to enable debug output. Default: FALSE
 #' @param base_urls Optional base URLs for API endpoints. Can be a string or named list for custom endpoints
@@ -253,8 +254,16 @@ annotate_cell_types <- function(input,
   log_debug("Generated prompt", list(prompt = prompt))
 
   # If no API key, return prompt
-  if (is.na(api_key)) {
+  if (length(api_key) == 1 && is.na(api_key)) {
     return(prompt)
+  }
+
+  api_key_missing <- is.null(api_key) ||
+    length(api_key) != 1 ||
+    is.na(api_key) ||
+    !nzchar(trimws(as.character(api_key)))
+  if (api_key_missing) {
+    stop("api_key must be a non-empty character scalar, or NA to return prompt only")
   }
 
   # Check for custom provider first (consistent with get_model_response.R)

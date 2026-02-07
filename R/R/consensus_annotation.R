@@ -104,9 +104,7 @@ get_initial_predictions <- function(input, tissue_name, models, api_keys, top_ge
     api_key <- tryCatch({
       get_api_key(model, api_keys)
     }, error = function(e) {
-      warning_msg <- sprintf("Failed to resolve API key for model '%s': %s. This model will be skipped.", model, e$message)
-      warning(warning_msg)
-      log_warn(warning_msg, list(model = model, error = e$message))
+      log_warn("Failed to resolve API key", list(model = model, error = e$message))
       NULL
     })
 
@@ -337,10 +335,16 @@ process_controversial_clusters <- function(controversial_clusters, input, tissue
     ))
     message(sprintf("\nStarting discussion for cluster %s...", char_cluster_id))
 
+    # Generate cache key once (reused for both lookup and save)
+    cache_key <- if (use_cache) {
+      cache_manager$generate_key(input, successful_models, char_cluster_id)
+    } else {
+      NULL
+    }
+
     # Check cache
     cached_result <- NULL
     if (use_cache && !force_rerun) {
-      cache_key <- cache_manager$generate_key(input, successful_models, char_cluster_id)
       cache_debug <- Sys.getenv("LLMCELLTYPE_DEBUG_CACHE") == "TRUE"
 
       if (cache_debug) {
@@ -354,7 +358,6 @@ process_controversial_clusters <- function(controversial_clusters, input, tissue
       }
 
       if (has_cache) {
-        # Use cached results
         log_info(sprintf("Loading cached result for cluster %s", char_cluster_id), list(
           cluster_id = char_cluster_id,
           cache_key = cache_key
@@ -373,7 +376,6 @@ process_controversial_clusters <- function(controversial_clusters, input, tissue
 
     # Use cached results or perform discussion
     if (!is.null(cached_result)) {
-      # Use cached results
       discussion_result <- cached_result$discussion_log
       final_annotation <- cached_result$annotation
 
@@ -383,12 +385,11 @@ process_controversial_clusters <- function(controversial_clusters, input, tissue
       message(sprintf("Using cached result for cluster %s", char_cluster_id))
     } else {
       # Perform discussion
-      # Parameters are passed through to check_consensus and used in prompt template to instruct LLM # nolint
       discussion_result <- facilitate_cluster_discussion(
         cluster_id = char_cluster_id,
         input = input,
         tissue_name = tissue_name,
-        models = successful_models,  # Only use models that worked in initial phase
+        models = successful_models,
         api_keys = api_keys,
         initial_predictions = individual_predictions,
         top_gene_count = top_gene_count,
@@ -399,18 +400,24 @@ process_controversial_clusters <- function(controversial_clusters, input, tissue
         base_urls = base_urls
       )
 
-      # Get results from the last round of discussion
-      last_round_index <- length(discussion_result$rounds)
-      last_round <- discussion_result$rounds[[last_round_index]]
+      # Find the last round that has a consensus_result (the last round may
+      # lack one if it broke early due to insufficient valid responses)
+      final_prediction <- NULL
+      for (r in rev(seq_along(discussion_result$rounds))) {
+        cr <- discussion_result$rounds[[r]]$consensus_result
+        if (!is.null(cr)) {
+          final_prediction <- cr$majority_prediction
+          break
+        }
+      }
 
       # Extract and clean majority_prediction
-      final_annotation <- clean_annotation(last_round$consensus_result$majority_prediction)
+      final_annotation <- clean_annotation(final_prediction)
 
-      # Save to cache - fix cache content structure
+      # Save to cache
       if (use_cache) {
-        cache_key <- cache_manager$generate_key(input, successful_models, char_cluster_id)
         cache_data <- list(
-          annotation = final_annotation,  # Use the correct final_annotation variable
+          annotation = final_annotation,
           discussion_log = discussion_result,
           is_controversial = TRUE
         )
@@ -527,7 +534,7 @@ combine_results <- function(initial_results, controversy_results, discussion_res
 #' @param models Character vector of model names to use for consensus annotation. 
 #'   Minimum 2 models required. Supports models from OpenAI, Anthropic, DeepSeek, 
 #'   Google, Alibaba, Stepfun, Zhipu, MiniMax, X.AI, and OpenRouter.
-#' @param api_keys Named list of API keys. Can use provider names as keys
+#' @param api_keys Named, non-empty list of API keys. Can use provider names as keys
 #'   (e.g., "openai", "anthropic") or model names as keys (e.g., "gpt-5").
 #' @param top_gene_count Integer specifying the number of top marker genes to use 
 #'   for annotation per cluster (default: 10).
@@ -587,6 +594,9 @@ interactive_consensus_annotation <- function(input,
                                            force_rerun = FALSE) {
   if (!is.character(log_dir) || length(log_dir) != 1 || is.na(log_dir) || !nzchar(log_dir)) {
     stop("log_dir must be a non-empty character scalar")
+  }
+  if (!is.list(api_keys) || is.null(names(api_keys)) || length(api_keys) == 0) {
+    stop("api_keys must be a named, non-empty list")
   }
 
   initialize_logger(log_dir)
@@ -697,7 +707,7 @@ interactive_consensus_annotation <- function(input,
   # Phase 2: Identify controversial clusters
   # If consensus_check_model is NULL, use the first available model from the
   # models list
-  if (is.null(consensus_check_model) && length(models) > 0) {
+  if (is.null(consensus_check_model)) {
     consensus_check_model <- models[1]
     log_msg <- sprintf("No consensus_check_model specified, using %s",
                        consensus_check_model)

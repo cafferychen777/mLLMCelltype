@@ -14,6 +14,18 @@
 #
 #' @keywords internal
 print_consensus_summary <- function(results) {
+  to_scalar_or_na <- function(x) {
+    if (is.null(x) || length(x) == 0) return(NA_character_)
+    scalar <- tryCatch(as.character(x[[1]]), error = function(e) NA_character_)
+    if (is.na(scalar) || !nzchar(trimws(scalar))) return(NA_character_)
+    scalar
+  }
+
+  to_display_text <- function(x, fallback = "No prediction provided") {
+    scalar <- to_scalar_or_na(x)
+    if (is.na(scalar)) fallback else scalar
+  }
+
   # Print consensus building summary
   cat("\nConsensus Building Summary:\n")
   cat(sprintf("Total clusters analyzed: %d\n", length(results$final_annotations)))
@@ -43,13 +55,8 @@ print_consensus_summary <- function(results) {
         # Iterate through each model's prediction
         for (model in names(initial_predictions)) {
           prediction <- initial_predictions[[model]]
-          
-          # Handle empty or NA predictions
-          if (is.null(prediction) || is.na(prediction) || (is.character(prediction) && prediction == "")) {
-            prediction <- "No prediction provided"
-          }
-          
-          cat(sprintf("  %s: %s\n", model, prediction))
+
+          cat(sprintf("  %s: %s\n", model, to_display_text(prediction)))
         }
       } 
       # If no initial predictions in discussion logs, use initial_results
@@ -75,12 +82,7 @@ print_consensus_summary <- function(results) {
             }
           }
 
-          # Handle empty or NA predictions
-          if (is.null(prediction) || is.na(prediction) || (is.character(prediction) && prediction == "")) {
-            prediction <- "No prediction provided"
-          }
-
-          cat(sprintf("  %s: %s\n", model, prediction))
+          cat(sprintf("  %s: %s\n", model, to_display_text(prediction)))
         }
       } else {
         cat("  No initial predictions available\n")
@@ -113,23 +115,9 @@ print_consensus_summary <- function(results) {
         
         final_annotation <- results$final_annotations[[char_cluster_id]]
         
-        # Handle NA values first
-        if (is.null(final_annotation) || is.na(final_annotation)) {
+        final_annotation_str <- to_scalar_or_na(final_annotation)
+        if (is.na(final_annotation_str)) {
           final_annotation_str <- "Final_Annotation_Missing"
-        } else if (is.list(final_annotation) || (is.vector(final_annotation) && length(final_annotation) > 0 && !is.character(final_annotation))) {
-          # If it's a list or non-character vector, take the first element
-          final_annotation_str <- tryCatch({
-            as.character(final_annotation[[1]])
-          }, error = function(e) {
-            "Error_Converting_To_String"
-          })
-        } else {
-          # Otherwise convert directly to string
-          final_annotation_str <- tryCatch({
-            as.character(final_annotation)
-          }, error = function(e) {
-            "Error_Converting_To_String"
-          })
         }
         
         # Validate consistency between final consensus and initial predictions
@@ -152,15 +140,11 @@ print_consensus_summary <- function(results) {
             
             for (model in names(discussion_log_predictions)) {
               pred <- discussion_log_predictions[[model]]
-              
+
               # Check if prediction is valid and not the placeholder
-              if (!is.null(pred)) {
-                if (!is.na(pred)) {
-                  # Make sure to compare against the placeholder string too
-                  if ((is.character(pred) && pred != "") && pred != "No prediction provided") { 
-                     all_predictions[[model]] <- pred
-                  }
-                }
+              pred_scalar <- to_scalar_or_na(pred)
+              if (!is.na(pred_scalar) && pred_scalar != "No prediction provided") {
+                all_predictions[[model]] <- pred_scalar
               }
             } # End model loop
 

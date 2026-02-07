@@ -21,7 +21,8 @@ annotate_cell_types(
 
 \item{model}{Model name to use. Default: 'gpt-5.2'. See details for supported models}
 
-\item{api_key}{API key for the selected model provider. If NA, returns prompt only}
+\item{api_key}{API key for the selected model provider as a non-empty character scalar.
+If \code{NA}, returns prompt only.}
 
 \item{top_gene_count}{Number of top genes to use per cluster when input is from Seurat. Default: 10}
 

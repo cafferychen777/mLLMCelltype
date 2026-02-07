@@ -84,23 +84,13 @@ CacheManager <- R6::R6Class(
       # Create cache file path
       cache_file <- file.path(self$cache_dir, paste0(key, ".rds"))
       
-      # Try to save with error handling
+      # Save with error handling
       tryCatch({
         saveRDS(data, cache_file)
         get_logger()$log_cache_operation("store", key, file.size(cache_file))
       }, error = function(e) {
         get_logger()$log_cache_operation("store_failed", key, NULL)
         warning(paste("Failed to save cache file:", e$message))
-        # Try to create parent directories if they don't exist
-        dir.create(dirname(cache_file), recursive = TRUE, showWarnings = FALSE)
-        # Try again
-        tryCatch({
-          saveRDS(data, cache_file)
-          get_logger()$log_cache_operation("store", key, file.size(cache_file))
-        }, error = function(e2) {
-          get_logger()$log_cache_operation("store_failed", key, NULL)
-          warning(paste("Second attempt to save cache file failed:", e2$message))
-        })
       })
     },
     
@@ -312,11 +302,8 @@ CacheManager <- R6::R6Class(
         }
       }
       
-      # Sort and deduplicate for consistency
-      genes_clean <- sort(unique(as.character(genes)))
-      
-      # Use a fast hash algorithm
-      digest::digest(genes_clean, algo = "xxhash64")
+      # Hash directly — genes are already sorted and deduplicated by extract_genes_standardized()
+      digest::digest(genes, algo = "xxhash64")
     },
     
     #' Create stable hash from models list
