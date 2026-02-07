@@ -227,8 +227,8 @@ annotate_cell_types(
   model = 'gpt-5.2',
   api_key = NA  # Returns prompt only without making API call
 )
-#> {"timestamp":"2026-02-07 07:02:56","session_id":"20260207_070256595_10459_600760","level":"INFO","message":"Unified logger initialized","context":{"session_id":"20260207_070256595_10459_600760","log_level":"INFO","log_dir":"logs"},"pid":10459} 
-#> {"timestamp":"2026-02-07 07:02:56","session_id":"20260207_070256595_10459_600760","level":"INFO","message":"Processing input with model and provider","context":{"model":"gpt-5.2","provider":"openai","custom_url":false},"pid":10459} 
+#> {"timestamp":"2026-02-07 07:09:39","session_id":"20260207_070939794_10577_600760","level":"INFO","message":"Unified logger initialized","context":{"session_id":"20260207_070939794_10577_600760","log_level":"INFO","log_dir":"logs"},"pid":10577} 
+#> {"timestamp":"2026-02-07 07:09:39","session_id":"20260207_070939794_10577_600760","level":"INFO","message":"Processing input with model and provider","context":{"model":"gpt-5.2","provider":"openai","custom_url":false},"pid":10577} 
 #> [1] "You are a cell type annotation expert. Below are marker genes for different cell clusters in human PBMC.\n\nt_cells: CD3D, CD3E, CD3G, CD28\nb_cells: CD19, CD79A, CD79B, MS4A1\nmonocytes: CD14, CD68, CSF1R, FCGR3A\n\nFor each numbered cluster, provide only the cell type name in a new line, without any explanation."
 
 # Example 2: Using with Seurat pipeline and OpenAI model
