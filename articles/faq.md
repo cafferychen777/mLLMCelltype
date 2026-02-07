@@ -339,7 +339,7 @@ If specific cell types are not being correctly identified:
 
 #### How does mLLMCelltype integrate with Seurat?
 
-mLLMCelltype integrates seamlessly with Seurat:
+mLLMCelltype integrates with Seurat:
 
 1.  **Input**: You can directly use Seurat’s
     [`FindAllMarkers()`](https://satijalab.org/seurat/reference/FindAllMarkers.html)

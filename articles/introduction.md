@@ -94,8 +94,7 @@ confidence annotations and which may require further investigation.
 - **No Reference Dataset Required**: Performs annotation without
   pre-training or reference data
 - **Complete Reasoning Chains**: Documents the full deliberation process
-- **Seamless Integration**: Works directly with standard Scanpy/Seurat
-  workflows
+- **Integration**: Works with standard Scanpy/Seurat workflows
 - **Modular Design**: Easily incorporate new LLMs as they become
   available
 - **Enhanced Marker Gene Visualization**: Publication-ready bubble plots

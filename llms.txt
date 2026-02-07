@@ -44,8 +44,8 @@ multiple model predictions.
   - Stepfun (Step-2, Step-1 series)
   - OpenRouter (access to Meta Llama, Mistral, Microsoft, Perplexity,
     Cohere, and more)
-- **Seamless Integration with Seurat**: Can directly use Seurat’s
-  FindAllMarkers() output as input
+- **Seurat Integration**: Can directly use Seurat’s FindAllMarkers()
+  output as input
 
 ### Quick Start
 
