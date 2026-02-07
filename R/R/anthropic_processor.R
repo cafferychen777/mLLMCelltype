@@ -33,7 +33,7 @@ AnthropicProcessor <- R6::R6Class("AnthropicProcessor",
       # Prepare request body
       body <- list(
         model = model,
-        max_tokens = 1024,
+        max_tokens = 4096,
         messages = list(
           list(
             role = "user",

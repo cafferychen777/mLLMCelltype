@@ -209,26 +209,22 @@
 #' * [mLLMCelltype::process_openai()]
 #' @export
 annotate_cell_types <- function(input,
-                               tissue_name = NULL,
+                               tissue_name,
                                model = 'gpt-5.2',
                                api_key = NA,
                                top_gene_count = 10,
                                debug = FALSE,
                                base_urls = NULL) {
 
-  # Check if tissue_name is provided
-  if (is.null(tissue_name)) {
-    stop("tissue_name parameter is required. Please specify the tissue type or cell source (e.g., 'human PBMC', 'mouse brain').")
+  if (is.null(tissue_name) || !nzchar(trimws(tissue_name))) {
+    stop("tissue_name is required. Specify the tissue type (e.g., 'human PBMC', 'mouse brain').")
   }
 
   # Determine provider from model name
   provider <- get_provider(model)
 
-  # Resolve provider-specific base URL
-  provider_base_url <- resolve_provider_base_url(provider, base_urls)
-
   # Log model and provider information
-  log_info("Processing input with model and provider", list(model = model, provider = provider, custom_url = !is.null(provider_base_url)))
+  log_info("Processing input with model and provider", list(model = model, provider = provider, custom_url = !is.null(base_urls)))
 
   # Generate prompt using the dedicated function
   prompt_result <- create_annotation_prompt(input, tissue_name, top_gene_count)
@@ -266,28 +262,29 @@ annotate_cell_types <- function(input,
     stop("api_key must be a non-empty character scalar, or NA to return prompt only")
   }
 
-  # Check for custom provider first (consistent with get_model_response.R)
-  if (exists(provider, envir = custom_providers)) {
-    log_debug("Using custom provider", list(provider = provider))
-    result <- process_custom(prompt, model, api_key)
-  } else {
-    # Process based on built-in provider
-    result <- switch(provider,
-      "openai" = process_openai(prompt, model, api_key, provider_base_url),
-      "anthropic" = process_anthropic(prompt, model, api_key, provider_base_url),
-      "deepseek" = process_deepseek(prompt, model, api_key, provider_base_url),
-      "gemini" = process_gemini(prompt, model, api_key, provider_base_url),
-      "qwen" = process_qwen(prompt, model, api_key, provider_base_url),
-      "stepfun" = process_stepfun(prompt, model, api_key, provider_base_url),
-      "zhipu" = process_zhipu(prompt, model, api_key, provider_base_url),
-      "minimax" = process_minimax(prompt, model, api_key, provider_base_url),
-      "grok" = process_grok(prompt, model, api_key, provider_base_url),
-      "openrouter" = process_openrouter(prompt, model, api_key, provider_base_url),
-      stop("Unsupported model provider: ", provider)
-    )
-  }
+  # Delegate to get_model_response which handles provider dispatch
+  result <- get_model_response(prompt, model, api_key, base_urls)
 
-  log_info("Model response received", list(response = result))
+  logger <- get_logger()
+  if (!is.null(logger$log_model_response) && is.function(logger$log_model_response)) {
+    logger$log_model_response(
+      provider = provider,
+      model = model,
+      response = result,
+      stage = "annotation"
+    )
+  } else {
+    # Fallback for compatibility with mocked logger objects in tests
+    response_text <- if (is.character(result)) paste(result, collapse = "\n") else as.character(result)
+    preview <- if (nchar(response_text) > 180) paste0(substr(response_text, 1, 180), "...") else response_text
+    log_info("Model response received", list(
+      provider = provider,
+      model = model,
+      response_chars = nchar(response_text),
+      response_lines = length(strsplit(response_text, "\n", fixed = TRUE)[[1]]),
+      response_preview = preview
+    ))
+  }
 
   return(result)
 }

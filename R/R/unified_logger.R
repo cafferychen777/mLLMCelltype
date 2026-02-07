@@ -55,8 +55,8 @@ UnifiedLogger <- R6::R6Class("UnifiedLogger",
         dir.create(self$log_dir, recursive = TRUE)
       }
       
-      # Generate session ID
-      self$session_id <- format(Sys.time(), "%Y%m%d_%H%M%S")
+      # Generate session ID with sub-second + random suffix to avoid collisions
+      self$session_id <- private$create_session_id()
       
       # Initialize performance stats
       self$performance_stats <- list(
@@ -291,6 +291,8 @@ UnifiedLogger <- R6::R6Class("UnifiedLogger",
       
       # Also create detailed cluster log file for easy access
       cluster_log_file <- file.path(session_dir, sprintf("cluster_%s_discussion.md", cluster_id))
+      # Pure dialogue log: model outputs only (no timestamps/session metadata)
+      dialogue_log_file <- file.path(session_dir, sprintf("cluster_%s_dialogue.txt", cluster_id))
       
       if (event_type == "start") {
         # Create markdown log for better readability
@@ -300,6 +302,7 @@ UnifiedLogger <- R6::R6Class("UnifiedLogger",
                           if(is.null(data$marker_genes)) "Unknown" else data$marker_genes, 
                           format(Sys.time(), "%Y-%m-%d %H:%M:%S"))
         cat(content, file = cluster_log_file)
+        cat("", file = dialogue_log_file)
         
       } else if (event_type == "prediction") {
         # Append model prediction in readable format
@@ -315,23 +318,93 @@ UnifiedLogger <- R6::R6Class("UnifiedLogger",
                           if(is.null(data$round)) "1" else data$round, 
                           prediction_text)
         cat(content, file = cluster_log_file, append = TRUE)
+        dialogue_content <- sprintf("%s (Round %s):\n%s\n\n",
+                                   as.character(data$model),
+                                   if (is.null(data$round)) "1" else as.character(data$round),
+                                   prediction_text)
+        cat(dialogue_content, file = dialogue_log_file, append = TRUE)
         
       } else if (event_type == "consensus") {
         # Log consensus result
         content <- sprintf("## Consensus Result\n\n**Reached:** %s\n**Proportion:** %.2f\n**Entropy:** %.2f\n**Decision:** %s\n\n---\n\n",
-                          data$reached %||% FALSE,
-                          data$consensus_proportion %||% 0,
-                          data$entropy %||% 0,
-                          data$majority_prediction %||% "Unknown")
+                          if (!is.null(data$reached)) data$reached else FALSE,
+                          if (!is.null(data$consensus_proportion)) data$consensus_proportion else 0,
+                          if (!is.null(data$entropy)) data$entropy else 0,
+                          if (!is.null(data$majority_prediction)) data$majority_prediction else "Unknown")
         cat(content, file = cluster_log_file, append = TRUE)
         
       } else if (event_type == "end") {
         # Final summary
         content <- sprintf("## Discussion Complete\n\n**Final Result:** %s\n**Completed:** %s\n",
-                          data$final_result %||% "Unknown",
+                          if (!is.null(data$final_result)) data$final_result else "Unknown",
                           format(Sys.time(), "%Y-%m-%d %H:%M:%S"))
         cat(content, file = cluster_log_file, append = TRUE)
       }
+    },
+
+    #' @description
+    #' Log model response with concise summary in main log and full text in file
+    #
+    #
+    #
+    log_model_response = function(provider, model, response, stage = "annotation", cluster_id = NULL) {
+      # Skip file writes during R CMD check
+      if (nzchar(Sys.getenv("_R_CHECK_PACKAGE_NAME_", ""))) {
+        response_text <- if (is.character(response)) paste(response, collapse = "\n") else as.character(response)
+        self$info("Model response received", list(
+          provider = provider,
+          model = model,
+          stage = stage,
+          cluster_id = cluster_id,
+          response_chars = nchar(response_text)
+        ))
+        return(invisible(NULL))
+      }
+
+      session_dir <- file.path(self$log_dir, self$session_id)
+      if (!dir.exists(session_dir)) {
+        dir.create(session_dir, recursive = TRUE)
+      }
+      response_dir <- file.path(session_dir, "model_responses")
+      if (!dir.exists(response_dir)) {
+        dir.create(response_dir, recursive = TRUE)
+      }
+
+      response_text <- if (is.character(response)) paste(response, collapse = "\n") else as.character(response)
+      timestamp <- format(Sys.time(), "%Y%m%d_%H%M%S")
+      model_safe <- gsub("[^A-Za-z0-9_-]", "_", model)
+      provider_safe <- gsub("[^A-Za-z0-9_-]", "_", provider)
+      stage_safe <- gsub("[^A-Za-z0-9_-]", "_", stage)
+      cluster_safe <- if (is.null(cluster_id)) "na" else gsub("[^A-Za-z0-9_-]", "_", as.character(cluster_id))
+      nonce <- sprintf("%06d", as.integer(stats::runif(1, 0, 999999)))
+      response_file <- file.path(
+        response_dir,
+        sprintf("%s_%s_%s_cluster-%s_%s.txt", provider_safe, model_safe, stage_safe, cluster_safe, paste0(timestamp, "_", nonce))
+      )
+
+      writeLines(response_text, response_file)
+
+      preview <- if (nchar(response_text) > 180) {
+        paste0(substr(response_text, 1, 180), "...")
+      } else {
+        response_text
+      }
+
+      context <- list(
+        provider = provider,
+        model = model,
+        stage = stage,
+        response_chars = nchar(response_text),
+        response_lines = length(strsplit(response_text, "\n", fixed = TRUE)[[1]]),
+        response_file = response_file,
+        response_preview = preview
+      )
+      if (!is.null(cluster_id)) {
+        context$cluster_id <- cluster_id
+      }
+
+      self$info("Model response received", context)
+      invisible(response_file)
     },
     
     #' @description
@@ -406,6 +479,13 @@ UnifiedLogger <- R6::R6Class("UnifiedLogger",
   ),
   
   private = list(
+    create_session_id = function() {
+      ts <- format(Sys.time(), "%Y%m%d_%H%M%S")
+      subsec <- sprintf("%03d", as.integer((as.numeric(Sys.time()) %% 1) * 1000))
+      nonce <- sprintf("%06d", as.integer(stats::runif(1, 0, 999999)))
+      sprintf("%s%s_%d_%s", ts, subsec, Sys.getpid(), nonce)
+    },
+
     # Internal method to write log messages
     # @param level Log level
     # @param message Log message  
@@ -485,14 +565,17 @@ UnifiedLogger <- R6::R6Class("UnifiedLogger",
   )
 )
 
+# Package-level environment for logger storage (avoids modifying .GlobalEnv)
+.mllm_pkg_env <- new.env(parent = emptyenv())
+
 #' Get the global logger instance
 #
 #' @export
 get_logger <- function() {
-  if (!exists(".mllm_logger", envir = .GlobalEnv) || is.null(.GlobalEnv$.mllm_logger)) {
-    .GlobalEnv$.mllm_logger <- UnifiedLogger$new()
+  if (is.null(.mllm_pkg_env$.mllm_logger)) {
+    .mllm_pkg_env$.mllm_logger <- UnifiedLogger$new()
   }
-  return(.GlobalEnv$.mllm_logger)
+  return(.mllm_pkg_env$.mllm_logger)
 }
 
 #' Reinitialize global logger with a specific directory
@@ -504,7 +587,7 @@ get_logger <- function() {
 #' @return Invisible logger object
 #' @keywords internal
 initialize_logger <- function(log_dir = "logs") {
-  current_logger <- if (exists(".mllm_logger", envir = .GlobalEnv)) .GlobalEnv$.mllm_logger else NULL
+  current_logger <- if (!is.null(.mllm_pkg_env$.mllm_logger)) .mllm_pkg_env$.mllm_logger else NULL
 
   level <- "INFO"
   max_size <- 10
@@ -512,7 +595,16 @@ initialize_logger <- function(log_dir = "logs") {
   console_output <- TRUE
   json_format <- TRUE
 
-  if (!is.null(current_logger) && is.list(current_logger)) {
+  has_logger_fields <- function(x) {
+    is.environment(x) &&
+      !is.null(x$log_level) &&
+      !is.null(x$max_log_size) &&
+      !is.null(x$max_log_files) &&
+      !is.null(x$enable_console) &&
+      !is.null(x$enable_json)
+  }
+
+  if (!is.null(current_logger) && has_logger_fields(current_logger)) {
     if (!is.null(current_logger$log_level)) level <- current_logger$log_level
     if (!is.null(current_logger$max_log_size)) max_size <- current_logger$max_log_size
     if (!is.null(current_logger$max_log_files)) max_files <- current_logger$max_log_files
@@ -520,7 +612,7 @@ initialize_logger <- function(log_dir = "logs") {
     if (!is.null(current_logger$enable_json)) json_format <- current_logger$enable_json
   }
 
-  .GlobalEnv$.mllm_logger <- UnifiedLogger$new(
+  .mllm_pkg_env$.mllm_logger <- UnifiedLogger$new(
     base_dir = log_dir,
     level = level,
     max_size = max_size,
@@ -529,7 +621,7 @@ initialize_logger <- function(log_dir = "logs") {
     json_format = json_format
   )
 
-  invisible(.GlobalEnv$.mllm_logger)
+  invisible(.mllm_pkg_env$.mllm_logger)
 }
 
 #' Set global logger configuration

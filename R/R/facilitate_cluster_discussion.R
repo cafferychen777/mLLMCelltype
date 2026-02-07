@@ -122,11 +122,18 @@ facilitate_cluster_discussion <- function(cluster_id,
       next
     }
 
-    response <- get_model_response(
-      prompt = first_round_prompt,
-      model = model,
-      api_key = api_key,
-      base_urls = base_urls
+    response <- tryCatch(
+      get_model_response(
+        prompt = first_round_prompt,
+        model = model,
+        api_key = api_key,
+        base_urls = base_urls
+      ),
+      error = function(e) {
+        log_warn(sprintf("Model %s failed in round 1 for cluster %s: %s",
+                        model, char_cluster_id, e$message))
+        paste0("Error: ", e$message)
+      }
     )
 
     round1_responses[[model]] <- response
@@ -176,6 +183,12 @@ facilitate_cluster_discussion <- function(cluster_id,
       entropy = 0,
       majority_prediction = best_prediction
     )
+    get_logger()$log_discussion(char_cluster_id, "consensus", discussion_log$rounds[[1]]$consensus_result)
+    get_logger()$log_discussion(char_cluster_id, "end", list(
+      final_result = best_prediction,
+      rounds_completed = 1,
+      consensus_reached = FALSE
+    ))
     return(discussion_log)
   }
 
@@ -233,11 +246,18 @@ facilitate_cluster_discussion <- function(cluster_id,
         next
       }
 
-      response <- get_model_response(
-        prompt = discussion_prompt,
-        model = model,
-        api_key = api_key,
-        base_urls = base_urls
+      response <- tryCatch(
+        get_model_response(
+          prompt = discussion_prompt,
+          model = model,
+          api_key = api_key,
+          base_urls = base_urls
+        ),
+        error = function(e) {
+          log_warn(sprintf("Model %s failed in round %d for cluster %s: %s",
+                          model, round, char_cluster_id, e$message))
+          paste0("Error: ", e$message)
+        }
       )
 
       round_responses[[model]] <- response

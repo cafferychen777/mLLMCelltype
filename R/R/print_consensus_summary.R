@@ -125,8 +125,6 @@ print_consensus_summary <- function(results) {
             !is.null(results$initial_results$individual_predictions) &&
             length(names(results$initial_results$individual_predictions)) > 0) { # Ensure there are models
           
-          # Collect predictions from all models
-          all_predictions <- list()
           # Validation using discussion log predictions
           discussion_log_predictions <- NULL
           if (!is.null(results$discussion_logs) && 
@@ -156,9 +154,8 @@ print_consensus_summary <- function(results) {
                 clean_pred <- trimws(unique_preds[1]) # Just trim whitespace
                 
                 # If all models predicted same but differs from final consensus, add warning
-                # Use grepl for substring matching robustness
-                if (!grepl(clean_pred, final_annotation_str, ignore.case = TRUE) && 
-                    !grepl(final_annotation_str, clean_pred, ignore.case = TRUE)) {
+                # Use normalize_annotation for robust comparison (handles punctuation, plurals, synonyms)
+                if (normalize_annotation(clean_pred) != normalize_annotation(final_annotation_str)) {
                   cat(sprintf("WARNING: All models in discussion log predicted '%s' but final consensus is '%s'\n", 
                               clean_pred, final_annotation_str))
                 }

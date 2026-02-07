@@ -46,6 +46,7 @@ log rotation, and performance monitoring capabilities.
 \item \href{#method-UnifiedLogger-log_cache_operation}{\code{UnifiedLogger$log_cache_operation()}}
 \item \href{#method-UnifiedLogger-log_cluster_progress}{\code{UnifiedLogger$log_cluster_progress()}}
 \item \href{#method-UnifiedLogger-log_discussion}{\code{UnifiedLogger$log_discussion()}}
+\item \href{#method-UnifiedLogger-log_model_response}{\code{UnifiedLogger$log_model_response()}}
 \item \href{#method-UnifiedLogger-get_performance_summary}{\code{UnifiedLogger$get_performance_summary()}}
 \item \href{#method-UnifiedLogger-cleanup_logs}{\code{UnifiedLogger$cleanup_logs()}}
 \item \href{#method-UnifiedLogger-set_level}{\code{UnifiedLogger$set_level()}}
@@ -169,6 +170,22 @@ Log cluster annotation progress
 Log detailed cluster discussion with complete model conversations
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{UnifiedLogger$log_discussion(cluster_id, event_type, data = NULL)}\if{html}{\out{</div>}}
+}
+
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-UnifiedLogger-log_model_response"></a>}}
+\if{latex}{\out{\hypertarget{method-UnifiedLogger-log_model_response}{}}}
+\subsection{Method \code{log_model_response()}}{
+Log model response with concise summary in main log and full text in file
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{UnifiedLogger$log_model_response(
+  provider,
+  model,
+  response,
+  stage = "annotation",
+  cluster_id = NULL
+)}\if{html}{\out{</div>}}
 }
 
 }

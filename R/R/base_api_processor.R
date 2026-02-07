@@ -44,19 +44,14 @@ BaseAPIProcessor <- R6::R6Class("BaseAPIProcessor",
       tryCatch({
         # Validate inputs
         private$validate_inputs(prompt, model, api_key)
+
+        # Make the API call and extract response
+        final_result <- private$call_and_extract(prompt, model, api_key)
         
-        # Process input into chunks
-        input_chunks <- private$process_input(prompt)
-        
-        # Process all chunks
-        all_results <- private$process_chunks(input_chunks, model, api_key)
-        
-        # Validate and consolidate results
-        final_result <- private$consolidate_results(all_results)
-        
-        # Log success
+        # Log final status using semantic success (not just exception status)
         duration <- as.numeric(difftime(Sys.time(), start_time, units = "secs"))
-        self$logger$log_api_call(self$provider_name, model, duration, TRUE)
+        semantic_success <- private$is_successful_result(final_result)
+        self$logger$log_api_call(self$provider_name, model, duration, semantic_success)
         
         return(final_result)
         
@@ -148,140 +143,70 @@ BaseAPIProcessor <- R6::R6Class("BaseAPIProcessor",
                        list(provider = self$provider_name, model = model))
     },
     
-    #' Process input text into chunks
-    #
-    #
-    process_input = function(prompt) {
-      input_lines <- strsplit(prompt, "\n")[[1]]
-      cutnum <- 1  # Always use 1 chunk for consistency
-      
-      self$logger$debug("Processing input into chunks",
-                       list(provider = self$provider_name, 
-                            lines_count = length(input_lines),
-                            chunk_count = cutnum))
-      
-      cid <- rep(1, length(input_lines))
-      
-      return(list(
-        input_lines = input_lines,
-        chunk_ids = cid,
-        chunk_count = cutnum
-      ))
-    },
-    
-    #' Process all input chunks
+    #' Make API call and extract response content
     #
     #
     #
-    #
-    process_chunks = function(input_chunks, model, api_key) {
-      all_results <- sapply(1:input_chunks$chunk_count, function(i) {
-        self$logger$debug("Processing chunk",
-                         list(current_chunk = i, 
-                              total_chunks = input_chunks$chunk_count,
-                              provider = self$provider_name))
-        
-        # Get lines for this chunk
-        chunk_line_ids <- which(input_chunks$chunk_ids == i)
-        chunk_content <- paste(input_chunks$input_lines[chunk_line_ids], collapse = '\n')
-        
-        tryCatch({
-          # Make API call (implemented by subclass)
-          response <- self$make_api_call(chunk_content, model, api_key)
-          
-          # Extract content (implemented by subclass)
-          content <- self$extract_response_content(response, model)
-          
-          # Log complete API request and response for audit/debugging
+    call_and_extract = function(prompt, model, api_key) {
+      # Make API call (implemented by subclass), logging failures for auditability
+      response <- tryCatch(
+        self$make_api_call(prompt, model, api_key),
+        error = function(e) {
           self$logger$log_api_request_response(
             provider = self$provider_name,
             model = model,
-            prompt_content = chunk_content,
-            response_content = content,
-            request_metadata = list(
-              chunk_number = i,
-              total_chunks = input_chunks$chunk_count,
-              chunk_line_ids = chunk_line_ids
-            ),
-            response_metadata = list(
-              raw_response_class = class(response),
-              extracted_content_length = if(is.character(content)) length(content) else 1
-            )
+            prompt_content = prompt,
+            response_content = paste0("ERROR: ", e$message),
+            request_metadata = list(provider = self$provider_name, failed = TRUE),
+            response_metadata = list(error = e$message)
           )
-          
-          # Process the content
-          private$process_response_content(content, model)
-          
-        }, error = function(e) {
-          self$logger$error(sprintf("Failed to process chunk %d: %s", i, e$message),
-                           list(provider = self$provider_name, 
-                                model = model,
-                                chunk = i,
-                                error = e$message))
-          return(NULL)
-        })
-      }, simplify = FALSE)
-      
-      return(all_results)
-    },
-    
-    #' Process response content into lines
-    #
-    #
-    #
-    process_response_content = function(response_content, model) {
-      if (!is.character(response_content)) {
+          stop(e)
+        }
+      )
+
+      # Extract content (implemented by subclass)
+      content <- self$extract_response_content(response, model)
+
+      # Log successful request and response for audit/debugging
+      self$logger$log_api_request_response(
+        provider = self$provider_name,
+        model = model,
+        prompt_content = prompt,
+        response_content = content,
+        request_metadata = list(provider = self$provider_name),
+        response_metadata = list(
+          raw_response_class = class(response),
+          extracted_content_length = if (is.character(content)) nchar(content) else 1
+        )
+      )
+
+      # Split response into lines
+      if (!is.character(content)) {
         self$logger$error("Response content is not a character string",
                          list(provider = self$provider_name,
                               model = model,
-                              response_type = typeof(response_content)))
-        return(c("Error: Invalid response format"))
+                              response_type = typeof(content)))
+        stop("Invalid response format from API")
       }
-      
-      tryCatch({
-        res <- strsplit(response_content, '\n')[[1]]
-        self$logger$debug(sprintf("Processed response from %s", self$provider_name),
-                         list(provider = self$provider_name,
-                              model = model,
-                              lines_count = length(res),
-                              response_length = nchar(response_content)))
-        return(res)
-      }, error = function(e) {
-        self$logger$error("Failed to split response content",
-                         list(provider = self$provider_name,
-                              model = model,
-                              error = e$message))
-        return(c("Error: Failed to parse response"))
-      })
+
+      res <- strsplit(content, "\n")[[1]]
+      self$logger$debug(sprintf("Processed response from %s", self$provider_name),
+                       list(provider = self$provider_name,
+                            model = model,
+                            lines_count = length(res),
+                            response_length = nchar(content)))
+      return(res)
     },
-    
-    #' Consolidate results from all chunks
-    #
-    #
-    consolidate_results = function(all_results) {
-      self$logger$info("All chunks processed, consolidating results",
-                      list(provider = self$provider_name,
-                           chunks_processed = length(all_results)))
-      
-      # Filter out NULL values
-      valid_results <- all_results[!sapply(all_results, is.null)]
-      
-      if (length(valid_results) == 0) {
-        self$logger$error("No valid responses received",
-                         list(provider = self$provider_name,
-                              chunks_attempted = length(all_results)))
-        return(c("Error: No valid responses"))
+
+    is_successful_result = function(result) {
+      if (is.null(result) || length(result) == 0) {
+        return(FALSE)
       }
-      
-      # Clean up and return results
-      final_result <- gsub(',$', '', unlist(valid_results))
-      
-      self$logger$info("Results consolidated successfully",
-                      list(provider = self$provider_name,
-                           valid_chunks = length(valid_results),
-                           total_lines = length(final_result)))
-      
-      return(final_result)
+      if (!is.character(result)) {
+        return(TRUE)
+      }
+      text <- paste(result, collapse = "\n")
+      !grepl("^\\s*Error:", text, ignore.case = TRUE)
     }
   )
 )
