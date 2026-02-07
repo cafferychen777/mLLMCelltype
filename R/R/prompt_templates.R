@@ -2,9 +2,64 @@
 #' 
 #' This file contains all prompt template functions used in mLLMCelltype.
 #' These functions create various prompts for different stages of the cell type annotation process.
+#' Normalize list input into a canonical cluster->genes mapping
+#'
+#' For list input, each element can be either:
+#' 1) a list containing a `genes` field, or
+#' 2) a character vector of genes.
+#'
+#' Naming rules:
+#' - unnamed lists are assigned 0-based IDs ("0", "1", ...)
+#' - fully numeric names are canonicalized; if minimum index is >= 1, they are shifted to 0-based
+#' - non-numeric names are preserved as-is
+#'
+#' @param input List input for cluster annotation
+#' @return Named list of character vectors (cluster_id -> genes)
+#' @keywords internal
+normalize_cluster_gene_list <- function(input) {
+  if (!is.list(input) || is.data.frame(input)) {
+    stop("normalize_cluster_gene_list expects a list input")
+  }
+
+  extract_item_genes <- function(item) {
+    if (is.list(item) && "genes" %in% names(item)) {
+      return(as.character(item$genes))
+    }
+    if (is.character(item)) {
+      return(item)
+    }
+    stop("When input is a list, each element must be a character vector of genes or a list containing a 'genes' field")
+  }
+
+  names_vec <- names(input)
+  gene_vectors <- lapply(input, extract_item_genes)
+
+  if (is.null(names_vec)) {
+    canonical_names <- as.character(seq_along(gene_vectors) - 1)
+  } else {
+    numeric_names <- suppressWarnings(as.numeric(names_vec))
+    if (all(!is.na(numeric_names))) {
+      if (min(numeric_names) >= 1) {
+        numeric_names <- numeric_names - 1
+      }
+      canonical_names <- as.character(numeric_names)
+    } else {
+      canonical_names <- names_vec
+    }
+  }
+
+  if (anyDuplicated(canonical_names)) {
+    stop("Duplicate cluster IDs detected after normalization")
+  }
+
+  names(gene_vectors) <- canonical_names
+  gene_vectors
+}
+
 #' Create prompt for cell type annotation
 #'
-#' @param input Either a data frame from Seurat's FindAllMarkers() or a list with 'genes' field for each cluster
+#' @param input Either a data frame from Seurat's FindAllMarkers() or a list for each cluster
+#'   where each element is either a character vector of genes or a list containing a `genes` field
 #' @param tissue_name Tissue context for the annotation (e.g., 'human PBMC', 'mouse brain')
 #' @param top_gene_count Number of top genes to use per cluster when input is from Seurat. Default: 10
 #'
@@ -13,53 +68,19 @@
 #' @export
 create_annotation_prompt <- function(input, tissue_name, top_gene_count = 10) {
   if (is.list(input) && !is.data.frame(input)) {
-    # For list input, each element should contain a 'genes' field
-    if (!all(sapply(input, function(x) "genes" %in% names(x)))) {
-      stop("When input is a list, each element must have a 'genes' field")
-    }
-    
-    # Create gene lists for each cluster - Expect indices to start from 0
-    # We only accept 0-based indices (Seurat compatible)
+    normalized_input <- normalize_cluster_gene_list(input)
+
     gene_lists <- list()
-    names_vec <- names(input)
-    
-    # Handle named list case
-    if (!is.null(names_vec)) {
-      # Try to convert named numeric indices to 0-based
-      numeric_names <- suppressWarnings(as.numeric(names_vec))
-      if (!all(is.na(numeric_names))) {
-        # Has numeric indices, ensure they are 0-based
-        for (i in seq_along(input)) {
-          name <- names_vec[i]
-          num_name <- suppressWarnings(as.numeric(name))
-          if (!is.na(num_name)) {
-            # Index is numeric, verify it's 0-based (no conversion needed)
-            # We only accept 0-based indices
-            if(num_name < 0) {
-              warning(sprintf("Negative cluster index detected: %s. Indices should start from 0.", name))
-            }
-            zero_based_name <- as.character(num_name)
-            gene_lists[[zero_based_name]] <- paste(input[[name]]$genes, collapse = ", ")
-          } else {
-            # Non-numeric index, keep as is
-            gene_lists[[name]] <- paste(input[[name]]$genes, collapse = ", ")
-          }
-        }
-      } else {
-        # Non-numeric indices (such as 't_cells'), keep as is
-        for (name in names_vec) {
-          gene_lists[[name]] <- paste(input[[name]]$genes, collapse = ", ")
-        }
+
+    for (cluster_id in names(normalized_input)) {
+      genes <- normalized_input[[cluster_id]]
+      if (!is.character(genes)) {
+        genes <- as.character(genes)
       }
-    } else {
-      # No named list case, expect indices to be 0-based
-      # Since R's seq_along starts from 1, we need to subtract 1 to get 0-based indices
-      for (i in seq_along(input)) {
-        gene_lists[[as.character(i-1)]] <- paste(input[[i]]$genes, collapse = ", ")
-      }
+      gene_lists[[cluster_id]] <- paste(genes, collapse = ", ")
     }
     
-    expected_count <- length(input)
+    expected_count <- length(normalized_input)
   } else if (is.data.frame(input)) {
     # Process Seurat differential gene table
     # Ensure the cluster column is converted to 0-based
@@ -67,13 +88,21 @@ create_annotation_prompt <- function(input, tissue_name, top_gene_count = 10) {
     input_copy <- input
     
     # Check the values in the cluster column, if the minimum value is 1, subtract 1 from all values to make them 0-based
-    # First ensure the cluster column is numeric, not a factor
+    # Ensure the cluster column is numeric for arithmetic operations
     if (is.factor(input_copy$cluster)) {
       input_copy$cluster <- as.numeric(as.character(input_copy$cluster))
+    } else if (is.character(input_copy$cluster)) {
+      numeric_clusters <- suppressWarnings(as.numeric(input_copy$cluster))
+      if (any(is.na(numeric_clusters))) {
+        # Non-numeric cluster IDs (e.g., "t_cells") — use as-is, no 0-based conversion
+        input_copy$cluster <- input_copy$cluster
+      } else {
+        input_copy$cluster <- numeric_clusters
+      }
     }
-    
-    # Now we can safely use the min function
-    if (min(input_copy$cluster) > 0) {
+
+    # Now we can safely use the min function (only for numeric clusters)
+    if (is.numeric(input_copy$cluster) && min(input_copy$cluster) > 0) {
       # Possibly 1-based index, convert to 0-based
       input_copy$original_cluster <- input_copy$cluster  # Save original value
       input_copy$cluster <- input_copy$cluster - 1  # Convert to 0-based
@@ -97,30 +126,15 @@ create_annotation_prompt <- function(input, tissue_name, top_gene_count = 10) {
     stop("Input must be either a data.frame (from Seurat) or a list of gene lists")
   }
   
-  # Create the prompt using 0-based indexing
-  # Force use of 0-based indices when creating prompts
-  formatted_lines <- character(length(gene_lists))
-  
-  # Use 0-based indices only
-  for (i in 0:(length(gene_lists)-1)) {
-    # Use 0,1,2... as indices
-    if (as.character(i) %in% names(gene_lists)) {
-      # Process 0-based indices
-      genes <- gene_lists[[as.character(i)]]
-      formatted_lines[i+1] <- paste0(i, ": ", genes)
-    }
-    # We no longer process 1-based indices as we require all inputs to be 0-based
-  }
-  
-  # Remove empty elements
-  formatted_lines <- formatted_lines[formatted_lines != ""]
-  
-  # Optional: ensure indices are sorted numerically
-  if (all(!is.na(suppressWarnings(as.numeric(names(gene_lists)))))) {
-    # If all indices are numeric, sort them numerically
-    num_indices <- as.numeric(names(gene_lists))
-    ordered_indices <- order(num_indices)
-    formatted_lines <- formatted_lines[ordered_indices]
+  # Create formatted lines from gene_lists using actual names/indices
+  cluster_names <- names(gene_lists)
+  formatted_lines <- vapply(cluster_names, function(name) {
+    paste0(name, ": ", gene_lists[[name]])
+  }, character(1), USE.NAMES = FALSE)
+
+  # Sort numerically if all names are numeric (e.g., 0-based cluster IDs)
+  if (all(!is.na(suppressWarnings(as.numeric(cluster_names))))) {
+    formatted_lines <- formatted_lines[order(as.numeric(cluster_names))]
   }
 
   prompt <- paste0("You are a cell type annotation expert. Below are marker genes for different cell clusters in ", 

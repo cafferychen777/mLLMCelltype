@@ -4,7 +4,7 @@
 \alias{get_model_response}
 \title{Get response from a specific model}
 \usage{
-get_model_response(prompt, model, api_key)
+get_model_response(prompt, model, api_key, base_urls = NULL)
 }
 \description{
 Get response from a specific model

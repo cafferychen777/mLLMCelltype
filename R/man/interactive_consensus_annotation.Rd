@@ -7,7 +7,8 @@
 interactive_consensus_annotation(
   input,
   tissue_name = NULL,
-  models = c("claude-opus-4.6", "gpt-5.2", "gemini-3-pro", "deepseek-r1", "grok-4.1"),
+  models = c("claude-opus-4-6-20260205", "gpt-5.2", "gemini-3-pro", "deepseek-r1",
+    "grok-4.1"),
   api_keys,
   top_gene_count = 10,
   controversy_threshold = 0.7,
@@ -25,8 +26,8 @@ interactive_consensus_annotation(
 \arguments{
 \item{input}{Either a data frame from Seurat's FindAllMarkers() function containing
 differential gene expression results (must have columns: 'cluster', 'gene',
-and 'avg_log2FC'), or a list where each element has a 'genes' field containing
-marker genes for a cluster. Cluster IDs must be numeric starting from 0.}
+and 'avg_log2FC'), or a list where each element is either a character vector
+of genes or a list containing a \code{genes} field.}
 
 \item{tissue_name}{Character string specifying the tissue type for context-aware
 cell type annotation. If NULL, generic cell type annotation will be performed.}
@@ -53,7 +54,9 @@ for controversial clusters (default: 3).}
 \item{consensus_check_model}{Character string specifying which model to use for
 consensus checking. If NULL, uses the first model from the models list.}
 
-\item{log_dir}{Character string specifying directory for log files (default: "logs").}
+\item{log_dir}{Character scalar specifying directory for log files (default: "logs").
+This function reinitializes the session logger with this directory at the start
+of each call.}
 
 \item{cache_dir}{Character string or NULL. Cache directory for storing results.
 NULL uses system cache, "local" uses current directory, "temp" uses temporary
@@ -74,10 +77,14 @@ clusters, ignoring cache. Only affects controversial cluster discussions
 \value{
 A list containing:
 \itemize{
-\item \code{voting_results}: Initial voting results from all models
+\item \code{initial_results}: Initial voting results, consensus checks, and controversial cluster IDs
+\item \code{final_annotations}: Final annotations keyed by cluster ID
 \item \code{controversial_clusters}: Clusters identified as controversial
-\item \code{discussion_results}: Detailed discussion results for controversial clusters
-\item \code{final_consensus}: Final consensus annotations for all clusters
+\item \code{discussion_logs}: Detailed discussion logs for controversial clusters
+\item \code{session_id}: Logger session identifier
+\item \code{voting_results}: Backward-compatible alias of \code{initial_results}
+\item \code{discussion_results}: Backward-compatible alias of \code{discussion_logs}
+\item \code{final_consensus}: Backward-compatible alias of \code{final_annotations}
 }
 }
 \description{

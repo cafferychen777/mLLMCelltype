@@ -1,3 +1,6 @@
+# Centralized global variable declarations for R CMD check
+utils::globalVariables(c("custom_models", "cluster", "avg_log2FC", "gene"))
+
 #' Package startup message
 #' @keywords internal
 .onAttach <- function(libname, pkgname) {

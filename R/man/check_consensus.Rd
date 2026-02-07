@@ -9,7 +9,8 @@ check_consensus(
   api_keys = NULL,
   controversy_threshold = 2/3,
   entropy_threshold = 1,
-  consensus_check_model = NULL
+  consensus_check_model = NULL,
+  base_urls = NULL
 )
 }
 \description{

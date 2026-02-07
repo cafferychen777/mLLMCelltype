@@ -46,6 +46,9 @@ register_custom_provider <- function(provider_name, process_fn,
     stop("process_fn must be a function")
   }
 
+  # Normalize provider name to lowercase for consistent lookup
+  provider_name <- tolower(provider_name)
+
   # Check if provider already exists
   if (exists(provider_name, envir = custom_providers)) {
     stop("Provider '", provider_name, "' already exists")
@@ -105,6 +108,10 @@ register_custom_model <- function(model_name, provider_name,
     stop("model_config must be a list")
   }
 
+  # Normalize names to lowercase for consistent lookup with get_provider()
+  model_name <- tolower(model_name)
+  provider_name <- tolower(provider_name)
+
   # Check if provider exists
   if (!exists(provider_name, envir = custom_providers)) {
     stop("Provider '", provider_name, "' does not exist")
@@ -136,13 +143,16 @@ register_custom_model <- function(model_name, provider_name,
 #' Process request using custom provider
 #' @keywords internal
 process_custom <- function(prompt, model, api_key) {
+  # Normalize to lowercase for consistent lookup with get_provider()
+  model_lower <- tolower(model)
+
   # Check if model exists
-  if (!exists(model, envir = custom_models)) {
+  if (!exists(model_lower, envir = custom_models)) {
     stop("Model '", model, "' not found")
   }
 
   # Get model and provider data
-  model_data <- get(model, envir = custom_models)
+  model_data <- get(model_lower, envir = custom_models)
   provider_data <- get(model_data$provider, envir = custom_providers)
 
   # Call provider's process function

@@ -145,11 +145,7 @@ BaseAPIProcessor <- R6::R6Class("BaseAPIProcessor",
                             lines_count = length(input_lines),
                             chunk_count = cutnum))
       
-      if (cutnum > 1) {
-        cid <- as.numeric(cut(1:length(input_lines), cutnum))
-      } else {
-        cid <- rep(1, length(input_lines))
-      }
+      cid <- rep(1, length(input_lines))
       
       return(list(
         input_lines = input_lines,
@@ -182,7 +178,7 @@ BaseAPIProcessor <- R6::R6Class("BaseAPIProcessor",
           content <- self$extract_response_content(response, model)
           
           # Log complete API request and response for audit/debugging
-          api_call_id <- self$logger$log_api_request_response(
+          self$logger$log_api_request_response(
             provider = self$provider_name,
             model = model,
             prompt_content = chunk_content,

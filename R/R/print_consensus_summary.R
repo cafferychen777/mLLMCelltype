@@ -53,38 +53,33 @@ print_consensus_summary <- function(results) {
         }
       } 
       # If no initial predictions in discussion logs, use initial_results
-      else if (!is.null(results$initial_results) && 
+      else if (!is.null(results$initial_results) &&
                !is.null(results$initial_results$individual_predictions)) {
-        # Iterate through each model's prediction
+        # Check naming convention once using the first model's predictions
+        first_model_preds <- results$initial_results$individual_predictions[[1]]
+        has_names <- !is.null(names(first_model_preds))
+
         for (model in names(results$initial_results$individual_predictions)) {
-          # Check if prediction has names
-          first_model <- names(results$initial_results$individual_predictions)[1]
-          predictions <- results$initial_results$individual_predictions[[first_model]]
-          has_names <- !is.null(names(predictions))
-          
+          model_preds <- results$initial_results$individual_predictions[[model]]
+
           if (has_names) {
-            # If it has names, use string indexing
-            if (char_cluster_id %in% names(results$initial_results$individual_predictions[[model]])) {
-              prediction <- results$initial_results$individual_predictions[[model]][[char_cluster_id]]
-            } else {
-              prediction <- NA
-            }
+            prediction <- model_preds[[char_cluster_id]]
           } else {
-            # Even without a name, try to use string indexing
-            # First try to convert the string to a numeric value as an index
-            cluster_idx <- as.numeric(char_cluster_id)
-            if (!is.na(cluster_idx) && cluster_idx <= length(results$initial_results$individual_predictions[[model]])) {
-              prediction <- results$initial_results$individual_predictions[[model]][cluster_idx]
+            # Positional fallback: cluster "0" → index 1 (R is 1-based)
+            cluster_idx <- suppressWarnings(as.numeric(char_cluster_id))
+            r_index <- if (!is.na(cluster_idx)) cluster_idx + 1 else NA
+            prediction <- if (!is.na(r_index) && r_index >= 1 && r_index <= length(model_preds)) {
+              model_preds[r_index]
             } else {
-              prediction <- NA
+              NA
             }
           }
-          
+
           # Handle empty or NA predictions
           if (is.null(prediction) || is.na(prediction) || (is.character(prediction) && prediction == "")) {
             prediction <- "No prediction provided"
           }
-          
+
           cat(sprintf("  %s: %s\n", model, prediction))
         }
       } else {

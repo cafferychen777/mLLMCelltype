@@ -43,11 +43,15 @@
 #' @param input Either a data frame from Seurat's FindAllMarkers() containing columns 'cluster', 'gene', and 'avg_log2FC', or a list with 'genes' field for each cluster
 #' @param tissue_name Tissue context (e.g., 'human PBMC', 'mouse brain') for more accurate annotations
 #' @param models Vector of model names to use for comparison. Default includes top models from each provider
-#' @param api_keys Named list of API keys for the models, with provider or model names as keys
+#' @param api_keys Named list of API keys for the models, with provider or model names as keys.
+#'   Every model in \code{models} must resolve to a non-NULL API key.
 #' @param top_gene_count Number of top genes to use per cluster when input is from Seurat. Default: 10
-#' @param consensus_threshold Minimum agreement threshold for consensus (0-1). Default: 0.5
+#' @param consensus_threshold Minimum agreement threshold for consensus (0-1). Default: 0.5.
+#'   Consensus is only evaluated when at least two non-missing model predictions are available for a cluster.
 #'
 #' @return List containing individual model predictions and consensus analysis
+#'   If a cluster has fewer than two valid predictions after alignment/padding,
+#'   its consensus-related outputs are \code{NA}.
 #' @export
 #' @examples
 #' \dontrun{
@@ -67,7 +71,7 @@
 #' }
 compare_model_predictions <- function(input,
                                       tissue_name,
-                                      models = c("claude-opus-4.6",
+                                      models = c("claude-opus-4-6-20260205",
                                                  "gpt-5.2",
                                                  "gemini-3-pro",
                                                  "deepseek-r1",
@@ -92,7 +96,6 @@ compare_model_predictions <- function(input,
   
   # Initialize results storage
   all_predictions <- list()
-  n_clusters <- if(inherits(input, 'list')) length(input) else length(unique(input$cluster))
   successful_models <- character(0)
   
   # Get predictions from each model
@@ -100,13 +103,7 @@ compare_model_predictions <- function(input,
     message(sprintf("\nRunning predictions with model: %s", model))
     tryCatch({
       api_key <- get_api_key(model, api_keys)
-      
-      if (is.null(api_key)) {
-        warning(sprintf("No API key found for model '%s' (provider: %s). This model will be skipped.", 
-                      model, get_provider(model)))
-        next
-      }
-      
+
       predictions <- annotate_cell_types(
         input = input,
         tissue_name = tissue_name,
@@ -130,15 +127,26 @@ compare_model_predictions <- function(input,
   message("\nStandardizing cell type names...")
   standardized_predictions <- standardize_cell_type_names(all_predictions, successful_models, api_keys)
   
-  # Create comparison matrix only for successful models using standardized predictions
-  comparison_matrix <- do.call(cbind, lapply(standardized_predictions[successful_models], function(x) x))
+  # Pad all prediction vectors to equal length with NA to avoid vector recycling
+  all_vectors <- all_predictions[successful_models]
+  std_vectors <- standardized_predictions[successful_models]
+  max_len <- max(vapply(std_vectors, length, integer(1)),
+                 vapply(all_vectors, length, integer(1)))
+  pad <- function(x) { length(x) <- max_len; x }
+
+  comparison_matrix <- do.call(cbind, lapply(std_vectors, pad))
   colnames(comparison_matrix) <- successful_models
+  raw_matrix <- do.call(cbind, lapply(all_vectors, pad))
+  colnames(raw_matrix) <- successful_models
+  n_clusters <- nrow(comparison_matrix)
   
   # Calculate consensus and agreement statistics
   consensus_results <- apply(comparison_matrix, 1, function(row) {
     # Remove NAs
     valid_predictions <- row[!is.na(row)]
-    if (length(valid_predictions) == 0) return(list(consensus = NA, consensus_proportion = NA, entropy = NA))
+    if (length(valid_predictions) < 2) {
+      return(list(consensus = NA, consensus_proportion = NA, entropy = NA))
+    }
     
     # Count occurrences of each prediction
     pred_table <- table(valid_predictions)
@@ -182,11 +190,11 @@ compare_model_predictions <- function(input,
   for (i in seq_along(successful_models)) {
     for (j in seq_along(successful_models)) {
       if (i != j) {
-        valid_comparisons <- !is.na(all_predictions[[successful_models[i]]]) & 
-          !is.na(all_predictions[[successful_models[j]]])
+        valid_comparisons <- !is.na(comparison_matrix[, successful_models[i]]) &
+          !is.na(comparison_matrix[, successful_models[j]])
         if (any(valid_comparisons)) {
-          agreement <- mean(all_predictions[[successful_models[i]]][valid_comparisons] == 
-                              all_predictions[[successful_models[j]]][valid_comparisons])
+          agreement <- mean(comparison_matrix[valid_comparisons, successful_models[i]] ==
+                              comparison_matrix[valid_comparisons, successful_models[j]])
           model_agreement_matrix[i,j] <- agreement
         }
       }
@@ -229,10 +237,10 @@ compare_model_predictions <- function(input,
   for (i in 1:n_clusters) {
     message(sprintf("\nCluster %d:\n", i))
     for (model in successful_models) {
-      message(sprintf("  %s: %s (Standardized: %s)\n", 
-                model, 
-                all_predictions[[model]][i],
-                standardized_predictions[[model]][i]))
+      message(sprintf("  %s: %s (Standardized: %s)\n",
+                model,
+                raw_matrix[i, model],
+                comparison_matrix[i, model]))
     }
     message(sprintf("  Consensus: %s (Consensus Proportion: %.2f, Entropy: %.2f)\n", 
                 consensus_predictions[i], 
@@ -295,7 +303,9 @@ standardize_cell_type_names <- function(predictions,
     )
     
     # Parse the response to extract mappings
-    mapping_lines <- strsplit(response, "\n")[[1]]
+    # response may be a character vector (one element per line from get_model_response),
+    # so collapse first to ensure all lines are processed
+    mapping_lines <- strsplit(paste(response, collapse = "\n"), "\n")[[1]]
     mapping <- list()
     
     for (line in mapping_lines) {

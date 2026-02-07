@@ -15,7 +15,8 @@ facilitate_cluster_discussion(
   max_rounds = 3,
   controversy_threshold = 0.7,
   entropy_threshold = 1,
-  consensus_check_model = NULL
+  consensus_check_model = NULL,
+  base_urls = NULL
 )
 }
 \description{

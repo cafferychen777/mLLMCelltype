@@ -258,16 +258,21 @@ parse_consensus_response <- function(response) {
       return(.DEFAULT_CONSENSUS_RESULT)
     }
     
-    tryCatch({
-      response <- as.character(response)
+    response <- tryCatch({
+      as.character(response)
     }, error = function(e) {
       get_logger()$error("Failed to convert response", list(error = e$message))
-      return(.DEFAULT_CONSENSUS_RESULT)
+      return(NULL)
     })
+    if (is.null(response)) return(.DEFAULT_CONSENSUS_RESULT)
+  }
+
+  if (length(response) > 1) {
+    response <- paste(response, collapse = "\n")
   }
   
   # Check for empty string after conversion
-  if (nchar(response) == 0) {
+  if (length(response) == 0 || nchar(response) == 0) {
     get_logger()$warn("Response is empty string")
     return(.DEFAULT_CONSENSUS_RESULT)
   }
@@ -286,26 +291,25 @@ parse_consensus_response <- function(response) {
   }
   
   if (length(lines) < 4) {
-    get_logger()$warn("Not enough lines in response", list(line_count = length(lines)))
-    return(.DEFAULT_CONSENSUS_RESULT)
-  }
-  
-  # Try standard format first
-  result_lines <- tail(lines, 4)
-  standard_result <- parse_standard_format(result_lines)
-  
-  if (!is.null(standard_result)) {
-    get_logger()$info("Parsed standard format", list(
-      consensus = standard_result$consensus,
-      proportion = standard_result$consensus_proportion,
-      entropy = standard_result$entropy
-    ))
-    return(list(
-      reached = standard_result$consensus,
-      consensus_proportion = standard_result$consensus_proportion,
-      entropy = standard_result$entropy,
-      majority_prediction = standard_result$majority_prediction
-    ))
+    get_logger()$warn("Not enough lines for standard format, trying flexible parsing", list(line_count = length(lines)))
+  } else {
+    # Try standard format first
+    result_lines <- tail(lines, 4)
+    standard_result <- parse_standard_format(result_lines)
+    
+    if (!is.null(standard_result)) {
+      get_logger()$info("Parsed standard format", list(
+        consensus = standard_result$consensus,
+        proportion = standard_result$consensus_proportion,
+        entropy = standard_result$entropy
+      ))
+      return(list(
+        reached = standard_result$consensus,
+        consensus_proportion = standard_result$consensus_proportion,
+        entropy = standard_result$entropy,
+        majority_prediction = standard_result$majority_prediction
+      ))
+    }
   }
   
   # Fall back to flexible parsing
@@ -326,7 +330,7 @@ parse_consensus_response <- function(response) {
 #
 #
 #' @keywords internal
-execute_consensus_check <- function(formatted_responses, api_keys, models_to_try) {
+execute_consensus_check <- function(formatted_responses, api_keys, models_to_try, base_urls = NULL) {
   max_retries <- .CONSENSUS_CONSTANTS$MAX_RETRIES
   
   for (model_name in models_to_try) {
@@ -358,7 +362,7 @@ execute_consensus_check <- function(formatted_responses, api_keys, models_to_try
       get_logger()$debug("Starting attempt with model", list(attempt = attempt, max_retries = max_retries, model = model_name))
       
       result <- tryCatch({
-        temp_response <- get_model_response(formatted_responses, model_name, api_key)
+        temp_response <- get_model_response(formatted_responses, model_name, api_key, base_urls)
         
         if (is.character(temp_response) && length(temp_response) > 1) {
           temp_response <- paste(temp_response, collapse = "\n")
@@ -399,7 +403,7 @@ execute_consensus_check <- function(formatted_responses, api_keys, models_to_try
 #' @note This function uses create_consensus_check_prompt from prompt_templates.R
 #' @importFrom utils tail
 #' @keywords internal
-check_consensus <- function(round_responses, api_keys = NULL, controversy_threshold = 2/3, entropy_threshold = 1.0, consensus_check_model = NULL) {
+check_consensus <- function(round_responses, api_keys = NULL, controversy_threshold = 2/3, entropy_threshold = 1.0, consensus_check_model = NULL, base_urls = NULL) {
   # Initialize logging
   get_logger()$info("Starting check_consensus function")
   get_logger()$debug("Input responses", list(responses = round_responses))
@@ -483,7 +487,7 @@ check_consensus <- function(round_responses, api_keys = NULL, controversy_thresh
 
   # Prepare models and execute consensus check
   models_to_try <- prepare_models_list(consensus_check_model)
-  execution_result <- execute_consensus_check(formatted_responses, api_keys, models_to_try)
+  execution_result <- execute_consensus_check(formatted_responses, api_keys, models_to_try, base_urls)
 
   # Handle execution failure - fall back to simple consensus
   if (!execution_result$success) {

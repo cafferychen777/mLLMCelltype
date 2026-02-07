@@ -7,8 +7,8 @@
 compare_model_predictions(
   input,
   tissue_name,
-  models = c("claude-opus-4.6", "gpt-5.2", "gemini-3-pro", "deepseek-r1", "o3-pro",
-    "grok-4.1"),
+  models = c("claude-opus-4-6-20260205", "gpt-5.2", "gemini-3-pro", "deepseek-r1",
+    "o3-pro", "grok-4.1"),
   api_keys,
   top_gene_count = 10,
   consensus_threshold = 0.5
@@ -21,14 +21,18 @@ compare_model_predictions(
 
 \item{models}{Vector of model names to use for comparison. Default includes top models from each provider}
 
-\item{api_keys}{Named list of API keys for the models, with provider or model names as keys}
+\item{api_keys}{Named list of API keys for the models, with provider or model names as keys.
+Every model in \code{models} must resolve to a non-NULL API key.}
 
 \item{top_gene_count}{Number of top genes to use per cluster when input is from Seurat. Default: 10}
 
-\item{consensus_threshold}{Minimum agreement threshold for consensus (0-1). Default: 0.5}
+\item{consensus_threshold}{Minimum agreement threshold for consensus (0-1). Default: 0.5.
+Consensus is only evaluated when at least two non-missing model predictions are available for a cluster.}
 }
 \value{
 List containing individual model predictions and consensus analysis
+If a cluster has fewer than two valid predictions after alignment/padding,
+its consensus-related outputs are \code{NA}.
 }
 \description{
 This function runs the same input through multiple models and compares their predictions.

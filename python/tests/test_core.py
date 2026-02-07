@@ -91,9 +91,9 @@ def test_load_api_key_unknown_provider():
 # Test cache functions
 def test_create_cache_key():
     """Test creating cache key."""
-    key1 = create_cache_key("test prompt", "gpt-4", "openai")
-    key2 = create_cache_key("test prompt", "gpt-4", "openai")
-    key3 = create_cache_key("different prompt", "gpt-4", "openai")
+    key1 = create_cache_key("test prompt", "gpt-5.2", "openai")
+    key2 = create_cache_key("test prompt", "gpt-5.2", "openai")
+    key3 = create_cache_key("different prompt", "gpt-5.2", "openai")
 
     assert key1 == key2  # Same inputs should produce same key
     assert key1 != key3  # Different inputs should produce different keys
@@ -106,7 +106,7 @@ def test_save_and_load_from_cache():
     with tempfile.TemporaryDirectory() as temp_dir:
         # Test with dictionary
         data_dict = {"1": "T cells", "2": "B cells"}
-        key = create_cache_key("test prompt", "gpt-4", "openai")
+        key = create_cache_key("test prompt", "gpt-5.2", "openai")
 
         save_to_cache(key, data_dict, cache_dir=temp_dir)
         loaded = load_from_cache(key, cache_dir=temp_dir)
@@ -115,7 +115,7 @@ def test_save_and_load_from_cache():
 
         # Test with list
         data_list = ["T cells", "B cells"]
-        key = create_cache_key("test prompt 2", "gpt-4", "openai")
+        key = create_cache_key("test prompt 2", "gpt-5.2", "openai")
 
         save_to_cache(key, data_list, cache_dir=temp_dir)
         loaded = load_from_cache(key, cache_dir=temp_dir)
@@ -126,7 +126,7 @@ def test_save_and_load_from_cache():
 def test_load_from_nonexistent_cache():
     """Test loading from nonexistent cache."""
     with tempfile.TemporaryDirectory() as temp_dir:
-        key = create_cache_key("nonexistent", "gpt-4", "openai")
+        key = create_cache_key("nonexistent", "gpt-5.2", "openai")
         loaded = load_from_cache(key, cache_dir=temp_dir)
 
         assert loaded is None

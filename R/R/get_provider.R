@@ -1,6 +1,3 @@
-# Define global variables
-utils::globalVariables(c("custom_models"))
-
 #' Determine provider from model name
 #'
 #' This function determines the appropriate provider (e.g., OpenAI, Anthropic, Google, OpenRouter) based on the model name.

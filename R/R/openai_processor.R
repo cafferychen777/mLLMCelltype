@@ -38,8 +38,7 @@ OpenAIProcessor <- R6::R6Class("OpenAIProcessor",
             role = "user",
             content = chunk_content
           )
-        ),
-        store = TRUE
+        )
       )
       
       self$logger$debug("Sending API request to OpenAI",
@@ -110,18 +109,3 @@ OpenAIProcessor <- R6::R6Class("OpenAIProcessor",
     }
   )
 )
-
-#' Process request using OpenAI models
-#' 
-#' Main function that creates an OpenAI processor and handles the request.
-#' This maintains backward compatibility with the existing API.
-#' 
-#
-#
-#
-#
-#' @keywords internal
-process_openai <- function(prompt, model, api_key) {
-  processor <- OpenAIProcessor$new()
-  return(processor$process_request(prompt, model, api_key))
-}

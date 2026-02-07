@@ -28,8 +28,7 @@ GeminiProcessor <- R6::R6Class("GeminiProcessor",
     #
     #
     get_api_url_for_model = function(model) {
-      base_url <- if (!is.null(self$base_url)) self$base_url else self$get_default_api_url()
-      return(paste0(base_url, "/", model, ":generateContent"))
+      return(paste0(self$get_api_url(), "/", model, ":generateContent"))
     },
     
     #' @description

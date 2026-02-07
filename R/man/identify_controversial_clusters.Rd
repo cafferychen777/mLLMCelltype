@@ -10,7 +10,8 @@ identify_controversial_clusters(
   controversy_threshold,
   entropy_threshold,
   api_keys,
-  consensus_check_model = NULL
+  consensus_check_model = NULL,
+  base_urls = NULL
 )
 }
 \description{

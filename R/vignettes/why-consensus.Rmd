@@ -139,8 +139,6 @@ results <- interactive_consensus_annotation(
   consensus_method = "iterative"
 )
 
-# View consensus metrics
-print_consensus_summary(results)
 ```
 
 ### Understanding Your Results

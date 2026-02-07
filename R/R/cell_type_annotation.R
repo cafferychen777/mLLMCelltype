@@ -1,9 +1,6 @@
 #' @keywords internal
 "_PACKAGE"
 
-# Define global variables
-utils::globalVariables(c("cluster", "avg_log2FC", "gene"))
-
 #' @importFrom dplyr group_by top_n group_split
 #' @importFrom utils head
 
@@ -260,20 +257,26 @@ annotate_cell_types <- function(input,
     return(prompt)
   }
 
-  # Process based on provider
-  result <- switch(provider,
-    "openai" = process_openai(prompt, model, api_key, provider_base_url),
-    "anthropic" = process_anthropic(prompt, model, api_key, provider_base_url),
-    "deepseek" = process_deepseek(prompt, model, api_key, provider_base_url),
-    "gemini" = process_gemini(prompt, model, api_key, provider_base_url),
-    "qwen" = process_qwen(prompt, model, api_key, provider_base_url),
-    "stepfun" = process_stepfun(prompt, model, api_key, provider_base_url),
-    "zhipu" = process_zhipu(prompt, model, api_key, provider_base_url),
-    "minimax" = process_minimax(prompt, model, api_key, provider_base_url),
-    "grok" = process_grok(prompt, model, api_key, provider_base_url),
-    "openrouter" = process_openrouter(prompt, model, api_key, provider_base_url),
-    stop("Unsupported model provider: ", provider)
-  )
+  # Check for custom provider first (consistent with get_model_response.R)
+  if (exists(provider, envir = custom_providers)) {
+    log_debug("Using custom provider", list(provider = provider))
+    result <- process_custom(prompt, model, api_key)
+  } else {
+    # Process based on built-in provider
+    result <- switch(provider,
+      "openai" = process_openai(prompt, model, api_key, provider_base_url),
+      "anthropic" = process_anthropic(prompt, model, api_key, provider_base_url),
+      "deepseek" = process_deepseek(prompt, model, api_key, provider_base_url),
+      "gemini" = process_gemini(prompt, model, api_key, provider_base_url),
+      "qwen" = process_qwen(prompt, model, api_key, provider_base_url),
+      "stepfun" = process_stepfun(prompt, model, api_key, provider_base_url),
+      "zhipu" = process_zhipu(prompt, model, api_key, provider_base_url),
+      "minimax" = process_minimax(prompt, model, api_key, provider_base_url),
+      "grok" = process_grok(prompt, model, api_key, provider_base_url),
+      "openrouter" = process_openrouter(prompt, model, api_key, provider_base_url),
+      stop("Unsupported model provider: ", provider)
+    )
+  }
 
   log_info("Model response received", list(response = result))
 

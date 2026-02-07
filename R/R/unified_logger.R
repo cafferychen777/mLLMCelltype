@@ -158,8 +158,9 @@ UnifiedLogger <- R6::R6Class("UnifiedLogger",
       }
       
       # Generate unique log file name for this API call
-      timestamp <- format(Sys.time(), "%Y%m%d_%H%M%S_%f")
-      api_call_id <- sprintf("%s_%s_%s", provider, gsub("[^A-Za-z0-9_-]", "_", model), timestamp)
+      timestamp <- format(Sys.time(), "%Y%m%d_%H%M%S")
+      call_seq <- self$performance_stats$api_calls + 1
+      api_call_id <- sprintf("%s_%s_%s_%03d", provider, gsub("[^A-Za-z0-9_-]", "_", model), timestamp, call_seq)
       
       # Create complete API log entry
       api_log_entry <- list(
@@ -228,12 +229,12 @@ UnifiedLogger <- R6::R6Class("UnifiedLogger",
         self$performance_stats$cache_misses <- self$performance_stats$cache_misses + 1
       }
       
+      total_cache_ops <- self$performance_stats$cache_hits + self$performance_stats$cache_misses
       context <- list(
         operation = operation,
         key = key,
         size_bytes = size,
-        cache_hit_rate = round(self$performance_stats$cache_hits / 
-                              (self$performance_stats$cache_hits + self$performance_stats$cache_misses), 3)
+        cache_hit_rate = if (total_cache_ops > 0) round(self$performance_stats$cache_hits / total_cache_ops, 3) else 0
       )
       
       self$debug(sprintf("Cache %s: %s", operation, key), context)
@@ -492,6 +493,43 @@ get_logger <- function() {
     .GlobalEnv$.mllm_logger <- UnifiedLogger$new()
   }
   return(.GlobalEnv$.mllm_logger)
+}
+
+#' Reinitialize global logger with a specific directory
+#'
+#' Preserves the current logger configuration (level, size, retention, console/json)
+#' while changing the log directory for a new annotation session.
+#'
+#' @param log_dir Directory for log files
+#' @return Invisible logger object
+#' @keywords internal
+initialize_logger <- function(log_dir = "logs") {
+  current_logger <- if (exists(".mllm_logger", envir = .GlobalEnv)) .GlobalEnv$.mllm_logger else NULL
+
+  level <- "INFO"
+  max_size <- 10
+  max_files <- 5
+  console_output <- TRUE
+  json_format <- TRUE
+
+  if (!is.null(current_logger) && is.list(current_logger)) {
+    if (!is.null(current_logger$log_level)) level <- current_logger$log_level
+    if (!is.null(current_logger$max_log_size)) max_size <- current_logger$max_log_size
+    if (!is.null(current_logger$max_log_files)) max_files <- current_logger$max_log_files
+    if (!is.null(current_logger$enable_console)) console_output <- current_logger$enable_console
+    if (!is.null(current_logger$enable_json)) json_format <- current_logger$enable_json
+  }
+
+  .GlobalEnv$.mllm_logger <- UnifiedLogger$new(
+    base_dir = log_dir,
+    level = level,
+    max_size = max_size,
+    max_files = max_files,
+    console_output = console_output,
+    json_format = json_format
+  )
+
+  invisible(.GlobalEnv$.mllm_logger)
 }
 
 #' Set global logger configuration

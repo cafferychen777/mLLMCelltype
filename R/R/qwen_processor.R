@@ -131,11 +131,11 @@ QwenProcessor <- R6::R6Class("QwenProcessor",
       self$logger$debug("Sending API request to Qwen",
                        list(model = model, provider = self$provider_name))
       
-      # Get working API URL (with intelligent endpoint selection)
+      # Get API URL: custom base_url takes priority, otherwise auto-detect endpoint
       api_url <- if (!is.null(self$base_url)) {
-        self$get_api_url()  # Use custom base_url if provided
+        self$base_url
       } else {
-        self$get_working_api_url(api_key)  # Use intelligent endpoint selection
+        self$get_working_api_url(api_key)
       }
 
       # Make the API request

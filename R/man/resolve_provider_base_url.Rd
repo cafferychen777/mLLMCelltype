@@ -6,9 +6,21 @@
 \usage{
 resolve_provider_base_url(provider, base_urls)
 }
+\arguments{
+\item{provider}{Provider name (e.g., "openai", "anthropic")}
+
+\item{base_urls}{User-provided base URLs: NULL, a single string, or a named list}
+}
+\value{
+Resolved and normalized base URL, or NULL if not specified
+}
 \description{
-This file contains utility functions for resolving and validating
-custom base URLs for different API providers.
+This file contains utility functions for resolving custom base URLs
+for different API providers.
 Resolve provider-specific base URL
+}
+\details{
+This is the single entry point for all base URL resolution. It resolves
+the appropriate URL and normalizes it (strips trailing slashes).
 }
 \keyword{internal}

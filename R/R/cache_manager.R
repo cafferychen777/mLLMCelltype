@@ -220,11 +220,17 @@ CacheManager <- R6::R6Class(
         if (is.list(input) && !is.data.frame(input)) {
           # Handle list input
           cluster_key <- as.character(cluster_id)
-          if (cluster_key %in% names(input) && 
-              is.list(input[[cluster_key]]) && 
-              "genes" %in% names(input[[cluster_key]])) {
-            genes <- input[[cluster_key]]$genes
-            return(sort(unique(as.character(genes))))
+          if (cluster_key %in% names(input)) {
+            cluster_item <- input[[cluster_key]]
+
+            if (is.list(cluster_item) && "genes" %in% names(cluster_item)) {
+              genes <- cluster_item$genes
+              return(sort(unique(as.character(genes))))
+            }
+
+            if (is.character(cluster_item)) {
+              return(sort(unique(as.character(cluster_item))))
+            }
           }
         } else if (is.data.frame(input)) {
           # Handle data frame input

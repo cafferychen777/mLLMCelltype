@@ -227,17 +227,14 @@ consensus_results <- interactive_consensus_annotation(
   entropy_threshold = 1.0,
   consensus_check_model = "claude-sonnet-4-5-20250929"
 )
-
-# Print consensus results
-print_consensus_summary(consensus_results)
 ```
 
 ### Consensus Output Example
 
-The consensus results contain more detailed information:
+The function automatically prints a summary upon completion:
 
 ```r
-> print_consensus_summary(consensus_results)
+>
 Consensus Summary:
 -----------------
 Total clusters: 2

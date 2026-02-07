@@ -101,8 +101,6 @@ consensus_results <- interactive_consensus_annotation(
   consensus_check_model = "claude-3-7-sonnet-20250219"
 )
 
-# Print consensus results summary
-print_consensus_summary(consensus_results)
 ```
 
 ### Visualization
