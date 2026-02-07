@@ -48,16 +48,16 @@ The marker genes used:
 
 ## Transparency
 
-⚠️ **Important**: When demo mode is active, the notebook displays clear messages informing users that they are viewing pre-computed results, not live LLM predictions. This ensures complete transparency and prevents any misunderstanding about the nature of the results.
+**Important**: When demo mode is active, the notebook displays clear messages informing users that they are viewing pre-computed results, not live LLM predictions.
 
 ## Validation
 
 The demo data has been validated to ensure:
-1. ✅ All required fields are present
-2. ✅ Data structures match the live annotation output
-3. ✅ All downstream visualization and analysis cells work correctly
-4. ✅ Consensus scores and entropy values are realistic
-5. ✅ CSV and JSON formats are consistent
+1. All required fields are present
+2. Data structures match the live annotation output
+3. All downstream visualization and analysis cells work correctly
+4. Consensus scores and entropy values are realistic
+5. CSV and JSON formats are consistent
 
 Run `python3 test_demo_mode.py` from the notebooks directory to validate the demo data integrity.
 
@@ -74,10 +74,4 @@ If you need to regenerate the demo data with fresh LLM predictions:
 
 ## Academic Integrity
 
-This demo mode implementation follows best practices for tutorial notebooks:
-- Clear labeling of cached vs. live results
-- Transparent communication with users
-- No deceptive practices
-- Educational value without requiring immediate resource commitment
-
-Users are always encouraged to run live annotations with their own API keys for production analyses.
+The demo mode implementation clearly labels cached vs. live results. Users are encouraged to run live annotations with their own API keys for production analyses.

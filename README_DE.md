@@ -1,5 +1,5 @@
 <div align="center">
-  <img src="assets/mLLMCelltype_logo.png" alt="mLLMCelltype - Multi-Sprachmodell-Konsensus-Framework für die Zelltyp-Annotation in Einzelzell-RNA-Sequenzierungsdaten" width="300"/>
+  <img src="assets/mLLMCelltype_logo.png" alt="mLLMCelltype logo" width="300"/>
 </div>
 
 <div align="center">
@@ -7,27 +7,22 @@
 </div>
 
 <div align="center">
-  <a href="https://twitter.com/intent/tweet?text=Entdecken%20Sie%20mLLMCelltype%3A%20Ein%20Multi-LLM-Konsensus-Framework%20f%C3%BCr%20die%20Zelltyp-Annotation%20in%20scRNA-seq-Daten%21&url=https%3A%2F%2Fgithub.com%2Fcafferychen777%2FmLLMCelltype"><img src="https://img.shields.io/twitter/url?style=social&url=https%3A%2F%2Fgithub.com%2Fcafferychen777%2FmLLMCelltype" alt="Tweet"></a>
-  <a href="https://github.com/cafferychen777/mLLMCelltype/stargazers"><img src="https://img.shields.io/github/stars/cafferychen777/mLLMCelltype?style=social" alt="Stars"></a>
-  <a href="https://github.com/cafferychen777/mLLMCelltype/network/members"><img src="https://img.shields.io/github/forks/cafferychen777/mLLMCelltype?style=social" alt="Forks"></a>
+  <a href="https://github.com/cafferychen777/mLLMCelltype/stargazers"><img src="https://img.shields.io/github/stars/cafferychen777/mLLMCelltype?style=social" alt="GitHub stars"></a>
+  <a href="https://github.com/cafferychen777/mLLMCelltype/network/members"><img src="https://img.shields.io/github/forks/cafferychen777/mLLMCelltype?style=social" alt="GitHub forks"></a>
   <a href="https://discord.gg/pb2aZdG4"><img src="https://img.shields.io/badge/Discord-Chat%20beitreten-7289da?logo=discord&logoColor=white" alt="Discord"></a>
 </div>
 
 <div align="center">
-  <a href="https://CRAN.R-project.org/package=mLLMCelltype"><img src="https://www.r-pkg.org/badges/version/mLLMCelltype" alt="CRAN-Version"></a>
-  <a href="https://CRAN.R-project.org/package=mLLMCelltype"><img src="https://cranlogs.r-pkg.org/badges/grand-total/mLLMCelltype" alt="CRAN-Downloads"></a>
+  <a href="https://CRAN.R-project.org/package=mLLMCelltype"><img src="https://www.r-pkg.org/badges/version/mLLMCelltype" alt="CRAN version"></a>
+  <a href="https://CRAN.R-project.org/package=mLLMCelltype"><img src="https://cranlogs.r-pkg.org/badges/grand-total/mLLMCelltype" alt="CRAN downloads"></a>
   <img src="https://img.shields.io/github/license/cafferychen777/mLLMCelltype" alt="License">
-  <img src="https://img.shields.io/github/last-commit/cafferychen777/mLLMCelltype" alt="Last Commit">
-  <img src="https://img.shields.io/github/issues/cafferychen777/mLLMCelltype" alt="Issues">
-  <img src="https://img.shields.io/github/v/release/cafferychen777/mLLMCelltype" alt="Release">
   <a href="https://www.biorxiv.org/content/10.1101/2025.04.10.647852v1"><img src="https://img.shields.io/badge/bioRxiv-2025.04.10.647852-blue" alt="bioRxiv"></a>
-  <a href="https://www.mllmcelltype.com/"><img src="https://img.shields.io/badge/Try%20Online-mLLMCelltype-brightgreen" alt="Try Online"></a>
-  <a href="https://colab.research.google.com/github/cafferychen777/mLLMCelltype/blob/main/notebooks/mLLMCelltype_Tutorial.ipynb"><img src="https://img.shields.io/badge/Open%20in-Colab-F9AB00?logo=googlecolab&logoColor=white" alt="Open In Colab"></a>
+  <a href="https://pypi.org/project/mllmcelltype/"><img src="https://img.shields.io/pypi/v/mllmcelltype" alt="PyPI version"></a>
 </div>
 
 # mLLMCelltype: Multi-Sprachmodell-Konsensus-Framework für die Zelltyp-Annotation
 
-mLLMCelltype ist ein fortschrittliches iteratives Multi-LLM-Konsensus-Framework für die präzise und zuverlässige Zelltyp-Annotation in Einzelzell-RNA-Sequenzierungsdaten (scRNA-seq). Durch die Nutzung der kollektiven Intelligenz mehrerer großer Sprachmodelle (OpenAI GPT-5/4.1, Anthropic Claude-4/3.7/3.5, Google Gemini-2.0, X.AI Grok-3, DeepSeek-V3, Alibaba Qwen2.5, Zhipu GLM-4, MiniMax, Stepfun, und OpenRouter) verbessert dieses Framework die Annotationsgenauigkeit erheblich und bietet gleichzeitig eine transparente Quantifizierung der Unsicherheit für die Forschung in Bioinformatik und Computational Biology.
+mLLMCelltype ist ein iteratives Multi-LLM-Konsensus-Framework für die Zelltyp-Annotation in Einzelzell-RNA-Sequenzierungsdaten (scRNA-seq). Durch die Kombination der Vorhersagen mehrerer großer Sprachmodelle (OpenAI GPT-5/4.1, Anthropic Claude-4/3.7/3.5, Google Gemini-2.0, X.AI Grok-3, DeepSeek-V3, Alibaba Qwen2.5, Zhipu GLM-4, MiniMax, Stepfun, und OpenRouter) zielt dieses Framework darauf ab, die Annotationsgenauigkeit zu verbessern und bietet gleichzeitig eine transparente Quantifizierung der Unsicherheit für die Forschung in Bioinformatik und Computational Biology.
 
 ## Zusammenfassung
 
@@ -43,13 +38,6 @@ mLLMCelltype ist ein Open-Source-Tool für die Einzelzell-Transkriptomanalyse, d
 - [Visualisierungsbeispiel](#visualisierungsbeispiel)
 - [Zitierung](#zitierung)
 - [Mitwirken](#mitwirken)
-
-<div align="center">
-  <a href="https://star-history.com/#cafferychen777/mLLMCelltype">
-    <img src="https://api.star-history.com/svg?repos=cafferychen777/mLLMCelltype&type=Date" alt="Star History Chart" width="600"/>
-  </a>
-  <p><em>Abbildung 1: mLLMCelltype GitHub-Sterne-Verlauf zeigt die Community-Akzeptanz und das Wachstum im Laufe der Zeit.</em></p>
-</div>
 
 ## Neuigkeiten
 
@@ -88,14 +76,12 @@ Anthropic wird am 21. Juli 2025 mehrere Claude-Modelle einstellen:
 
 Bitte aktualisieren Sie Ihre Modelle vor dem 21. Juli 2025, um Dienstunterbrechungen zu vermeiden.
 
-🎉 **April 2025**: Wir freuen uns, bekannt zu geben, dass mLLMCelltype nur zwei Wochen nach der Veröffentlichung unseres Preprints bereits über 200 GitHub-Sterne erreicht hat! Wir haben auch eine beeindruckende Berichterstattung von verschiedenen Medien und Content-Erstellern gesehen. Wir möchten allen, die dieses Projekt durch Sterne, Teilen und Beiträge unterstützt haben, unseren herzlichen Dank aussprechen. Ihre Begeisterung treibt unsere kontinuierliche Entwicklung und Verbesserung von mLLMCelltype voran.
-
 ## Hauptmerkmale
 
-- **Multi-LLM-Konsensus-Architektur**: Nutzt die kollektive Intelligenz verschiedener LLMs, um Einschränkungen und Verzerrungen einzelner Modelle zu überwinden
+- **Multi-LLM-Konsensus-Architektur**: Kombiniert die Vorhersagen verschiedener LLMs, um Einschränkungen und Verzerrungen einzelner Modelle zu reduzieren
 - **Strukturierter Beratungsprozess**: Ermöglicht LLMs, Argumentationen zu teilen, Beweise zu bewerten und Annotationen durch mehrere Runden kollaborativer Diskussion zu verfeinern
 - **Transparente Unsicherheitsquantifizierung**: Bietet quantitative Metriken (Konsensusanteil und Shannon-Entropie), um mehrdeutige Zellpopulationen zu identifizieren, die eine Expertenüberprüfung erfordern
-- **Halluzinationsreduktion**: Modellübergreifende Beratung unterdrückt aktiv ungenaue oder unbegründete Vorhersagen durch kritische Bewertung
+- **Halluzinationsreduktion**: Modellübergreifende Beratung hilft, ungenaue oder unbegründete Vorhersagen durch kritische Bewertung zu identifizieren
 - **Robust gegenüber Eingaberauschen**: Behält hohe Genauigkeit auch bei unvollkommenen Markergen-Listen durch kollektive Fehlerkorrektur
 - **Unterstützung für hierarchische Annotation**: Optionale Erweiterung für Multiresolutions-Analyse mit Eltern-Kind-Konsistenz
 - **Kein Referenzdatensatz erforderlich**: Führt genaue Annotation ohne Vortraining oder Referenzdaten durch
@@ -957,9 +943,9 @@ Der Parameter `consensus_check_model` (R) / `consensus_model` (Python) ermöglic
 
 #### Empfohlene Modelle für die Konsensprüfung (nach Leistung geordnet)
 
-1. **Anthropic Claude-Modelle** (Höchste Empfehlung)
-   - `claude-sonnet-4-5-20250929` - **Beste Gesamtleistung** (neueste und intelligenteste)
-   - `claude-opus-4-1-20250805` - Hervorragend für komplexe Schlussfolgerungen
+1. **Anthropic Claude-Modelle** (Empfohlen)
+   - `claude-sonnet-4-5-20250929`
+   - `claude-opus-4-1-20250805`
 
 2. **OpenAI-Modelle**
    - `o1` / `o1-pro` - Erweiterte Argumentationsfähigkeiten

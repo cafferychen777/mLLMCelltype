@@ -58,11 +58,11 @@ For very specialized or poorly characterized tissues, the uncertainty metrics wi
 
 ### How accurate is mLLMCelltype compared to other methods?
 
-In our benchmarking studies (see our [paper](https://doi.org/10.1101/2025.04.10.647852)), mLLMCelltype consistently outperformed both traditional annotation methods and single-LLM approaches:
+In our benchmarks (Yang et al., 2025; see our [paper](https://doi.org/10.1101/2025.04.10.647852)), the consensus approach showed improvements over both traditional annotation methods and single-LLM approaches:
 
 - Compared to reference-based methods (e.g., SingleR, Seurat label transfer), mLLMCelltype showed comparable or better performance without requiring a reference dataset.
 - Compared to marker-based methods (e.g., SCINA, CellAssign), mLLMCelltype demonstrated higher accuracy and flexibility.
-- Compared to single-LLM approaches, the consensus mechanism improved accuracy by 15-30% depending on the tissue type.
+- Compared to single-LLM approaches, the consensus mechanism showed accuracy improvements on tested datasets.
 
 The accuracy advantage is particularly pronounced for rare cell types and tissues with limited reference data.
 

@@ -30,9 +30,9 @@ knitr::opts_chunk$set(
 
 ## Overview
 
-mLLMCelltype is an iterative multi-LLM consensus framework for cell type annotation in single-cell RNA sequencing data. By leveraging the complementary strengths of multiple large language models, this framework significantly improves annotation accuracy while providing transparent uncertainty quantification.
+mLLMCelltype is an iterative multi-LLM consensus framework for cell type annotation in single-cell RNA sequencing data. By leveraging the complementary strengths of multiple large language models, this framework aims to improve annotation accuracy while providing transparent uncertainty quantification.
 
-The package implements a novel approach where multiple large language models (LLMs) collaborate through structured deliberation to achieve more accurate and reliable cell type annotations than any single model could provide alone.
+The package implements a novel approach where multiple large language models (LLMs) collaborate through structured deliberation to achieve potentially more reliable annotations by cross-validating across models.
 
 ## Background
 
@@ -46,7 +46,7 @@ mLLMCelltype addresses these challenges by implementing a consensus-based approa
 
 ### Multi-LLM Consensus Architecture
 
-mLLMCelltype harnesses collective intelligence from diverse LLMs to overcome single-model limitations and biases. The package currently supports a wide range of models:
+mLLMCelltype combines predictions from multiple LLMs to reduce individual model biases. The package currently supports a wide range of models:
 
 - OpenAI GPT-4o/4.1
 - Anthropic Claude-3.7/3.5
@@ -59,7 +59,7 @@ mLLMCelltype harnesses collective intelligence from diverse LLMs to overcome sin
 - Stepfun
 - OpenRouter
 
-By integrating multiple models with different architectures and training data, mLLMCelltype can achieve more robust and accurate annotations than any single model.
+By integrating multiple models with different architectures and training data, mLLMCelltype can produce annotations less sensitive to individual model biases.
 
 ### Structured Deliberation Process
 
@@ -83,10 +83,10 @@ These metrics help researchers identify which cell clusters have high confidence
 
 ### Other Advanced Features
 
-- **Hallucination Reduction**: Cross-model deliberation actively suppresses inaccurate or unsupported predictions
+- **Hallucination Reduction**: Cross-model comparison may help identify inconsistent predictions
 - **Robust to Input Noise**: Maintains high accuracy even with imperfect marker gene lists
 - **Hierarchical Annotation Support**: Optional extension for multi-resolution analysis
-- **No Reference Dataset Required**: Performs accurate annotation without pre-training or reference data
+- **No Reference Dataset Required**: Performs annotation without pre-training or reference data
 - **Complete Reasoning Chains**: Documents the full deliberation process
 - **Seamless Integration**: Works directly with standard Scanpy/Seurat workflows
 - **Modular Design**: Easily incorporate new LLMs as they become available

@@ -1,6 +1,6 @@
 # Contributing to mLLMCelltype
 
-Welcome to the mLLMCelltype community! We appreciate your interest in contributing to the leading multi-LLM consensus framework for cell type annotation.
+Welcome to the mLLMCelltype community! We appreciate your interest in contributing to a multi-LLM consensus framework for cell type annotation.
 
 ## 🎯 Ways to Contribute
 
@@ -154,14 +154,9 @@ All contributors are recognized in:
 3. **Visualization Enhancements**: Better uncertainty and consensus displays
 4. **Clinical Applications**: Validation for diagnostic use cases
 
-### **Long-term Vision**
-- Become the gold standard for AI-powered cell annotation
-- Enable breakthrough discoveries in single-cell biology
-- Foster a thriving open-source research community
-
 ## 🙏 Thank You
 
-Your contributions help make mLLMCelltype the leading consensus framework for cell type annotation. Together, we're advancing the state of computational biology and enabling discoveries that benefit human health.
+Thank you for contributing to mLLMCelltype.
 
 ---
 

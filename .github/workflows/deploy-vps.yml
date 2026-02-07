@@ -1,0 +1,4 @@
+# Deploy mLLMCelltype Web to Hetzner VPS via SSH
+# NOTE: This workflow belongs in the mllmcelltype-web repo, not here.
+# It is kept here for reference only.
+name: Deploy to VPS (reference only)

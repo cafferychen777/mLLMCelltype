@@ -1,5 +1,5 @@
 <div align="center">
-  <img src="assets/mLLMCelltype_logo.png" alt="mLLMCelltype - 単一細胞 RNA シーケンシングデータのマルチ大規模言語モデル細胞タイプアノテーションフレームワーク" width="300"/>
+  <img src="assets/mLLMCelltype_logo.png" alt="mLLMCelltype logo" width="300"/>
 </div>
 
 <div align="center">
@@ -7,27 +7,22 @@
 </div>
 
 <div align="center">
-  <a href="https://twitter.com/intent/tweet?text=mLLMCelltype%3A%20単一細胞%20RNA%20シーケンシングデータの細胞タイプアノテーションのためのマルチLLMコンセンサスフレームワーク%21&url=https%3A%2F%2Fgithub.com%2Fcafferychen777%2FmLLMCelltype"><img src="https://img.shields.io/twitter/url?style=social&url=https%3A%2F%2Fgithub.com%2Fcafferychen777%2FmLLMCelltype" alt="Tweet"></a>
-  <a href="https://github.com/cafferychen777/mLLMCelltype/stargazers"><img src="https://img.shields.io/github/stars/cafferychen777/mLLMCelltype?style=social" alt="Stars"></a>
-  <a href="https://github.com/cafferychen777/mLLMCelltype/network/members"><img src="https://img.shields.io/github/forks/cafferychen777/mLLMCelltype?style=social" alt="Forks"></a>
+  <a href="https://github.com/cafferychen777/mLLMCelltype/stargazers"><img src="https://img.shields.io/github/stars/cafferychen777/mLLMCelltype?style=social" alt="GitHub stars"></a>
+  <a href="https://github.com/cafferychen777/mLLMCelltype/network/members"><img src="https://img.shields.io/github/forks/cafferychen777/mLLMCelltype?style=social" alt="GitHub forks"></a>
   <a href="https://discord.gg/pb2aZdG4"><img src="https://img.shields.io/badge/Discord-チャットに参加-7289da?logo=discord&logoColor=white" alt="Discord"></a>
 </div>
 
 <div align="center">
-  <a href="https://CRAN.R-project.org/package=mLLMCelltype"><img src="https://www.r-pkg.org/badges/version/mLLMCelltype" alt="CRANバージョン"></a>
-  <a href="https://CRAN.R-project.org/package=mLLMCelltype"><img src="https://cranlogs.r-pkg.org/badges/grand-total/mLLMCelltype" alt="CRANダウンロード数"></a>
+  <a href="https://CRAN.R-project.org/package=mLLMCelltype"><img src="https://www.r-pkg.org/badges/version/mLLMCelltype" alt="CRAN version"></a>
+  <a href="https://CRAN.R-project.org/package=mLLMCelltype"><img src="https://cranlogs.r-pkg.org/badges/grand-total/mLLMCelltype" alt="CRAN downloads"></a>
   <img src="https://img.shields.io/github/license/cafferychen777/mLLMCelltype" alt="License">
-  <img src="https://img.shields.io/github/last-commit/cafferychen777/mLLMCelltype" alt="Last Commit">
-  <img src="https://img.shields.io/github/issues/cafferychen777/mLLMCelltype" alt="Issues">
-  <img src="https://img.shields.io/github/v/release/cafferychen777/mLLMCelltype" alt="Release">
   <a href="https://www.biorxiv.org/content/10.1101/2025.04.10.647852v1"><img src="https://img.shields.io/badge/bioRxiv-2025.04.10.647852-blue" alt="bioRxiv"></a>
-  <a href="https://www.mllmcelltype.com/"><img src="https://img.shields.io/badge/Try%20Online-mLLMCelltype-brightgreen" alt="Try Online"></a>
-  <a href="https://colab.research.google.com/github/cafferychen777/mLLMCelltype/blob/main/notebooks/mLLMCelltype_Tutorial.ipynb"><img src="https://img.shields.io/badge/Open%20in-Colab-F9AB00?logo=googlecolab&logoColor=white" alt="Open In Colab"></a>
+  <a href="https://pypi.org/project/mllmcelltype/"><img src="https://img.shields.io/pypi/v/mllmcelltype" alt="PyPI version"></a>
 </div>
 
 # mLLMCelltype: 単一細胞 RNA シーケンシングのためのマルチ大規模言語モデルコンセンサスフレームワーク
 
-mLLMCelltypeは、単一細胞RNAシーケンシング(scRNA-seq)データにおける正確で信頼性の高い細胞タイプアノテーションのための高度な反復型マルチLLMコンセンサスフレームワークです。複数の大規模言語モデル（OpenAI GPT-5/4.1、Anthropic Claude-4/3.7/3.5、Google Gemini-2.0、X.AI Grok-3、DeepSeek-V3、Alibaba Qwen2.5、Zhipu GLM-4、MiniMax、Stepfun、OpenRouterなど）の集合知能を活用することで、このフレームワークはアノテーションの精度を大幅に向上させながら、バイオインフォマティクスおよび計算生物学研究のための透明性のある不確実性の定量化を提供します。
+mLLMCelltypeは、単一細胞RNAシーケンシング(scRNA-seq)データにおける細胞タイプアノテーションのための反復型マルチLLMコンセンサスフレームワークです。複数の大規模言語モデル（OpenAI GPT-5/4.1、Anthropic Claude-4/3.7/3.5、Google Gemini-2.0、X.AI Grok-3、DeepSeek-V3、Alibaba Qwen2.5、Zhipu GLM-4、MiniMax、Stepfun、OpenRouterなど）の予測結果を組み合わせることで、このフレームワークはアノテーションの精度向上を目指しながら、バイオインフォマティクスおよび計算生物学研究のための透明性のある不確実性の定量化を提供します。
 
 ## 概要
 
@@ -81,14 +76,12 @@ Anthropicは2025年7月21日に複数のClaudeモデルを廃止します：
 
 サービスの中断を避けるため、2025年7月21日までにモデルを更新してください。
 
-🎉 **2025年4月**: 私たちは、プレプリント公開からわずか2週間でmLLMCelltypeがGitHubで200スターを超えたことを発表できることを大変嬉しく思います！また、様々なメディアやコンテンツクリエイターからの大きな反響もいただいています。スター、シェア、貢献を通じてこのプロジェクトを支援してくださった全ての方々に心から感謝いたします。皆様の熱意が、mLLMCelltypeの継続的な開発と改善の原動力となっています。
-
 ## 主な特徴
 
-- **マルチLLMコンセンサスアーキテクチャ**: 多様なLLMからの集合知を活用し、単一モデルの限界とバイアスを克服
+- **マルチLLMコンセンサスアーキテクチャ**: 多様なLLMの予測結果を組み合わせ、単一モデルの限界とバイアスを低減
 - **構造化された審議プロセス**: LLMが複数回の協調的な議論を通じて推論を共有し、証拠を評価し、アノテーションを改善することを可能に
 - **透明な不確実性の定量化**: 専門家のレビューを必要とするあいまいな細胞集団を特定するための定量的指標（コンセンサス比率とシャノンエントロピー）を提供
-- **ハルシネーション（幻覚）の削減**: モデル間の審議が批判的評価を通じて不正確または裏付けのない予測を積極的に抑制
+- **ハルシネーション（幻覚）の削減**: モデル間の審議が批判的評価を通じて不正確または裏付けのない予測の特定を支援
 - **入力ノイズに対する堅牢性**: 集合的なエラー修正により、不完全なマーカー遺伝子リストでも高い精度を維持
 - **階層的アノテーションのサポート**: 親子の一貫性を持つマルチ解像度分析のためのオプション拡張
 - **参照データセット不要**: 事前トレーニングや参照データなしで正確なアノテーションを実行
@@ -791,9 +784,9 @@ cowplot::plot_grid(p1, p2, p3, p4, p5, ncol = 3)
 
 #### コンセンサスチェック推奨モデル（パフォーマンス順）
 
-1. **Anthropic Claudeモデル**（最高推奨）
-   - `claude-sonnet-4-5-20250929` - **全体的に最高**（最新かつ最も知的）
-   - `claude-opus-4-1-20250805` - 複雑な推論タスクに優れる
+1. **Anthropic Claudeモデル**（推奨）
+   - `claude-sonnet-4-5-20250929`
+   - `claude-opus-4-1-20250805`
 
 2. **OpenAIモデル**
    - `o1` / `o1-pro` - 高度な推論能力

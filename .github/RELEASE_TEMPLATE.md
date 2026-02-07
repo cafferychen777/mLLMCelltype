@@ -142,10 +142,8 @@ Preview of upcoming features in v[NEXT_VERSION]:
 
 ---
 
-## 🎉 **Community Milestone**
+## 🎉 **Community**
 
-This release brings mLLMCelltype to **[STAR_COUNT]+ GitHub stars** and continues our mission to provide the most accurate and reliable consensus-based cell type annotation framework.
-
-Thank you for your continued support and contributions to making mLLMCelltype the leading choice for AI-powered cell annotation!
+Thank you for your continued support and contributions to mLLMCelltype!
 
 **Full Changelog**: [v[PREVIOUS_VERSION]...v[VERSION]](https://github.com/cafferychen777/mLLMCelltype/compare/v[PREVIOUS_VERSION]...v[VERSION])

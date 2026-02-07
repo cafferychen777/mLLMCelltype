@@ -6,7 +6,7 @@ body:
       value: |
         ## 📊 Benchmark mLLMCelltype Against Other Tools
         
-        Help us demonstrate mLLMCelltype's superior consensus methodology! Share your benchmark results comparing mLLMCelltype with other cell annotation tools.
+        Share your benchmark results comparing mLLMCelltype with other cell annotation tools.
         
   - type: input
     id: dataset
@@ -61,5 +61,4 @@ body:
       options:
         - label: "I'm willing to share detailed results publicly"
         - label: "I'd like to collaborate on a joint publication"
-        - label: "These results can be featured in mLLMCelltype marketing"
         - label: "I can provide the dataset for community benchmarking"

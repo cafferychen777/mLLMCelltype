@@ -1,5 +1,5 @@
 <div align="center">
-  <img src="assets/mLLMCelltype_logo.png" alt="mLLMCelltype logo - Leading multi-LLM consensus framework for single-cell RNA sequencing cell type annotation with 95% accuracy and 540+ GitHub stars" width="300"/>
+  <img src="assets/mLLMCelltype_logo.png" alt="mLLMCelltype logo" width="300"/>
 </div>
 
 <div align="center">
@@ -7,48 +7,29 @@
 </div>
 
 <div align="center">
-  <a href="https://twitter.com/intent/tweet?text=Check%20out%20mLLMCelltype%3A%20A%20multi-LLM%20consensus%20framework%20for%20cell%20type%20annotation%20in%20scRNA-seq%20data%21&url=https%3A%2F%2Fgithub.com%2Fcafferychen777%2FmLLMCelltype"><img src="https://img.shields.io/twitter/url?style=social&url=https%3A%2F%2Fgithub.com%2Fcafferychen777%2FmLLMCelltype" alt="Share mLLMCelltype on Twitter - Multi-LLM consensus cell annotation framework"></a>
-  <a href="https://github.com/cafferychen777/mLLMCelltype/stargazers"><img src="https://img.shields.io/github/stars/cafferychen777/mLLMCelltype?style=social" alt="mLLMCelltype GitHub stars - 540+ community members supporting the leading consensus framework"></a>
-  <a href="https://github.com/cafferychen777/mLLMCelltype/network/members"><img src="https://img.shields.io/github/forks/cafferychen777/mLLMCelltype?style=social" alt="mLLMCelltype GitHub forks - Community contributions to consensus-based cell annotation"></a>
-  <a href="https://discord.gg/pb2aZdG4"><img src="https://img.shields.io/badge/Discord-Join%20Chat-7289da?logo=discord&logoColor=white" alt="Join mLLMCelltype Discord community - Get support for multi-LLM consensus annotation"></a>
+  <a href="https://github.com/cafferychen777/mLLMCelltype/stargazers"><img src="https://img.shields.io/github/stars/cafferychen777/mLLMCelltype?style=social" alt="GitHub stars"></a>
+  <a href="https://github.com/cafferychen777/mLLMCelltype/network/members"><img src="https://img.shields.io/github/forks/cafferychen777/mLLMCelltype?style=social" alt="GitHub forks"></a>
+  <a href="https://discord.gg/pb2aZdG4"><img src="https://img.shields.io/badge/Discord-Join%20Chat-7289da?logo=discord&logoColor=white" alt="Discord"></a>
 </div>
 
 <div align="center">
   <a href="https://CRAN.R-project.org/package=mLLMCelltype"><img src="https://www.r-pkg.org/badges/version/mLLMCelltype" alt="CRAN version"></a>
   <a href="https://CRAN.R-project.org/package=mLLMCelltype"><img src="https://cranlogs.r-pkg.org/badges/grand-total/mLLMCelltype" alt="CRAN downloads"></a>
-  <img src="https://img.shields.io/github/license/cafferychen777/mLLMCelltype" alt="mLLMCelltype open source license - Free multi-LLM consensus framework for research">
-  <img src="https://img.shields.io/github/last-commit/cafferychen777/mLLMCelltype" alt="mLLMCelltype last commit - Active development of consensus-based annotation">
-  <img src="https://img.shields.io/github/issues/cafferychen777/mLLMCelltype" alt="mLLMCelltype GitHub issues - Community support and feature requests">
-  <img src="https://img.shields.io/github/v/release/cafferychen777/mLLMCelltype" alt="mLLMCelltype latest release - Production-ready consensus framework version">
-  <img src="https://img.shields.io/github/languages/top/cafferychen777/mLLMCelltype" alt="mLLMCelltype primary language - R-based consensus framework">
-  <img src="https://img.shields.io/github/repo-size/cafferychen777/mLLMCelltype" alt="mLLMCelltype repository size - Comprehensive consensus annotation toolkit">
-  <img src="https://img.shields.io/github/contributors/cafferychen777/mLLMCelltype" alt="mLLMCelltype contributors - Growing community of consensus framework developers">
-  <a href="https://www.biorxiv.org/content/10.1101/2025.04.10.647852v1"><img src="https://img.shields.io/badge/bioRxiv-2025.04.10.647852-blue" alt="mLLMCelltype bioRxiv preprint - Scientific publication on multi-LLM consensus for cell annotation"></a>
-  <a href="https://www.mllmcelltype.com/"><img src="https://img.shields.io/badge/Try%20Online-mLLMCelltype-brightgreen" alt="Try mLLMCelltype online - Web application for consensus-based cell type annotation"></a>
-  <a href="https://colab.research.google.com/github/cafferychen777/mLLMCelltype/blob/main/notebooks/mLLMCelltype_Tutorial.ipynb"><img src="https://img.shields.io/badge/Open%20in-Colab-F9AB00?logo=googlecolab&logoColor=white" alt="Open mLLMCelltype tutorial in Google Colab - Interactive consensus annotation walkthrough"></a>
-  <img src="https://img.shields.io/badge/Consensus%20Accuracy-95%25-success" alt="mLLMCelltype consensus accuracy - 95% accuracy through multi-LLM collaboration">
-  <img src="https://img.shields.io/badge/LLM%20Providers-10%2B-blue" alt="mLLMCelltype LLM provider support - 10+ providers including OpenAI, Anthropic, Google">
+  <img src="https://img.shields.io/github/license/cafferychen777/mLLMCelltype" alt="License">
+  <a href="https://www.biorxiv.org/content/10.1101/2025.04.10.647852v1"><img src="https://img.shields.io/badge/bioRxiv-2025.04.10.647852-blue" alt="bioRxiv preprint"></a>
+  <a href="https://pypi.org/project/mllmcelltype/"><img src="https://img.shields.io/pypi/v/mllmcelltype" alt="PyPI version"></a>
+  <a href="https://colab.research.google.com/github/cafferychen777/mLLMCelltype/blob/main/notebooks/mLLMCelltype_Tutorial.ipynb"><img src="https://img.shields.io/badge/Open%20in-Colab-F9AB00?logo=googlecolab&logoColor=white" alt="Open in Colab"></a>
 </div>
 
 # mLLMCelltype: Multi-LLM Consensus Framework for Cell Type Annotation
 
 mLLMCelltype is a multi-LLM consensus framework for automated cell type annotation in single-cell RNA sequencing (scRNA-seq) data. The framework integrates multiple large language models including OpenAI GPT-5/4.1, Anthropic Claude-4/3.7/3.5, Google Gemini-2.0, X.AI Grok-3, DeepSeek-V3, Alibaba Qwen2.5, Zhipu GLM-4, MiniMax, Stepfun, and OpenRouter to improve annotation accuracy through consensus-based predictions.
 
-**Key Advantages:**
-- **Improved Accuracy**: Achieves 95% annotation accuracy through multi-model consensus
-- **Reduced Bias**: Multiple model integration minimizes individual model limitations  
-- **Cost Efficiency**: 70-80% API cost reduction through optimized consensus algorithms
-- **Uncertainty Quantification**: Provides metrics for annotation confidence assessment
-
 ## Abstract
 
 mLLMCelltype is an open-source tool for single-cell transcriptomics analysis that uses multiple large language models to identify cell types from gene expression data. The software implements a consensus approach where multiple models analyze the same data and their predictions are combined, which helps reduce errors and provides uncertainty metrics. This methodology offers advantages over single-model approaches through integration of multiple model predictions. mLLMCelltype integrates with single-cell analysis platforms such as Scanpy and Seurat, allowing researchers to incorporate it into existing workflows. The method does not require reference datasets for annotation.
 
-**Comparison with Other Methods:**
-- **Consensus-based approach**: Multi-model consensus provides improved reliability compared to single-model systems
-- **Model Support**: Compatible with 10+ LLM providers  
-- **Performance**: 95% accuracy in benchmark studies with uncertainty quantification
-- **Community Adoption**: 540+ GitHub stars
+In our benchmarks ([Yang et al., 2025](https://doi.org/10.1101/2025.04.10.647852)), the consensus approach achieved up to 95% accuracy on tested datasets.
 
 ## Table of Contents
 - [News](#news)
@@ -61,39 +42,22 @@ mLLMCelltype is an open-source tool for single-cell transcriptomics analysis tha
 - [Citation](#citation)
 - [Contributing](#contributing)
 
-<div align="center">
-  <a href="https://star-history.com/#cafferychen777/mLLMCelltype">
-    <img src="https://api.star-history.com/svg?repos=cafferychen777/mLLMCelltype&type=Date" alt="mLLMCelltype GitHub Star History Chart - Community growth of the leading multi-LLM consensus framework from launch to 540+ stars" width="600"/>
-  </a>
-  <p><em>Figure 1: mLLMCelltype GitHub star history showing community adoption and growth over time.</em></p>
-</div>
-
 ## News
 
-🧬 **FlashDeconv: Ultra-Fast Spatial Transcriptomics Deconvolution**
+**Web Application Launch (2025-06-18)**
 
-Check out our new tool [FlashDeconv](https://github.com/cafferychen777/FlashDeconv) for spatial transcriptomics cell type deconvolution:
-- ⚡ Processes 1M spots in ~3 minutes on CPU (no GPU required)
-- 📈 O(N) time complexity using random sketching
-- 🔗 Seamless integration with scanpy workflows
-- 📦 Install: `pip install flashdeconv`
+The mLLMCelltype web application is now available. You can access cell type annotation functionality directly through your web browser without any installation required.
 
----
+**Features:**
+- Upload your scRNA-seq data and get annotations
+- Choose from various AI models including GPT-4, Claude, Gemini, and more
+- Monitor annotation progress with live updates
+- Download results in CSV, TSV, Excel, or JSON formats
+- No setup required
 
-🚀 **Web Application Launch (2025-06-18)**
+**Access the Web App**: [https://mllmcelltype.com](https://mllmcelltype.com)
 
-We're excited to announce the launch of mLLMCelltype Web Application! Now you can access mLLMCelltype's powerful cell type annotation capabilities directly through your web browser without any installation required.
-
-**✨ Key Features:**
-- **Easy-to-use interface**: Upload your scRNA-seq data and get annotations in minutes
-- **Multi-LLM consensus**: Choose from various AI models including GPT-4, Claude, Gemini, and more
-- **Real-time processing**: Monitor annotation progress with live updates
-- **Multiple export formats**: Download results in CSV, TSV, Excel, or JSON formats
-- **No setup required**: Start annotating immediately without installing packages
-
-**🌐 Access the Web App**: [https://mllmcelltype.com](https://mllmcelltype.com)
-
-**⚠️ Beta Testing Phase**: The web application is currently in beta testing. We welcome your feedback and suggestions to help us improve the platform. Please report any issues or share your experience through our [GitHub Issues](https://github.com/cafferychen777/mLLMCelltype/issues) or [Discord community](https://discord.gg/pb2aZdG4).
+**Beta Testing Phase**: The web application is currently in beta testing. We welcome feedback and suggestions through our [GitHub Issues](https://github.com/cafferychen777/mLLMCelltype/issues) or [Discord community](https://discord.gg/pb2aZdG4).
 
 **CRAN Release (2025-09-02)**
 
@@ -105,19 +69,19 @@ install.packages("mLLMCelltype")
 - **CRAN page**: https://CRAN.R-project.org/package=mLLMCelltype
 - **DOI**: 10.32614/CRAN.package.mLLMCelltype
 
-**📢 Important: Gemini Model Migration (2025-06-02)**
+**Important: Gemini Model Migration (2025-06-02)**
 
 Google has discontinued several Gemini 1.5 models and will discontinue more on September 24, 2025:
 - **Already discontinued**: Gemini 1.5 Pro 001, Gemini 1.5 Flash 001
 - **Will be discontinued on Sept 24, 2025**: Gemini 1.5 Pro 002, Gemini 1.5 Flash 002, Gemini 1.5 Flash-8B -001
 
-**Recommended migration**: Use `gemini-2.0-flash` or `gemini-2.0-flash-lite` for better performance and continued support. The aliases `gemini-1.5-pro` and `gemini-1.5-flash` will continue to work until September 24, 2025, as they point to the -002 versions.
+**Recommended migration**: Use `gemini-2.0-flash` or `gemini-2.0-flash-lite` for continued support. The aliases `gemini-1.5-pro` and `gemini-1.5-flash` will continue to work until September 24, 2025, as they point to the -002 versions.
 
-**📢 Important: Claude Model Deprecation (2025-07-21)**
+**Important: Claude Model Deprecation (2025-07-21)**
 
 Anthropic will retire the following Claude models on July 21, 2025:
 - **Claude 2** (all versions)
-- **Claude 2.1** 
+- **Claude 2.1**
 - **Claude 3 Sonnet** (non-versioned)
 - **Claude 3 Opus** (non-versioned)
 
@@ -128,17 +92,15 @@ Anthropic will retire the following Claude models on July 21, 2025:
 
 Please update your code before July 21, 2025 to avoid service disruption.
 
-**August 2025**: mLLMCelltype has reached 540+ GitHub stars with growing community adoption. We thank all contributors and users who have supported this project.
+See also: [FlashDeconv](https://github.com/cafferychen777/FlashDeconv) for spatial transcriptomics deconvolution.
 
 ## Key Features
 
 - **Multi-LLM Consensus**: Integrates predictions from multiple LLMs to reduce single-model limitations and biases
 - **Model Support**: Compatible with 10+ LLM providers including OpenAI, Anthropic, Google, and others
-- **Accuracy**: 95% accuracy validated through benchmarking on multiple datasets  
-- **Cost Efficiency**: 70-80% API cost reduction through consensus optimization
 - **Iterative Discussion**: LLMs evaluate evidence and refine annotations through multiple rounds of discussion
 - **Uncertainty Quantification**: Provides Consensus Proportion and Shannon Entropy metrics to identify uncertain annotations
-- **Error Reduction**: Cross-model validation reduces incorrect predictions
+- **Cross-Model Validation**: Reduces incorrect predictions through multi-model comparison
 - **Noise Tolerance**: Maintains accuracy with imperfect marker gene lists
 - **Hierarchical Annotation**: Supports multi-resolution analysis with consistency checks
 - **Reference-Free**: Performs annotation without pre-training or reference datasets
@@ -220,7 +182,7 @@ devtools::install_github("cafferychen777/mLLMCelltype", subdir = "R")
 
 [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/drive/1ZgmtlaORogSy0-QsaF0CHwFWOyOD26d2?usp=sharing)
 
-**Quick Start**: Try mLLMCelltype instantly in Google Colab without any installation! Click the badge above to open our interactive notebook with examples and step-by-step guidance.
+**Quick Start**: Try mLLMCelltype in Google Colab without any installation. Click the badge above to open an interactive notebook with examples and step-by-step guidance.
 
 ```bash
 # Install from PyPI
@@ -425,7 +387,7 @@ plt.tight_layout()
 
 ### Using a Single Free OpenRouter Model
 
-For users who prefer a simpler approach with just one model, the Microsoft MAI-DS-R1 free model via OpenRouter provides excellent results:
+For users who prefer a simpler approach with just one model, the DeepSeek R1 free model via OpenRouter can be used without API credits:
 
 ```python
 import os
@@ -443,7 +405,7 @@ marker_genes = {
     "2": ["CD14", "LYZ", "CSF1R", "ITGAM", "CD68", "FCGR3A"]      # Monocytes
 }
 
-# Annotate using Microsoft MAI-DS-R1 free model
+# Annotate using DeepSeek R1 free model
 annotations = annotate_clusters(
     marker_genes=marker_genes,
     species='human',
@@ -457,7 +419,7 @@ for cluster, annotation in annotations.items():
     print(f"Cluster {cluster}: {annotation}")
 ```
 
-This approach is fast, accurate, and doesn't require any API credits, making it ideal for quick analyses or when you have limited API access.
+This approach uses a free model and does not require API credits.
 
 #### Extracting Marker Genes from AnnData Objects
 
@@ -493,7 +455,7 @@ marker_genes = {
     for cluster in adata.obs['leiden'].cat.categories
 }
 
-# Annotate using Microsoft MAI-DS-R1 free model
+# Annotate using DeepSeek R1 free model
 annotations = annotate_clusters(
     marker_genes=marker_genes,
     species='human',
@@ -507,7 +469,7 @@ adata.obs['cell_type'] = adata.obs['leiden'].astype(str).map(annotations)
 
 # Visualize results
 sc.pl.umap(adata, color='cell_type', legend_loc='on data',
-           frameon=True, title='Cell Types Annotated by MAI-DS-R1')
+           frameon=True, title='Cell Types Annotated by DeepSeek R1')
 ```
 
 This method automatically extracts the top differentially expressed genes for each cluster from the `rank_genes_groups` results, making it easy to integrate mLLMCelltype into your Scanpy workflow.
@@ -990,91 +952,74 @@ for (model in models_to_test) {
 
 ### Advanced Consensus Configuration: Specifying the Consensus Check Model
 
-The `consensus_check_model` parameter (R) / `consensus_model` parameter (Python) allows you to specify which LLM model to use for consensus checking and discussion moderation. This parameter is **critical** for the accuracy of consensus annotation because the consensus check model:
+The `consensus_check_model` parameter (R) / `consensus_model` parameter (Python) allows you to specify which LLM model to use for consensus checking and discussion moderation. This parameter is important for the accuracy of consensus annotation because the consensus check model:
 
 1. Evaluates semantic similarity between different cell type annotations
 2. Calculates consensus metrics (proportion and entropy)
 3. Moderates and synthesizes discussions between models for controversial clusters
 4. Makes final decisions when models disagree
 
-**⚠️ Important: We strongly recommend using the most capable models available for consensus checking, as this directly impacts annotation quality.**
+We recommend using a capable model for consensus checking, as this directly impacts annotation quality.
 
-#### Recommended Models for Consensus Checking (Ranked by Performance)
+#### Recommended Models for Consensus Checking
 
-1. **Anthropic Claude Models** (Highest recommendation)
-   - `claude-sonnet-4-5-20250929` - **Best overall** (latest and most intelligent)
-   - `claude-opus-4-1-20250805` - Excellent for complex reasoning tasks
-
-2. **OpenAI Models**
-   - `o1` / `o1-pro` - Advanced reasoning capabilities
-   - `gpt-5` - Strong performance across various cell types
-   - `gpt-4.1` - Latest GPT-4 variant
-
-3. **Google Gemini Models**
-   - `gemini-3-pro` - Top-tier performance with enhanced reasoning
-   - `gemini-3-flash` - Excellent balance of performance and speed
-   - `gemini-2.0-flash` - Good performance with faster processing
-
-4. **Other High-Performance Models**
-   - `deepseek-r1` / `deepseek-reasoner` - Strong reasoning capabilities
-   - `qwen-max-2025-01-25` - Excellent for scientific contexts
-   - `grok-3-latest` - Advanced language understanding
+- **Anthropic**: `claude-sonnet-4-5-20250929`, `claude-opus-4-1-20250805`
+- **OpenAI**: `o1`, `o1-pro`, `gpt-5`, `gpt-4.1`
+- **Google**: `gemini-3-pro`, `gemini-3-flash`, `gemini-2.0-flash`
+- **Other**: `deepseek-r1` / `deepseek-reasoner`, `qwen-max-2025-01-25`, `grok-3-latest`
 
 #### R Package Usage
 
 ```r
-# Example 1: Using the best available model for consensus checking (Recommended)
+# Example 1: Specifying a consensus check model
 consensus_results <- interactive_consensus_annotation(
   input = marker_genes_list,
   tissue_name = "human brain",
   models = c("gpt-5", "claude-sonnet-4-5-20250929", "gemini-3-pro", "qwen-max-2025-01-25"),
   api_keys = api_keys,
-  consensus_check_model = "claude-sonnet-4-5-20250929",  # Use the most capable model
+  consensus_check_model = "claude-sonnet-4-5-20250929",
   controversy_threshold = 0.7,
   entropy_threshold = 1.0
 )
 
-# Example 2: Using a high-performance model when Claude Opus is not available
+# Example 2: Using an alternative consensus check model
 consensus_results <- interactive_consensus_annotation(
   input = marker_genes_list,
   tissue_name = "mouse liver",
   models = c("gpt-5", "gemini-3-pro", "qwen-max-2025-01-25"),
   api_keys = api_keys,
-  consensus_check_model = "claude-sonnet-4-5-20250929",     # High-performance Claude 4 model
+  consensus_check_model = "claude-sonnet-4-5-20250929",
   controversy_threshold = 0.7,
   entropy_threshold = 1.0
 )
 
-# Example 3: Using OpenAI's reasoning model for complex cases
+# Example 3: Using OpenAI's reasoning model
 consensus_results <- interactive_consensus_annotation(
   input = marker_genes_list,
   tissue_name = "human immune cells",
   models = c("gpt-5", "claude-sonnet-4-5-20250929", "gemini-3-pro"),
   api_keys = api_keys,
-  consensus_check_model = "o1",  # OpenAI's advanced reasoning model
+  consensus_check_model = "o1",
   controversy_threshold = 0.7,
   entropy_threshold = 1.0
 )
-
-# ⚠️ NOT RECOMMENDED: Avoid using less capable or free models for consensus checking
-# as this may significantly reduce annotation accuracy
 ```
 
 #### Python Package Usage
 
 ```python
-# Example 1: Using the best available model for consensus checking (Recommended)
+# Example 1: Specifying a consensus model
 consensus_results = interactive_consensus_annotation(
     marker_genes=marker_genes,
     species="human",
     tissue="brain",
     models=["gpt-5", "claude-sonnet-4-5-20250929", "gemini-3-pro", "qwen-max-2025-01-25"],
-    consensus_model="claude-sonnet-4-5-20250929",  # Use the most capable model
+    consensus_model="claude-sonnet-4-5-20250929",
     consensus_threshold=0.7,
     entropy_threshold=1.0
 )
 
-# Example 2: Using dictionary format with a high-performance model
+# Example 2: Using dictionary format
 consensus_results = interactive_consensus_annotation(
     marker_genes=marker_genes,
     species="mouse",
@@ -1085,7 +1030,7 @@ consensus_results = interactive_consensus_annotation(
     entropy_threshold=1.0
 )
 
-# Example 3: Using Google's latest model for consensus
+# Example 3: Using Google's model for consensus
 consensus_results = interactive_consensus_annotation(
     marker_genes=marker_genes,
     species="human",
@@ -1096,49 +1041,33 @@ consensus_results = interactive_consensus_annotation(
     entropy_threshold=1.0
 )
 
-# Example 4: Default behavior (uses Qwen with high-performance fallback)
+# Example 4: Default behavior (uses Qwen with fallback)
 consensus_results = interactive_consensus_annotation(
     marker_genes=marker_genes,
     species="human",
     tissue="blood",
     models=["gpt-5", "claude-sonnet-4-5-20250929", "gemini-3-pro"],
-    # If not specified, defaults to qwen-max-2025-01-25 (a high-performance model)
+    # If not specified, defaults to qwen-max-2025-01-25 with claude-sonnet-4-5-20250929 as fallback
     consensus_threshold=0.7,
     entropy_threshold=1.0
 )
 ```
 
-#### Best Practices for Consensus Model Selection
+#### Notes on Consensus Model Selection
 
-1. **Prioritize Accuracy Over Cost**: The consensus check model plays a crucial role in determining final annotations. Using a less capable model here can compromise the entire annotation process.
+1. **Model Availability**: Ensure you have API access to your chosen consensus model. The system will use fallback models if the primary choice is unavailable.
 
-2. **Model Availability**: Ensure you have API access to your chosen consensus model. The system will use fallback models if the primary choice is unavailable.
+2. **Consistency**: Use the same model for all consensus checks within a project to ensure consistent evaluation criteria.
 
-3. **Consistency**: Use the same high-performance model for all consensus checks within a project to ensure consistent evaluation criteria.
-
-4. **Complex Tissues**: For challenging tissues (e.g., brain, immune system), consider using the most advanced models like Claude Opus, O1, or Gemini 2.5 Pro.
-
-5. **Default Behavior**: 
+3. **Default Behavior**:
    - R: Uses the first model in the `models` list if not specified
-   - Python: Defaults to `qwen-max-2025-01-25` (a high-performance model) with `claude-sonnet-4-5-20250929` as fallback
+   - Python: Defaults to `qwen-max-2025-01-25` with `claude-sonnet-4-5-20250929` as fallback
 
-#### Why Model Quality Matters for Consensus Checking
-
-The consensus check model must:
-- Accurately assess semantic similarity between different cell type names (e.g., recognizing that "T lymphocyte" and "T cell" refer to the same cell type)
-- Understand biological context and hierarchical relationships
-- Synthesize discussions from multiple models to reach accurate conclusions
-- Provide reliable confidence metrics for downstream analysis
-
-Using a less capable model for these critical tasks can lead to:
-- Misidentification of controversial clusters
-- Incorrect consensus calculations
-- Poor resolution of disagreements between models
-- Ultimately, less accurate cell type annotations
+The consensus check model must accurately assess semantic similarity between different cell type names (e.g., recognizing that "T lymphocyte" and "T cell" refer to the same cell type), understand biological context, and synthesize discussions from multiple models.
 
 ### Advanced Features: Cluster Selection and Cache Control (v1.3.1)
 
-mLLMCelltype v1.3.1 introduces two powerful parameters that give you fine-grained control over the annotation process:
+mLLMCelltype v1.3.1 introduces two parameters that give you fine-grained control over the annotation process:
 
 #### 1. **clusters_to_analyze** - Selective Cluster Analysis
 
@@ -1170,7 +1099,7 @@ consensus_results <- interactive_consensus_annotation(
 - No need to subset your data manually
 - Maintains original cluster numbering
 - Reduces API calls and costs by only analyzing relevant clusters
-- Perfect for iterative refinement of specific cell populations
+- Useful for iterative refinement of specific cell populations
 
 #### 2. **force_rerun** - Bypass Cache for Fresh Analysis
 
@@ -1249,11 +1178,9 @@ refined_results <- interactive_consensus_annotation(
   api_keys = api_keys,
   clusters_to_analyze = controversial,  # Only controversial ones
   force_rerun = TRUE,
-  consensus_check_model = "claude-sonnet-4-5-20250929"  # Use best model
+  consensus_check_model = "claude-sonnet-4-5-20250929"
 )
 ```
-
-These features significantly enhance the flexibility and efficiency of mLLMCelltype, making it easier to perform detailed, iterative cell type annotation workflows while managing API costs effectively.
 
 ## Visualization Examples
 
@@ -1269,7 +1196,7 @@ Below is an example of publication-ready visualization created with mLLMCelltype
 
 ### Marker Gene Visualization
 
-mLLMCelltype now includes enhanced marker gene visualization functions that integrate seamlessly with the consensus annotation workflow:
+mLLMCelltype includes marker gene visualization functions that integrate with the consensus annotation workflow:
 
 ```r
 # Load required libraries
@@ -1300,22 +1227,22 @@ if (any(is.na(cell_type_annotations))) {
 pbmc_data@meta.data$cell_type_consensus <- cell_type_annotations
 
 # Create a dotplot of marker genes
-DotPlot(pbmc_data, 
+DotPlot(pbmc_data,
         features = top_markers,
-        group.by = "cell_type_consensus") + 
+        group.by = "cell_type_consensus") +
   RotatedAxis()
 
 # Create a heatmap of marker genes
-DoHeatmap(pbmc_data, 
+DoHeatmap(pbmc_data,
           features = top_markers,
           group.by = "cell_type_consensus")
 ```
 
-**Key Features of Marker Gene Visualization:**
+**Marker Gene Visualization Features:**
 
 - **DotPlot**: Shows both percentage of cells expressing each gene (dot size) and average expression level (color intensity)
 - **Heatmap**: Displays scaled expression values with clustering of genes and cell types
-- **Seamless Integration**: Works directly with consensus annotation results added to Seurat objects
+- **Integration**: Works directly with consensus annotation results added to Seurat objects
 - **Standard Seurat Functions**: Uses familiar Seurat visualization functions for consistency
 
 For detailed instructions and advanced customization options, see the [Visualization Guide](R/vignettes/06-visualization-guide.html).
@@ -1343,7 +1270,7 @@ Yang, C., Zhang, X., & Chen, J. (2025). Large Language Model Consensus Substanti
 
 ## Contributing
 
-We welcome and appreciate contributions from the community! There are many ways you can contribute to mLLMCelltype:
+We welcome contributions from the community. There are many ways you can contribute to mLLMCelltype:
 
 ### Reporting Issues
 
@@ -1382,6 +1309,6 @@ Please follow the existing code style in the repository. For R code, we generall
 
 ### Community
 
-Join our [Discord community](https://discord.gg/pb2aZdG4) to get real-time updates about mLLMCelltype, ask questions, share your experiences, or collaborate with other users and developers. This is a great place to connect with the team and other users working on single-cell RNA-seq analysis.
+Join our [Discord community](https://discord.gg/pb2aZdG4) for discussion and questions about mLLMCelltype and single-cell RNA-seq analysis.
 
 Thank you for helping improve mLLMCelltype!

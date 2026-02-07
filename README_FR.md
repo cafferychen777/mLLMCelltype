@@ -1,5 +1,5 @@
 <div align="center">
-  <img src="assets/mLLMCelltype_logo.png" alt="mLLMCelltype - Cadre de consensus multi-modèles de langage pour l'annotation des types cellulaires dans les données de séquençage d'ARN unicellulaire" width="300"/>
+  <img src="assets/mLLMCelltype_logo.png" alt="mLLMCelltype logo" width="300"/>
 </div>
 
 <div align="center">
@@ -7,27 +7,22 @@
 </div>
 
 <div align="center">
-  <a href="https://twitter.com/intent/tweet?text=Découvrez%20mLLMCelltype%3A%20Un%20cadre%20de%20consensus%20multi-LLM%20pour%20l%27annotation%20des%20types%20cellulaires%20dans%20les%20données%20scRNA-seq%21&url=https%3A%2F%2Fgithub.com%2Fcafferychen777%2FmLLMCelltype"><img src="https://img.shields.io/twitter/url?style=social&url=https%3A%2F%2Fgithub.com%2Fcafferychen777%2FmLLMCelltype" alt="Tweet"></a>
-  <a href="https://github.com/cafferychen777/mLLMCelltype/stargazers"><img src="https://img.shields.io/github/stars/cafferychen777/mLLMCelltype?style=social" alt="Stars"></a>
-  <a href="https://github.com/cafferychen777/mLLMCelltype/network/members"><img src="https://img.shields.io/github/forks/cafferychen777/mLLMCelltype?style=social" alt="Forks"></a>
+  <a href="https://github.com/cafferychen777/mLLMCelltype/stargazers"><img src="https://img.shields.io/github/stars/cafferychen777/mLLMCelltype?style=social" alt="GitHub stars"></a>
+  <a href="https://github.com/cafferychen777/mLLMCelltype/network/members"><img src="https://img.shields.io/github/forks/cafferychen777/mLLMCelltype?style=social" alt="GitHub forks"></a>
   <a href="https://discord.gg/pb2aZdG4"><img src="https://img.shields.io/badge/Discord-Rejoindre%20le%20chat-7289da?logo=discord&logoColor=white" alt="Discord"></a>
 </div>
 
 <div align="center">
-  <a href="https://CRAN.R-project.org/package=mLLMCelltype"><img src="https://www.r-pkg.org/badges/version/mLLMCelltype" alt="Version CRAN"></a>
-  <a href="https://CRAN.R-project.org/package=mLLMCelltype"><img src="https://cranlogs.r-pkg.org/badges/grand-total/mLLMCelltype" alt="Téléchargements CRAN"></a>
+  <a href="https://CRAN.R-project.org/package=mLLMCelltype"><img src="https://www.r-pkg.org/badges/version/mLLMCelltype" alt="CRAN version"></a>
+  <a href="https://CRAN.R-project.org/package=mLLMCelltype"><img src="https://cranlogs.r-pkg.org/badges/grand-total/mLLMCelltype" alt="CRAN downloads"></a>
   <img src="https://img.shields.io/github/license/cafferychen777/mLLMCelltype" alt="License">
-  <img src="https://img.shields.io/github/last-commit/cafferychen777/mLLMCelltype" alt="Last Commit">
-  <img src="https://img.shields.io/github/issues/cafferychen777/mLLMCelltype" alt="Issues">
-  <img src="https://img.shields.io/github/v/release/cafferychen777/mLLMCelltype" alt="Release">
   <a href="https://www.biorxiv.org/content/10.1101/2025.04.10.647852v1"><img src="https://img.shields.io/badge/bioRxiv-2025.04.10.647852-blue" alt="bioRxiv"></a>
-  <a href="https://www.mllmcelltype.com/"><img src="https://img.shields.io/badge/Try%20Online-mLLMCelltype-brightgreen" alt="Try Online"></a>
-  <a href="https://colab.research.google.com/github/cafferychen777/mLLMCelltype/blob/main/notebooks/mLLMCelltype_Tutorial.ipynb"><img src="https://img.shields.io/badge/Open%20in-Colab-F9AB00?logo=googlecolab&logoColor=white" alt="Open In Colab"></a>
+  <a href="https://pypi.org/project/mllmcelltype/"><img src="https://img.shields.io/pypi/v/mllmcelltype" alt="PyPI version"></a>
 </div>
 
 # mLLMCelltype: Cadre de Consensus Multi-Modèles de Langage pour l'Annotation des Types Cellulaires
 
-mLLMCelltype est un cadre avancé de consensus multi-LLM itératif pour l'annotation précise et fiable des types cellulaires dans les données de séquençage d'ARN unicellulaire (scRNA-seq). En exploitant l'intelligence collective de plusieurs grands modèles de langage (OpenAI GPT-5/4.1, Anthropic Claude-4/3.7/3.5, Google Gemini-2.0, X.AI Grok-3, DeepSeek-V3, Alibaba Qwen2.5, Zhipu GLM-4, MiniMax, Stepfun, et OpenRouter), ce cadre améliore considérablement la précision des annotations tout en fournissant une quantification transparente de l'incertitude pour la recherche en bio-informatique et en biologie computationnelle.
+mLLMCelltype est un cadre de consensus multi-LLM itératif pour l'annotation des types cellulaires dans les données de séquençage d'ARN unicellulaire (scRNA-seq). En combinant les prédictions de plusieurs grands modèles de langage (OpenAI GPT-5/4.1, Anthropic Claude-4/3.7/3.5, Google Gemini-2.0, X.AI Grok-3, DeepSeek-V3, Alibaba Qwen2.5, Zhipu GLM-4, MiniMax, Stepfun, et OpenRouter), ce cadre vise à améliorer la précision des annotations tout en fournissant une quantification transparente de l'incertitude pour la recherche en bio-informatique et en biologie computationnelle.
 
 ## Résumé
 
@@ -81,14 +76,12 @@ Anthropic abandonnera plusieurs modèles Claude le 21 juillet 2025 :
 
 Veuillez mettre à jour vos modèles avant le 21 juillet 2025 pour éviter toute interruption de service.
 
-🎉 **Avril 2025** : Nous sommes ravis d'annoncer que seulement deux semaines après la publication de notre préimpression, mLLMCelltype a dépassé les 200 étoiles sur GitHub ! Nous avons également constaté une couverture médiatique importante de la part de divers médias et créateurs de contenu. Nous exprimons notre profonde gratitude à tous ceux qui ont soutenu ce projet par des étoiles, des partages et des contributions. Votre enthousiasme stimule notre développement continu et l'amélioration de mLLMCelltype.
-
 ## Caractéristiques principales
 
-- **Architecture de consensus multi-LLM** : Exploite l'intelligence collective de divers LLM pour surmonter les limitations et les biais des modèles individuels
+- **Architecture de consensus multi-LLM** : Combine les prédictions de divers LLM pour réduire les limitations et les biais des modèles individuels
 - **Processus de délibération structuré** : Permet aux LLM de partager leur raisonnement, d'évaluer les preuves et d'affiner les annotations à travers plusieurs cycles de discussion collaborative
 - **Quantification transparente de l'incertitude** : Fournit des métriques quantitatives (Proportion de consensus et Entropie de Shannon) pour identifier les populations cellulaires ambiguës nécessitant une révision par des experts
-- **Réduction des hallucinations** : La délibération entre modèles supprime activement les prédictions inexactes ou non étayées grâce à une évaluation critique
+- **Réduction des hallucinations** : La délibération entre modèles aide à identifier les prédictions inexactes ou non étayées grâce à une évaluation critique
 - **Robustesse face au bruit d'entrée** : Maintient une haute précision même avec des listes de gènes marqueurs imparfaites grâce à la correction d'erreur collective
 - **Support d'annotation hiérarchique** : Extension optionnelle pour l'analyse multi-résolution avec cohérence parent-enfant
 - **Aucun ensemble de données de référence requis** : Effectue des annotations précises sans pré-entraînement ni données de référence
@@ -800,9 +793,9 @@ Le paramètre `consensus_check_model` (R) / `consensus_model` (Python) vous perm
 
 #### Modèles Recommandés pour la Vérification du Consensus (Classés par Performance)
 
-1. **Modèles Anthropic Claude** (Recommandation la plus élevée)
-   - `claude-sonnet-4-5-20250929` - **Meilleure performance globale** (le plus récent et intelligent)
-   - `claude-opus-4-1-20250805` - Excellent pour les tâches de raisonnement complexe
+1. **Modèles Anthropic Claude** (Recommandé)
+   - `claude-sonnet-4-5-20250929`
+   - `claude-opus-4-1-20250805`
 
 2. **Modèles OpenAI**
    - `o1` / `o1-pro` - Capacités de raisonnement avancées

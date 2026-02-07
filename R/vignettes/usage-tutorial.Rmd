@@ -69,12 +69,12 @@ consensus_results <- interactive_consensus_annotation(
 )
 ```
 
-**Important Note on `consensus_check_model`**: This parameter is critical for annotation accuracy. The consensus check model evaluates semantic similarity, calculates consensus metrics, and moderates discussions. We strongly recommend using high-performance models like:
-- `claude-sonnet-4-5-20250929` (best overall, latest and most intelligent)
-- `claude-opus-4-1-20250805` (excellent for complex reasoning)
-- `o1` (advanced reasoning)
-- `gpt-5` (strong performance)
-- `gemini-2.5-pro` (top-tier)
+**Important Note on `consensus_check_model`**: This parameter is used for evaluating semantic similarity, calculating consensus metrics, and moderating discussions. We recommend using capable models such as:
+- `claude-sonnet-4-5-20250929` (Anthropic)
+- `claude-opus-4-1-20250805` (Anthropic)
+- `o1` (OpenAI)
+- `gpt-5` (OpenAI)
+- `gemini-2.5-pro` (Google)
 
 See the main README for detailed recommendations and examples.
 
@@ -305,10 +305,10 @@ mLLMCelltype supports a wide range of LLM models. Here's a guide to help you cho
 
 For the most accurate annotations:
 
-- **Anthropic Claude Sonnet 4.5** (`claude-sonnet-4-5-20250929`): Latest and most intelligent, excellent biological knowledge
-- **Anthropic Claude Opus 4.1** (`claude-opus-4-1-20250805`): Best for complex reasoning and detailed analysis
-- **OpenAI GPT-5** (`gpt-5`): Strong overall performance, good biological knowledge
-- **Google Gemini 2.5 Pro** (`gemini-2.5-pro`): Top-tier performance with detailed reasoning
+- **Anthropic Claude Sonnet 4.5** (`claude-sonnet-4-5-20250929`)
+- **Anthropic Claude Opus 4.1** (`claude-opus-4-1-20250805`)
+- **OpenAI GPT-5** (`gpt-5`)
+- **Google Gemini 2.5 Pro** (`gemini-2.5-pro`)
 
 ### Balanced Performance/Cost Models
 

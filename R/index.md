@@ -7,7 +7,6 @@
 <p><strong>Multi-LLM Consensus Framework for Cell Type Annotation in scRNA-seq Data</strong></p>
 
 <p>
-  <a href="https://twitter.com/intent/tweet?text=Check%20out%20mLLMCelltype%3A%20A%20multi-LLM%20consensus%20framework%20for%20cell%20type%20annotation%20in%20scRNA-seq%20data%21&url=https%3A%2F%2Fgithub.com%2Fcafferychen777%2FmLLMCelltype"><img src="https://img.shields.io/twitter/url?style=social&url=https%3A%2F%2Fgithub.com%2Fcafferychen777%2FmLLMCelltype" alt="Tweet"></a>
   <a href="https://github.com/cafferychen777/mLLMCelltype/stargazers"><img src="https://img.shields.io/github/stars/cafferychen777/mLLMCelltype?style=social" alt="Stars"></a>
   <a href="https://github.com/cafferychen777/mLLMCelltype/network/members"><img src="https://img.shields.io/github/forks/cafferychen777/mLLMCelltype?style=social" alt="Forks"></a>
   <a href="https://discord.gg/pb2aZdG4"><img src="https://img.shields.io/badge/Discord-Join%20Chat-7289da?logo=discord&logoColor=white" alt="Discord"></a>
@@ -25,11 +24,11 @@
 
 ## Multi-LLM Consensus Architecture for Cell Type Annotation in scRNA-seq Data
 
-mLLMCelltype is an R package that leverages various large language models (LLMs) for automated cell type annotation in single-cell RNA sequencing data. The package implements a **multi-LLM consensus architecture** where multiple LLMs collaborate through structured deliberation to provide more reliable annotations than any single model could achieve alone.
+mLLMCelltype is an R package that leverages various large language models (LLMs) for automated cell type annotation in single-cell RNA sequencing data. The package implements a **multi-LLM consensus architecture** where multiple LLMs collaborate through structured deliberation that aims to improve annotation reliability by combining multiple model predictions.
 
 ### Key Features
 
-* **Multi-LLM Consensus Mechanism**: Harnesses collective intelligence from diverse LLMs to overcome single-model limitations and biases
+* **Multi-LLM Consensus Mechanism**: Combines predictions from multiple LLMs to reduce individual model biases
 * **Structured Deliberation Process**: For controversial clusters, LLMs engage in collaborative discussion across multiple rounds, evaluating evidence and refining annotations together
 * **Uncertainty Quantification**: Explicitly quantifies annotation uncertainty through consensus proportion and Shannon entropy
 * **No Reference Dataset Required**: Does not rely on pre-existing reference datasets, can annotate various tissues and species

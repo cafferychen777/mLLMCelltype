@@ -6,15 +6,15 @@ All notable changes to the Python implementation of mLLMCelltype will be documen
 
 ### Updated
 - Updated Anthropic Claude model list to include latest models:
-  - Added **Claude Sonnet 4.5** (`claude-sonnet-4-5-20250929`) - Latest and most intelligent Sonnet model
-  - Added **Claude Opus 4.1** (`claude-opus-4-1-20250805`) - Enhanced reasoning capabilities
+  - Added **Claude Sonnet 4.5** (`claude-sonnet-4-5-20250929`) - Newest Sonnet model
+  - Added **Claude Opus 4.1** (`claude-opus-4-1-20250805`) - Updated model
   - Added Claude 4 series models with date versions
   - All Sonnet models (4.5, 4, 3.5, 3.7) have the same pricing - recommend using latest version
 - Updated all documentation and examples to use latest model recommendations
 - Updated model migration suggestions for deprecated Claude models
 
 ### Notes
-- Claude Sonnet 4.5 provides best overall performance at same price as earlier Sonnet versions
+- Claude Sonnet 4.5 is recommended for general use at same price as earlier Sonnet versions
 - All dated model versions (e.g., 20250929) are identical across platforms and do not change
 
 ## [1.2.4] - 2025-06-24
@@ -23,8 +23,8 @@ All notable changes to the Python implementation of mLLMCelltype will be documen
 - **Consensus Check Optimization**: Implemented two-stage consensus checking strategy
   - First performs simple consensus calculation based on normalized annotations
   - Only calls LLM for clusters that don't meet consensus thresholds
-  - Reduces LLM API calls by ~70-80% for typical datasets
-  - Maintains same accuracy while significantly reducing costs
+  - Reduced API calls through consensus optimization
+  - Maintains same accuracy while reducing costs
 
 ### Changed
 - Modified `check_consensus()` function to prioritize simple consensus checks
