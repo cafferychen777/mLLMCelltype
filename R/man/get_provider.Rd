@@ -6,6 +6,12 @@
 \usage{
 get_provider(model)
 }
+\arguments{
+\item{model}{Character string specifying the model name (e.g., "gpt-5.2", "claude-sonnet-4.5").}
+}
+\value{
+Character string of the provider name (e.g., "openai", "anthropic").
+}
 \description{
 This function determines the appropriate provider (e.g., OpenAI, Anthropic, Google, OpenRouter) based on the model name.
 Uses prefix-based matching for efficient and maintainable provider detection.

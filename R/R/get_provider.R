@@ -4,8 +4,8 @@
 #' Uses prefix-based matching for efficient and maintainable provider detection.
 #' New models following existing naming conventions are automatically supported.
 #'
-#
-#
+#' @param model Character string specifying the model name (e.g., "gpt-5.2", "claude-sonnet-4.5").
+#' @return Character string of the provider name (e.g., "openai", "anthropic").
 #' @details
 #' Supported providers and model prefixes:
 #' \itemize{

@@ -2,12 +2,7 @@
 title: "Consensus Annotation Principles"
 author: "Chen Yang"
 date: "`r Sys.Date()`"
-output:
-  html_document:
-    toc: true
-    toc_float: true
-    toc_depth: 3
-    theme: flatly
+output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{Consensus Annotation Principles}
   %\VignetteEngine{knitr::rmarkdown}
@@ -22,8 +17,6 @@ knitr::opts_chunk$set(
   eval = FALSE
 )
 ```
-
-<img src="../man/figures/logo.png" align="right" height="139" />
 
 # Consensus Annotation Principles
 
@@ -288,7 +281,7 @@ Understanding these principles has several practical implications for using mLLM
 
 Now that you understand the technical principles behind mLLMCelltype, you can explore:
 
-- [Visualization Guide](06-visualization-guide.html): Learn how to visualize consensus and uncertainty
-- [FAQ](07-faq.html): Find answers to common questions
-- [Advanced Features](08-advanced-features.html): Explore hierarchical annotation and other advanced features
-- [Contributing Guide](09-contributing-guide.html): Learn how to contribute to the project
+- [Visualization Guide](https://cafferyang.com/mLLMCelltype/articles/visualization-guide.html): Learn how to visualize consensus and uncertainty
+- [FAQ](https://cafferyang.com/mLLMCelltype/articles/faq.html): Find answers to common questions
+- [Advanced Features](https://cafferyang.com/mLLMCelltype/articles/advanced-features.html): Explore hierarchical annotation and other advanced features
+- [Contributing Guide](https://cafferyang.com/mLLMCelltype/articles/contributing-guide.html): Learn how to contribute to the project

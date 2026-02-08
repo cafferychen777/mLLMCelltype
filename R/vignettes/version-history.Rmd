@@ -2,12 +2,7 @@
 title: "Version History & Changelog"
 author: "Chen Yang"
 date: "`r Sys.Date()`"
-output:
-  html_document:
-    toc: true
-    toc_float: true
-    toc_depth: 3
-    theme: flatly
+output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{Version History & Changelog}
   %\VignetteEngine{knitr::rmarkdown}
@@ -22,8 +17,6 @@ knitr::opts_chunk$set(
   eval = FALSE
 )
 ```
-
-<img src="../man/figures/logo.png" align="right" height="139" />
 
 # Version History & Changelog
 
@@ -212,12 +205,12 @@ Yang, C., et al. (2024). mLLMCelltype: Multi-LLM Consensus Architecture for Robu
 
 ## Feedback and Contributions
 
-We welcome feedback and contributions to improve mLLMCelltype. Please see our [Contributing Guide](09-contributing-guide.html) for details on how to contribute.
+We welcome feedback and contributions to improve mLLMCelltype. Please see our [Contributing Guide](https://cafferyang.com/mLLMCelltype/articles/contributing-guide.html) for details on how to contribute.
 
 ## Next Steps
 
 Now that you've reviewed the version history, you can:
 
-- [Return to the introduction](01-introduction.html) to get started with mLLMCelltype
-- [Explore advanced features](08-advanced-features.html) to learn about the latest capabilities
-- [Check the FAQ](07-faq.html) for answers to common questions
+- [Return to the introduction](https://cafferyang.com/mLLMCelltype/articles/introduction.html) to get started with mLLMCelltype
+- [Explore advanced features](https://cafferyang.com/mLLMCelltype/articles/advanced-features.html) to learn about the latest capabilities
+- [Check the FAQ](https://cafferyang.com/mLLMCelltype/articles/faq.html) for answers to common questions

@@ -2,12 +2,7 @@
 title: "Introduction to mLLMCelltype"
 author: "Chen Yang"
 date: "`r Sys.Date()`"
-output:
-  html_document:
-    toc: true
-    toc_float: true
-    toc_depth: 3
-    theme: flatly
+output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{Introduction to mLLMCelltype}
   %\VignetteEngine{knitr::rmarkdown}
@@ -23,8 +18,6 @@ knitr::opts_chunk$set(
   fig.height = 6
 )
 ```
-
-<img src="../man/figures/logo.png" align="right" height="139" />
 
 # Introduction to mLLMCelltype
 
@@ -107,20 +100,20 @@ mLLMCelltype is designed for a wide range of single-cell RNA sequencing analysis
 ### v1.1.4 (2025-04-24)
 
 #### Bug Fixes
-- Fixed a critical issue with cluster index handling, now the package strictly accepts only 0-based indices (compatible with Seurat)
-- Fixed negative index (-1) issues that could occur when processing CSV input files
-- Added strict validation for input cluster indices to ensure they start from 0
+- Fixed a critical issue in cluster index handling for CSV-style inputs
+- Fixed negative index (-1) edge cases during parsing
+- Improved cluster ID validation and diagnostics
 
 #### Improvements
-- Removed automatic conversion logic from 1-based to 0-based indices
-- Added input validation to ensure cluster indices start from 0
-- Updated code comments for clarity
+- Improved input-contract consistency for cluster IDs across core workflows
+- Hardened parser behavior for mixed model output formats
+- Updated code comments and examples for clarity
 
 For a complete list of updates, please refer to the [NEWS.md](../NEWS.md) file.
 
 ## Getting Started
 
-To get started with mLLMCelltype, please refer to the [Installation Guide](02-installation.html) and [Quick Start Guide](03-getting-started.html).
+To get started with mLLMCelltype, please refer to the [Installation Guide](https://cafferyang.com/mLLMCelltype/articles/installation.html) and [Quick Start Guide](https://cafferyang.com/mLLMCelltype/articles/getting-started.html).
 
 ## Citation
 
@@ -134,7 +127,7 @@ https://doi.org/10.1101/2025.04.10.647852
 
 ## Next Steps
 
-- [Installation Guide](02-installation.html): Learn how to install and configure mLLMCelltype
-- [Quick Start Guide](03-getting-started.html): Get started with basic usage examples
-- [Usage Tutorial](04-usage-tutorial.html): Explore detailed usage scenarios
-- [Consensus Annotation Principles](05-consensus-principles.html): Understand the technical principles
+- [Installation Guide](https://cafferyang.com/mLLMCelltype/articles/installation.html): Learn how to install and configure mLLMCelltype
+- [Quick Start Guide](https://cafferyang.com/mLLMCelltype/articles/getting-started.html): Get started with basic usage examples
+- [Usage Tutorial](https://cafferyang.com/mLLMCelltype/articles/usage-tutorial.html): Explore detailed usage scenarios
+- [Consensus Annotation Principles](https://cafferyang.com/mLLMCelltype/articles/consensus-principles.html): Understand the technical principles

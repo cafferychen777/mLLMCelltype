@@ -2,12 +2,7 @@
 title: "Frequently Asked Questions"
 author: "Chen Yang"
 date: "`r Sys.Date()`"
-output:
-  html_document:
-    toc: true
-    toc_float: true
-    toc_depth: 3
-    theme: flatly
+output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{Frequently Asked Questions}
   %\VignetteEngine{knitr::rmarkdown}
@@ -22,8 +17,6 @@ knitr::opts_chunk$set(
   eval = FALSE
 )
 ```
-
-<img src="../man/figures/logo.png" align="right" height="139" />
 
 # Frequently Asked Questions
 
@@ -68,15 +61,9 @@ The accuracy advantage is particularly pronounced for rare cell types and tissue
 
 ## Technical Questions
 
-### How does mLLMCelltype handle 0-based vs. 1-based cluster indices?
+### How does mLLMCelltype handle cluster indices?
 
-mLLMCelltype strictly works with 0-based cluster indices, which is compatible with Seurat's default indexing. This means:
-
-- Cluster indices should start from 0, not 1
-- If your data uses 1-based indexing, you need to convert it to 0-based before using mLLMCelltype
-- The package performs validation to ensure that cluster indices start from 0
-
-This design choice was made to ensure compatibility with Seurat, which is one of the most widely used single-cell analysis frameworks.
+mLLMCelltype preserves your original cluster IDs as-is. Whether your clusters are numbered 0, 1, 2 (Seurat default) or 1, 2, 3 (R convention), or use custom names like "t_cells", the package will use them directly without modification. The returned annotations use the same cluster IDs as your input.
 
 ### What is the recommended number of marker genes per cluster?
 
@@ -241,16 +228,11 @@ To ensure reproducibility:
 
 ### I'm getting an error about invalid cluster indices. What should I do?
 
-If you see an error like "Cluster indices must start from 0", it means your data is using 1-based indexing instead of the required 0-based indexing. To fix this:
+If you see an error about invalid cluster indices, check that your cluster column contains valid values. mLLMCelltype accepts any cluster IDs (numeric or character) and preserves them as-is. Common issues:
 
-1. Check your cluster column to ensure it starts from 0, not 1
-2. If using Seurat's FindAllMarkers output, this should already be 0-based
-3. If your data is 1-based, convert it:
-
-```r
-# Convert 1-based to 0-based indexing
-markers$cluster <- markers$cluster - 1
-```
+1. Ensure the `cluster` column exists in your data frame
+2. Check for `NA` values in the cluster column
+3. If using non-standard column names, rename to `cluster` before calling the function
 
 ### How do I handle "API key not found" errors?
 
@@ -299,7 +281,7 @@ mLLMCelltype integrates with Seurat:
 ```r
 seurat_obj$cell_type_consensus <- plyr::mapvalues(
   x = as.character(Idents(seurat_obj)),
-  from = as.character(0:(length(consensus_results$final_annotations)-1)),
+  from = names(consensus_results$final_annotations),
   to = consensus_results$final_annotations
 )
 ```
@@ -400,12 +382,12 @@ We welcome contributions! Here are some ways to contribute:
 
 5. **Develop new features**: Contribute code for new features or improvements
 
-See our [Contributing Guide](09-contributing-guide.html) for more details.
+See our [Contributing Guide](https://cafferyang.com/mLLMCelltype/articles/contributing-guide.html) for more details.
 
 ## Next Steps
 
 Now that you have answers to common questions, you can explore:
 
-- [Advanced Features](08-advanced-features.html): Learn about hierarchical annotation and other advanced features
-- [Contributing Guide](09-contributing-guide.html): Find out how to contribute to the project
-- [Version History](10-version-history.html): Review the development history of mLLMCelltype
+- [Advanced Features](https://cafferyang.com/mLLMCelltype/articles/advanced-features.html): Learn about hierarchical annotation and other advanced features
+- [Contributing Guide](https://cafferyang.com/mLLMCelltype/articles/contributing-guide.html): Find out how to contribute to the project
+- [Version History](https://cafferyang.com/mLLMCelltype/articles/version-history.html): Review the development history of mLLMCelltype

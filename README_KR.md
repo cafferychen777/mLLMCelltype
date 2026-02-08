@@ -595,8 +595,8 @@ for(i in 1:length(data_lines)) {
   # 첫 부분은 클러스터 이름
   cluster_name <- parts[1]
 
-  # 인덱스를 키로 사용 (0-based 인덱스, Seurat과 호환)
-  cluster_id <- as.character(i - 1)
+  # 원본 클러스터 ID를 키로 사용 (입력 ID를 그대로 유지)
+  cluster_id <- as.character(cluster_name)
 
   # 나머지 부분은 유전자
   genes <- parts[-1]
@@ -719,7 +719,7 @@ print(single_model_results)
 # single_model_results는 각 클러스터당 하나의 주석을 가진 문자 벡터
 pbmc$cell_type <- plyr::mapvalues(
   x = as.character(Idents(pbmc)),
-  from = as.character(0:(length(single_model_results)-1)),
+  from = names(single_model_results),
   to = single_model_results
 )
 
@@ -753,7 +753,7 @@ for (i in 1:length(models)) {
   # Seurat 객체에 주석 추가
   pbmc[[column_name]] <- plyr::mapvalues(
     x = as.character(Idents(pbmc)),
-    from = as.character(0:(length(results)-1)),
+    from = names(results),
     to = results
   )
 }

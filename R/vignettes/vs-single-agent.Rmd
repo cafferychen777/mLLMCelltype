@@ -116,7 +116,7 @@ Both methodologies have distinct strengths. Single-agent systems are simpler and
 
 ## Next Steps
 
-- [Why Choose Consensus?](why-consensus.html) - Details on the consensus methodology
-- [Getting Started Guide](getting-started.html) - Practical implementation tutorial
-- [Performance Benchmarks](advanced-features.html) - Detailed comparisons
-- [API Reference](../reference/index.html) - Technical documentation
+- [Why Choose Consensus?](https://cafferyang.com/mLLMCelltype/articles/why-consensus.html) - Details on the consensus methodology
+- [Getting Started Guide](https://cafferyang.com/mLLMCelltype/articles/getting-started.html) - Practical implementation tutorial
+- [Performance Benchmarks](https://cafferyang.com/mLLMCelltype/articles/advanced-features.html) - Detailed comparisons
+- [API Reference](https://cafferyang.com/mLLMCelltype/reference/index.html) - Technical documentation

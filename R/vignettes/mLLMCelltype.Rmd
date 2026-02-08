@@ -181,7 +181,7 @@ single_model_results <- annotate_with_single_model(
 # Add annotations to Seurat object
 pbmc$single_model_cell_type <- plyr::mapvalues(
   x = as.character(Idents(pbmc)),
-  from = as.character(0:(length(single_model_results)-1)),
+  from = names(single_model_results),
   to = single_model_results
 )
 

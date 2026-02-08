@@ -301,8 +301,8 @@ for(i in seq_along(data_lines)) {
   # La première partie est le nom du cluster
   cluster_name <- parts[1]
 
-  # Utiliser l'indice comme clé (indice à base 0, compatible avec Seurat)
-  cluster_id <- as.character(i - 1)
+  # Utiliser l'ID de cluster d'origine comme clé (conserver les IDs d'entrée)
+  cluster_id <- as.character(cluster_name)
 
   # Le reste sont des gènes
   genes <- parts[-1]
@@ -730,7 +730,7 @@ print(single_model_results)
 # single_model_results est un vecteur de caractères avec une annotation par cluster
 pbmc$cell_type <- plyr::mapvalues(
   x = as.character(Idents(pbmc)),
-  from = as.character(0:(length(single_model_results)-1)),
+  from = names(single_model_results),
   to = single_model_results
 )
 
@@ -764,7 +764,7 @@ for (i in 1:length(models)) {
   # Ajouter les annotations à l'objet Seurat
   pbmc[[column_name]] <- plyr::mapvalues(
     x = as.character(Idents(pbmc)),
-    from = as.character(0:(length(results)-1)),
+    from = names(results),
     to = results
   )
 }

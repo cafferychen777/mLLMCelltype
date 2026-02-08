@@ -1,4 +1,19 @@
 # =============================================================================
+# CONSTANTS
+# =============================================================================
+
+# Internal sentinel values that indicate processing failures, not real cell types.
+# Used by select_best_prediction() and clean_annotation() to avoid leaking
+# error signals into user-facing results.
+.SENTINEL_VALUES <- c(
+  "Parsing_Failed",
+  "Insufficient_Responses",
+  "Prediction_Missing",
+  "Annotation_Missing",
+  "Unknown"
+)
+
+# =============================================================================
 # HELPER FUNCTIONS
 # =============================================================================
 
@@ -32,23 +47,20 @@ parse_text_predictions <- function(model_preds, all_clusters = NULL) {
         number_part <- substr(line, 1, attr(number_match, "match.length"))
         number <- as.numeric(gsub("[^0-9]", "", number_part))
         cell_type <- trimws(substr(line, attr(number_match, "match.length") + 1, nchar(line)))
-        # Numeric indices usually start from 1, cluster IDs from 0
-        cluster_num <- as.character(number - 1)
+        cluster_num <- as.character(number)
         model_structured[[cluster_num]] <- cell_type
       }
     }
   }
 
   # Positional fallback: if specific clusters still have no prediction, try index-based mapping
+  # Use position in all_clusters (not arithmetic on cluster ID) since IDs may be non-contiguous
   if (!is.null(all_clusters)) {
     for (cluster_id in all_clusters) {
       if (!is.null(model_structured[[cluster_id]])) next
 
-      cluster_idx <- suppressWarnings(as.numeric(cluster_id))
-      if (is.na(cluster_idx)) next
-
-      index <- cluster_idx + 1  # Convert from 0-based to 1-based
-      if (index < 1 || index > length(model_preds)) next
+      index <- match(cluster_id, all_clusters)
+      if (is.na(index) || index < 1 || index > length(model_preds)) next
 
       potential_cell_type <- trimws(model_preds[index])
       if (is.na(potential_cell_type) || potential_cell_type == "") next
@@ -259,29 +271,32 @@ identify_controversial_clusters <- function(input, individual_predictions, contr
 #
 #' @keywords internal
 select_best_prediction <- function(consensus_result, valid_predictions) {
-  # If we have a majority prediction from Claude, use it
-  if (!is.na(consensus_result$majority_prediction) &&
-      !is.null(consensus_result$majority_prediction) &&
-      is.character(consensus_result$majority_prediction) &&
-      consensus_result$majority_prediction != "Unknown" &&
-      consensus_result$majority_prediction != "") {
-    return(consensus_result$majority_prediction)
+  majority <- consensus_result$majority_prediction
+
+  # Accept the consensus check result if it is a real cell type
+  if (!is.null(majority) &&
+      !is.na(majority) &&
+      is.character(majority) &&
+      nzchar(majority) &&
+      !majority %in% .SENTINEL_VALUES) {
+    return(majority)
   }
 
-  # Fallback to frequency-based approach if Claude didn't provide a valid majority prediction
-  # Calculate the frequency of occurrence for each prediction
-  prediction_counts <- table(valid_predictions)
-  # Find the prediction with the highest frequency of occurrence
+  # Fallback: pick the most frequent real prediction from the models
+  real_predictions <- valid_predictions[!valid_predictions %in% .SENTINEL_VALUES]
+  if (length(real_predictions) == 0) {
+    return("Unknown")
+  }
+
+  prediction_counts <- table(real_predictions)
   max_count <- max(prediction_counts)
-  most_common_predictions <- names(prediction_counts[prediction_counts == max_count])
+  most_common <- names(prediction_counts[prediction_counts == max_count])
 
-  if (length(most_common_predictions) == 1) {
-    # If there is only one most common prediction, use it directly.
-    return(most_common_predictions[1])
-  } else {
-    # If there are multiple most common predictions, use the longest (most detailed) one.
-    return(most_common_predictions[which.max(nchar(most_common_predictions))])
+  if (length(most_common) == 1) {
+    return(most_common)
   }
+  # Tie-break: longest (most specific) annotation wins
+  return(most_common[which.max(nchar(most_common))])
 }
 
 #' Process controversial clusters through discussion
@@ -337,7 +352,7 @@ process_controversial_clusters <- function(controversial_clusters, input, tissue
 
     # Generate cache key once (reused for both lookup and save)
     cache_key <- if (use_cache) {
-      cache_manager$generate_key(input, successful_models, char_cluster_id)
+      cache_manager$generate_key(input, successful_models, char_cluster_id, tissue_name, top_gene_count)
     } else {
       NULL
     }
@@ -455,7 +470,7 @@ process_controversial_clusters <- function(controversial_clusters, input, tissue
 #' @keywords internal
 clean_annotation <- function(annotation) {
   if (is.null(annotation) || is.na(annotation)) {
-    return("Annotation_Missing")
+    return("Unknown")
   }
 
   # Remove numbered prefixes like "1. ", "1: ", "1- ", etc.
@@ -464,6 +479,11 @@ clean_annotation <- function(annotation) {
   annotation <- gsub("^CELL\\s*TYPE[\\s:]*", "", annotation)
   # Final trim of whitespace
   annotation <- trimws(annotation)
+
+  # Normalize sentinel values to a user-friendly fallback
+  if (annotation %in% .SENTINEL_VALUES || !nzchar(annotation)) {
+    return("Unknown")
+  }
 
   return(annotation)
 }
@@ -483,8 +503,8 @@ combine_results <- function(initial_results, controversy_results, discussion_res
   for (cluster_id in names(discussion_results$final_annotations)) {
     char_cluster_id <- as.character(cluster_id)
     annotation <- discussion_results$final_annotations[[char_cluster_id]]
-    if (is.null(annotation) || is.na(annotation)) {
-      annotation <- "Annotation_Missing"
+    if (is.null(annotation) || is.na(annotation) || annotation %in% .SENTINEL_VALUES) {
+      annotation <- "Unknown"
     }
     final_annotations[[char_cluster_id]] <- annotation
   }
@@ -529,8 +549,8 @@ combine_results <- function(initial_results, controversy_results, discussion_res
 #'   differential gene expression results (must have columns: 'cluster', 'gene', 
 #'   and 'avg_log2FC'), or a list where each element is either a character vector
 #'   of genes or a list containing a `genes` field.
-#' @param tissue_name Character string specifying the tissue type for context-aware 
-#'   cell type annotation. If NULL, generic cell type annotation will be performed.
+#' @param tissue_name Character string specifying the tissue type for context-aware
+#'   cell type annotation (e.g., 'human PBMC', 'mouse brain'). Required.
 #' @param models Character vector of model names to use for consensus annotation. 
 #'   Minimum 2 models required. Supports models from OpenAI, Anthropic, DeepSeek, 
 #'   Google, Alibaba, Stepfun, Zhipu, MiniMax, X.AI, and OpenRouter.
@@ -572,9 +592,10 @@ combine_results <- function(initial_results, controversy_results, discussion_res
 #'     \item \code{discussion_results}: Backward-compatible alias of \code{discussion_logs}
 #'     \item \code{final_consensus}: Backward-compatible alias of \code{final_annotations}
 #'   }
+#' @importFrom stats setNames
 #' @export
 interactive_consensus_annotation <- function(input,
-                                           tissue_name = NULL,
+                                           tissue_name,
                                            models = c("claude-opus-4-6-20260205",
                                                      "gpt-5.2",
                                                      "gemini-3-pro",
@@ -592,6 +613,9 @@ interactive_consensus_annotation <- function(input,
                                            base_urls = NULL,
                                            clusters_to_analyze = NULL,
                                            force_rerun = FALSE) {
+  if (is.null(tissue_name) || !nzchar(trimws(tissue_name))) {
+    stop("tissue_name is required. Specify the tissue type (e.g., 'human PBMC', 'mouse brain').")
+  }
   if (!is.character(log_dir) || length(log_dir) != 1 || is.na(log_dir) || !nzchar(log_dir)) {
     stop("log_dir must be a non-empty character scalar")
   }
@@ -705,13 +729,12 @@ interactive_consensus_annotation <- function(input,
   )
 
   # Phase 2: Identify controversial clusters
-  # If consensus_check_model is NULL, use the first available model from the
-  # models list
+  # If consensus_check_model is NULL, use the first model that succeeded in
+  # Phase 1 (not models[1], which may have failed)
   if (is.null(consensus_check_model)) {
-    consensus_check_model <- models[1]
-    log_msg <- sprintf("No consensus_check_model specified, using %s",
-                       consensus_check_model)
-    log_info(log_msg, list(consensus_check_model = consensus_check_model))
+    consensus_check_model <- initial_results$successful_models[1]
+    log_info("No consensus_check_model specified, using first successful model",
+             list(consensus_check_model = consensus_check_model))
   }
 
   controversy_results <- identify_controversial_clusters(

@@ -62,6 +62,9 @@ print_consensus_summary <- function(results) {
       # If no initial predictions in discussion logs, use initial_results
       else if (!is.null(results$initial_results) &&
                !is.null(results$initial_results$individual_predictions)) {
+        # Derive sorted cluster order for positional fallback
+        all_cluster_ids <- names(results$final_annotations)
+
         # Check naming convention once using the first model's predictions
         first_model_preds <- results$initial_results$individual_predictions[[1]]
         has_names <- !is.null(names(first_model_preds))
@@ -72,9 +75,8 @@ print_consensus_summary <- function(results) {
           if (has_names) {
             prediction <- model_preds[[char_cluster_id]]
           } else {
-            # Positional fallback: cluster "0" → index 1 (R is 1-based)
-            cluster_idx <- suppressWarnings(as.numeric(char_cluster_id))
-            r_index <- if (!is.na(cluster_idx)) cluster_idx + 1 else NA
+            # Positional fallback: find cluster's position among all clusters
+            r_index <- match(char_cluster_id, all_cluster_ids)
             prediction <- if (!is.na(r_index) && r_index >= 1 && r_index <= length(model_preds)) {
               model_preds[r_index]
             } else {

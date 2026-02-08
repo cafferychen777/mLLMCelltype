@@ -1,7 +1,7 @@
 #' @keywords internal
 "_PACKAGE"
 
-#' @importFrom dplyr group_by top_n group_split
+#' @importFrom dplyr group_by slice_max group_split
 #' @importFrom utils head
 
 #' @title Cell Type Annotation with Multi-LLM Framework
@@ -22,26 +22,7 @@
 #'     * Named with cluster IDs: list("0" = list(genes = c(...)), "1" = list(genes = c(...)))
 #'     * Named with cell type names: list(t_cells = list(genes = c(...)), b_cells = list(genes = c(...)))
 #'     * Unnamed list: list(list(genes = c(...)), list(genes = c(...)))
-#'   - For both input types, if cluster IDs are numeric and start from 1, they will be automatically
-#'     converted to 0-based indexing (e.g., cluster 1 becomes cluster 0) for consistency.
-#'
-#'   IMPORTANT NOTE ON CLUSTER IDs:
-#'   The 'cluster' column must contain numeric values or values that can be converted to numeric.
-#'   Non-numeric cluster IDs (e.g., "cluster_1", "T_cells", "7_0") may cause errors or unexpected
-#'   behavior. Before using this function, it is recommended to:
-#'
-#'   1. Ensure all cluster IDs are numeric or can be cleanly converted to numeric values
-#'   2. If your data contains non-numeric cluster IDs, consider creating a mapping between
-#'      original IDs and numeric IDs:
-#'      ```r
-#'      # Example of standardizing cluster IDs
-#'      original_ids <- unique(markers$cluster)
-#'      id_mapping <- data.frame(
-#'        original = original_ids,
-#'        numeric = seq(0, length(original_ids) - 1)
-#'      )
-#'      markers$cluster <- id_mapping$numeric[match(markers$cluster, id_mapping$original)]
-#'      ```
+#'   - Cluster IDs are preserved as-is. The function does not modify or re-index cluster IDs.
 #
 #'   'mouse brain'). This helps provide context for more accurate annotations.
 #

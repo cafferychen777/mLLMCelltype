@@ -153,7 +153,7 @@ The consensus approach provides a framework for combining multiple LLM predictio
 
 ## Learn More
 
-- [Getting Started Guide](getting-started.html)
-- [Consensus vs Single-Agent Methods](vs-single-agent.html)
-- [Performance Benchmarks](advanced-features.html)
-- [API Reference](../reference/index.html)
+- [Getting Started Guide](https://cafferyang.com/mLLMCelltype/articles/getting-started.html)
+- [Consensus vs Single-Agent Methods](https://cafferyang.com/mLLMCelltype/articles/vs-single-agent.html)
+- [Performance Benchmarks](https://cafferyang.com/mLLMCelltype/articles/advanced-features.html)
+- [API Reference](https://cafferyang.com/mLLMCelltype/reference/index.html)

@@ -2,16 +2,7 @@
 title: "Visualization Guide"
 author: "Chen Yang"
 date: "`r Sys.Date()`"
-output:
-  html_document:
-    toc: true
-    toc_float: true
-    toc_depth: 3
-    theme: flatly
-vignette: >
-  %\VignetteIndexEntry{Visualization Guide}
-  %\VignetteEngine{knitr::rmarkdown}
-  %\VignetteEncoding{UTF-8}
+output: rmarkdown::html_vignette
 ---
 
 ```{r setup, include=FALSE}
@@ -24,8 +15,6 @@ knitr::opts_chunk$set(
   fig.height = 6
 )
 ```
-
-![mLLMCelltype logo](../man/figures/logo.png)
 
 # Visualization Guide
 
@@ -260,7 +249,7 @@ p1 | p2 | p3
 
 For publication-quality visualizations, we recommend using the SCpubr package, which provides enhanced aesthetics for single-cell visualizations. Below are several advanced visualization techniques that can significantly improve the quality and interpretability of your results.
 
-> **Note:** For a gallery of all visualization examples, please see the [Visualization Gallery](visualization_gallery.html).
+> **Note:** For a gallery of all visualization examples, please see the [Visualization Gallery](https://cafferyang.com/mLLMCelltype/articles/visualization-guide.html).
 
 ### Installing and Loading Required Packages
 
@@ -342,7 +331,7 @@ p1
 
 **Example Output:**
 
-![Enhanced Cell Type UMAP](figures/png/fig1_cell_types.png)
+![Enhanced Cell Type UMAP](https://raw.githubusercontent.com/cafferychen777/mLLMCelltype/main/R/vignettes/figures/png/fig1_cell_types.png)
 
 This visualization clearly shows distinct cell type clusters with optimized labels and borders, making it easy to identify different cell populations.
 
@@ -373,7 +362,7 @@ p2
 
 **Example Output:**
 
-![UMAP with Density Contours](figures/png/fig2_density_contours.png)
+![UMAP with Density Contours](https://raw.githubusercontent.com/cafferychen777/mLLMCelltype/main/R/vignettes/figures/png/fig2_density_contours.png)
 
 Density contours highlight the concentration of cells within each cluster, providing additional information about cluster density and boundaries.
 
@@ -402,7 +391,7 @@ p3
 
 **Example Output:**
 
-![Controversial Clusters](figures/png/fig3_controversial_clusters.png)
+![Controversial Clusters](https://raw.githubusercontent.com/cafferychen777/mLLMCelltype/main/R/vignettes/figures/png/fig3_controversial_clusters.png)
 
 This visualization highlights clusters with low consensus or high entropy (red), which may require further investigation or validation.
 
@@ -434,7 +423,7 @@ p4
 
 **Example Output:**
 
-![UMAP with Marginal Distributions](figures/png/fig4_marginal_distributions.png)
+![UMAP with Marginal Distributions](https://raw.githubusercontent.com/cafferychen777/mLLMCelltype/main/R/vignettes/figures/png/fig4_marginal_distributions.png)
 
 Marginal distributions show the density of cells along each axis, providing additional context about the overall distribution of cells in the UMAP space.
 
@@ -467,7 +456,7 @@ p5
 
 **Example Output:**
 
-![Consensus Proportion](figures/png/fig5_consensus_proportion.png)
+![Consensus Proportion](https://raw.githubusercontent.com/cafferychen777/mLLMCelltype/main/R/vignettes/figures/png/fig5_consensus_proportion.png)
 
 This visualization shows the consensus proportion for each cell, with higher values (blue) indicating greater agreement among models about the cell type annotation.
 
@@ -500,7 +489,7 @@ p6
 
 **Example Output:**
 
-![Shannon Entropy](figures/png/fig6_entropy.png)
+![Shannon Entropy](https://raw.githubusercontent.com/cafferychen777/mLLMCelltype/main/R/vignettes/figures/png/fig6_entropy.png)
 
 This visualization shows the entropy for each cell, with higher values (yellow) indicating greater uncertainty in the cell type annotation. Lower entropy (red) suggests more confident annotations.
 
@@ -534,7 +523,7 @@ p7
 
 **Example Output:**
 
-![Cell Types with Consensus Proportion](figures/png/fig7_cell_types_with_consensus.png)
+![Cell Types with Consensus Proportion](https://raw.githubusercontent.com/cafferychen777/mLLMCelltype/main/R/vignettes/figures/png/fig7_cell_types_with_consensus.png)
 
 This visualization combines cell type information with consensus proportion, showing both the cell type clusters and the confidence in each annotation. Cell type boundaries are shown with colored outlines, while the color intensity represents the consensus proportion.
 
@@ -573,7 +562,7 @@ p8
 
 **Example Output:**
 
-![Uncertainty Metrics Violin Plots](figures/png/fig8_uncertainty_violins.png)
+![Uncertainty Metrics Violin Plots](https://raw.githubusercontent.com/cafferychen777/mLLMCelltype/main/R/vignettes/figures/png/fig8_uncertainty_violins.png)
 
 Violin plots show the distribution of consensus proportion and entropy values for each cell type, allowing for easy comparison of annotation confidence across different cell populations.
 
@@ -597,7 +586,7 @@ simplified_dashboard
 
 **Example Output:**
 
-![Combined Dashboard](figures/png/fig9_dashboard.png)
+![Combined Dashboard](https://raw.githubusercontent.com/cafferychen777/mLLMCelltype/main/R/vignettes/figures/png/fig9_dashboard.png)
 
 This dashboard combines multiple visualizations into a single figure, providing a comprehensive view of cell type annotations and uncertainty metrics. The panels are labeled for easy reference in publications.
 
@@ -629,7 +618,7 @@ p1_pub
 
 **Example Output:**
 
-![High-Resolution Publication Figure](figures/png/fig10_publication.png)
+![High-Resolution Publication Figure](https://raw.githubusercontent.com/cafferychen777/mLLMCelltype/main/R/vignettes/figures/png/fig10_publication.png)
 
 This high-resolution figure is specifically designed for publication, with optimized dimensions, font sizes, and visual elements. The increased height provides more space for clear visualization of cell type clusters and labels.
 
@@ -809,7 +798,7 @@ ggsave(
 
 **Example Output:**
 
-![Marker Gene Dotplot](figures/png/fig12_marker_dotplot.png)
+![Marker Gene Dotplot](https://raw.githubusercontent.com/cafferychen777/mLLMCelltype/main/R/vignettes/figures/png/fig12_marker_dotplot.png)
 
 This dotplot visualization shows:
 
@@ -993,7 +982,7 @@ dev.off()
 
 **Example Output:**
 
-![Enhanced Marker Gene Heatmap](figures/png/fig13_marker_heatmap.png)
+![Enhanced Marker Gene Heatmap](https://raw.githubusercontent.com/cafferychen777/mLLMCelltype/main/R/vignettes/figures/png/fig13_marker_heatmap.png)
 
 This enhanced heatmap visualization shows:
 
@@ -1111,7 +1100,7 @@ add_track_continuous(
 
 **Example Output:**
 
-![Circlize Plot](figures/png/fig11_circlize_plot.png)
+![Circlize Plot](https://raw.githubusercontent.com/cafferychen777/mLLMCelltype/main/R/vignettes/figures/png/fig11_circlize_plot.png)
 
 This visualization presents cell types in a circular layout with additional tracks showing metadata. The outer ring shows cell types, the middle ring indicates controversial vs. consensus clusters, and the inner ring displays consensus proportion values. This compact representation is particularly useful for visualizing multiple aspects of your data simultaneously.
 
@@ -1402,7 +1391,7 @@ library(SCpubr)
 # Add results to Seurat object
 seurat_obj$cell_type_consensus <- plyr::mapvalues(
   x = as.character(Idents(seurat_obj)),
-  from = as.character(0:(length(consensus_results$final_annotations)-1)),
+  from = names(consensus_results$final_annotations),
   to = consensus_results$final_annotations
 )
 
@@ -1546,7 +1535,7 @@ If wordcloud generation fails:
 
 Now that you know how to create effective visualizations for mLLMCelltype results, you can explore:
 
-- [FAQ](07-faq.html): Find answers to common questions
-- [Advanced Features](08-advanced-features.html): Explore hierarchical annotation and other advanced features
-- [Contributing Guide](09-contributing-guide.html): Learn how to contribute to the project
-- [Version History](10-version-history.html): Review the development history of mLLMCelltype
+- [FAQ](https://cafferyang.com/mLLMCelltype/articles/faq.html): Find answers to common questions
+- [Advanced Features](https://cafferyang.com/mLLMCelltype/articles/advanced-features.html): Explore hierarchical annotation and other advanced features
+- [Contributing Guide](https://cafferyang.com/mLLMCelltype/articles/contributing-guide.html): Learn how to contribute to the project
+- [Version History](https://cafferyang.com/mLLMCelltype/articles/version-history.html): Review the development history of mLLMCelltype

@@ -5,6 +5,7 @@
 #'
 #' @importFrom R6 R6Class
 #' @importFrom jsonlite toJSON
+#' @importFrom stats runif
 #' @export
 UnifiedLogger <- R6::R6Class("UnifiedLogger",
   public = list(

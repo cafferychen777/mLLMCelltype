@@ -1156,8 +1156,8 @@ for(i in 1:length(data_lines)) {
   # 第一部分是cluster名称
   cluster_name <- parts[1]
 
-  # 使用索引作为键 (0-based索引，与Seurat兼容)
-  cluster_id <- as.character(i - 1)
+  # 使用原始cluster ID作为键（保持输入ID不变）
+  cluster_id <- as.character(cluster_name)
 
   # 其余部分是基因
   genes <- parts[-1]
@@ -1315,7 +1315,7 @@ print(single_model_results)
 # single_model_results是一个字符向量，每个聚类对应一个注释
 pbmc$cell_type <- plyr::mapvalues(
   x = as.character(Idents(pbmc)),
-  from = as.character(0:(length(single_model_results)-1)),
+  from = names(single_model_results),
   to = single_model_results
 )
 
@@ -1364,7 +1364,7 @@ for (model in models_to_test) {
   column_name <- paste0("cell_type_", gsub("[^a-zA-Z0-9]", "_", model))
   pbmc[[column_name]] <- plyr::mapvalues(
     x = as.character(Idents(pbmc)),
-    from = as.character(0:(length(results[[model]])-1)),
+    from = names(results[[model]]),
     to = results[[model]]
   )
 }

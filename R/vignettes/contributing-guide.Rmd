@@ -2,12 +2,7 @@
 title: "Contributing Guide"
 author: "Chen Yang"
 date: "`r Sys.Date()`"
-output:
-  html_document:
-    toc: true
-    toc_float: true
-    toc_depth: 3
-    theme: flatly
+output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{Contributing Guide}
   %\VignetteEngine{knitr::rmarkdown}
@@ -22,8 +17,6 @@ knitr::opts_chunk$set(
   eval = FALSE
 )
 ```
-
-<img src="../man/figures/logo.png" align="right" height="139" />
 
 # Contributing to mLLMCelltype
 
@@ -352,6 +345,6 @@ By contributing to mLLMCelltype, you agree that your contributions will be licen
 
 Now that you know how to contribute to mLLMCelltype, you can:
 
-- [Review the version history](10-version-history.html) to understand recent changes
-- [Explore advanced features](08-advanced-features.html) to identify areas for improvement
-- [Check the FAQ](07-faq.html) to see common questions that might need better documentation
+- [Review the version history](https://cafferyang.com/mLLMCelltype/articles/version-history.html) to understand recent changes
+- [Explore advanced features](https://cafferyang.com/mLLMCelltype/articles/advanced-features.html) to identify areas for improvement
+- [Check the FAQ](https://cafferyang.com/mLLMCelltype/articles/faq.html) to see common questions that might need better documentation

@@ -38,4 +38,9 @@
 ^examples$
 ^Meta$
 ^vignettes/\.gitignore$
+^tests/testthat/logs$
+^tests/testthat/\.mllmcelltype_cache$
+^\.pytest_cache$
+^vignettes/figures$
+^vignettes/articles$
 

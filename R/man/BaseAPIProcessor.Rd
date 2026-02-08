@@ -91,10 +91,7 @@ Abstract method to be implemented by subclasses for making the actual API call
 \if{latex}{\out{\hypertarget{method-BaseAPIProcessor-extract_response_content}{}}}
 \subsection{Method \code{extract_response_content()}}{
 Abstract method to be implemented by subclasses for extracting content from response
-Process input text into chunks
-Process all input chunks
-Process response content into lines
-Consolidate results from all chunks
+Make API call and extract response content
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{BaseAPIProcessor$extract_response_content(response, model)}\if{html}{\out{</div>}}
 }

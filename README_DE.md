@@ -716,8 +716,8 @@ for(i in 1:length(data_lines)) {
   # Erster Teil ist der Clustername
   cluster_name <- parts[1]
 
-  # Index als Schlüssel verwenden (0-basierter Index, kompatibel mit Seurat)
-  cluster_id <- as.character(i - 1)
+  # Ursprüngliche Cluster-ID als Schlüssel verwenden (Eingabe-IDs unverändert beibehalten)
+  cluster_id <- as.character(cluster_name)
 
   # Restliche Teile sind Gene
   genes <- parts[-1]
@@ -875,7 +875,7 @@ print(single_model_results)
 # single_model_results ist ein Zeichenvektor mit einer Annotation pro Cluster
 pbmc$cell_type <- plyr::mapvalues(
   x = as.character(Idents(pbmc)),
-  from = as.character(0:(length(single_model_results)-1)),
+  from = names(single_model_results),
   to = single_model_results
 )
 
@@ -924,7 +924,7 @@ for (model in models_to_test) {
   column_name <- paste0("cell_type_", gsub("[^a-zA-Z0-9]", "_", model))
   pbmc[[column_name]] <- plyr::mapvalues(
     x = as.character(Idents(pbmc)),
-    from = as.character(0:(length(results[[model]])-1)),
+    from = names(results[[model]]),
     to = results[[model]]
   )
 }

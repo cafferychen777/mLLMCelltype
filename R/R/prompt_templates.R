@@ -10,7 +10,7 @@
 #'
 #' Naming rules:
 #' - unnamed lists are assigned 0-based IDs ("0", "1", ...)
-#' - fully numeric names are canonicalized; if minimum index is >= 1, they are shifted to 0-based
+#' - numeric names are preserved as-is (e.g., "1", "2", "3" stays unchanged)
 #' - non-numeric names are preserved as-is
 #'
 #' @param input List input for cluster annotation
@@ -37,15 +37,7 @@ normalize_cluster_gene_list <- function(input) {
   if (is.null(names_vec)) {
     canonical_names <- as.character(seq_along(gene_vectors) - 1)
   } else {
-    numeric_names <- suppressWarnings(as.numeric(names_vec))
-    if (all(!is.na(numeric_names))) {
-      if (min(numeric_names) >= 1) {
-        numeric_names <- numeric_names - 1
-      }
-      canonical_names <- as.character(numeric_names)
-    } else {
-      canonical_names <- names_vec
-    }
+    canonical_names <- names_vec
   }
 
   if (anyDuplicated(canonical_names)) {
@@ -60,6 +52,7 @@ normalize_cluster_gene_list <- function(input) {
 #'
 #' @param input Either a data frame from Seurat's FindAllMarkers() or a list for each cluster
 #'   where each element is either a character vector of genes or a list containing a `genes` field
+#'   Cluster IDs in named inputs are preserved as-is; unnamed list input receives sequential IDs starting at "0".
 #' @param tissue_name Tissue context for the annotation (e.g., 'human PBMC', 'mouse brain')
 #' @param top_gene_count Number of top genes to use per cluster when input is from Seurat. Default: 10
 #'
@@ -74,54 +67,25 @@ create_annotation_prompt <- function(input, tissue_name, top_gene_count = 10) {
 
     for (cluster_id in names(normalized_input)) {
       genes <- normalized_input[[cluster_id]]
-      if (!is.character(genes)) {
-        genes <- as.character(genes)
-      }
       gene_lists[[cluster_id]] <- paste(genes, collapse = ", ")
     }
     
     expected_count <- length(normalized_input)
   } else if (is.data.frame(input)) {
     # Process Seurat differential gene table
-    # Ensure the cluster column is converted to 0-based
-    # Copy the input dataframe to avoid modifying the original data
-    input_copy <- input
-    
-    # Check the values in the cluster column, if the minimum value is 1, subtract 1 from all values to make them 0-based
-    # Ensure the cluster column is numeric for arithmetic operations
-    if (is.factor(input_copy$cluster)) {
-      input_copy$cluster <- as.numeric(as.character(input_copy$cluster))
-    } else if (is.character(input_copy$cluster)) {
-      numeric_clusters <- suppressWarnings(as.numeric(input_copy$cluster))
-      if (any(is.na(numeric_clusters))) {
-        # Non-numeric cluster IDs (e.g., "t_cells") — use as-is, no 0-based conversion
-        input_copy$cluster <- input_copy$cluster
-      } else {
-        input_copy$cluster <- numeric_clusters
-      }
-    }
-
-    # Now we can safely use the min function (only for numeric clusters)
-    if (is.numeric(input_copy$cluster) && min(input_copy$cluster) > 0) {
-      # Possibly 1-based index, convert to 0-based
-      input_copy$original_cluster <- input_copy$cluster  # Save original value
-      input_copy$cluster <- input_copy$cluster - 1  # Convert to 0-based
-    }
-    
-    # Use the converted data for grouping
-    markers <- input_copy %>%
+    # Cluster IDs are preserved as-is from the input data
+    markers <- input %>%
       group_by(cluster) %>%
-      top_n(top_gene_count, avg_log2FC) %>%
+      slice_max(avg_log2FC, n = top_gene_count, with_ties = FALSE) %>%
       group_split()
-    
-    # Create gene lists, ensure using 0-based indices
+
     gene_lists <- list()
     for (marker_group in markers) {
-      cluster_id <- unique(marker_group$cluster)[1]  # Now it's 0-based
+      cluster_id <- marker_group$cluster[1]
       gene_lists[[as.character(cluster_id)]] <- paste(marker_group$gene, collapse = ',')
     }
-    
-    expected_count <- length(unique(input_copy$cluster))
+
+    expected_count <- length(unique(input$cluster))
   } else {
     stop("Input must be either a data.frame (from Seurat) or a list of gene lists")
   }
@@ -132,7 +96,7 @@ create_annotation_prompt <- function(input, tissue_name, top_gene_count = 10) {
     paste0(name, ": ", gene_lists[[name]])
   }, character(1), USE.NAMES = FALSE)
 
-  # Sort numerically if all names are numeric (e.g., 0-based cluster IDs)
+  # Sort numerically if all names are numeric
   if (all(!is.na(suppressWarnings(as.numeric(cluster_names))))) {
     formatted_lines <- formatted_lines[order(as.numeric(cluster_names))]
   }
@@ -316,26 +280,6 @@ create_initial_discussion_prompt <- function(cluster_id,
           }
         }
         
-        # If no prediction with cluster ID is found, try using index position
-        # Try to convert cluster_id to numeric safely
-        cluster_idx <- suppressWarnings(as.numeric(cluster_id))
-        if (!has_cluster_id_format && !is.na(cluster_idx) && length(pred) > cluster_idx) {
-          # Assume predictions are arranged in order of cluster ID
-          index <- cluster_idx + 1  # Convert from 0-based to 1-based
-          if (index <= length(pred)) {
-            potential_cell_type <- trimws(pred[index])
-            # Check if it contains ":", if so, extract the part after it
-            if (grepl(":", potential_cell_type, fixed = TRUE)) {
-              parts <- strsplit(potential_cell_type, ":", fixed = TRUE)[[1]]
-              if (length(parts) >= 2) {
-                cell_type <- trimws(paste(parts[-1], collapse = ":"))
-              }
-            } else {
-              # Does not contain ":", use directly
-              cell_type <- potential_cell_type
-            }
-          }
-        }
       } else {
         cell_type <- "No prediction"
       }

@@ -2,6 +2,7 @@
 #' @description Manages caching of consensus analysis results
 #' @importFrom R6 R6Class
 #' @importFrom digest digest
+#' @importFrom tools R_user_dir
 #' @export
 CacheManager <- R6::R6Class(
   "CacheManager",
@@ -15,7 +16,7 @@ CacheManager <- R6::R6Class(
     cache_dir = NULL,
     
     #' @field cache_version Current cache version
-    cache_version = "1.0",
+    cache_version = "1.1",
     
     #' @description Initialize cache manager
     #
@@ -57,18 +58,19 @@ CacheManager <- R6::R6Class(
     #
     #
     #
-    generate_key = function(input, models, cluster_id) {
+    generate_key = function(input, models, cluster_id, tissue_name = "", top_gene_count = 10) {
       # Extract genes using a standardized approach
       genes <- private$extract_genes_standardized(input, cluster_id)
-      
+
       # Create standardized components with input context for empty genes
       genes_hash <- private$create_genes_hash(genes, input, cluster_id)
       models_hash <- private$create_models_hash(models)
       cluster_hash <- private$create_cluster_hash(cluster_id)
-      
+      context_hash <- private$create_context_hash(tissue_name, top_gene_count)
+
       # Combine into final key with version prefix
-      key <- paste("v", self$cache_version, genes_hash, models_hash, cluster_hash, sep = "_")
-      
+      key <- paste("v", self$cache_version, genes_hash, models_hash, cluster_hash, context_hash, sep = "_")
+
       return(key)
     },
     
@@ -319,6 +321,12 @@ CacheManager <- R6::R6Class(
       digest::digest(models_sorted, algo = "xxhash64")
     },
     
+    #' Create stable hash from tissue_name and top_gene_count
+    create_context_hash = function(tissue_name, top_gene_count) {
+      context <- paste(as.character(tissue_name), as.integer(top_gene_count), sep = "|")
+      digest::digest(context, algo = "xxhash64")
+    },
+
     #' Create stable hash from cluster ID
     #
     #

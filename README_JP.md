@@ -294,8 +294,8 @@ for(i in seq_along(data_lines)) {
   # 最初の部分はクラスター名
   cluster_name <- parts[1]
 
-  # インデックスをキーとして使用（0ベースインデックス、Seuratと互換性あり）
-  cluster_id <- as.character(i - 1)
+  # 元のクラスターIDをキーとして使用（入力IDをそのまま保持）
+  cluster_id <- as.character(cluster_name)
 
   # 残りは遣伝子
   genes <- parts[-1]
@@ -721,7 +721,7 @@ print(single_model_results)
 # single_model_resultsは各クラスターに対して1つのアノテーションを持つ文字ベクトル
 pbmc$cell_type <- plyr::mapvalues(
   x = as.character(Idents(pbmc)),
-  from = as.character(0:(length(single_model_results)-1)),
+  from = names(single_model_results),
   to = single_model_results
 )
 
@@ -755,7 +755,7 @@ for (i in 1:length(models)) {
   # Seuratオブジェクトにアノテーションを追加
   pbmc[[column_name]] <- plyr::mapvalues(
     x = as.character(Idents(pbmc)),
-    from = as.character(0:(length(results)-1)),
+    from = names(results),
     to = results
   )
 }

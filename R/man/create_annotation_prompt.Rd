@@ -8,7 +8,8 @@ create_annotation_prompt(input, tissue_name, top_gene_count = 10)
 }
 \arguments{
 \item{input}{Either a data frame from Seurat's FindAllMarkers() or a list for each cluster
-where each element is either a character vector of genes or a list containing a \code{genes} field}
+where each element is either a character vector of genes or a list containing a \code{genes} field
+Cluster IDs in named inputs are preserved as-is; unnamed list input receives sequential IDs starting at "0".}
 
 \item{tissue_name}{Tissue context for the annotation (e.g., 'human PBMC', 'mouse brain')}
 

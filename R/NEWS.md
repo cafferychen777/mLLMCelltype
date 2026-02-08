@@ -1,5 +1,12 @@
 # mLLMCelltype Changelog
 
+## 1.3.6 (2026-02-07)
+
+### Documentation Clarification
+* Clarified current cluster ID contract in tutorials and examples: input cluster IDs are preserved as-is
+* Updated mapping examples to use annotation names directly (instead of assuming sequential `0:(n-1)` IDs)
+* Kept historical release notes unchanged; this entry documents the current behavior explicitly
+
 ## 1.3.5 (2025-10-12)
 
 ### Updated Models

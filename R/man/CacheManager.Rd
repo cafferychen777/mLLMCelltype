@@ -68,7 +68,13 @@ Get actual cache directory path
 \subsection{Method \code{generate_key()}}{
 Generate cache key from input parameters (improved version)
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{CacheManager$generate_key(input, models, cluster_id)}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{CacheManager$generate_key(
+  input,
+  models,
+  cluster_id,
+  tissue_name = "",
+  top_gene_count = 10
+)}\if{html}{\out{</div>}}
 }
 
 }
@@ -130,6 +136,7 @@ Validate cache content
 Extract genes from input in a standardized way
 Create stable hash from genes list
 Create stable hash from models list
+Create stable hash from tissue_name and top_gene_count
 Create stable hash from cluster ID
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{CacheManager$validate_cache(key)}\if{html}{\out{</div>}}

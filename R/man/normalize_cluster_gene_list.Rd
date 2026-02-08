@@ -27,7 +27,7 @@ For list input, each element can be either:
 Naming rules:
 \itemize{
 \item unnamed lists are assigned 0-based IDs ("0", "1", ...)
-\item fully numeric names are canonicalized; if minimum index is >= 1, they are shifted to 0-based
+\item numeric names are preserved as-is (e.g., "1", "2", "3" stays unchanged)
 \item non-numeric names are preserved as-is
 }
 }

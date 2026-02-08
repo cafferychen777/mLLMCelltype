@@ -23,6 +23,8 @@ Imports:
     R6 (>= 2.5.0),
     digest (>= 0.6.25),
     magrittr,
+    stats,
+    tools,
     utils
 Suggests:
     knitr,
@@ -30,5 +32,5 @@ Suggests:
     Seurat
 RoxygenNote: 7.3.3
 Roxygen: list(markdown = TRUE)
-Config/build/clean-inst-doc: FALSE
+Config/build/clean-inst-doc: TRUE
 VignetteBuilder: knitr
