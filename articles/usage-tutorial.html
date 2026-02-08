@@ -136,7 +136,7 @@
       <h1>Usage Tutorial</h1>
                         <h4 data-toc-skip class="author">Chen Yang</h4>
             
-            <h4 data-toc-skip class="date">2026-02-07</h4>
+            <h4 data-toc-skip class="date">2026-02-08</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/cafferychen777/mLLMCelltype/blob/main/vignettes/usage-tutorial.Rmd" class="external-link"><code>vignettes/usage-tutorial.Rmd</code></a></small>
       <div class="d-none name"><code>usage-tutorial.Rmd</code></div>
@@ -144,7 +144,6 @@
 
     
     
-<p><img src="../reference/figures/logo.png" align="right" height="139"></p>
 <div class="section level2">
 <h2 id="usage-tutorial">Usage Tutorial<a class="anchor" aria-label="anchor" href="#usage-tutorial"></a>
 </h2>
@@ -229,7 +228,7 @@ moderating discussions. We recommend using capable models such as: -
 <span><span class="co"># Add annotations to Seurat object</span></span>
 <span><span class="va">pbmc_small</span><span class="op">$</span><span class="va">cell_type_claude</span> <span class="op">&lt;-</span> <span class="fu">plyr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/plyr/man/mapvalues.html" class="external-link">mapvalues</a></span><span class="op">(</span></span>
 <span>  x <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/character.html" class="external-link">as.character</a></span><span class="op">(</span><span class="fu"><a href="https://satijalab.github.io/seurat-object/reference/Idents.html" class="external-link">Idents</a></span><span class="op">(</span><span class="va">pbmc_small</span><span class="op">)</span><span class="op">)</span>,</span>
-<span>  from <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/character.html" class="external-link">as.character</a></span><span class="op">(</span><span class="fl">0</span><span class="op">:</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">results</span><span class="op">)</span><span class="op">-</span><span class="fl">1</span><span class="op">)</span><span class="op">)</span>,</span>
+<span>  from <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">results</span><span class="op">)</span>,</span>
 <span>  to <span class="op">=</span> <span class="va">results</span></span>
 <span><span class="op">)</span></span>
 <span></span>
@@ -290,7 +289,7 @@ quantification:</p>
 <span><span class="co"># Add consensus annotations and metrics to Seurat object</span></span>
 <span><span class="va">pbmc_small</span><span class="op">$</span><span class="va">cell_type_consensus</span> <span class="op">&lt;-</span> <span class="fu">plyr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/plyr/man/mapvalues.html" class="external-link">mapvalues</a></span><span class="op">(</span></span>
 <span>  x <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/character.html" class="external-link">as.character</a></span><span class="op">(</span><span class="fu"><a href="https://satijalab.github.io/seurat-object/reference/Idents.html" class="external-link">Idents</a></span><span class="op">(</span><span class="va">pbmc_small</span><span class="op">)</span><span class="op">)</span>,</span>
-<span>  from <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/character.html" class="external-link">as.character</a></span><span class="op">(</span><span class="fl">0</span><span class="op">:</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">consensus_results</span><span class="op">$</span><span class="va">final_annotations</span><span class="op">)</span><span class="op">-</span><span class="fl">1</span><span class="op">)</span><span class="op">)</span>,</span>
+<span>  from <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">consensus_results</span><span class="op">$</span><span class="va">final_annotations</span><span class="op">)</span>,</span>
 <span>  to <span class="op">=</span> <span class="va">consensus_results</span><span class="op">$</span><span class="va">final_annotations</span></span>
 <span><span class="op">)</span></span>
 <span></span>
@@ -366,13 +365,13 @@ quantification:</p>
 <span><span class="co"># Add free model consensus annotations to Seurat object</span></span>
 <span><span class="va">pbmc_small</span><span class="op">$</span><span class="va">free_model_consensus</span> <span class="op">&lt;-</span> <span class="fu">plyr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/plyr/man/mapvalues.html" class="external-link">mapvalues</a></span><span class="op">(</span></span>
 <span>  x <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/character.html" class="external-link">as.character</a></span><span class="op">(</span><span class="fu"><a href="https://satijalab.github.io/seurat-object/reference/Idents.html" class="external-link">Idents</a></span><span class="op">(</span><span class="va">pbmc_small</span><span class="op">)</span><span class="op">)</span>,</span>
-<span>  from <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/character.html" class="external-link">as.character</a></span><span class="op">(</span><span class="fl">0</span><span class="op">:</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">free_consensus_results</span><span class="op">$</span><span class="va">final_annotations</span><span class="op">)</span><span class="op">-</span><span class="fl">1</span><span class="op">)</span><span class="op">)</span>,</span>
+<span>  from <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">free_consensus_results</span><span class="op">$</span><span class="va">final_annotations</span><span class="op">)</span>,</span>
 <span>  to <span class="op">=</span> <span class="va">free_consensus_results</span><span class="op">$</span><span class="va">final_annotations</span></span>
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Compare paid vs. free model results</span></span>
 <span><span class="va">comparison</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
-<span>  cluster <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/character.html" class="external-link">as.character</a></span><span class="op">(</span><span class="fl">0</span><span class="op">:</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">consensus_results</span><span class="op">$</span><span class="va">final_annotations</span><span class="op">)</span><span class="op">-</span><span class="fl">1</span><span class="op">)</span><span class="op">)</span>,</span>
+<span>  cluster <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">consensus_results</span><span class="op">$</span><span class="va">final_annotations</span><span class="op">)</span>,</span>
 <span>  paid_models <span class="op">=</span> <span class="va">consensus_results</span><span class="op">$</span><span class="va">final_annotations</span>,</span>
 <span>  free_models <span class="op">=</span> <span class="va">free_consensus_results</span><span class="op">$</span><span class="va">final_annotations</span>,</span>
 <span>  agreement <span class="op">=</span> <span class="va">consensus_results</span><span class="op">$</span><span class="va">final_annotations</span> <span class="op">==</span> <span class="va">free_consensus_results</span><span class="op">$</span><span class="va">final_annotations</span></span>
@@ -586,7 +585,7 @@ workflow:</p>
 <span>  <span class="va">column_name</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"cell_type_"</span>, <span class="fu"><a href="https://rdrr.io/r/base/grep.html" class="external-link">gsub</a></span><span class="op">(</span><span class="st">"[^a-zA-Z0-9]"</span>, <span class="st">"_"</span>, <span class="va">model</span><span class="op">)</span><span class="op">)</span></span>
 <span>  <span class="va">pbmc_small</span><span class="op">[[</span><span class="va">column_name</span><span class="op">]</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fu">plyr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/plyr/man/mapvalues.html" class="external-link">mapvalues</a></span><span class="op">(</span></span>
 <span>    x <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/character.html" class="external-link">as.character</a></span><span class="op">(</span><span class="fu"><a href="https://satijalab.github.io/seurat-object/reference/Idents.html" class="external-link">Idents</a></span><span class="op">(</span><span class="va">pbmc_small</span><span class="op">)</span><span class="op">)</span>,</span>
-<span>    from <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/character.html" class="external-link">as.character</a></span><span class="op">(</span><span class="fl">0</span><span class="op">:</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">results</span><span class="op">[[</span><span class="va">model</span><span class="op">]</span><span class="op">]</span><span class="op">)</span><span class="op">-</span><span class="fl">1</span><span class="op">)</span><span class="op">)</span>,</span>
+<span>    from <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">results</span><span class="op">[[</span><span class="va">model</span><span class="op">]</span><span class="op">]</span><span class="op">)</span>,</span>
 <span>    to <span class="op">=</span> <span class="va">results</span><span class="op">[[</span><span class="va">model</span><span class="op">]</span><span class="op">]</span></span>
 <span>  <span class="op">)</span></span>
 <span><span class="op">}</span></span>
@@ -605,7 +604,7 @@ workflow:</p>
 <span><span class="co"># Add consensus results to Seurat object</span></span>
 <span><span class="va">pbmc_small</span><span class="op">$</span><span class="va">cell_type_consensus</span> <span class="op">&lt;-</span> <span class="fu">plyr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/plyr/man/mapvalues.html" class="external-link">mapvalues</a></span><span class="op">(</span></span>
 <span>  x <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/character.html" class="external-link">as.character</a></span><span class="op">(</span><span class="fu"><a href="https://satijalab.github.io/seurat-object/reference/Idents.html" class="external-link">Idents</a></span><span class="op">(</span><span class="va">pbmc_small</span><span class="op">)</span><span class="op">)</span>,</span>
-<span>  from <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/character.html" class="external-link">as.character</a></span><span class="op">(</span><span class="fl">0</span><span class="op">:</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">consensus_results</span><span class="op">$</span><span class="va">final_annotations</span><span class="op">)</span><span class="op">-</span><span class="fl">1</span><span class="op">)</span><span class="op">)</span>,</span>
+<span>  from <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">consensus_results</span><span class="op">$</span><span class="va">final_annotations</span><span class="op">)</span>,</span>
 <span>  to <span class="op">=</span> <span class="va">consensus_results</span><span class="op">$</span><span class="va">final_annotations</span></span>
 <span><span class="op">)</span></span>
 <span></span>
@@ -809,16 +808,18 @@ occasionally return empty results</li>
 explore:</p>
 <ul>
 <li>
-<a href="05-consensus-principles.html">Consensus Annotation
-Principles</a>: Learn about the technical principles</li>
+<a href="https://cafferyang.com/mLLMCelltype/articles/consensus-principles.html">Consensus
+Annotation Principles</a>: Learn about the technical principles</li>
 <li>
-<a href="06-visualization-guide.html">Visualization Guide</a>:
-Create publication-ready visualizations</li>
+<a href="https://cafferyang.com/mLLMCelltype/articles/visualization-guide.html">Visualization
+Guide</a>: Create publication-ready visualizations</li>
 <li>
-<a href="07-faq.html">FAQ</a>: Find answers to common questions</li>
+<a href="https://cafferyang.com/mLLMCelltype/articles/faq.html">FAQ</a>:
+Find answers to common questions</li>
 <li>
-<a href="08-advanced-features.html">Advanced Features</a>: Explore
-hierarchical annotation and other advanced features</li>
+<a href="https://cafferyang.com/mLLMCelltype/articles/advanced-features.html">Advanced
+Features</a>: Explore hierarchical annotation and other advanced
+features</li>
 </ul>
 </div>
 </div>

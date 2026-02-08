@@ -5,7 +5,7 @@ Set global logger configuration
 ## Usage
 
 ``` r
-configure_logger(level = "INFO", console_output = TRUE, json_format = TRUE)
+configure_logger(level = "INFO", console_output = FALSE, json_format = TRUE)
 ```
 
 ## Arguments
@@ -16,7 +16,7 @@ configure_logger(level = "INFO", console_output = TRUE, json_format = TRUE)
 
 - console_output:
 
-  Whether to enable console output. Default: TRUE
+  Whether to enable console output. Default: FALSE
 
 - json_format:
 

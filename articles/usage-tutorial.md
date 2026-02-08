@@ -1,7 +1,5 @@
 # Usage Tutorial
 
-![](../reference/figures/logo.png)
-
 ## Usage Tutorial
 
 This tutorial provides detailed instructions for using mLLMCelltype for
@@ -85,7 +83,7 @@ results <- annotate_cell_types(
 # Add annotations to Seurat object
 pbmc_small$cell_type_claude <- plyr::mapvalues(
   x = as.character(Idents(pbmc_small)),
-  from = as.character(0:(length(results)-1)),
+  from = names(results),
   to = results
 )
 
@@ -146,7 +144,7 @@ consensus_results <- interactive_consensus_annotation(
 # Add consensus annotations and metrics to Seurat object
 pbmc_small$cell_type_consensus <- plyr::mapvalues(
   x = as.character(Idents(pbmc_small)),
-  from = as.character(0:(length(consensus_results$final_annotations)-1)),
+  from = names(consensus_results$final_annotations),
   to = consensus_results$final_annotations
 )
 
@@ -223,13 +221,13 @@ free_consensus_results <- interactive_consensus_annotation(
 # Add free model consensus annotations to Seurat object
 pbmc_small$free_model_consensus <- plyr::mapvalues(
   x = as.character(Idents(pbmc_small)),
-  from = as.character(0:(length(free_consensus_results$final_annotations)-1)),
+  from = names(free_consensus_results$final_annotations),
   to = free_consensus_results$final_annotations
 )
 
 # Compare paid vs. free model results
 comparison <- data.frame(
-  cluster = as.character(0:(length(consensus_results$final_annotations)-1)),
+  cluster = names(consensus_results$final_annotations),
   paid_models = consensus_results$final_annotations,
   free_models = free_consensus_results$final_annotations,
   agreement = consensus_results$final_annotations == free_consensus_results$final_annotations
@@ -410,7 +408,7 @@ for (model in models) {
   column_name <- paste0("cell_type_", gsub("[^a-zA-Z0-9]", "_", model))
   pbmc_small[[column_name]] <- plyr::mapvalues(
     x = as.character(Idents(pbmc_small)),
-    from = as.character(0:(length(results[[model]])-1)),
+    from = names(results[[model]]),
     to = results[[model]]
   )
 }
@@ -429,7 +427,7 @@ consensus_results <- interactive_consensus_annotation(
 # Add consensus results to Seurat object
 pbmc_small$cell_type_consensus <- plyr::mapvalues(
   x = as.character(Idents(pbmc_small)),
-  from = as.character(0:(length(consensus_results$final_annotations)-1)),
+  from = names(consensus_results$final_annotations),
   to = consensus_results$final_annotations
 )
 
@@ -608,13 +606,13 @@ Now that you understand the detailed usage of mLLMCelltype, you can
 explore:
 
 - [Consensus Annotation
-  Principles](https://cafferyang.com/mLLMCelltype/articles/05-consensus-principles.md):
+  Principles](https://cafferyang.com/mLLMCelltype/articles/consensus-principles.html):
   Learn about the technical principles
 - [Visualization
-  Guide](https://cafferyang.com/mLLMCelltype/articles/06-visualization-guide.md):
+  Guide](https://cafferyang.com/mLLMCelltype/articles/visualization-guide.html):
   Create publication-ready visualizations
-- [FAQ](https://cafferyang.com/mLLMCelltype/articles/07-faq.md): Find
+- [FAQ](https://cafferyang.com/mLLMCelltype/articles/faq.html): Find
   answers to common questions
 - [Advanced
-  Features](https://cafferyang.com/mLLMCelltype/articles/08-advanced-features.md):
+  Features](https://cafferyang.com/mLLMCelltype/articles/advanced-features.html):
   Explore hierarchical annotation and other advanced features

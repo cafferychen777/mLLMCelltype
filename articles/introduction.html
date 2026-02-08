@@ -136,7 +136,7 @@
       <h1>Introduction to mLLMCelltype</h1>
                         <h4 data-toc-skip class="author">Chen Yang</h4>
             
-            <h4 data-toc-skip class="date">2026-02-07</h4>
+            <h4 data-toc-skip class="date">2026-02-08</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/cafferychen777/mLLMCelltype/blob/main/vignettes/introduction.Rmd" class="external-link"><code>vignettes/introduction.Rmd</code></a></small>
       <div class="d-none name"><code>introduction.Rmd</code></div>
@@ -144,7 +144,6 @@
 
     
     
-<p><img src="../reference/figures/logo.png" align="right" height="139"></p>
 <div class="section level2">
 <h2 id="introduction-to-mllmcelltype">Introduction to mLLMCelltype<a class="anchor" aria-label="anchor" href="#introduction-to-mllmcelltype"></a>
 </h2>
@@ -302,22 +301,20 @@ methods</li>
 <h5 id="bug-fixes">Bug Fixes<a class="anchor" aria-label="anchor" href="#bug-fixes"></a>
 </h5>
 <ul>
-<li>Fixed a critical issue with cluster index handling, now the package
-strictly accepts only 0-based indices (compatible with Seurat)</li>
-<li>Fixed negative index (-1) issues that could occur when processing
-CSV input files</li>
-<li>Added strict validation for input cluster indices to ensure they
-start from 0</li>
+<li>Fixed a critical issue in cluster index handling for CSV-style
+inputs</li>
+<li>Fixed negative index (-1) edge cases during parsing</li>
+<li>Improved cluster ID validation and diagnostics</li>
 </ul>
 </div>
 <div class="section level5">
 <h5 id="improvements">Improvements<a class="anchor" aria-label="anchor" href="#improvements"></a>
 </h5>
 <ul>
-<li>Removed automatic conversion logic from 1-based to 0-based
-indices</li>
-<li>Added input validation to ensure cluster indices start from 0</li>
-<li>Updated code comments for clarity</li>
+<li>Improved input-contract consistency for cluster IDs across core
+workflows</li>
+<li>Hardened parser behavior for mixed model output formats</li>
+<li>Updated code comments and examples for clarity</li>
 </ul>
 <p>For a complete list of updates, please refer to the <a href="../NEWS.html">NEWS.md</a> file.</p>
 </div>
@@ -326,7 +323,9 @@ indices</li>
 <div class="section level3">
 <h3 id="getting-started">Getting Started<a class="anchor" aria-label="anchor" href="#getting-started"></a>
 </h3>
-<p>To get started with mLLMCelltype, please refer to the <a href="02-installation.html">Installation Guide</a> and <a href="03-getting-started.html">Quick Start Guide</a>.</p>
+<p>To get started with mLLMCelltype, please refer to the <a href="https://cafferyang.com/mLLMCelltype/articles/installation.html">Installation
+Guide</a> and <a href="https://cafferyang.com/mLLMCelltype/articles/getting-started.html">Quick
+Start Guide</a>.</p>
 </div>
 <div class="section level3">
 <h3 id="citation">Citation<a class="anchor" aria-label="anchor" href="#citation"></a>
@@ -341,17 +340,17 @@ https://doi.org/10.1101/2025.04.10.647852</code></pre>
 </h3>
 <ul>
 <li>
-<a href="02-installation.html">Installation Guide</a>: Learn how to
-install and configure mLLMCelltype</li>
+<a href="https://cafferyang.com/mLLMCelltype/articles/installation.html">Installation
+Guide</a>: Learn how to install and configure mLLMCelltype</li>
 <li>
-<a href="03-getting-started.html">Quick Start Guide</a>: Get started
-with basic usage examples</li>
+<a href="https://cafferyang.com/mLLMCelltype/articles/getting-started.html">Quick
+Start Guide</a>: Get started with basic usage examples</li>
 <li>
-<a href="04-usage-tutorial.html">Usage Tutorial</a>: Explore
-detailed usage scenarios</li>
+<a href="https://cafferyang.com/mLLMCelltype/articles/usage-tutorial.html">Usage
+Tutorial</a>: Explore detailed usage scenarios</li>
 <li>
-<a href="05-consensus-principles.html">Consensus Annotation
-Principles</a>: Understand the technical principles</li>
+<a href="https://cafferyang.com/mLLMCelltype/articles/consensus-principles.html">Consensus
+Annotation Principles</a>: Understand the technical principles</li>
 </ul>
 </div>
 </div>

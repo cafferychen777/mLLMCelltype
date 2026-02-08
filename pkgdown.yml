@@ -12,10 +12,10 @@ articles:
   mLLMCelltype: mLLMCelltype.html
   usage-tutorial: usage-tutorial.html
   version-history: version-history.html
-  visualization-guide: visualization-guide.html
+  articles/visualization-guide: visualization-guide.html
   vs-single-agent: vs-single-agent.html
   why-consensus: why-consensus.html
-last_built: 2026-02-07T07:09Z
+last_built: 2026-02-08T09:32Z
 urls:
   reference: https://cafferyang.com/mLLMCelltype/reference
   article: https://cafferyang.com/mLLMCelltype/articles

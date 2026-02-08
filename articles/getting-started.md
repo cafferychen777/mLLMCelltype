@@ -1,7 +1,5 @@
 # Getting Started with mLLMCelltype
 
-![](../reference/figures/logo.png)
-
 ## Getting Started with mLLMCelltype
 
 This guide provides a quick introduction to using mLLMCelltype for cell
@@ -63,9 +61,10 @@ mLLMCelltype accepts marker gene data in several formats:
 
 #### 1. Data Frame Format
 
-A data frame with the following columns: - `cluster`: Cluster ID (must
-be 0-based) - `gene`: Gene name/symbol - `avg_log2FC` or similar metric:
-Log fold change - `p_val_adj` or similar metric: Adjusted p-value
+A data frame with the following columns: - `cluster`: Cluster ID
+(preserved as-is from your data) - `gene`: Gene name/symbol -
+`avg_log2FC` or similar metric: Log fold change - `p_val_adj` or similar
+metric: Adjusted p-value
 
 Example:
 
@@ -255,7 +254,7 @@ library(Seurat)
 # Add consensus annotations to Seurat object
 seurat_obj$cell_type_consensus <- plyr::mapvalues(
   x = as.character(Idents(seurat_obj)),
-  from = as.character(0:(length(consensus_results$final_annotations)-1)),
+  from = names(consensus_results$final_annotations),
   to = consensus_results$final_annotations
 )
 
@@ -415,21 +414,21 @@ production use**: Consider using paid models for better reliability
 Now that you understand the basics of mLLMCelltype, you can explore:
 
 - [Usage
-  Tutorial](https://cafferyang.com/mLLMCelltype/articles/04-usage-tutorial.md):
+  Tutorial](https://cafferyang.com/mLLMCelltype/articles/usage-tutorial.html):
   More detailed usage examples
 - [Consensus Annotation
-  Principles](https://cafferyang.com/mLLMCelltype/articles/05-consensus-principles.md):
+  Principles](https://cafferyang.com/mLLMCelltype/articles/consensus-principles.html):
   Learn about the consensus mechanism
 - [Visualization
-  Guide](https://cafferyang.com/mLLMCelltype/articles/06-visualization-guide.md):
+  Guide](https://cafferyang.com/mLLMCelltype/articles/visualization-guide.html):
   Create publication-ready visualizations
 - [Advanced
-  Features](https://cafferyang.com/mLLMCelltype/articles/08-advanced-features.md):
+  Features](https://cafferyang.com/mLLMCelltype/articles/advanced-features.html):
   Explore hierarchical annotation and other advanced features
-- [FAQ](https://cafferyang.com/mLLMCelltype/articles/07-faq.md): Answers
+- [FAQ](https://cafferyang.com/mLLMCelltype/articles/faq.html): Answers
   to common questions
 
 If you encounter any issues, check the
-[FAQ](https://cafferyang.com/mLLMCelltype/articles/07-faq.md) or [open
-an issue](https://github.com/cafferychen777/mLLMCelltype/issues) on our
+[FAQ](https://cafferyang.com/mLLMCelltype/articles/faq.html) or [open an
+issue](https://github.com/cafferychen777/mLLMCelltype/issues) on our
 GitHub repository.

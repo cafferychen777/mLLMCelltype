@@ -132,7 +132,7 @@ Normalize list input into a canonical cluster-&gt;genes mapping</p>
     <p>For list input, each element can be either:</p><ol><li><p>a list containing a <code>genes</code> field, or</p></li>
 <li><p>a character vector of genes.</p></li>
 </ol><p>Naming rules:</p><ul><li><p>unnamed lists are assigned 0-based IDs ("0", "1", ...)</p></li>
-<li><p>fully numeric names are canonicalized; if minimum index is &gt;= 1, they are shifted to 0-based</p></li>
+<li><p>numeric names are preserved as-is (e.g., "1", "2", "3" stays unchanged)</p></li>
 <li><p>non-numeric names are preserved as-is</p></li>
 </ul></div>
 

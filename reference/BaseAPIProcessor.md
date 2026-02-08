@@ -100,8 +100,7 @@ API call
 ### Method `extract_response_content()`
 
 Abstract method to be implemented by subclasses for extracting content
-from response Process input text into chunks Process all input chunks
-Process response content into lines Consolidate results from all chunks
+from response Make API call and extract response content
 
 #### Usage
 

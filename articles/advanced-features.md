@@ -1,7 +1,5 @@
 # Advanced Features & Case Studies
 
-![mLLMCelltype logo](../reference/figures/logo.png)
-
 This article explores advanced features of mLLMCelltype and presents
 practical examples demonstrating its application in various research
 contexts.
@@ -36,7 +34,7 @@ high_level_results <- annotate_cell_types(
 # Step 2: Add high-level annotations to Seurat object
 seurat_obj$high_level_celltype <- plyr::mapvalues(
   x = as.character(Idents(seurat_obj)),
-  from = as.character(0:(length(high_level_results)-1)),
+  from = names(high_level_results),
   to = high_level_results
 )
 
@@ -60,7 +58,7 @@ t_cell_barcodes <- WhichCells(t_cells)
 seurat_obj$detailed_celltype <- seurat_obj$high_level_celltype
 seurat_obj$detailed_celltype[t_cell_barcodes] <- plyr::mapvalues(
   x = as.character(Idents(t_cells)),
-  from = as.character(0:(length(t_cell_subtypes)-1)),
+  from = names(t_cell_subtypes),
   to = paste0("T cells: ", t_cell_subtypes)
 )
 ```
@@ -290,7 +288,7 @@ validate_annotations <- function(annotations, marker_data, known_markers) {
   validation_results <- list()
 
   for (i in 1:length(annotations)) {
-    cluster_id <- i - 1  # 0-based indexing
+    cluster_id <- i
     predicted_type <- annotations[i]
 
     # Get markers for this cluster
@@ -374,7 +372,7 @@ consensus_results <- interactive_consensus_annotation(
 # Add results to Seurat object
 pbmc_small$cell_type <- plyr::mapvalues(
   x = as.character(Idents(pbmc_small)),
-  from = as.character(0:(length(consensus_results$final_annotations)-1)),
+  from = names(consensus_results$final_annotations),
   to = consensus_results$final_annotations
 )
 
@@ -731,11 +729,11 @@ mllmcelltype_clear_cache()
 Now that you’ve explored the advanced features of mLLMCelltype, you can:
 
 - [Contribute to the
-  project](https://cafferyang.com/mLLMCelltype/articles/09-contributing-guide.md):
+  project](https://cafferyang.com/mLLMCelltype/articles/contributing-guide.html):
   Learn how to contribute to mLLMCelltype
 - [Review the version
-  history](https://cafferyang.com/mLLMCelltype/articles/news/index.md):
-  Explore the development history of the package
+  history](https://cafferyang.com/mLLMCelltype/news/index.html): Explore
+  the development history of the package
 - [Return to the
-  introduction](https://cafferyang.com/mLLMCelltype/articles/01-introduction.md):
+  introduction](https://cafferyang.com/mLLMCelltype/articles/introduction.html):
   Review the basic concepts

@@ -129,7 +129,7 @@ clusters with low agreement. The process includes:</p><ol><li><p>Initial voting 
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">interactive_consensus_annotation</span><span class="op">(</span></span>
 <span>  <span class="va">input</span>,</span>
-<span>  tissue_name <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  <span class="va">tissue_name</span>,</span>
 <span>  models <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"claude-opus-4-6-20260205"</span>, <span class="st">"gpt-5.2"</span>, <span class="st">"gemini-3-pro"</span>, <span class="st">"deepseek-r1"</span>,</span>
 <span>    <span class="st">"grok-4.1"</span><span class="op">)</span>,</span>
 <span>  <span class="va">api_keys</span>,</span>
@@ -160,7 +160,7 @@ of genes or a list containing a <code>genes</code> field.</p></dd>
 
 <dt id="arg-tissue-name">tissue_name<a class="anchor" aria-label="anchor" href="#arg-tissue-name"></a></dt>
 <dd><p>Character string specifying the tissue type for context-aware
-cell type annotation. If NULL, generic cell type annotation will be performed.</p></dd>
+cell type annotation (e.g., 'human PBMC', 'mouse brain'). Required.</p></dd>
 
 
 <dt id="arg-models">models<a class="anchor" aria-label="anchor" href="#arg-models"></a></dt>

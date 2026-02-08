@@ -33,7 +33,7 @@ Naming rules:
 
 - unnamed lists are assigned 0-based IDs ("0", "1", ...)
 
-- fully numeric names are canonicalized; if minimum index is \>= 1, they
-  are shifted to 0-based
+- numeric names are preserved as-is (e.g., "1", "2", "3" stays
+  unchanged)
 
 - non-numeric names are preserved as-is

@@ -1,7 +1,5 @@
 # Introduction to mLLMCelltype
 
-![](../reference/figures/logo.png)
-
 ## Introduction to mLLMCelltype
 
 ### Overview
@@ -118,18 +116,16 @@ analysis scenarios:
 
 ##### Bug Fixes
 
-- Fixed a critical issue with cluster index handling, now the package
-  strictly accepts only 0-based indices (compatible with Seurat)
-- Fixed negative index (-1) issues that could occur when processing CSV
-  input files
-- Added strict validation for input cluster indices to ensure they start
-  from 0
+- Fixed a critical issue in cluster index handling for CSV-style inputs
+- Fixed negative index (-1) edge cases during parsing
+- Improved cluster ID validation and diagnostics
 
 ##### Improvements
 
-- Removed automatic conversion logic from 1-based to 0-based indices
-- Added input validation to ensure cluster indices start from 0
-- Updated code comments for clarity
+- Improved input-contract consistency for cluster IDs across core
+  workflows
+- Hardened parser behavior for mixed model output formats
+- Updated code comments and examples for clarity
 
 For a complete list of updates, please refer to the
 [NEWS.md](https://cafferyang.com/mLLMCelltype/NEWS.md) file.
@@ -137,9 +133,9 @@ For a complete list of updates, please refer to the
 ### Getting Started
 
 To get started with mLLMCelltype, please refer to the [Installation
-Guide](https://cafferyang.com/mLLMCelltype/articles/02-installation.md)
+Guide](https://cafferyang.com/mLLMCelltype/articles/installation.html)
 and [Quick Start
-Guide](https://cafferyang.com/mLLMCelltype/articles/03-getting-started.md).
+Guide](https://cafferyang.com/mLLMCelltype/articles/getting-started.html).
 
 ### Citation
 
@@ -152,14 +148,14 @@ If you use mLLMCelltype in your research, please cite:
 ### Next Steps
 
 - [Installation
-  Guide](https://cafferyang.com/mLLMCelltype/articles/02-installation.md):
+  Guide](https://cafferyang.com/mLLMCelltype/articles/installation.html):
   Learn how to install and configure mLLMCelltype
 - [Quick Start
-  Guide](https://cafferyang.com/mLLMCelltype/articles/03-getting-started.md):
+  Guide](https://cafferyang.com/mLLMCelltype/articles/getting-started.html):
   Get started with basic usage examples
 - [Usage
-  Tutorial](https://cafferyang.com/mLLMCelltype/articles/04-usage-tutorial.md):
+  Tutorial](https://cafferyang.com/mLLMCelltype/articles/usage-tutorial.html):
   Explore detailed usage scenarios
 - [Consensus Annotation
-  Principles](https://cafferyang.com/mLLMCelltype/articles/05-consensus-principles.md):
+  Principles](https://cafferyang.com/mLLMCelltype/articles/consensus-principles.html):
   Understand the technical principles

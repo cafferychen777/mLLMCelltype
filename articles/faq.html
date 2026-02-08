@@ -136,7 +136,7 @@
       <h1>Frequently Asked Questions</h1>
                         <h4 data-toc-skip class="author">Chen Yang</h4>
             
-            <h4 data-toc-skip class="date">2026-02-07</h4>
+            <h4 data-toc-skip class="date">2026-02-08</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/cafferychen777/mLLMCelltype/blob/main/vignettes/faq.Rmd" class="external-link"><code>vignettes/faq.Rmd</code></a></small>
       <div class="d-none name"><code>faq.Rmd</code></div>
@@ -144,7 +144,6 @@
 
     
     
-<p><img src="../reference/figures/logo.png" align="right" height="139"></p>
 <div class="section level2">
 <h2 id="frequently-asked-questions">Frequently Asked Questions<a class="anchor" aria-label="anchor" href="#frequently-asked-questions"></a>
 </h2>
@@ -215,21 +214,13 @@ and tissues with limited reference data.</p>
 <h3 id="technical-questions">Technical Questions<a class="anchor" aria-label="anchor" href="#technical-questions"></a>
 </h3>
 <div class="section level4">
-<h4 id="how-does-mllmcelltype-handle-0-based-vs--1-based-cluster-indices">How does mLLMCelltype handle 0-based vs. 1-based cluster
-indices?<a class="anchor" aria-label="anchor" href="#how-does-mllmcelltype-handle-0-based-vs--1-based-cluster-indices"></a>
+<h4 id="how-does-mllmcelltype-handle-cluster-indices">How does mLLMCelltype handle cluster indices?<a class="anchor" aria-label="anchor" href="#how-does-mllmcelltype-handle-cluster-indices"></a>
 </h4>
-<p>mLLMCelltype strictly works with 0-based cluster indices, which is
-compatible with Seurat’s default indexing. This means:</p>
-<ul>
-<li>Cluster indices should start from 0, not 1</li>
-<li>If your data uses 1-based indexing, you need to convert it to
-0-based before using mLLMCelltype</li>
-<li>The package performs validation to ensure that cluster indices start
-from 0</li>
-</ul>
-<p>This design choice was made to ensure compatibility with Seurat,
-which is one of the most widely used single-cell analysis
-frameworks.</p>
+<p>mLLMCelltype preserves your original cluster IDs as-is. Whether your
+clusters are numbered 0, 1, 2 (Seurat default) or 1, 2, 3 (R
+convention), or use custom names like “t_cells”, the package will use
+them directly without modification. The returned annotations use the
+same cluster IDs as your input.</p>
 </div>
 <div class="section level4">
 <h4 id="what-is-the-recommended-number-of-marker-genes-per-cluster">What is the recommended number of marker genes per cluster?<a class="anchor" aria-label="anchor" href="#what-is-the-recommended-number-of-marker-genes-per-cluster"></a>
@@ -461,18 +452,16 @@ future reference</p>
 <h4 id="im-getting-an-error-about-invalid-cluster-indices--what-should-i-do">I’m getting an error about invalid cluster indices. What should I
 do?<a class="anchor" aria-label="anchor" href="#im-getting-an-error-about-invalid-cluster-indices--what-should-i-do"></a>
 </h4>
-<p>If you see an error like “Cluster indices must start from 0”, it
-means your data is using 1-based indexing instead of the required
-0-based indexing. To fix this:</p>
+<p>If you see an error about invalid cluster indices, check that your
+cluster column contains valid values. mLLMCelltype accepts any cluster
+IDs (numeric or character) and preserves them as-is. Common issues:</p>
 <ol style="list-style-type: decimal">
-<li>Check your cluster column to ensure it starts from 0, not 1</li>
-<li>If using Seurat’s FindAllMarkers output, this should already be
-0-based</li>
-<li>If your data is 1-based, convert it:</li>
+<li>Ensure the <code>cluster</code> column exists in your data
+frame</li>
+<li>Check for <code>NA</code> values in the cluster column</li>
+<li>If using non-standard column names, rename to <code>cluster</code>
+before calling the function</li>
 </ol>
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># Convert 1-based to 0-based indexing</span></span>
-<span><span class="va">markers</span><span class="op">$</span><span class="va">cluster</span> <span class="op">&lt;-</span> <span class="va">markers</span><span class="op">$</span><span class="va">cluster</span> <span class="op">-</span> <span class="fl">1</span></span></code></pre></div>
 </div>
 <div class="section level4">
 <h4 id="how-do-i-handle-api-key-not-found-errors">How do I handle “API key not found” errors?<a class="anchor" aria-label="anchor" href="#how-do-i-handle-api-key-not-found-errors"></a>
@@ -485,14 +474,14 @@ environment</p></li>
 <li><p><strong>Provide keys directly</strong>: Pass the API key directly
 to the function:</p></li>
 </ol>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">results</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/annotate_cell_types.html">annotate_cell_types</a></span><span class="op">(</span><span class="va">...</span>, api_key <span class="op">=</span> <span class="st">"your-api-key"</span><span class="op">)</span></span></code></pre></div>
 <ol start="3" style="list-style-type: decimal">
 <li>
 <strong>Check provider name</strong>: Make sure you’re using the
 correct provider name for your API key:</li>
 </ol>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Set API key for a specific provider</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/Sys.setenv.html" class="external-link">Sys.setenv</a></span><span class="op">(</span>ANTHROPIC_API_KEY <span class="op">=</span> <span class="st">"your-anthropic-key"</span><span class="op">)</span></span></code></pre></div>
 <ol start="4" style="list-style-type: decimal">
@@ -534,10 +523,10 @@ poorly represented in the training data of LLMs</p></li>
 <li><p><strong>Output</strong>: Annotation results can be easily added
 to your Seurat object:</p></li>
 </ol>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">seurat_obj</span><span class="op">$</span><span class="va">cell_type_consensus</span> <span class="op">&lt;-</span> <span class="fu">plyr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/plyr/man/mapvalues.html" class="external-link">mapvalues</a></span><span class="op">(</span></span>
 <span>  x <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/character.html" class="external-link">as.character</a></span><span class="op">(</span><span class="fu"><a href="https://satijalab.github.io/seurat-object/reference/Idents.html" class="external-link">Idents</a></span><span class="op">(</span><span class="va">seurat_obj</span><span class="op">)</span><span class="op">)</span>,</span>
-<span>  from <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/character.html" class="external-link">as.character</a></span><span class="op">(</span><span class="fl">0</span><span class="op">:</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">consensus_results</span><span class="op">$</span><span class="va">final_annotations</span><span class="op">)</span><span class="op">-</span><span class="fl">1</span><span class="op">)</span><span class="op">)</span>,</span>
+<span>  from <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">consensus_results</span><span class="op">$</span><span class="va">final_annotations</span><span class="op">)</span>,</span>
 <span>  to <span class="op">=</span> <span class="va">consensus_results</span><span class="op">$</span><span class="va">final_annotations</span></span>
 <span><span class="op">)</span></span></code></pre></div>
 <ol start="3" style="list-style-type: decimal">
@@ -545,7 +534,7 @@ to your Seurat object:</p></li>
 <strong>Visualization</strong>: Use Seurat’s visualization functions
 with the added annotations:</li>
 </ol>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://satijalab.org/seurat/reference/DimPlot.html" class="external-link">DimPlot</a></span><span class="op">(</span><span class="va">seurat_obj</span>, group.by <span class="op">=</span> <span class="st">"cell_type_consensus"</span>, label <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level4">
@@ -590,7 +579,7 @@ mLLMCelltype and traditional methods</p></li>
 </h4>
 <p>While mLLMCelltype uses carefully designed prompts, advanced users
 can customize them:</p>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Create a custom annotation prompt</span></span>
 <span><span class="va">custom_prompt</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/create_annotation_prompt.html">create_annotation_prompt</a></span><span class="op">(</span></span>
 <span>  marker_data <span class="op">=</span> <span class="va">your_markers</span>,</span>
@@ -610,7 +599,7 @@ can customize them:</p>
 <h4 id="can-i-add-my-own-custom-llm-models">Can I add my own custom LLM models?<a class="anchor" aria-label="anchor" href="#can-i-add-my-own-custom-llm-models"></a>
 </h4>
 <p>Yes, you can register custom models and providers:</p>
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Register a custom provider</span></span>
 <span><span class="fu"><a href="../reference/register_custom_provider.html">register_custom_provider</a></span><span class="op">(</span></span>
 <span>  provider_name <span class="op">=</span> <span class="st">"my_provider"</span>,</span>
@@ -652,8 +641,8 @@ results with different tissues and species</p></li>
 <li><p><strong>Develop new features</strong>: Contribute code for new
 features or improvements</p></li>
 </ol>
-<p>See our <a href="09-contributing-guide.html">Contributing Guide</a>
-for more details.</p>
+<p>See our <a href="https://cafferyang.com/mLLMCelltype/articles/contributing-guide.html">Contributing
+Guide</a> for more details.</p>
 </div>
 </div>
 <div class="section level3">
@@ -662,14 +651,15 @@ for more details.</p>
 <p>Now that you have answers to common questions, you can explore:</p>
 <ul>
 <li>
-<a href="08-advanced-features.html">Advanced Features</a>: Learn
-about hierarchical annotation and other advanced features</li>
+<a href="https://cafferyang.com/mLLMCelltype/articles/advanced-features.html">Advanced
+Features</a>: Learn about hierarchical annotation and other advanced
+features</li>
 <li>
-<a href="09-contributing-guide.html">Contributing Guide</a>: Find
-out how to contribute to the project</li>
+<a href="https://cafferyang.com/mLLMCelltype/articles/contributing-guide.html">Contributing
+Guide</a>: Find out how to contribute to the project</li>
 <li>
-<a href="10-version-history.html">Version History</a>: Review the
-development history of mLLMCelltype</li>
+<a href="https://cafferyang.com/mLLMCelltype/articles/version-history.html">Version
+History</a>: Review the development history of mLLMCelltype</li>
 </ul>
 </div>
 </div>

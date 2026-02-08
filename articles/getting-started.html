@@ -136,7 +136,7 @@
       <h1>Getting Started with mLLMCelltype</h1>
                         <h4 data-toc-skip class="author">Chen Yang</h4>
             
-            <h4 data-toc-skip class="date">2026-02-07</h4>
+            <h4 data-toc-skip class="date">2026-02-08</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/cafferychen777/mLLMCelltype/blob/main/vignettes/getting-started.Rmd" class="external-link"><code>vignettes/getting-started.Rmd</code></a></small>
       <div class="d-none name"><code>getting-started.Rmd</code></div>
@@ -144,7 +144,6 @@
 
     
     
-<p><img src="../reference/figures/logo.png" align="right" height="139"></p>
 <div class="section level2">
 <h2 id="getting-started-with-mllmcelltype">Getting Started with mLLMCelltype<a class="anchor" aria-label="anchor" href="#getting-started-with-mllmcelltype"></a>
 </h2>
@@ -210,9 +209,9 @@ calls:</p>
 <h4 id="data-frame-format">1. Data Frame Format<a class="anchor" aria-label="anchor" href="#data-frame-format"></a>
 </h4>
 <p>A data frame with the following columns: - <code>cluster</code>:
-Cluster ID (must be 0-based) - <code>gene</code>: Gene name/symbol -
-<code>avg_log2FC</code> or similar metric: Log fold change -
-<code>p_val_adj</code> or similar metric: Adjusted p-value</p>
+Cluster ID (preserved as-is from your data) - <code>gene</code>: Gene
+name/symbol - <code>avg_log2FC</code> or similar metric: Log fold change
+- <code>p_val_adj</code> or similar metric: Adjusted p-value</p>
 <p>Example:</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Example marker data frame</span></span>
@@ -426,7 +425,7 @@ a consensus:</p>
 <span><span class="co"># Add consensus annotations to Seurat object</span></span>
 <span><span class="va">seurat_obj</span><span class="op">$</span><span class="va">cell_type_consensus</span> <span class="op">&lt;-</span> <span class="fu">plyr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/plyr/man/mapvalues.html" class="external-link">mapvalues</a></span><span class="op">(</span></span>
 <span>  x <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/character.html" class="external-link">as.character</a></span><span class="op">(</span><span class="fu"><a href="https://satijalab.github.io/seurat-object/reference/Idents.html" class="external-link">Idents</a></span><span class="op">(</span><span class="va">seurat_obj</span><span class="op">)</span><span class="op">)</span>,</span>
-<span>  from <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/character.html" class="external-link">as.character</a></span><span class="op">(</span><span class="fl">0</span><span class="op">:</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">consensus_results</span><span class="op">$</span><span class="va">final_annotations</span><span class="op">)</span><span class="op">-</span><span class="fl">1</span><span class="op">)</span><span class="op">)</span>,</span>
+<span>  from <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">consensus_results</span><span class="op">$</span><span class="va">final_annotations</span><span class="op">)</span>,</span>
 <span>  to <span class="op">=</span> <span class="va">consensus_results</span><span class="op">$</span><span class="va">final_annotations</span></span>
 <span><span class="op">)</span></span>
 <span></span>
@@ -601,23 +600,25 @@ again. If the problem persists, the API service might be down.</p>
 explore:</p>
 <ul>
 <li>
-<a href="04-usage-tutorial.html">Usage Tutorial</a>: More detailed
-usage examples</li>
+<a href="https://cafferyang.com/mLLMCelltype/articles/usage-tutorial.html">Usage
+Tutorial</a>: More detailed usage examples</li>
 <li>
-<a href="05-consensus-principles.html">Consensus Annotation
-Principles</a>: Learn about the consensus mechanism</li>
+<a href="https://cafferyang.com/mLLMCelltype/articles/consensus-principles.html">Consensus
+Annotation Principles</a>: Learn about the consensus mechanism</li>
 <li>
-<a href="06-visualization-guide.html">Visualization Guide</a>:
-Create publication-ready visualizations</li>
+<a href="https://cafferyang.com/mLLMCelltype/articles/visualization-guide.html">Visualization
+Guide</a>: Create publication-ready visualizations</li>
 <li>
-<a href="08-advanced-features.html">Advanced Features</a>: Explore
-hierarchical annotation and other advanced features</li>
+<a href="https://cafferyang.com/mLLMCelltype/articles/advanced-features.html">Advanced
+Features</a>: Explore hierarchical annotation and other advanced
+features</li>
 <li>
-<a href="07-faq.html">FAQ</a>: Answers to common questions</li>
+<a href="https://cafferyang.com/mLLMCelltype/articles/faq.html">FAQ</a>:
+Answers to common questions</li>
 </ul>
-<p>If you encounter any issues, check the <a href="07-faq.html">FAQ</a>
-or <a href="https://github.com/cafferychen777/mLLMCelltype/issues" class="external-link">open
-an issue</a> on our GitHub repository.</p>
+<p>If you encounter any issues, check the <a href="https://cafferyang.com/mLLMCelltype/articles/faq.html">FAQ</a> or
+<a href="https://github.com/cafferychen777/mLLMCelltype/issues" class="external-link">open an
+issue</a> on our GitHub repository.</p>
 </div>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

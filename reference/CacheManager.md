@@ -81,7 +81,13 @@ Generate cache key from input parameters (improved version)
 
 #### Usage
 
-    CacheManager$generate_key(input, models, cluster_id)
+    CacheManager$generate_key(
+      input,
+      models,
+      cluster_id,
+      tissue_name = "",
+      top_gene_count = 10
+    )
 
 ------------------------------------------------------------------------
 
@@ -139,7 +145,8 @@ Clear all cache
 
 Validate cache content Extract genes from input in a standardized way
 Create stable hash from genes list Create stable hash from models list
-Create stable hash from cluster ID
+Create stable hash from tissue_name and top_gene_count Create stable
+hash from cluster ID
 
 #### Usage
 

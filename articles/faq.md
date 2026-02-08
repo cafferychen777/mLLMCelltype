@@ -1,7 +1,5 @@
 # Frequently Asked Questions
 
-![](../reference/figures/logo.png)
-
 ## Frequently Asked Questions
 
 This document addresses common questions about using mLLMCelltype for
@@ -68,19 +66,13 @@ and tissues with limited reference data.
 
 ### Technical Questions
 
-#### How does mLLMCelltype handle 0-based vs. 1-based cluster indices?
+#### How does mLLMCelltype handle cluster indices?
 
-mLLMCelltype strictly works with 0-based cluster indices, which is
-compatible with Seurat’s default indexing. This means:
-
-- Cluster indices should start from 0, not 1
-- If your data uses 1-based indexing, you need to convert it to 0-based
-  before using mLLMCelltype
-- The package performs validation to ensure that cluster indices start
-  from 0
-
-This design choice was made to ensure compatibility with Seurat, which
-is one of the most widely used single-cell analysis frameworks.
+mLLMCelltype preserves your original cluster IDs as-is. Whether your
+clusters are numbered 0, 1, 2 (Seurat default) or 1, 2, 3 (R
+convention), or use custom names like “t_cells”, the package will use
+them directly without modification. The returned annotations use the
+same cluster IDs as your input.
 
 #### What is the recommended number of marker genes per cluster?
 
@@ -274,19 +266,14 @@ future reference
 
 #### I’m getting an error about invalid cluster indices. What should I do?
 
-If you see an error like “Cluster indices must start from 0”, it means
-your data is using 1-based indexing instead of the required 0-based
-indexing. To fix this:
+If you see an error about invalid cluster indices, check that your
+cluster column contains valid values. mLLMCelltype accepts any cluster
+IDs (numeric or character) and preserves them as-is. Common issues:
 
-1.  Check your cluster column to ensure it starts from 0, not 1
-2.  If using Seurat’s FindAllMarkers output, this should already be
-    0-based
-3.  If your data is 1-based, convert it:
-
-``` r
-# Convert 1-based to 0-based indexing
-markers$cluster <- markers$cluster - 1
-```
+1.  Ensure the `cluster` column exists in your data frame
+2.  Check for `NA` values in the cluster column
+3.  If using non-standard column names, rename to `cluster` before
+    calling the function
 
 #### How do I handle “API key not found” errors?
 
@@ -351,7 +338,7 @@ mLLMCelltype integrates with Seurat:
 ``` r
 seurat_obj$cell_type_consensus <- plyr::mapvalues(
   x = as.character(Idents(seurat_obj)),
-  from = as.character(0:(length(consensus_results$final_annotations)-1)),
+  from = names(consensus_results$final_annotations),
   to = consensus_results$final_annotations
 )
 ```
@@ -467,7 +454,7 @@ We welcome contributions! Here are some ways to contribute:
     improvements
 
 See our [Contributing
-Guide](https://cafferyang.com/mLLMCelltype/articles/09-contributing-guide.md)
+Guide](https://cafferyang.com/mLLMCelltype/articles/contributing-guide.html)
 for more details.
 
 ### Next Steps
@@ -475,11 +462,11 @@ for more details.
 Now that you have answers to common questions, you can explore:
 
 - [Advanced
-  Features](https://cafferyang.com/mLLMCelltype/articles/08-advanced-features.md):
+  Features](https://cafferyang.com/mLLMCelltype/articles/advanced-features.html):
   Learn about hierarchical annotation and other advanced features
 - [Contributing
-  Guide](https://cafferyang.com/mLLMCelltype/articles/09-contributing-guide.md):
+  Guide](https://cafferyang.com/mLLMCelltype/articles/contributing-guide.html):
   Find out how to contribute to the project
 - [Version
-  History](https://cafferyang.com/mLLMCelltype/articles/10-version-history.md):
+  History](https://cafferyang.com/mLLMCelltype/articles/version-history.html):
   Review the development history of mLLMCelltype

@@ -1,7 +1,5 @@
 # Version History & Changelog
 
-![](../reference/figures/logo.png)
-
 ## Version History & Changelog
 
 This document tracks the development history of mLLMCelltype, including
@@ -206,7 +204,7 @@ If you use mLLMCelltype in your research, please cite:
 
 We welcome feedback and contributions to improve mLLMCelltype. Please
 see our [Contributing
-Guide](https://cafferyang.com/mLLMCelltype/articles/09-contributing-guide.md)
+Guide](https://cafferyang.com/mLLMCelltype/articles/contributing-guide.html)
 for details on how to contribute.
 
 ### Next Steps
@@ -214,11 +212,10 @@ for details on how to contribute.
 Now that you’ve reviewed the version history, you can:
 
 - [Return to the
-  introduction](https://cafferyang.com/mLLMCelltype/articles/01-introduction.md)
+  introduction](https://cafferyang.com/mLLMCelltype/articles/introduction.html)
   to get started with mLLMCelltype
 - [Explore advanced
-  features](https://cafferyang.com/mLLMCelltype/articles/08-advanced-features.md)
+  features](https://cafferyang.com/mLLMCelltype/articles/advanced-features.html)
   to learn about the latest capabilities
-- [Check the
-  FAQ](https://cafferyang.com/mLLMCelltype/articles/07-faq.md) for
-  answers to common questions
+- [Check the FAQ](https://cafferyang.com/mLLMCelltype/articles/faq.html)
+  for answers to common questions

@@ -33,7 +33,7 @@ output, log rotation, and performance monitoring capabilities.
 
 - `enable_console`:
 
-  Whether to output to console (default: TRUE)
+  Whether to output to console (default: FALSE)
 
 - `enable_json`:
 
@@ -90,7 +90,7 @@ Initialize the unified logger
       level = "INFO",
       max_size = 10,
       max_files = 5,
-      console_output = TRUE,
+      console_output = FALSE,
       json_format = TRUE
     )
 

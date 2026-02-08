@@ -18,7 +18,7 @@ process includes:
 ``` r
 interactive_consensus_annotation(
   input,
-  tissue_name = NULL,
+  tissue_name,
   models = c("claude-opus-4-6-20260205", "gpt-5.2", "gemini-3-pro", "deepseek-r1",
     "grok-4.1"),
   api_keys,
@@ -48,8 +48,7 @@ interactive_consensus_annotation(
 - tissue_name:
 
   Character string specifying the tissue type for context-aware cell
-  type annotation. If NULL, generic cell type annotation will be
-  performed.
+  type annotation (e.g., 'human PBMC', 'mouse brain'). Required.
 
 - models:
 

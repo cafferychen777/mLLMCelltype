@@ -12,6 +12,17 @@ supported.
 get_provider(model)
 ```
 
+## Arguments
+
+- model:
+
+  Character string specifying the model name (e.g., "gpt-5.2",
+  "claude-sonnet-4.5").
+
+## Value
+
+Character string of the provider name (e.g., "openai", "anthropic").
+
 ## Details
 
 Supported providers and model prefixes:

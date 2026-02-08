@@ -1,7 +1,5 @@
 # Consensus Annotation Principles
 
-![](../reference/figures/logo.png)
-
 ## Consensus Annotation Principles
 
 This article explains the technical principles behind mLLMCelltype’s
@@ -328,13 +326,13 @@ Now that you understand the technical principles behind mLLMCelltype,
 you can explore:
 
 - [Visualization
-  Guide](https://cafferyang.com/mLLMCelltype/articles/06-visualization-guide.md):
+  Guide](https://cafferyang.com/mLLMCelltype/articles/visualization-guide.html):
   Learn how to visualize consensus and uncertainty
-- [FAQ](https://cafferyang.com/mLLMCelltype/articles/07-faq.md): Find
+- [FAQ](https://cafferyang.com/mLLMCelltype/articles/faq.html): Find
   answers to common questions
 - [Advanced
-  Features](https://cafferyang.com/mLLMCelltype/articles/08-advanced-features.md):
+  Features](https://cafferyang.com/mLLMCelltype/articles/advanced-features.html):
   Explore hierarchical annotation and other advanced features
 - [Contributing
-  Guide](https://cafferyang.com/mLLMCelltype/articles/09-contributing-guide.md):
+  Guide](https://cafferyang.com/mLLMCelltype/articles/contributing-guide.html):
   Learn how to contribute to the project

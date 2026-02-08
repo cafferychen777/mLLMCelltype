@@ -1,7 +1,5 @@
 # Installation Guide
 
-![](../reference/figures/logo.png)
-
 ## Installation Guide
 
 This guide provides detailed instructions for installing and configuring
@@ -218,13 +216,13 @@ For large datasets, you might encounter memory issues:
 Now that you have installed mLLMCelltype, you can proceed to:
 
 - [Getting
-  Started](https://cafferyang.com/mLLMCelltype/articles/03-getting-started.md):
+  Started](https://cafferyang.com/mLLMCelltype/articles/getting-started.html):
   Learn the basics of using mLLMCelltype
 - [Usage
-  Tutorial](https://cafferyang.com/mLLMCelltype/articles/04-usage-tutorial.md):
+  Tutorial](https://cafferyang.com/mLLMCelltype/articles/usage-tutorial.html):
   Explore more advanced usage scenarios
 - [Visualization
-  Guide](https://cafferyang.com/mLLMCelltype/articles/06-visualization-guide.md):
+  Guide](https://cafferyang.com/mLLMCelltype/articles/visualization-guide.html):
   Learn how to visualize your results
 
 If you encounter any issues not covered in this guide, please [open an

@@ -1,7 +1,5 @@
 # Contributing Guide
 
-![](../reference/figures/logo.png)
-
 ## Contributing to mLLMCelltype
 
 Thank you for your interest in contributing to mLLMCelltype! This guide
@@ -341,11 +339,10 @@ be licensed under the same license as the project (MIT License).
 Now that you know how to contribute to mLLMCelltype, you can:
 
 - [Review the version
-  history](https://cafferyang.com/mLLMCelltype/articles/10-version-history.md)
+  history](https://cafferyang.com/mLLMCelltype/articles/version-history.html)
   to understand recent changes
 - [Explore advanced
-  features](https://cafferyang.com/mLLMCelltype/articles/08-advanced-features.md)
+  features](https://cafferyang.com/mLLMCelltype/articles/advanced-features.html)
   to identify areas for improvement
-- [Check the
-  FAQ](https://cafferyang.com/mLLMCelltype/articles/07-faq.md) to see
-  common questions that might need better documentation
+- [Check the FAQ](https://cafferyang.com/mLLMCelltype/articles/faq.html)
+  to see common questions that might need better documentation

@@ -1,9 +1,5 @@
 # Visualization Guide
 
-![mLLMCelltype logo](../reference/figures/logo.png)
-
-mLLMCelltype logo
-
 ## Visualization Guide
 
 This guide provides detailed instructions for visualizing mLLMCelltype
@@ -251,7 +247,7 @@ results.
 
 > **Note:** For a gallery of all visualization examples, please see the
 > [Visualization
-> Gallery](https://cafferyang.com/mLLMCelltype/articles/visualization_gallery.md).
+> Gallery](https://cafferyang.com/mLLMCelltype/articles/visualization-guide.html).
 
 #### Installing and Loading Required Packages
 
@@ -336,7 +332,8 @@ p1
 
 **Example Output:**
 
-![Enhanced Cell Type UMAP](figures/png/fig1_cell_types.png)
+![Enhanced Cell Type
+UMAP](https://raw.githubusercontent.com/cafferychen777/mLLMCelltype/main/R/vignettes/figures/png/fig1_cell_types.png)
 
 Enhanced Cell Type UMAP
 
@@ -371,7 +368,8 @@ p2
 
 **Example Output:**
 
-![UMAP with Density Contours](figures/png/fig2_density_contours.png)
+![UMAP with Density
+Contours](https://raw.githubusercontent.com/cafferychen777/mLLMCelltype/main/R/vignettes/figures/png/fig2_density_contours.png)
 
 UMAP with Density Contours
 
@@ -405,7 +403,8 @@ p3
 
 **Example Output:**
 
-![Controversial Clusters](figures/png/fig3_controversial_clusters.png)
+![Controversial
+Clusters](https://raw.githubusercontent.com/cafferychen777/mLLMCelltype/main/R/vignettes/figures/png/fig3_controversial_clusters.png)
 
 Controversial Clusters
 
@@ -442,7 +441,7 @@ p4
 **Example Output:**
 
 ![UMAP with Marginal
-Distributions](figures/png/fig4_marginal_distributions.png)
+Distributions](https://raw.githubusercontent.com/cafferychen777/mLLMCelltype/main/R/vignettes/figures/png/fig4_marginal_distributions.png)
 
 UMAP with Marginal Distributions
 
@@ -479,7 +478,8 @@ p5
 
 **Example Output:**
 
-![Consensus Proportion](figures/png/fig5_consensus_proportion.png)
+![Consensus
+Proportion](https://raw.githubusercontent.com/cafferychen777/mLLMCelltype/main/R/vignettes/figures/png/fig5_consensus_proportion.png)
 
 Consensus Proportion
 
@@ -516,7 +516,8 @@ p6
 
 **Example Output:**
 
-![Shannon Entropy](figures/png/fig6_entropy.png)
+![Shannon
+Entropy](https://raw.githubusercontent.com/cafferychen777/mLLMCelltype/main/R/vignettes/figures/png/fig6_entropy.png)
 
 Shannon Entropy
 
@@ -556,7 +557,7 @@ p7
 **Example Output:**
 
 ![Cell Types with Consensus
-Proportion](figures/png/fig7_cell_types_with_consensus.png)
+Proportion](https://raw.githubusercontent.com/cafferychen777/mLLMCelltype/main/R/vignettes/figures/png/fig7_cell_types_with_consensus.png)
 
 Cell Types with Consensus Proportion
 
@@ -602,7 +603,7 @@ p8
 **Example Output:**
 
 ![Uncertainty Metrics Violin
-Plots](figures/png/fig8_uncertainty_violins.png)
+Plots](https://raw.githubusercontent.com/cafferychen777/mLLMCelltype/main/R/vignettes/figures/png/fig8_uncertainty_violins.png)
 
 Uncertainty Metrics Violin Plots
 
@@ -631,7 +632,8 @@ simplified_dashboard
 
 **Example Output:**
 
-![Combined Dashboard](figures/png/fig9_dashboard.png)
+![Combined
+Dashboard](https://raw.githubusercontent.com/cafferychen777/mLLMCelltype/main/R/vignettes/figures/png/fig9_dashboard.png)
 
 Combined Dashboard
 
@@ -667,7 +669,8 @@ p1_pub
 
 **Example Output:**
 
-![High-Resolution Publication Figure](figures/png/fig10_publication.png)
+![High-Resolution Publication
+Figure](https://raw.githubusercontent.com/cafferychen777/mLLMCelltype/main/R/vignettes/figures/png/fig10_publication.png)
 
 High-Resolution Publication Figure
 
@@ -854,7 +857,8 @@ ggsave(
 
 **Example Output:**
 
-![Marker Gene Dotplot](figures/png/fig12_marker_dotplot.png)
+![Marker Gene
+Dotplot](https://raw.githubusercontent.com/cafferychen777/mLLMCelltype/main/R/vignettes/figures/png/fig12_marker_dotplot.png)
 
 Marker Gene Dotplot
 
@@ -1041,7 +1045,8 @@ dev.off()
 
 **Example Output:**
 
-![Enhanced Marker Gene Heatmap](figures/png/fig13_marker_heatmap.png)
+![Enhanced Marker Gene
+Heatmap](https://raw.githubusercontent.com/cafferychen777/mLLMCelltype/main/R/vignettes/figures/png/fig13_marker_heatmap.png)
 
 Enhanced Marker Gene Heatmap
 
@@ -1171,7 +1176,8 @@ add_track_continuous(
 
 **Example Output:**
 
-![Circlize Plot](figures/png/fig11_circlize_plot.png)
+![Circlize
+Plot](https://raw.githubusercontent.com/cafferychen777/mLLMCelltype/main/R/vignettes/figures/png/fig11_circlize_plot.png)
 
 Circlize Plot
 
@@ -1235,7 +1241,12 @@ library(pheatmap)
 create_prediction_matrix <- function(consensus_results, models) {
   n_clusters <- length(consensus_results$final_annotations)
   prediction_matrix <- matrix(NA, nrow = n_clusters, ncol = length(models))
-  rownames(prediction_matrix) <- paste0("Cluster_", 0:(n_clusters-1))
+  cluster_ids <- names(consensus_results$final_annotations)
+  if (!is.null(cluster_ids) && length(cluster_ids) == n_clusters) {
+    rownames(prediction_matrix) <- cluster_ids
+  } else {
+    rownames(prediction_matrix) <- paste0("Cluster_", seq_len(n_clusters))
+  }
   colnames(prediction_matrix) <- models
 
   # Extract individual model predictions from initial_results
@@ -1475,7 +1486,7 @@ library(SCpubr)
 # Add results to Seurat object
 seurat_obj$cell_type_consensus <- plyr::mapvalues(
   x = as.character(Idents(seurat_obj)),
-  from = as.character(0:(length(consensus_results$final_annotations)-1)),
+  from = names(consensus_results$final_annotations),
   to = consensus_results$final_annotations
 )
 
@@ -1627,14 +1638,14 @@ If wordcloud generation fails:
 Now that you know how to create effective visualizations for
 mLLMCelltype results, you can explore:
 
-- [FAQ](https://cafferyang.com/mLLMCelltype/articles/07-faq.md): Find
+- [FAQ](https://cafferyang.com/mLLMCelltype/articles/faq.html): Find
   answers to common questions
 - [Advanced
-  Features](https://cafferyang.com/mLLMCelltype/articles/08-advanced-features.md):
+  Features](https://cafferyang.com/mLLMCelltype/articles/advanced-features.html):
   Explore hierarchical annotation and other advanced features
 - [Contributing
-  Guide](https://cafferyang.com/mLLMCelltype/articles/09-contributing-guide.md):
+  Guide](https://cafferyang.com/mLLMCelltype/articles/contributing-guide.html):
   Learn how to contribute to the project
 - [Version
-  History](https://cafferyang.com/mLLMCelltype/articles/10-version-history.md):
+  History](https://cafferyang.com/mLLMCelltype/articles/version-history.html):
   Review the development history of mLLMCelltype

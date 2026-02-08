@@ -23,31 +23,9 @@ expression patterns.
 
   - Unnamed list: list(list(genes = c(...)), list(genes = c(...)))
 
-- For both input types, if cluster IDs are numeric and start from 1,
-  they will be automatically converted to 0-based indexing (e.g.,
-  cluster 1 becomes cluster 0) for consistency.
-
-IMPORTANT NOTE ON CLUSTER IDs: The 'cluster' column must contain numeric
-values or values that can be converted to numeric. Non-numeric cluster
-IDs (e.g., "cluster_1", "T_cells", "7_0") may cause errors or unexpected
-behavior. Before using this function, it is recommended to:
-
-1.  Ensure all cluster IDs are numeric or can be cleanly converted to
-    numeric values
-
-2.  If your data contains non-numeric cluster IDs, consider creating a
-    mapping between original IDs and numeric IDs:
-
-        # Example of standardizing cluster IDs
-        original_ids <- unique(markers$cluster)
-        id_mapping <- data.frame(
-          original = original_ids,
-          numeric = seq(0, length(original_ids) - 1)
-        )
-        markers$cluster <- id_mapping$numeric[match(markers$cluster, id_mapping$original)]
-
-'mouse brain'). This helps provide context for more accurate
-annotations.
+- Cluster IDs are preserved as-is. The function does not modify or
+  re-index cluster IDs. 'mouse brain'). This helps provide context for
+  more accurate annotations.
 
 - OpenAI: 'gpt-5.2', 'gpt-5.1', 'gpt-5', 'gpt-4.1', 'gpt-4o', 'o3-pro',
   'o3', 'o4-mini', 'o1', 'o1-pro'
@@ -154,7 +132,7 @@ is from Seurat's FindAllMarkers(). Default: 10
 ``` r
 annotate_cell_types(
   input,
-  tissue_name = NULL,
+  tissue_name,
   model = "gpt-5.2",
   api_key = NA,
   top_gene_count = 10,
@@ -227,8 +205,6 @@ annotate_cell_types(
   model = 'gpt-5.2',
   api_key = NA  # Returns prompt only without making API call
 )
-#> {"timestamp":"2026-02-07 07:09:39","session_id":"20260207_070939794_10577_600760","level":"INFO","message":"Unified logger initialized","context":{"session_id":"20260207_070939794_10577_600760","log_level":"INFO","log_dir":"logs"},"pid":10577} 
-#> {"timestamp":"2026-02-07 07:09:39","session_id":"20260207_070939794_10577_600760","level":"INFO","message":"Processing input with model and provider","context":{"model":"gpt-5.2","provider":"openai","custom_url":false},"pid":10577} 
 #> [1] "You are a cell type annotation expert. Below are marker genes for different cell clusters in human PBMC.\n\nt_cells: CD3D, CD3E, CD3G, CD28\nb_cells: CD19, CD79A, CD79B, MS4A1\nmonocytes: CD14, CD68, CSF1R, FCGR3A\n\nFor each numbered cluster, provide only the cell type name in a new line, without any explanation."
 
 # Example 2: Using with Seurat pipeline and OpenAI model
