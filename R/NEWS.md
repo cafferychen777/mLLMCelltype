@@ -1,5 +1,41 @@
 # mLLMCelltype Changelog
 
+## 2.0.0 (2026-02-08)
+
+### Breaking Changes
+* **Version bump to 2.0.0**: Major release reflecting substantial architectural improvements since 1.2.9
+* **Logger defaults changed**: `UnifiedLogger` console output is now disabled by default (`enable_console = FALSE`). Use `configure_logger(console_output = TRUE)` to enable console logging.
+
+### New Model Support
+* Added support for latest LLM models across all providers:
+  - OpenAI: GPT-5.2, GPT-5.1, GPT-5, o3-pro, o4-mini
+  - Anthropic: Claude Opus 4.6, Claude Opus 4.5, Claude Sonnet 4.5
+  - Google: Gemini 3 Pro, Gemini 3 Flash, Gemini 2.5 Pro/Flash
+  - X.AI: Grok 4, Grok 4.1, Grok 4 Heavy
+  - DeepSeek: DeepSeek R1
+  - Alibaba: Qwen 3 Max
+  - Zhipu: GLM-4.7
+  - MiniMax: MiniMax M2.1
+
+### Architecture Improvements
+* **Unified logging system**: Consolidated dual debug mechanisms (`debug` parameter + `LLMCELLTYPE_DEBUG_CACHE` env var) into single `log_debug()` approach; `debug = TRUE` temporarily enables console + DEBUG level via `on.exit()`
+* **Complete audit trail**: All `warning()` calls now paired with `log_warn()` for file-based audit; LLM consensus decisions logged to audit trail
+* **NAMESPACE fix**: `QwenProcessor` now correctly exported; internal `.qwen_endpoint_cache` no longer exposed in public API
+* **Cluster ID preservation**: Cluster IDs from input are preserved as-is throughout the annotation pipeline
+
+### Bug Fixes
+* Fixed `@export` misplacement in `qwen_processor.R` that exported internal state instead of the processor class
+* Fixed missing `tissue_name` parameter in real API test calls
+* Fixed `print()` bypassing logging system in `compare_model_predictions.R`
+* Fixed trailing newlines causing double-spaced console output in `compare_model_predictions.R`
+* Fixed `message()` format inconsistencies across consensus and comparison functions
+* Improved NA handling in API key validation and print functions
+
+### Code Quality
+* Removed marketing language from documentation
+* Consistent `message()` + `log_info()` pairing across entire codebase
+* Removed dead `TaskState.TESTING` from state machine (web component)
+
 ## 1.3.6 (2026-02-07)
 
 ### Documentation Clarification
