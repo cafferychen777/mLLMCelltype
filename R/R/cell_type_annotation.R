@@ -214,17 +214,20 @@ annotate_cell_types <- function(input,
   prompt_result <- create_annotation_prompt(input, tissue_name, top_gene_count)
   prompt <- prompt_result$prompt
 
-  # If debug mode is enabled, print more information
+  # If debug mode is enabled, temporarily enable console debug output
+  # so the log_debug() calls below become visible to the user.
   if (debug) {
-    message("\n==== DEBUG INFO ====\n")
-    message("Gene lists structure:\n")
-    utils::str(prompt_result$gene_lists)
-    message("\nFormatted prompt (raw):\n")
-    message(prompt)
-    message("==== END DEBUG INFO ====\n\n")
+    .old_level <- get_logger()$log_level
+    .old_console <- get_logger()$enable_console
+    get_logger()$set_level("DEBUG")
+    get_logger()$enable_console <- TRUE
+    on.exit({
+      get_logger()$set_level(.old_level)
+      get_logger()$enable_console <- .old_console
+    }, add = TRUE)
   }
 
-  # Log gene lists
+  # Log gene lists (visible on console only when debug = TRUE)
   log_debug("Gene lists for each cluster")
   cluster_ids <- names(prompt_result$gene_lists)
   for (id in cluster_ids) {

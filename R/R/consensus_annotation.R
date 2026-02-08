@@ -360,17 +360,11 @@ process_controversial_clusters <- function(controversial_clusters, input, tissue
     # Check cache
     cached_result <- NULL
     if (use_cache && !force_rerun) {
-      cache_debug <- Sys.getenv("LLMCELLTYPE_DEBUG_CACHE") == "TRUE"
-
-      if (cache_debug) {
-        message(sprintf("[DEBUG] Cache check for cluster %s: ", char_cluster_id))
-      }
+      log_debug(sprintf("Cache check for cluster %s", char_cluster_id),
+                list(cluster_id = char_cluster_id, cache_key = cache_key))
 
       has_cache <- cache_manager$has_cache(cache_key)
-
-      if (cache_debug) {
-        message(sprintf("has_cache = %s", has_cache))
-      }
+      log_debug(sprintf("Cache lookup result for cluster %s: has_cache = %s", char_cluster_id, has_cache))
 
       if (has_cache) {
         log_info(sprintf("Loading cached result for cluster %s", char_cluster_id), list(
@@ -380,10 +374,7 @@ process_controversial_clusters <- function(controversial_clusters, input, tissue
         message(sprintf("Loading cached result for cluster %s", char_cluster_id))
 
         cached_result <- cache_manager$load_from_cache(cache_key)
-
-        if (cache_debug) {
-          message(sprintf("[INFO] Successfully loaded cached result for cluster %s", char_cluster_id))
-        }
+        log_debug(sprintf("Successfully loaded cached result for cluster %s", char_cluster_id))
       }
     } else if (force_rerun) {
       log_info(sprintf("Force rerun enabled, skipping cache for cluster %s", char_cluster_id))
@@ -693,6 +684,7 @@ interactive_consensus_annotation <- function(input,
     if (length(invalid_clusters) > 0) {
       warning(sprintf("The following cluster IDs were not found in the input: %s",
                      paste(invalid_clusters, collapse = ", ")))
+      log_warn("Specified cluster IDs not found in input", list(invalid_clusters = invalid_clusters))
     }
     
     # Stop if no valid clusters

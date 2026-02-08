@@ -122,6 +122,7 @@ compare_model_predictions <- function(input,
       successful_models <- c(successful_models, model)
     }, error = function(e) {
       warning(sprintf("Error with model %s: %s", model, e$message))
+      log_warn(sprintf("Model %s failed during prediction", model), list(model = model, error = e$message))
     })
   }
   
@@ -229,29 +230,29 @@ compare_model_predictions <- function(input,
   )
   
   # Print summary
-  message("\nModel Comparison Summary:\n")
-  message(sprintf("Total clusters analyzed: %d\n", summary_stats$total_clusters))
-  message(sprintf("Clusters with consensus: %d (%.1f%%)\n", 
+  message("\nModel Comparison Summary:")
+  message(sprintf("Total clusters analyzed: %d", summary_stats$total_clusters))
+  message(sprintf("Clusters with consensus: %d (%.1f%%)",
               summary_stats$consensus_reached,
               100 * summary_stats$consensus_reached / summary_stats$total_clusters))
-  message(sprintf("Mean consensus proportion: %.2f\n", summary_stats$mean_consensus_proportion))
-  message(sprintf("Mean entropy: %.2f\n", summary_stats$mean_entropy))
-  
-  message("\nPairwise Model Agreement:\n")
-  print(model_agreement_matrix)
-  
-  message("\nDetailed Results:\n")
+  message(sprintf("Mean consensus proportion: %.2f", summary_stats$mean_consensus_proportion))
+  message(sprintf("Mean entropy: %.2f", summary_stats$mean_entropy))
+
+  message("\nPairwise Model Agreement:")
+  message(paste(utils::capture.output(print(model_agreement_matrix)), collapse = "\n"))
+
+  message("\nDetailed Results:")
   for (i in 1:n_clusters) {
     cluster_label <- if (i <= length(cluster_ids)) cluster_ids[i] else as.character(i)
-    message(sprintf("\nCluster %s:\n", cluster_label))
+    message(sprintf("\nCluster %s:", cluster_label))
     for (model in successful_models) {
-      message(sprintf("  %s: %s (Standardized: %s)\n",
+      message(sprintf("  %s: %s (Standardized: %s)",
                 model,
                 raw_matrix[i, model],
                 comparison_matrix[i, model]))
     }
-    message(sprintf("  Consensus: %s (Consensus Proportion: %.2f, Entropy: %.2f)\n", 
-                consensus_predictions[i], 
+    message(sprintf("  Consensus: %s (Consensus Proportion: %.2f, Entropy: %.2f)",
+                consensus_predictions[i],
                 consensus_proportions[i],
                 entropies[i]))
   }
@@ -281,8 +282,10 @@ standardize_cell_type_names <- function(predictions,
   api_key <- get_api_key(standardization_model, api_keys)
   
   if (is.null(api_key)) {
-    warning(sprintf("No API key found for standardization model '%s'. Using the first available model instead.", 
+    warning(sprintf("No API key found for standardization model '%s'. Using the first available model instead.",
                   standardization_model))
+    log_warn("No API key for standardization model, falling back",
+             list(requested = standardization_model, fallback = models[1]))
     standardization_model <- models[1]
     api_key <- get_api_key(standardization_model, api_keys)
   }
@@ -293,6 +296,7 @@ standardize_cell_type_names <- function(predictions,
   
   if (length(all_cell_types) == 0) {
     warning("No valid cell type predictions found to standardize")
+    log_warn("No valid cell type predictions found to standardize")
     return(predictions)
   }
   
@@ -383,6 +387,7 @@ standardize_cell_type_names <- function(predictions,
     
   }, error = function(e) {
     warning(sprintf("Error in standardization: %s\nReturning original predictions.", e$message))
+    log_warn("Standardization failed, returning original predictions", list(error = e$message))
     return(predictions)
   })
 }

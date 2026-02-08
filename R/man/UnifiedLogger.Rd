@@ -25,7 +25,7 @@ log rotation, and performance monitoring capabilities.
 
 \item{\code{max_log_files}}{Maximum number of log files to keep (default: 5)}
 
-\item{\code{enable_console}}{Whether to output to console (default: TRUE)}
+\item{\code{enable_console}}{Whether to output to console (default: FALSE)}
 
 \item{\code{enable_json}}{Whether to use JSON format (default: TRUE)}
 
@@ -64,7 +64,7 @@ Initialize the unified logger
   level = "INFO",
   max_size = 10,
   max_files = 5,
-  console_output = TRUE,
+  console_output = FALSE,
   json_format = TRUE
 )}\if{html}{\out{</div>}}
 }

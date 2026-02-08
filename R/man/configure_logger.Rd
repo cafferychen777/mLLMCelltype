@@ -4,12 +4,12 @@
 \alias{configure_logger}
 \title{Set global logger configuration}
 \usage{
-configure_logger(level = "INFO", console_output = TRUE, json_format = TRUE)
+configure_logger(level = "INFO", console_output = FALSE, json_format = TRUE)
 }
 \arguments{
 \item{level}{Logging level: "DEBUG", "INFO", "WARN", or "ERROR". Default: "INFO"}
 
-\item{console_output}{Whether to enable console output. Default: TRUE}
+\item{console_output}{Whether to enable console output. Default: FALSE}
 
 \item{json_format}{Whether to use JSON format for log messages. Default: TRUE}
 }

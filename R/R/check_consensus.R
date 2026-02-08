@@ -509,11 +509,21 @@ check_consensus <- function(round_responses, api_keys = NULL, controversy_thresh
   
   # Compare LLM result with simple consensus
   if (result$reached) {
+    get_logger()$info("LLM confirmed consensus", list(
+      majority_prediction = result$majority_prediction,
+      consensus_proportion = result$consensus_proportion,
+      entropy = result$entropy
+    ))
     message(sprintf("LLM CONFIRMED consensus: %s (CP=%.2f, H=%.2f)",
                     result$majority_prediction,
                     result$consensus_proportion,
                     result$entropy))
   } else {
+    get_logger()$info("LLM rejected consensus", list(
+      simple_suggestion = simple_result$majority_prediction,
+      llm_consensus_proportion = result$consensus_proportion,
+      llm_entropy = result$entropy
+    ))
     message(sprintf("LLM REJECTED consensus: Simple suggested %s but LLM found CP=%.2f, H=%.2f",
                     simple_result$majority_prediction,
                     result$consensus_proportion,

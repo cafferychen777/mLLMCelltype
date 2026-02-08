@@ -49,6 +49,7 @@ facilitate_cluster_discussion <- function(cluster_id,
       } else {
         # If it's another type, provide fallback
         warning("Unable to extract genes from input for cluster ", char_cluster_id)
+        log_warn("Unable to extract genes from input", list(cluster_id = char_cluster_id))
         paste("Cluster", char_cluster_id, "- Unable to extract specific genes")
       }
     } else {
@@ -58,11 +59,13 @@ facilitate_cluster_discussion <- function(cluster_id,
         paste(head(cluster_data$gene, top_gene_count), collapse = ",")
       } else {
         warning("No significant genes found for cluster ", char_cluster_id)
+        log_warn("No significant genes found", list(cluster_id = char_cluster_id))
         paste("Cluster", char_cluster_id, "- No significant genes found")
       }
     }
   }, error = function(e) {
     warning("Error extracting genes for cluster ", char_cluster_id, ": ", e$message)
+    log_warn("Error extracting genes", list(cluster_id = char_cluster_id, error = e$message))
     paste("Cluster", char_cluster_id, "- Error extracting genes:", e$message)
   })
 
@@ -117,8 +120,10 @@ facilitate_cluster_discussion <- function(cluster_id,
   for (model in models) {
     api_key <- get_api_key(model, api_keys)
     if (is.null(api_key)) {
+      provider <- get_provider(model)
       warning(sprintf("No API key found for model '%s' (provider: %s). This model will be skipped.",
-                   model, get_provider(model)))
+                   model, provider))
+      log_warn("No API key found, skipping model", list(model = model, provider = provider))
       next
     }
 
@@ -241,8 +246,10 @@ facilitate_cluster_discussion <- function(cluster_id,
     for (model in models) {
       api_key <- get_api_key(model, api_keys)
       if (is.null(api_key)) {
+        provider <- get_provider(model)
         warning(sprintf("No API key found for model '%s' (provider: %s). This model will be skipped.",
-                     model, get_provider(model)))
+                     model, provider))
+        log_warn("No API key found, skipping model", list(model = model, provider = provider, round = round))
         next
       }
 

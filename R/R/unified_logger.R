@@ -24,8 +24,8 @@ UnifiedLogger <- R6::R6Class("UnifiedLogger",
     #' @field max_log_files Maximum number of log files to keep (default: 5)
     max_log_files = 5,
     
-    #' @field enable_console Whether to output to console (default: TRUE)
-    enable_console = TRUE,
+    #' @field enable_console Whether to output to console (default: FALSE)
+    enable_console = FALSE,
     
     #' @field enable_json Whether to use JSON format (default: TRUE)
     enable_json = TRUE,
@@ -41,8 +41,8 @@ UnifiedLogger <- R6::R6Class("UnifiedLogger",
     #
     #
     #
-    initialize = function(base_dir = "logs", level = "INFO", max_size = 10, 
-                         max_files = 5, console_output = TRUE, json_format = TRUE) {
+    initialize = function(base_dir = "logs", level = "INFO", max_size = 10,
+                         max_files = 5, console_output = FALSE, json_format = TRUE) {
       self$log_dir <- base_dir
       self$log_level <- toupper(level)
       self$max_log_size <- max_size
@@ -593,7 +593,7 @@ initialize_logger <- function(log_dir = "logs") {
   level <- "INFO"
   max_size <- 10
   max_files <- 5
-  console_output <- TRUE
+  console_output <- FALSE
   json_format <- TRUE
 
   has_logger_fields <- function(x) {
@@ -628,12 +628,12 @@ initialize_logger <- function(log_dir = "logs") {
 #' Set global logger configuration
 #'
 #' @param level Logging level: "DEBUG", "INFO", "WARN", or "ERROR". Default: "INFO"
-#' @param console_output Whether to enable console output. Default: TRUE
+#' @param console_output Whether to enable console output. Default: FALSE
 #' @param json_format Whether to use JSON format for log messages. Default: TRUE
 #'
 #' @return Invisible logger object
 #' @export
-configure_logger <- function(level = "INFO", console_output = TRUE, json_format = TRUE) {
+configure_logger <- function(level = "INFO", console_output = FALSE, json_format = TRUE) {
   logger <- get_logger()
   logger$set_level(level)
   logger$enable_console <- console_output
