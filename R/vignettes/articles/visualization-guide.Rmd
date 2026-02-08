@@ -1156,7 +1156,12 @@ library(pheatmap)
 create_prediction_matrix <- function(consensus_results, models) {
   n_clusters <- length(consensus_results$final_annotations)
   prediction_matrix <- matrix(NA, nrow = n_clusters, ncol = length(models))
-  rownames(prediction_matrix) <- paste0("Cluster_", 0:(n_clusters-1))
+  cluster_ids <- names(consensus_results$final_annotations)
+  if (!is.null(cluster_ids) && length(cluster_ids) == n_clusters) {
+    rownames(prediction_matrix) <- cluster_ids
+  } else {
+    rownames(prediction_matrix) <- paste0("Cluster_", seq_len(n_clusters))
+  }
   colnames(prediction_matrix) <- models
 
   # Extract individual model predictions from initial_results
