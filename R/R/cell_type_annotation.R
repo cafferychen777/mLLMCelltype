@@ -217,13 +217,14 @@ annotate_cell_types <- function(input,
   # If debug mode is enabled, temporarily enable console debug output
   # so the log_debug() calls below become visible to the user.
   if (debug) {
-    .old_level <- get_logger()$log_level
-    .old_console <- get_logger()$enable_console
-    get_logger()$set_level("DEBUG")
-    get_logger()$enable_console <- TRUE
+    .logger <- get_logger()
+    .old_level <- .logger$log_level
+    .old_console <- .logger$enable_console
+    .logger$set_level("DEBUG")
+    .logger$enable_console <- TRUE
     on.exit({
-      get_logger()$set_level(.old_level)
-      get_logger()$enable_console <- .old_console
+      .logger$set_level(.old_level)
+      .logger$enable_console <- .old_console
     }, add = TRUE)
   }
 

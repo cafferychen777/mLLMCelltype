@@ -1,13 +1,12 @@
+# Package-level cache for Qwen endpoint (persists across QwenProcessor instances)
+.qwen_endpoint_cache <- new.env(parent = emptyenv())
+
 #' Qwen API Processor
-#' 
+#'
 #' Concrete implementation of BaseAPIProcessor for Qwen models.
 #' Handles Qwen-specific API calls, authentication, and response parsing.
 #'
 #' @importFrom R6 R6Class
-
-# Package-level cache for Qwen endpoint (persists across QwenProcessor instances)
-.qwen_endpoint_cache <- new.env(parent = emptyenv())
-
 #' @export
 QwenProcessor <- R6::R6Class("QwenProcessor",
   inherit = BaseAPIProcessor,
