@@ -111,6 +111,8 @@ navbar:
         href: articles/usage-tutorial.html
       - text: Consensus Annotation Principles
         href: articles/consensus-principles.html
+      - text: Visualization Guide
+        href: articles/visualization-guide.html
       - text: "---"
       - text: Advanced Topics
       - text: Frequently Asked Questions
@@ -242,6 +244,7 @@ articles:
     contents:
       - usage-tutorial
       - consensus-principles
+      - visualization-guide
   - title: Advanced Topics
     navbar: Advanced Topics
     contents:
