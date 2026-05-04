@@ -1,16 +1,6 @@
 <urlset xmlns = 'http://www.sitemaps.org/schemas/sitemap/0.9'>
 <url><loc>https://cafferyang.com/mLLMCelltype/404.html</loc></url>
 <url><loc>https://cafferyang.com/mLLMCelltype/LICENSE-text.html</loc></url>
-<url><loc>https://cafferyang.com/mLLMCelltype/articles/01-introduction.html</loc></url>
-<url><loc>https://cafferyang.com/mLLMCelltype/articles/02-installation.html</loc></url>
-<url><loc>https://cafferyang.com/mLLMCelltype/articles/03-getting-started.html</loc></url>
-<url><loc>https://cafferyang.com/mLLMCelltype/articles/04-usage-tutorial.html</loc></url>
-<url><loc>https://cafferyang.com/mLLMCelltype/articles/05-consensus-principles.html</loc></url>
-<url><loc>https://cafferyang.com/mLLMCelltype/articles/06-visualization-guide.html</loc></url>
-<url><loc>https://cafferyang.com/mLLMCelltype/articles/07-faq.html</loc></url>
-<url><loc>https://cafferyang.com/mLLMCelltype/articles/08-advanced-features.html</loc></url>
-<url><loc>https://cafferyang.com/mLLMCelltype/articles/09-contributing-guide.html</loc></url>
-<url><loc>https://cafferyang.com/mLLMCelltype/articles/10-version-history.html</loc></url>
 <url><loc>https://cafferyang.com/mLLMCelltype/articles/advanced-features.html</loc></url>
 <url><loc>https://cafferyang.com/mLLMCelltype/articles/consensus-principles.html</loc></url>
 <url><loc>https://cafferyang.com/mLLMCelltype/articles/contributing-guide.html</loc></url>
@@ -32,7 +22,6 @@
 <url><loc>https://cafferyang.com/mLLMCelltype/reference/BaseAPIProcessor.html</loc></url>
 <url><loc>https://cafferyang.com/mLLMCelltype/reference/CacheManager.html</loc></url>
 <url><loc>https://cafferyang.com/mLLMCelltype/reference/DeepSeekProcessor.html</loc></url>
-<url><loc>https://cafferyang.com/mLLMCelltype/reference/DiscussionLogger.html</loc></url>
 <url><loc>https://cafferyang.com/mLLMCelltype/reference/GeminiProcessor.html</loc></url>
 <url><loc>https://cafferyang.com/mLLMCelltype/reference/GrokProcessor.html</loc></url>
 <url><loc>https://cafferyang.com/mLLMCelltype/reference/MinimaxProcessor.html</loc></url>
@@ -100,11 +89,7 @@
 <url><loc>https://cafferyang.com/mLLMCelltype/reference/register_custom_model.html</loc></url>
 <url><loc>https://cafferyang.com/mLLMCelltype/reference/register_custom_provider.html</loc></url>
 <url><loc>https://cafferyang.com/mLLMCelltype/reference/resolve_provider_base_url.html</loc></url>
-<url><loc>https://cafferyang.com/mLLMCelltype/reference/sanitize_base_url.html</loc></url>
 <url><loc>https://cafferyang.com/mLLMCelltype/reference/select_best_prediction.html</loc></url>
 <url><loc>https://cafferyang.com/mLLMCelltype/reference/standardize_cell_type_names.html</loc></url>
-<url><loc>https://cafferyang.com/mLLMCelltype/reference/summarize_discussion.html</loc></url>
-<url><loc>https://cafferyang.com/mLLMCelltype/reference/validate_base_url.html</loc></url>
-<url><loc>https://cafferyang.com/mLLMCelltype/reference/write_log.html</loc></url>
 </urlset>
 

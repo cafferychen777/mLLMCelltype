@@ -1,6 +1,7 @@
 # mLLMCelltype: Overview and Quick Reference
 
 ``` r
+
 library(mLLMCelltype)
 ```
 
@@ -17,12 +18,14 @@ please refer to our paper (<doi:10.1101/2025.04.10.647852>).
 You can install the released version of mLLMCelltype from CRAN:
 
 ``` r
+
 install.packages("mLLMCelltype")
 ```
 
 Or install the development version from GitHub:
 
 ``` r
+
 # install.packages("devtools")
 devtools::install_github("cafferychen777/mLLMCelltype")
 ```
@@ -34,6 +37,7 @@ want to use. The package supports multiple LLM providers including
 OpenAI, Anthropic, Google (Gemini), and X.AI (Grok).
 
 ``` r
+
 # Set API keys (recommended to use .Renviron or .env file)
 # OpenAI API key
 Sys.setenv(OPENAI_API_KEY = "your-openai-api-key")
@@ -59,6 +63,7 @@ The main function of mLLMCelltype is to annotate cell types in a Seurat
 object:
 
 ``` r
+
 # Load required packages
 library(mLLMCelltype)
 library(Seurat)
@@ -113,6 +118,7 @@ pbmc$mLLM_cell_type <- cell_types
 ### Visualizing Results
 
 ``` r
+
 # Plot UMAP with cell type annotations
 library(Seurat)
 library(ggplot2)
@@ -169,6 +175,7 @@ If you only want to use a single LLM model instead of the consensus
 approach:
 
 ``` r
+
 # Run annotation with a single model
 single_model_results <- annotate_with_single_model(
   input = pbmc_markers,
@@ -194,6 +201,7 @@ DimPlot(pbmc, group.by = "single_model_cell_type", label = TRUE) +
 ### Customizing Consensus Parameters
 
 ``` r
+
 # Customize consensus parameters
 custom_consensus_results <- interactive_consensus_annotation(
   input = pbmc_markers,
@@ -218,6 +226,7 @@ custom_consensus_results <- interactive_consensus_annotation(
 You can register custom LLM providers:
 
 ``` r
+
 # Register a custom provider
 register_custom_provider(
   provider_name = "my_custom_provider",
@@ -238,6 +247,7 @@ results <- annotate_cell_types(
 mLLMCelltype includes a caching system to save API costs:
 
 ``` r
+
 # Enable caching
 Sys.setenv(MLLM_CACHE_ENABLED = "TRUE")
 

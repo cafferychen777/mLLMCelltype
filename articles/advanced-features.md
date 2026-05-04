@@ -18,6 +18,7 @@ workflow to capture these hierarchical relationships.
 Here’s a practical approach to perform hierarchical annotation:
 
 ``` r
+
 library(mLLMCelltype)
 library(Seurat)
 library(dplyr)
@@ -69,6 +70,7 @@ After creating hierarchical annotations, it’s important to validate the
 consistency between levels:
 
 ``` r
+
 # Create a simple function to check parent-child consistency
 validate_hierarchy <- function(high_level, detailed_level) {
   # Extract parent type from detailed annotation (before the colon)
@@ -109,6 +111,7 @@ For noisy datasets, using fewer top genes can help focus on the
 strongest signals:
 
 ``` r
+
 # For noisy data, use fewer top genes
 results_fewer_genes <- annotate_cell_types(
   input = marker_data,  # Your marker gene data
@@ -125,6 +128,7 @@ Pre-filtering marker genes with stricter thresholds can improve
 annotation quality:
 
 ``` r
+
 # Apply stricter filtering to marker genes
 filtered_markers <- marker_data %>%
   filter(p_val_adj < 0.01, avg_log2FC > 1.0)  # Stricter thresholds
@@ -144,6 +148,7 @@ The consensus approach can help overcome noise by combining predictions
 from multiple models:
 
 ``` r
+
 # Set up API keys
 api_keys <- list(
   anthropic = Sys.getenv("ANTHROPIC_API_KEY"),
@@ -177,6 +182,7 @@ When working with data affected by batch effects, you can:
 #### 1. Use the consensus approach with a lower controversy threshold
 
 ``` r
+
 # For data with batch effects, use consensus with lower threshold
 batch_consensus <- interactive_consensus_annotation(
   input = marker_data,  # Your marker gene data with batch effects
@@ -191,6 +197,7 @@ batch_consensus <- interactive_consensus_annotation(
 #### 2. Include batch information in the tissue context
 
 ``` r
+
 # Include batch information in the tissue context
 batch_aware_results <- annotate_cell_types(
   input = marker_data,  # Your marker gene data with batch effects
@@ -209,6 +216,7 @@ domain knowledge through the `tissue_name` parameter. This provides
 important context to the LLM:
 
 ``` r
+
 # Basic annotation without specific tissue context
 basic_results <- annotate_cell_types(
   input = marker_data,
@@ -232,6 +240,7 @@ For advanced use cases, you can create and modify the annotation prompt
 directly:
 
 ``` r
+
 # Create a custom annotation prompt
 custom_prompt <- create_annotation_prompt(
   input = marker_data,
@@ -260,6 +269,7 @@ You can enhance your annotation workflow by combining mLLMCelltype with
 other R packages and resources:
 
 ``` r
+
 library(Seurat)
 library(dplyr)
 
@@ -336,6 +346,7 @@ This example demonstrates a complete workflow for analyzing a PBMC
 dataset:
 
 ``` r
+
 library(Seurat)
 library(mLLMCelltype)
 library(ggplot2)
@@ -388,6 +399,7 @@ When working with datasets containing rare cell populations, you can
 adjust parameters to improve detection:
 
 ``` r
+
 # For rare cell types, use these strategies:
 
 # 1. Increase the number of marker genes considered
@@ -424,6 +436,7 @@ specific_annotation <- annotate_cell_types(
 mLLMCelltype can be used to compare cell types across different species:
 
 ``` r
+
 # Example workflow for cross-species comparison
 
 # 1. Annotate human and mouse datasets separately
@@ -482,6 +495,7 @@ When using mLLMCelltype, it’s important to consider the costs associated
 with API calls to different LLM providers:
 
 ``` r
+
 # Example of cost-efficient model selection
 # Choose models based on your specific needs and budget
 
@@ -517,6 +531,7 @@ openrouter_annotation <- annotate_cell_types(
 To optimize runtime when working with large datasets:
 
 ``` r
+
 # 1. Use caching with interactive_consensus_annotation
 consensus_with_cache <- interactive_consensus_annotation(
   input = marker_data,  # Your marker gene data
@@ -574,6 +589,7 @@ For advanced users, mLLMCelltype allows you to register custom providers
 and models:
 
 ``` r
+
 # Define a custom processing function
 # This function must accept prompt, model, and api_key parameters
 custom_process_fn <- function(prompt, model, api_key) {
@@ -629,6 +645,7 @@ mLLMCelltype provides a comprehensive unified logging system with
 structured output, performance monitoring, and multi-level logging:
 
 ``` r
+
 # Configure the global logger (recommended approach)
 configure_logger(level = "INFO", console_output = TRUE, json_format = TRUE)
 
@@ -681,6 +698,7 @@ The `CacheManager` class helps optimize performance by caching consensus
 results:
 
 ``` r
+
 # Create a cache manager
 cache_manager <- CacheManager$new(cache_dir = NULL)
 
@@ -714,6 +732,7 @@ mLLMCelltype provides convenient functions for managing cache
 directories:
 
 ``` r
+
 # Check cache location
 mllmcelltype_cache_dir()
 

@@ -72,12 +72,12 @@ Data. *bioRxiv*. <https://doi.org/10.1101/2025.04.10.647852>
 
 ### Cost and Resource Trade-offs
 
-| Aspect                     | Single-Agent | Consensus                             |
-|----------------------------|--------------|---------------------------------------|
-| **API calls per cluster**  | Fewer        | More (multiple models)                |
-| **Cost per run**           | Lower        | Higher per run                        |
-| **Two-stage optimization** | N/A          | Reduces calls when models agree early |
-| **Scalability**            | Good         | Good, with caching support            |
+| Aspect | Single-Agent | Consensus |
+|----|----|----|
+| **API calls per cluster** | Fewer | More (multiple models) |
+| **Cost per run** | Lower | Higher per run |
+| **Two-stage optimization** | N/A | Reduces calls when models agree early |
+| **Scalability** | Good | Good, with caching support |
 
 The two-stage consensus approach in mLLMCelltype can reduce API calls
 when models agree early, since only clusters without initial consensus

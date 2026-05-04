@@ -24,6 +24,7 @@ mLLMCelltype is now available on CRAN. You can install it directly
 using:
 
 ``` r
+
 # Install from CRAN
 install.packages("mLLMCelltype")
 ```
@@ -36,6 +37,7 @@ dependencies.
 To install the latest development version from GitHub:
 
 ``` r
+
 # Install devtools if not already installed
 if (!requireNamespace("devtools", quietly = TRUE)) {
   install.packages("devtools")
@@ -51,6 +53,7 @@ If you have downloaded the source code or need to install from a local
 copy:
 
 ``` r
+
 # Assuming the package is in the current working directory
 devtools::install_local("path/to/mLLMCelltype/R")
 ```
@@ -124,6 +127,7 @@ Create a `.env` file in your project directory with your API keys:
 Then load the environment variables in your R script:
 
 ``` r
+
 library(dotenv)
 dotenv::load_dot_env()
 ```
@@ -133,6 +137,7 @@ dotenv::load_dot_env()
 You can directly provide API keys in function calls:
 
 ``` r
+
 library(mLLMCelltype)
 
 results <- annotate_cell_types(
@@ -149,6 +154,7 @@ results <- annotate_cell_types(
 Set API keys as R environment variables:
 
 ``` r
+
 Sys.setenv(OPENAI_API_KEY = "your-openai-key")
 Sys.setenv(ANTHROPIC_API_KEY = "your-anthropic-key")
 # Set other API keys as needed
@@ -160,6 +166,7 @@ To verify that mLLMCelltype is installed correctly and API keys are set
 up properly:
 
 ``` r
+
 library(mLLMCelltype)
 
 # Check if the package is loaded correctly
@@ -198,6 +205,7 @@ If you encounter issues connecting to LLM APIs:
     your proxy settings
 
 ``` r
+
 # Example of setting proxy for httr
 httr::set_config(httr::use_proxy(url = "proxy_url", port = proxy_port))
 ```

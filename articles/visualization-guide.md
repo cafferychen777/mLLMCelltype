@@ -29,6 +29,7 @@ Before visualization, you need to add the mLLMCelltype results to your
 Seurat object:
 
 ``` r
+
 library(Seurat)
 library(mLLMCelltype)
 library(ggplot2)
@@ -188,6 +189,7 @@ if (!is.null(consensus_results$initial_results) &&
 ##### Cell Type Annotations
 
 ``` r
+
 # Basic cell type visualization
 p1 <- DimPlot(seurat_obj,
               group.by = "cell_type_consensus",
@@ -202,6 +204,7 @@ p1
 ##### Consensus Proportion
 
 ``` r
+
 # Visualize consensus proportion
 p2 <- FeaturePlot(seurat_obj,
                  features = "consensus_proportion",
@@ -217,6 +220,7 @@ p2
 ##### Shannon Entropy
 
 ``` r
+
 # Visualize Shannon entropy
 p3 <- FeaturePlot(seurat_obj,
                  features = "entropy",  # Note: The column name is 'entropy', not 'shannon_entropy'
@@ -233,6 +237,7 @@ p3
 ##### Combined Visualization
 
 ``` r
+
 # Combine all three visualizations
 p1 | p2 | p3
 ```
@@ -252,6 +257,7 @@ results.
 #### Installing and Loading Required Packages
 
 ``` r
+
 # Install SCpubr if not already installed
 if (!requireNamespace("SCpubr", quietly = TRUE)) {
   remotes::install_github("enblacar/SCpubr")
@@ -281,6 +287,7 @@ Before visualization, it’s important to standardize cell type names to
 ensure consistency:
 
 ``` r
+
 # Standardize cell type names
 # Merge singular and plural forms
 seurat_obj$cell_type_consensus <- gsub("B cell$", "B cells", seurat_obj$cell_type_consensus)
@@ -297,6 +304,7 @@ Using a colorblind-friendly palette enhances the accessibility of your
 visualizations:
 
 ``` r
+
 # Create a custom color palette that enhances cluster separation
 # Using a colorblind-friendly palette from viridis
 n_cell_types <- length(unique(seurat_obj$cell_type_consensus))
@@ -310,6 +318,7 @@ This enhanced visualization includes cell borders, optimized label
 placement, and improved aesthetics:
 
 ``` r
+
 # 1. Enhanced UMAP visualization with cell borders and optimized styling
 p1 <- SCpubr::do_DimPlot(sample = seurat_obj,
                    group.by = "cell_type_consensus",
@@ -346,6 +355,7 @@ populations.
 Adding density contours helps to better visualize cluster boundaries:
 
 ``` r
+
 # 2. UMAP with density contours to better show clustering patterns
 p2 <- SCpubr::do_DimPlot(sample = seurat_obj,
                    group.by = "cell_type_consensus",
@@ -383,6 +393,7 @@ Visualizing controversial clusters (those with low consensus or high
 entropy) can provide valuable insights:
 
 ``` r
+
 # Create a controversial clusters column (low consensus or high entropy)
 seurat_obj$controversial <- ifelse(seurat_obj$consensus_proportion < 0.6 | seurat_obj$entropy > 0.5,
                            "Controversial", "Consensus")
@@ -417,6 +428,7 @@ Adding marginal distributions can help visualize the overall
 distribution of cells:
 
 ``` r
+
 # 4. UMAP with marginal distributions
 # Using basic ggplot2 to create UMAP plot, then adding marginal distributions
 p4_base <- ggplot(data.frame(UMAP_1 = Embeddings(seurat_obj, "umap")[,1],
@@ -454,6 +466,7 @@ the UMAP space.
 Improved visualization of consensus proportion with density contours:
 
 ``` r
+
 # 5. Enhanced consensus proportion visualization
 p5 <- SCpubr::do_FeaturePlot(sample = seurat_obj,
                              features = "consensus_proportion",
@@ -492,6 +505,7 @@ cell type annotation.
 Improved visualization of entropy with density contours:
 
 ``` r
+
 # 6. Enhanced entropy visualization
 p6 <- SCpubr::do_FeaturePlot(sample = seurat_obj,
                              features = "entropy",
@@ -531,6 +545,7 @@ Visualizing cell types with consensus proportion provides a combined
 view:
 
 ``` r
+
 # 7. Group by cell type but show consensus proportion with group.by.cell_borders
 p7 <- SCpubr::do_FeaturePlot(sample = seurat_obj,
                              features = "consensus_proportion",
@@ -572,6 +587,7 @@ Violin plots can help visualize the distribution of uncertainty metrics
 by cell type:
 
 ``` r
+
 # 8. Violin plots of uncertainty metrics by cell type
 p8a <- SCpubr::do_ViolinPlot(sample = seurat_obj,
                             features = "consensus_proportion",
@@ -617,6 +633,7 @@ Creating a dashboard with multiple visualizations provides a
 comprehensive view:
 
 ``` r
+
 # 9. Combined visualization dashboard
 # Create a simplified dashboard with the main visualizations
 simplified_dashboard <- cowplot::plot_grid(
@@ -646,6 +663,7 @@ metrics. The panels are labeled for easy reference in publications.
 Creating a high-resolution figure for publication:
 
 ``` r
+
 # 10. High-resolution figure for publication
 p1_pub <- SCpubr::do_DimPlot(sample = seurat_obj,
                          group.by = "cell_type_consensus",
@@ -682,6 +700,7 @@ type clusters and labels.
 #### Saving Visualizations
 
 ``` r
+
 # Create a directory to save all visualizations
 dir.create("mLLMCelltype_visualizations", showWarnings = FALSE)
 
@@ -730,6 +749,7 @@ Before creating marker gene visualizations, ensure you have the required
 packages:
 
 ``` r
+
 # Install required packages if not already installed
 if (!requireNamespace("pheatmap", quietly = TRUE)) {
   install.packages("pheatmap")
@@ -760,6 +780,7 @@ library(circlize)        # For color functions
 First, identify marker genes for each cluster using Seurat:
 
 ``` r
+
 # Find marker genes for each cluster
 pbmc_markers <- FindAllMarkers(
   seurat_obj,
@@ -793,6 +814,7 @@ across cell types with both expression level (color) and expression
 percentage (dot size):
 
 ``` r
+
 # Create marker gene dotplot using Seurat's DotPlot function
 # First, prepare the top marker genes for each cluster
 top_markers <- pbmc_markers %>%
@@ -875,6 +897,7 @@ Create a classic heatmap showing marker gene expression across cell
 types:
 
 ``` r
+
 # Create enhanced heatmap with marker genes vs cell types
 library(ComplexHeatmap)
 library(circlize)
@@ -1088,6 +1111,7 @@ which markers to focus on.
 Common issues and solutions:
 
 ``` r
+
 # Issue: Empty or missing consensus results
 if (is.null(consensus_results$final_annotations)) {
   stop("Consensus results are missing. Please run consensus annotation first.")
@@ -1119,6 +1143,7 @@ Circlize plots provide a unique circular representation of your data,
 combining cell type information with metadata in concentric rings:
 
 ``` r
+
 # Install required packages if not already installed
 if (!requireNamespace("circlize", quietly = TRUE)) {
   install.packages("circlize")
@@ -1194,6 +1219,7 @@ You can visualize how different models agree or disagree with the
 consensus:
 
 ``` r
+
 # Assuming you have individual model results in the Seurat object
 # Create a function to calculate agreement with consensus
 calculate_agreement <- function(seurat_obj, model_column, consensus_column) {
@@ -1235,6 +1261,7 @@ wrap_plots(plot_list, ncol = 2)
 Create a heatmap to visualize all model predictions for each cluster:
 
 ``` r
+
 library(pheatmap)
 
 # Create a matrix of model predictions for each cluster
@@ -1343,6 +1370,7 @@ The discussion logs contain valuable information about the reasoning
 process. Here’s how to visualize key aspects:
 
 ``` r
+
 library(tidytext)
 library(wordcloud)
 library(stringr)
@@ -1433,6 +1461,7 @@ if (!is.null(discussion_text) && nchar(discussion_text) > 0) {
 For more flexibility in saving your visualizations:
 
 ``` r
+
 # Save a single plot with high resolution
 ggsave("cell_type_annotations.png", plot = p1, width = 10, height = 8, dpi = 600)
 
@@ -1474,6 +1503,7 @@ Here’s a complete example workflow for creating publication-ready
 visualizations:
 
 ``` r
+
 library(Seurat)
 library(mLLMCelltype)
 library(ggplot2)
@@ -1597,6 +1627,7 @@ If you encounter errors with SCpubr functions:
 - Use standard ggplot2 functions to add titles instead:
 
 ``` r
+
 p <- p + ggtitle("My Title") + theme(plot.title = element_text(hjust = 0.5))
 ```
 

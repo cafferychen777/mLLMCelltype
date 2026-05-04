@@ -50,6 +50,7 @@ multiple model predictions.
 ### Quick Start
 
 ``` r
+
 # Install the package
 devtools::install_github("cafferychen777/mLLMCelltype", subdir = "R")
 

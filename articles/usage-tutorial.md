@@ -14,6 +14,7 @@ Seurat.
 The main function for cell type annotation with a single model:
 
 ``` r
+
 library(mLLMCelltype)
 
 results <- annotate_cell_types(
@@ -32,6 +33,7 @@ Function for creating consensus annotations from multiple models through
 interactive discussion:
 
 ``` r
+
 consensus_results <- interactive_consensus_annotation(
   input,                # Original marker gene data (Seurat FindAllMarkers result or list of genes)
   tissue_name = NULL,   # Optional tissue name
@@ -64,6 +66,7 @@ See the main README for detailed recommendations and examples.
 For quick exploration or when API usage is a concern:
 
 ``` r
+
 # Load example data
 library(Seurat)
 data("pbmc_small")
@@ -96,6 +99,7 @@ DimPlot(pbmc_small, group.by = "cell_type_claude", label = TRUE)
 For publication-quality annotations with uncertainty quantification:
 
 ``` r
+
 # Define multiple models to use
 models <- c(
   "claude-sonnet-4-5-20250929",  # Anthropic
@@ -181,6 +185,7 @@ pbmc_small$shannon_entropy <- plyr::mapvalues(
 For users with limited API credits or budget constraints:
 
 ``` r
+
 # Set OpenRouter API key
 openrouter_api_key <- Sys.getenv("OPENROUTER_API_KEY")
 
@@ -240,6 +245,7 @@ print(comparison)
 For users who prefer working with files:
 
 ``` r
+
 # Save markers to CSV
 write.csv(pbmc_markers, "pbmc_markers.csv", row.names = FALSE)
 
@@ -257,6 +263,7 @@ results <- annotate_cell_types(
 For better control over caching behavior:
 
 ``` r
+
 # Note: The annotate_cell_types function does not have built-in caching.
 # If you need caching, you can implement it separately.
 
@@ -337,6 +344,7 @@ credits, but may have limitations compared to paid models. Use the
 `:free` suffix in the model name to access them.
 
 ``` r
+
 # Example of using a free model via OpenRouter
 # First, set your OpenRouter API key
 Sys.setenv(OPENROUTER_API_KEY = "your-openrouter-api-key")
@@ -357,6 +365,7 @@ Here’s a complete example of integrating mLLMCelltype with a Seurat
 workflow:
 
 ``` r
+
 library(Seurat)
 library(mLLMCelltype)
 library(ggplot2)
@@ -483,6 +492,7 @@ The `top_gene_count` parameter controls how many top marker genes per
 cluster are used for annotation:
 
 ``` r
+
 # Using more genes (better for well-characterized tissues)
 results_more_genes <- annotate_cell_types(
   input = pbmc_markers,
@@ -509,6 +519,7 @@ The `controversy_threshold` parameter in the
 considered controversial and require discussion:
 
 ``` r
+
 # Example of using interactive_consensus_annotation with different controversy thresholds
 # Lower threshold (more clusters will be discussed)
 consensus_results_low_threshold <- interactive_consensus_annotation(

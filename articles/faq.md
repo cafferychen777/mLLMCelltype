@@ -107,6 +107,7 @@ which saves time and reduces costs:
 To clear the cache:
 
 ``` r
+
 cache_manager <- CacheManager$new()
 cache_manager$clear_cache()
 ```
@@ -187,6 +188,7 @@ OpenRouter provides access to several high-quality models for free:
 3.  **Use models with the `:free` suffix**:
 
 ``` r
+
 # Set your OpenRouter API key
 Sys.setenv(OPENROUTER_API_KEY = "your-openrouter-api-key")
 
@@ -286,6 +288,7 @@ If you get an error about missing API keys:
     function:
 
 ``` r
+
 results <- annotate_cell_types(..., api_key = "your-api-key")
 ```
 
@@ -293,6 +296,7 @@ results <- annotate_cell_types(..., api_key = "your-api-key")
     name for your API key:
 
 ``` r
+
 # Set API key for a specific provider
 Sys.setenv(ANTHROPIC_API_KEY = "your-anthropic-key")
 ```
@@ -336,6 +340,7 @@ mLLMCelltype integrates with Seurat:
     object:
 
 ``` r
+
 seurat_obj$cell_type_consensus <- plyr::mapvalues(
   x = as.character(Idents(seurat_obj)),
   from = names(consensus_results$final_annotations),
@@ -347,6 +352,7 @@ seurat_obj$cell_type_consensus <- plyr::mapvalues(
     added annotations:
 
 ``` r
+
 DimPlot(seurat_obj, group.by = "cell_type_consensus", label = TRUE)
 ```
 
@@ -389,6 +395,7 @@ While mLLMCelltype uses carefully designed prompts, advanced users can
 customize them:
 
 ``` r
+
 # Create a custom annotation prompt
 custom_prompt <- create_annotation_prompt(
   marker_data = your_markers,
@@ -410,6 +417,7 @@ response <- get_model_response(
 Yes, you can register custom models and providers:
 
 ``` r
+
 # Register a custom provider
 register_custom_provider(
   provider_name = "my_provider",

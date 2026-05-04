@@ -58,6 +58,7 @@ Each model independently annotates the cell clusters based on the marker
 genes:
 
 ``` r
+
 # Conceptual representation of the initial annotation process
 initial_results <- list()
 for (model in models) {
@@ -80,6 +81,7 @@ The system identifies clusters where there is significant disagreement
 among models:
 
 ``` r
+
 # Conceptual representation of controversial cluster identification
 controversial_clusters <- identify_controversial_clusters(
   initial_results,
@@ -98,6 +100,7 @@ For controversial clusters, the system initiates a structured discussion
 process:
 
 ``` r
+
 # Conceptual representation of the discussion process
 discussion_results <- facilitate_cluster_discussion(
   controversial_clusters,
@@ -129,6 +132,7 @@ evaluating the evidence.
 After discussion, the system forms a final consensus for all clusters:
 
 ``` r
+
 # Conceptual representation of consensus formation
 final_annotations <- combine_results(
   initial_results,
@@ -151,6 +155,7 @@ quantification:
 The consensus proportion measures the level of agreement among models:
 
 ``` r
+
 # Conceptual calculation of consensus proportion
 consensus_proportion <- sapply(clusters, function(cluster) {
   annotations <- sapply(models, function(model) initial_results[[model]][cluster])
@@ -171,6 +176,7 @@ reliable and which might require further investigation.
 Shannon entropy quantifies the uncertainty in the annotations:
 
 ``` r
+
 # Conceptual calculation of Shannon entropy
 shannon_entropy <- sapply(clusters, function(cluster) {
   annotations <- sapply(models, function(model) initial_results[[model]][cluster])

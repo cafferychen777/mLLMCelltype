@@ -22,6 +22,7 @@ The mLLMCelltype workflow consists of these main steps:
 First, load the mLLMCelltype package:
 
 ``` r
+
 library(mLLMCelltype)
 ```
 
@@ -31,6 +32,7 @@ Before using mLLMCelltype, you need to set up API keys for the LLM
 providers you plan to use:
 
 ``` r
+
 # Set API keys as environment variables
 Sys.setenv(ANTHROPIC_API_KEY = "your-anthropic-api-key")  # For Claude models
 Sys.setenv(OPENAI_API_KEY = "your-openai-api-key")        # For GPT models
@@ -46,6 +48,7 @@ You can obtain API keys from: - Anthropic:
 Alternatively, you can provide API keys directly in function calls:
 
 ``` r
+
 results <- annotate_cell_types(
   input = markers,
   tissue_name = "human PBMC",
@@ -69,6 +72,7 @@ metric: Adjusted p-value
 Example:
 
 ``` r
+
 # Example marker data frame
 markers_df <- data.frame(
   cluster = c(0, 0, 0, 1, 1, 1),
@@ -85,6 +89,7 @@ You can directly use the output from Seurat’s
 function:
 
 ``` r
+
 # Assuming you have a Seurat object named 'seurat_obj'
 library(Seurat)
 all_markers <- FindAllMarkers(seurat_obj, only.pos = TRUE, min.pct = 0.25, logfc.threshold = 0.25)
@@ -95,6 +100,7 @@ all_markers <- FindAllMarkers(seurat_obj, only.pos = TRUE, min.pct = 0.25, logfc
 A path to a CSV file containing marker gene data:
 
 ``` r
+
 # Path to your CSV file
 markers_file <- "path/to/markers.csv"
 ```
@@ -104,6 +110,7 @@ markers_file <- "path/to/markers.csv"
 A list where each element contains marker genes for a cluster:
 
 ``` r
+
 # Example marker list
 markers_list <- list(
   "0" = c("CD3D", "CD3E", "CD2", "IL7R", "LTB"),
@@ -115,14 +122,14 @@ markers_list <- list(
 
 The `annotate_cell_types` function has the following parameters:
 
-| Parameter        | Description                                       | Default Value |
-|------------------|---------------------------------------------------|---------------|
-| `input`          | Marker gene data (data frame, list, or file path) | (required)    |
-| `tissue_name`    | Tissue name (e.g., “human PBMC”, “mouse brain”)   | `NULL`        |
-| `model`          | LLM model to use                                  | `"gpt-5"`     |
-| `api_key`        | API key (if not set in environment)               | `NA`          |
-| `top_gene_count` | Number of top genes per cluster to use            | `10`          |
-| `debug`          | Whether to print debugging information            | `FALSE`       |
+| Parameter | Description | Default Value |
+|----|----|----|
+| `input` | Marker gene data (data frame, list, or file path) | (required) |
+| `tissue_name` | Tissue name (e.g., “human PBMC”, “mouse brain”) | `NULL` |
+| `model` | LLM model to use | `"gpt-5"` |
+| `api_key` | API key (if not set in environment) | `NA` |
+| `top_gene_count` | Number of top genes per cluster to use | `10` |
+| `debug` | Whether to print debugging information | `FALSE` |
 
 Note: If `api_key` is set to `NA`, the function will return the
 generated prompt without making an API call, which is useful for
@@ -133,6 +140,7 @@ reviewing the prompt before sending it to the API.
 Here’s a simple example using a single LLM model for annotation:
 
 ``` r
+
 # Example marker data
 markers <- data.frame(
   cluster = c(0, 0, 0, 0, 0, 1, 1, 1, 1, 1),
@@ -171,6 +179,7 @@ For more reliable annotations, you can use multiple models and create a
 consensus:
 
 ``` r
+
 # Define models to use
 models <- c(
   "claude-sonnet-4-5-20250929",  # Anthropic
@@ -248,6 +257,7 @@ Cluster 1:
 To add the annotations to your Seurat object:
 
 ``` r
+
 # Assuming you have a Seurat object named 'seurat_obj' and consensus results
 library(Seurat)
 
@@ -292,6 +302,7 @@ seurat_obj$entropy <- plyr::mapvalues(
 Here’s a simple visualization of the results using Seurat:
 
 ``` r
+
 # Plot UMAP with cell type annotations
 DimPlot(seurat_obj, group.by = "cell_type_consensus", label = TRUE, repel = TRUE) +
   ggtitle("Cell Type Annotations") +
@@ -336,6 +347,7 @@ If you don’t have access to paid API keys, you can use OpenRouter’s free
 models:
 
 ``` r
+
 # Set OpenRouter API key
 Sys.setenv(OPENROUTER_API_KEY = "your-openrouter-api-key")
 

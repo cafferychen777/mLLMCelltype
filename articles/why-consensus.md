@@ -122,6 +122,7 @@ is very limited - Proof-of-concept work in early stages
 ### Quick Start Example
 
 ``` r
+
 library(mLLMCelltype)
 
 # Load your single-cell data

@@ -30,6 +30,7 @@ git remote add upstream https://github.com/cafferychen777/mLLMCelltype.git
 For R package development:
 
 ``` r
+
 # Install required packages for development
 install.packages(c("devtools", "roxygen2", "testthat", "knitr", "rmarkdown"))
 
@@ -96,6 +97,7 @@ R code:
 Example of properly formatted R code:
 
 ``` r
+
 #' Annotate Cell Types
 #'
 #' This function annotates cell types based on marker genes.
@@ -141,12 +143,14 @@ We use the testthat package for testing. Tests should be placed in the
 To run tests:
 
 ``` r
+
 devtools::test()
 ```
 
 Example test file (`test-annotate_cell_types.R`):
 
 ``` r
+
 context("Cell type annotation")
 
 test_that("annotate_cell_types returns expected format", {
@@ -198,6 +202,7 @@ To add support for a new LLM model:
 Example of adding a new model:
 
 ``` r
+
 # In process_newprovider.R
 process_newprovider <- function(prompt, api_key) {
   # Implementation for the new provider
