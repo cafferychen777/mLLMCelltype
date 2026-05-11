@@ -52,7 +52,7 @@ New models following existing naming conventions are automatically supported."><
 
     <a class="navbar-brand me-2" href="../index.html">mLLMCelltype</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">2.0.3</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">2.0.5</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -100,7 +100,7 @@ New models following existing naming conventions are automatically supported."><
   <main id="main" class="col-md-9"><div class="page-header">
 
       <h1>Determine provider from model name</h1>
-      <small class="dont-index">Source: <a href="https://github.com/cafferychen777/mLLMCelltype/blob/main/R/get_provider.R" class="external-link"><code>R/get_provider.R</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/cafferychen777/mLLMCelltype/blob/v2.0.5/R/get_provider.R" class="external-link"><code>R/get_provider.R</code></a></small>
       <div class="d-none name"><code>get_provider.Rd</code></div>
     </div>
 
@@ -120,7 +120,7 @@ New models following existing naming conventions are automatically supported.</p
 
 
 <dl><dt id="arg-model">model<a class="anchor" aria-label="anchor" href="#arg-model"></a></dt>
-<dd><p>Character string specifying the model name (e.g., "gpt-5.2", "claude-sonnet-4.5").</p></dd>
+<dd><p>Character string specifying the model name (e.g., "gpt-5.5", "claude-opus-4-7").</p></dd>
 
 </dl></div>
     <div class="section level2">
@@ -129,16 +129,16 @@ New models following existing naming conventions are automatically supported.</p
     </div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
-    <p>Supported providers and model prefixes:</p><ul><li><p>OpenAI: gpt-<em>, o1</em>, o3*, o4*, chatgpt-<em>, codex-</em> (e.g., 'gpt-5.2', 'o3-pro', 'o4-mini')</p></li>
-<li><p>Anthropic: claude-* (e.g., 'claude-opus-4.6', 'claude-sonnet-4.5')</p></li>
-<li><p>DeepSeek: deepseek-* (e.g., 'deepseek-chat', 'deepseek-r1')</p></li>
-<li><p>Google: gemini-* (e.g., 'gemini-3-pro', 'gemini-2.5-flash')</p></li>
-<li><p>Qwen: qwen*, qwq-* (e.g., 'qwen3-max', 'qwq-32b')</p></li>
-<li><p>Stepfun: step-* (e.g., 'step-2-mini', 'step-2-16k')</p></li>
-<li><p>Zhipu: glm-<em>, chatglm</em> (e.g., 'glm-4.7', 'glm-4-plus')</p></li>
-<li><p>MiniMax: minimax-* (e.g., 'minimax-m2.1', 'minimax-m1')</p></li>
-<li><p>Grok: grok-* (e.g., 'grok-4', 'grok-4-heavy')</p></li>
-<li><p>OpenRouter: Any model with '/' in the name (e.g., 'openai/gpt-5.2', 'anthropic/claude-sonnet-4.5')</p></li>
+    <p>Supported providers and model prefixes:</p><ul><li><p>OpenAI: gpt-<em>, o1</em>, o3*, o4*, chatgpt-<em>, codex-</em> (e.g., 'gpt-5.5', 'gpt-5.4-mini')</p></li>
+<li><p>Anthropic: claude-* (e.g., 'claude-opus-4-7', 'claude-sonnet-4-6')</p></li>
+<li><p>DeepSeek: deepseek-* (e.g., 'deepseek-v4-flash', 'deepseek-v4-pro')</p></li>
+<li><p>Google: gemini-* (e.g., 'gemini-3.1-pro-preview', 'gemini-3-flash-preview')</p></li>
+<li><p>Qwen: qwen*, qwq-* (e.g., 'qwen3.6-plus', 'qwen3.6-flash')</p></li>
+<li><p>Stepfun: step-* (e.g., 'step-3.5-flash', 'step-3')</p></li>
+<li><p>Zhipu: glm-<em>, chatglm</em> (e.g., 'glm-5.1', 'glm-5-turbo')</p></li>
+<li><p>MiniMax: minimax-* (e.g., 'MiniMax-M2.7', 'MiniMax-M2.5')</p></li>
+<li><p>Grok: grok-* (e.g., 'grok-4.3', 'grok-4.3-latest')</p></li>
+<li><p>OpenRouter: Any model with '/' in the name (e.g., 'openai/gpt-5.5', 'anthropic/claude-opus-4.7')</p></li>
 </ul></div>
 
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

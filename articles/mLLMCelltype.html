@@ -76,7 +76,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">mLLMCelltype</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">2.0.3</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">2.0.5</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -136,7 +136,7 @@
       <h1>mLLMCelltype: Overview and Quick Reference</h1>
             
       
-      <small class="dont-index">Source: <a href="https://github.com/cafferychen777/mLLMCelltype/blob/main/vignettes/mLLMCelltype.Rmd" class="external-link"><code>vignettes/mLLMCelltype.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/cafferychen777/mLLMCelltype/blob/v2.0.5/vignettes/mLLMCelltype.Rmd" class="external-link"><code>vignettes/mLLMCelltype.Rmd</code></a></small>
       <div class="d-none name"><code>mLLMCelltype.Rmd</code></div>
     </div>
 
@@ -217,9 +217,9 @@ Seurat object:</p>
 <span>  input <span class="op">=</span> <span class="va">pbmc_markers</span>,</span>
 <span>  tissue_name <span class="op">=</span> <span class="st">"human PBMC"</span>,  <span class="co"># provide tissue context</span></span>
 <span>  models <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
-<span>    <span class="st">"claude-sonnet-4-5-20250929"</span>,  <span class="co"># Anthropic</span></span>
-<span>    <span class="st">"gpt-5"</span>,                   <span class="co"># OpenAI</span></span>
-<span>    <span class="st">"gemini-2.5-pro"</span>            <span class="co"># Google</span></span>
+<span>    <span class="st">"claude-sonnet-4-6"</span>,  <span class="co"># Anthropic</span></span>
+<span>    <span class="st">"gpt-5.5"</span>,                   <span class="co"># OpenAI</span></span>
+<span>    <span class="st">"gemini-3.1-pro-preview"</span>            <span class="co"># Google</span></span>
 <span>  <span class="op">)</span>,</span>
 <span>  api_keys <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
 <span>    anthropic <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Sys.getenv.html" class="external-link">Sys.getenv</a></span><span class="op">(</span><span class="st">"ANTHROPIC_API_KEY"</span><span class="op">)</span>,</span>
@@ -229,7 +229,7 @@ Seurat object:</p>
 <span>  top_gene_count <span class="op">=</span> <span class="fl">10</span>,</span>
 <span>  controversy_threshold <span class="op">=</span> <span class="fl">1.0</span>,</span>
 <span>  entropy_threshold <span class="op">=</span> <span class="fl">1.0</span>,</span>
-<span>  consensus_check_model <span class="op">=</span> <span class="st">"claude-sonnet-4-5-20250929"</span>,  <span class="co"># Use a reliable model for consensus checking</span></span>
+<span>  consensus_check_model <span class="op">=</span> <span class="st">"claude-sonnet-4-6"</span>,  <span class="co"># Use a reliable model for consensus checking</span></span>
 <span>  cache_dir <span class="op">=</span> <span class="cn">NULL</span>  <span class="co"># Uses default system cache directory</span></span>
 <span><span class="op">)</span></span>
 <span></span>
@@ -280,31 +280,28 @@ Seurat object:</p>
 <p>mLLMCelltype supports various LLM models:</p>
 <ul>
 <li>
-<strong>OpenAI</strong>: gpt-5, gpt-5-mini, gpt-5-nano, gpt-4.1,
-gpt-4.1-mini, gpt-4.1-nano, gpt-4o, gpt-4o-mini, gpt-4-turbo,
-gpt-3.5-turbo, o1, o1-mini, o1-preview, o1-pro</li>
+<strong>OpenAI</strong>: gpt-5.5, gpt-5.4, gpt-5.4-mini</li>
 <li>
-<strong>Anthropic</strong>: claude-sonnet-4-5-20250929,
-claude-opus-4-1-20250805, claude-sonnet-4-20250514,
-claude-opus-4-20250514, claude-haiku-4-20250514,
-claude-3-5-haiku-20241022, claude-3-opus-20240229</li>
+<strong>Anthropic</strong>: claude-opus-4-7, claude-sonnet-4-6,
+claude-haiku-4-5-20251001</li>
 <li>
-<strong>DeepSeek</strong>: deepseek-chat, deepseek-reasoner</li>
+<strong>DeepSeek</strong>: deepseek-v4-flash, deepseek-v4-pro</li>
 <li>
-<strong>Google</strong>: gemini-2.5-pro, gemini-2.0-flash,
-gemini-2.0-flash-exp, gemini-1.5-pro, gemini-1.5-flash</li>
+<strong>Google</strong>: gemini-3.1-pro-preview,
+gemini-3-flash-preview, gemini-3.1-flash-lite</li>
 <li>
-<strong>Qwen</strong>: qwen-max-2025-01-25, qwen3-72b</li>
+<strong>Qwen</strong>: qwen3.6-plus, qwen3.6-flash,
+qwen3.6-max-preview</li>
 <li>
-<strong>Stepfun</strong>: step-2-mini, step-2-16k, step-1-8k</li>
+<strong>Stepfun</strong>: step-3.5-flash, step-3.5-flash-2603,
+step-3</li>
 <li>
-<strong>Zhipu</strong>: glm-4-plus, glm-3-turbo</li>
+<strong>Zhipu/Z.AI</strong>: glm-5.1, glm-5, glm-5-turbo</li>
 <li>
-<strong>MiniMax</strong>: minimax-text-01</li>
+<strong>MiniMax</strong>: MiniMax-M2.7, MiniMax-M2.7-highspeed,
+MiniMax-M2.5</li>
 <li>
-<strong>Grok</strong>: grok-3, grok-3-latest, grok-3-fast,
-grok-3-fast-latest, grok-3-mini, grok-3-mini-latest, grok-3-mini-fast,
-grok-3-mini-fast-latest</li>
+<strong>Grok</strong>: grok-4.3, grok-4.3-latest, grok-latest</li>
 <li>
 <strong>OpenRouter</strong>: Access to models from multiple
 providers through a single API</li>
@@ -320,25 +317,17 @@ providers through a single API</li>
 approach:</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Run annotation with a single model</span></span>
-<span><span class="va">single_model_results</span> <span class="op">&lt;-</span> <span class="fu">annotate_with_single_model</span><span class="op">(</span></span>
+<span><span class="va">single_model_results</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/annotate_cell_types.html">annotate_cell_types</a></span><span class="op">(</span></span>
 <span>  input <span class="op">=</span> <span class="va">pbmc_markers</span>,</span>
 <span>  tissue_name <span class="op">=</span> <span class="st">"human PBMC"</span>,</span>
-<span>  model <span class="op">=</span> <span class="st">"claude-sonnet-4-5-20250929"</span>,</span>
+<span>  model <span class="op">=</span> <span class="st">"claude-sonnet-4-6"</span>,</span>
 <span>  api_key <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Sys.getenv.html" class="external-link">Sys.getenv</a></span><span class="op">(</span><span class="st">"ANTHROPIC_API_KEY"</span><span class="op">)</span>,</span>
-<span>  top_gene_count <span class="op">=</span> <span class="fl">10</span>,</span>
-<span>  cache_dir <span class="op">=</span> <span class="cn">NULL</span>  <span class="co"># Uses default system cache directory</span></span>
+<span>  top_gene_count <span class="op">=</span> <span class="fl">10</span></span>
 <span><span class="op">)</span></span>
 <span></span>
-<span><span class="co"># Add annotations to Seurat object</span></span>
-<span><span class="va">pbmc</span><span class="op">$</span><span class="va">single_model_cell_type</span> <span class="op">&lt;-</span> <span class="fu">plyr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/plyr/man/mapvalues.html" class="external-link">mapvalues</a></span><span class="op">(</span></span>
-<span>  x <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/character.html" class="external-link">as.character</a></span><span class="op">(</span><span class="fu"><a href="https://satijalab.github.io/seurat-object/reference/Idents.html" class="external-link">Idents</a></span><span class="op">(</span><span class="va">pbmc</span><span class="op">)</span><span class="op">)</span>,</span>
-<span>  from <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">single_model_results</span><span class="op">)</span>,</span>
-<span>  to <span class="op">=</span> <span class="va">single_model_results</span></span>
-<span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># Visualize results</span></span>
-<span><span class="fu"><a href="https://satijalab.org/seurat/reference/DimPlot.html" class="external-link">DimPlot</a></span><span class="op">(</span><span class="va">pbmc</span>, group.by <span class="op">=</span> <span class="st">"single_model_cell_type"</span>, label <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">ggtitle</a></span><span class="op">(</span><span class="st">"Cell Types Annotated by Single LLM Model"</span><span class="op">)</span></span></code></pre></div>
+<span><span class="co"># Inspect the provider response lines. Parse or review this text before</span></span>
+<span><span class="co"># mapping annotations back onto a Seurat object.</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="va">single_model_results</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="customizing-consensus-parameters">Customizing Consensus Parameters<a class="anchor" aria-label="anchor" href="#customizing-consensus-parameters"></a>
@@ -348,7 +337,7 @@ approach:</p>
 <span><span class="va">custom_consensus_results</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/interactive_consensus_annotation.html">interactive_consensus_annotation</a></span><span class="op">(</span></span>
 <span>  input <span class="op">=</span> <span class="va">pbmc_markers</span>,</span>
 <span>  tissue_name <span class="op">=</span> <span class="st">"human PBMC"</span>,</span>
-<span>  models <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"claude-sonnet-4-5-20250929"</span>, <span class="st">"gpt-5"</span>, <span class="st">"gemini-2.5-pro"</span><span class="op">)</span>,</span>
+<span>  models <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"claude-sonnet-4-6"</span>, <span class="st">"gpt-5.5"</span>, <span class="st">"gemini-3.1-pro-preview"</span><span class="op">)</span>,</span>
 <span>  api_keys <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
 <span>    anthropic <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Sys.getenv.html" class="external-link">Sys.getenv</a></span><span class="op">(</span><span class="st">"ANTHROPIC_API_KEY"</span><span class="op">)</span>,</span>
 <span>    openai <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Sys.getenv.html" class="external-link">Sys.getenv</a></span><span class="op">(</span><span class="st">"OPENAI_API_KEY"</span><span class="op">)</span>,</span>
@@ -358,7 +347,7 @@ approach:</p>
 <span>  controversy_threshold <span class="op">=</span> <span class="fl">0.7</span>,        <span class="co"># Threshold for controversy detection</span></span>
 <span>  entropy_threshold <span class="op">=</span> <span class="fl">0.7</span>,            <span class="co"># Entropy threshold for controversy detection</span></span>
 <span>  max_discussion_rounds <span class="op">=</span> <span class="fl">2</span>,          <span class="co"># Maximum rounds of discussion</span></span>
-<span>  consensus_check_model <span class="op">=</span> <span class="st">"claude-sonnet-4-5-20250929"</span>,  <span class="co"># Use a reliable model for consensus checking</span></span>
+<span>  consensus_check_model <span class="op">=</span> <span class="st">"claude-sonnet-4-6"</span>,  <span class="co"># Use a reliable model for consensus checking</span></span>
 <span>  cache_dir <span class="op">=</span> <span class="cn">NULL</span>  <span class="co"># Uses default system cache directory</span></span>
 <span><span class="op">)</span></span></code></pre></div>
 </div>
@@ -370,15 +359,23 @@ approach:</p>
 <code class="sourceCode R"><span><span class="co"># Register a custom provider</span></span>
 <span><span class="fu"><a href="../reference/register_custom_provider.html">register_custom_provider</a></span><span class="op">(</span></span>
 <span>  provider_name <span class="op">=</span> <span class="st">"my_custom_provider"</span>,</span>
-<span>  process_function <span class="op">=</span> <span class="va">my_process_function</span>,</span>
-<span>  models <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"my-model-1"</span>, <span class="st">"my-model-2"</span><span class="op">)</span></span>
+<span>  process_fn <span class="op">=</span> <span class="va">my_process_function</span>,</span>
+<span>  description <span class="op">=</span> <span class="st">"My custom LLM provider"</span></span>
 <span><span class="op">)</span></span>
 <span></span>
-<span><span class="co"># Use the custom provider</span></span>
+<span><span class="co"># Register a model served by that provider</span></span>
+<span><span class="fu"><a href="../reference/register_custom_model.html">register_custom_model</a></span><span class="op">(</span></span>
+<span>  model_name <span class="op">=</span> <span class="st">"my-model-1"</span>,</span>
+<span>  provider_name <span class="op">=</span> <span class="st">"my_custom_provider"</span>,</span>
+<span>  model_config <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Use the custom model</span></span>
 <span><span class="va">results</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/annotate_cell_types.html">annotate_cell_types</a></span><span class="op">(</span></span>
-<span>  seurat_obj <span class="op">=</span> <span class="va">seurat_obj</span>,</span>
-<span>  models <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"my-model-1"</span>, <span class="st">"claude-sonnet-4-5-20250929"</span><span class="op">)</span>,</span>
-<span>  <span class="co"># other parameters</span></span>
+<span>  input <span class="op">=</span> <span class="va">pbmc_markers</span>,</span>
+<span>  tissue_name <span class="op">=</span> <span class="st">"human PBMC"</span>,</span>
+<span>  model <span class="op">=</span> <span class="st">"my-model-1"</span>,</span>
+<span>  api_key <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Sys.getenv.html" class="external-link">Sys.getenv</a></span><span class="op">(</span><span class="st">"MY_CUSTOM_PROVIDER_API_KEY"</span><span class="op">)</span></span>
 <span><span class="op">)</span></span></code></pre></div>
 </div>
 </div>
@@ -394,7 +391,7 @@ approach:</p>
 <span><span class="fu"><a href="https://rdrr.io/r/base/Sys.setenv.html" class="external-link">Sys.setenv</a></span><span class="op">(</span>MLLM_CACHE_DIR <span class="op">=</span> <span class="st">"path/to/cache"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Clear cache if needed</span></span>
-<span><span class="fu">clear_cache</span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu"><a href="../reference/mllmcelltype_clear_cache.html">mllmcelltype_clear_cache</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="conclusion">Conclusion<a class="anchor" aria-label="anchor" href="#conclusion"></a>

@@ -64,7 +64,7 @@ Final summary by a designated LLM (default: Claude)
 
     <a class="navbar-brand me-2" href="../index.html">mLLMCelltype</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">2.0.3</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">2.0.5</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -112,7 +112,7 @@ Final summary by a designated LLM (default: Claude)
   <main id="main" class="col-md-9"><div class="page-header">
 
       <h1>Interactive consensus building for cell type annotation</h1>
-      <small class="dont-index">Source: <a href="https://github.com/cafferychen777/mLLMCelltype/blob/main/R/consensus_annotation.R" class="external-link"><code>R/consensus_annotation.R</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/cafferychen777/mLLMCelltype/blob/v2.0.5/R/consensus_annotation.R" class="external-link"><code>R/consensus_annotation.R</code></a></small>
       <div class="d-none name"><code>interactive_consensus_annotation.Rd</code></div>
     </div>
 
@@ -130,8 +130,8 @@ clusters with low agreement. The process includes:</p><ol><li><p>Initial voting 
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">interactive_consensus_annotation</span><span class="op">(</span></span>
 <span>  <span class="va">input</span>,</span>
 <span>  <span class="va">tissue_name</span>,</span>
-<span>  models <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"claude-opus-4-6-20260205"</span>, <span class="st">"gpt-5.2"</span>, <span class="st">"gemini-3-pro"</span>, <span class="st">"deepseek-r1"</span>,</span>
-<span>    <span class="st">"grok-4.1"</span><span class="op">)</span>,</span>
+<span>  models <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"claude-opus-4-7"</span>, <span class="st">"gpt-5.5"</span>, <span class="st">"gemini-3.1-pro-preview"</span>, <span class="st">"deepseek-v4-flash"</span>,</span>
+<span>    <span class="st">"grok-4.3"</span><span class="op">)</span>,</span>
 <span>  <span class="va">api_keys</span>,</span>
 <span>  top_gene_count <span class="op">=</span> <span class="fl">10</span>,</span>
 <span>  controversy_threshold <span class="op">=</span> <span class="fl">0.7</span>,</span>
@@ -196,7 +196,7 @@ for controversial clusters (default: 3).</p></dd>
 
 <dt id="arg-consensus-check-model">consensus_check_model<a class="anchor" aria-label="anchor" href="#arg-consensus-check-model"></a></dt>
 <dd><p>Character string specifying which model to use for
-consensus checking. If NULL, uses the first model from the models list.</p></dd>
+consensus checking. If NULL, uses the first model that succeeds during initial annotation.</p></dd>
 
 
 <dt id="arg-log-dir">log_dir<a class="anchor" aria-label="anchor" href="#arg-log-dir"></a></dt>

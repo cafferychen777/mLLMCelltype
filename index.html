@@ -121,7 +121,7 @@
 
     <a class="navbar-brand me-2" href="index.html">mLLMCelltype</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">2.0.3</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">2.0.5</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -205,15 +205,15 @@
 <li>
 <strong>Support for Multiple LLM Providers</strong>:
 <ul>
-<li>OpenAI (GPT-5.2, GPT-5, GPT-4.1, O3/O4 series)</li>
-<li>Anthropic (Claude 4.6 Opus, Claude 4.5 Sonnet/Haiku)</li>
-<li>Google (Gemini 3 Pro, Gemini 3 Flash, Gemini 2.5 series)</li>
-<li>X.AI (Grok-4, Grok-3 series)</li>
-<li>DeepSeek (DeepSeek Chat, DeepSeek Reasoner)</li>
-<li>Qwen (Qwen3 Max, Qwen Max)</li>
-<li>Zhipu (GLM-4.7, GLM-4 Plus)</li>
-<li>MiniMax (MiniMax M2.1, MiniMax M2)</li>
-<li>Stepfun (Step-3, Step-2 series)</li>
+<li>OpenAI (GPT-5.5, GPT-5.4, GPT-5.4-mini)</li>
+<li>Anthropic (Claude Opus 4.7, Claude Sonnet 4.6, Claude Haiku 4.5)</li>
+<li>Google (Gemini 3.1 Pro Preview, Gemini 3 Flash Preview, Gemini 3.1 Flash-Lite)</li>
+<li>X.AI (Grok 4.3)</li>
+<li>DeepSeek (DeepSeek V4 Flash, DeepSeek V4 Pro)</li>
+<li>Qwen (Qwen3.6 Plus, Qwen3.6 Flash, Qwen3.6 Max Preview)</li>
+<li>Zhipu/Z.AI (GLM-5.1, GLM-5, GLM-5-Turbo)</li>
+<li>MiniMax (MiniMax M2.7, MiniMax M2.7-highspeed)</li>
+<li>Stepfun (Step 3.5 Flash, Step 3)</li>
 <li>OpenRouter (access to Meta Llama, Mistral, Microsoft, Perplexity, Cohere, and more)</li>
 </ul>
 </li>
@@ -238,9 +238,9 @@
 <span></span>
 <span><span class="co"># Use multiple models for annotation</span></span>
 <span><span class="va">models</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
-<span>  <span class="st">"claude-3-7-sonnet-20250219"</span>,</span>
-<span>  <span class="st">"gpt-4o"</span>,</span>
-<span>  <span class="st">"gemini-2.5-pro"</span></span>
+<span>  <span class="st">"claude-sonnet-4-6"</span>,</span>
+<span>  <span class="st">"gpt-5.5"</span>,</span>
+<span>  <span class="st">"gemini-3.1-pro-preview"</span></span>
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Run multi-model annotation</span></span>
@@ -275,7 +275,7 @@
 <span>  controversy_threshold <span class="op">=</span> <span class="fl">0.7</span>,</span>
 <span>  entropy_threshold <span class="op">=</span> <span class="fl">1.0</span>,</span>
 <span>  max_discussion_rounds <span class="op">=</span> <span class="fl">3</span>,</span>
-<span>  consensus_check_model <span class="op">=</span> <span class="st">"claude-3-7-sonnet-20250219"</span></span>
+<span>  consensus_check_model <span class="op">=</span> <span class="st">"claude-sonnet-4-6"</span></span>
 <span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level3">

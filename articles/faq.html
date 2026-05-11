@@ -76,7 +76,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">mLLMCelltype</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">2.0.3</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">2.0.5</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -136,9 +136,9 @@
       <h1>Frequently Asked Questions</h1>
                         <h4 data-toc-skip class="author">Chen Yang</h4>
             
-            <h4 data-toc-skip class="date">2026-05-04</h4>
+            <h4 data-toc-skip class="date">2026-05-11</h4>
       
-      <small class="dont-index">Source: <a href="https://github.com/cafferychen777/mLLMCelltype/blob/main/vignettes/faq.Rmd" class="external-link"><code>vignettes/faq.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/cafferychen777/mLLMCelltype/blob/v2.0.5/vignettes/faq.Rmd" class="external-link"><code>vignettes/faq.Rmd</code></a></small>
       <div class="d-none name"><code>faq.Rmd</code></div>
     </div>
 
@@ -246,11 +246,15 @@ the complexity of the tissue. We recommend starting with the default of
 <p>mLLMCelltype implements a caching system to avoid redundant API
 calls, which saves time and reduces costs:</p>
 <ul>
-<li>By default, caching is enabled (<code>cache = TRUE</code>)</li>
-<li>The cache is based on a hash of the input data, model, and other
-parameters</li>
-<li>Results are stored in a local directory (default: a temporary
-directory)</li>
+<li>
+<code><a href="../reference/interactive_consensus_annotation.html">interactive_consensus_annotation()</a></code> uses caching by
+default (<code>use_cache = TRUE</code>)</li>
+<li>
+<code><a href="../reference/annotate_cell_types.html">annotate_cell_types()</a></code> supports direct caching through
+<code>use_cache</code> and <code>cache_dir</code>
+</li>
+<li>The cache is based on a hash of the input data, model, cluster ID,
+tissue context, and marker-gene count</li>
 <li>You can specify a custom cache directory using the
 <code>cache_dir</code> parameter</li>
 </ul>
@@ -258,9 +262,8 @@ directory)</li>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">cache_manager</span> <span class="op">&lt;-</span> <span class="va"><a href="../reference/CacheManager.html">CacheManager</a></span><span class="op">$</span><span class="fu">new</span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="va">cache_manager</span><span class="op">$</span><span class="fu">clear_cache</span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
-<p>Note: The <code>annotate_cell_types</code> function does not have
-built-in caching. If you need caching, you’ll need to implement it
-separately.</p>
+<p>For one-off prompt generation, set <code>api_key = NA</code>; no
+cache entry is created because no provider call is made.</p>
 </div>
 <div class="section level4">
 <h4 id="how-does-mllmcelltype-handle-rate-limits-and-api-errors">How does mLLMCelltype handle rate limits and API errors?<a class="anchor" aria-label="anchor" href="#how-does-mllmcelltype-handle-rate-limits-and-api-errors"></a>
@@ -307,8 +310,9 @@ affect performance</li>
 <p>Typical runtimes: - Single model, 10 clusters: 1-2 minutes -
 Multi-model consensus (3 models), 10 clusters: 3-5 minutes - Multi-model
 consensus with discussion, 10 clusters: 5-10 minutes</p>
-<p>To optimize runtime: - Implement your own caching mechanism if needed
-- Start with fewer models for initial exploration - Use a higher
+<p>To optimize runtime: - Keep <code>use_cache = TRUE</code> and set a
+persistent <code>cache_dir</code> for repeated runs - Start with fewer
+models for initial exploration - Use a higher
 <code>controversy_threshold</code> to reduce the number of controversial
 clusters - Process large datasets in batches</p>
 </div>
@@ -319,13 +323,13 @@ clusters - Process large datasets in batches</p>
 clusters:</p>
 <ul>
 <li>
-<strong>OpenAI models</strong> (GPT-4o, etc.): $0.01-0.05 per
+<strong>OpenAI models</strong> (GPT-5.5, etc.): $0.01-0.05 per
 cluster for annotation</li>
 <li>
-<strong>Anthropic models</strong> (Claude 3.7, etc.): $0.01-0.03 per
-cluster for annotation</li>
+<strong>Anthropic models</strong> (Claude Opus 4.7, Sonnet 4.6,
+etc.): $0.01-0.03 per cluster for annotation</li>
 <li>
-<strong>Google models</strong> (Gemini 1.5, etc.): $0.001-0.01 per
+<strong>Google models</strong> (Gemini 3.1, etc.): $0.001-0.01 per
 cluster for annotation</li>
 <li>
 <strong>Other models</strong>: Generally lower cost</li>
@@ -337,10 +341,10 @@ cluster for annotation</li>
 $0.10-1.00 total - Multi-model consensus (3 models): $0.30-3.00 total -
 With discussion process: Additional $0.10-1.00 - Using OpenRouter free
 models: $0.00 total</p>
-<p>To reduce costs: - Implement your own caching mechanism to avoid
-redundant API calls - Start with more economical models - Use fewer
-models for initial exploration - Reserve multi-model consensus for final
-analysis - Consider using OpenRouter free models (see below)</p>
+<p>To reduce costs: - Keep caching enabled to avoid redundant API calls
+- Start with more economical models - Use fewer models for initial
+exploration - Reserve multi-model consensus for final analysis -
+Consider using OpenRouter free models (see below)</p>
 </div>
 <div class="section level4">
 <h4 id="how-can-i-use-openrouter-free-models">How can I use OpenRouter free models?<a class="anchor" aria-label="anchor" href="#how-can-i-use-openrouter-free-models"></a>
@@ -374,8 +378,7 @@ suffix</strong>:</p></li>
 <code>meta-llama/llama-4-maverick:free</code> - Meta Llama 4
 Maverick (256K context, best performance)</li>
 <li>
-<code>deepseek/deepseek-r1:free</code> - DeepSeek R1 (advanced
-reasoning)</li>
+<code>deepseek/deepseek-v4-pro:free</code> - DeepSeek V4 Pro</li>
 <li>
 <code>meta-llama/llama-3.3-70b-instruct:free</code> - Meta Llama 3.3
 70B (reliable)</li>
@@ -406,8 +409,8 @@ reliability</p>
 <p>To get the most accurate annotations:</p>
 <ol style="list-style-type: decimal">
 <li><p><strong>Use multiple high-quality models</strong>: Include
-diverse, high-performing models like Claude 3.7, GPT-4o, and Gemini
-1.5</p></li>
+diverse, high-performing models like Claude Opus 4.7, GPT-5.5, and
+Gemini 3.1</p></li>
 <li><p><strong>Provide good marker genes</strong>: Use robust
 differential expression analysis to identify strong marker
 genes</p></li>
@@ -443,10 +446,10 @@ include slightly different context</p></li>
 <li><p><strong>API changes</strong>: Providers may change how their APIs
 work</p></li>
 </ol>
-<p>To ensure reproducibility: - Implement your own caching mechanism to
-reuse results - Specify model versions explicitly when available - Save
-and document your results - Consider saving the raw API responses for
-future reference</p>
+<p>To ensure reproducibility: - Keep <code>use_cache = TRUE</code> and
+set a persistent <code>cache_dir</code> to reuse results - Specify model
+versions explicitly when available - Save and document your results -
+Consider saving the raw API responses for future reference</p>
 </div>
 <div class="section level4">
 <h4 id="im-getting-an-error-about-invalid-cluster-indices--what-should-i-do">I’m getting an error about invalid cluster indices. What should I
@@ -582,16 +585,20 @@ can customize them:</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Create a custom annotation prompt</span></span>
 <span><span class="va">custom_prompt</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/create_annotation_prompt.html">create_annotation_prompt</a></span><span class="op">(</span></span>
-<span>  marker_data <span class="op">=</span> <span class="va">your_markers</span>,</span>
+<span>  input <span class="op">=</span> <span class="va">your_markers</span>,</span>
 <span>  tissue_name <span class="op">=</span> <span class="st">"your_tissue"</span>,</span>
-<span>  top_gene_count <span class="op">=</span> <span class="fl">10</span>,</span>
-<span>  custom_instructions <span class="op">=</span> <span class="st">"Also consider developmental stage and activation state."</span></span>
+<span>  top_gene_count <span class="op">=</span> <span class="fl">10</span></span>
 <span><span class="op">)</span></span>
 <span></span>
-<span><span class="co"># Use the custom prompt directly</span></span>
+<span><span class="co"># Add custom context before sending the prompt directly</span></span>
+<span><span class="va">prompt_with_context</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span></span>
+<span>  <span class="va">custom_prompt</span><span class="op">$</span><span class="va">prompt</span>,</span>
+<span>  <span class="st">"\n\nAdditional context: Also consider developmental stage and activation state."</span></span>
+<span><span class="op">)</span></span>
+<span></span>
 <span><span class="va">response</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_model_response.html">get_model_response</a></span><span class="op">(</span></span>
-<span>  prompt <span class="op">=</span> <span class="va">custom_prompt</span>,</span>
-<span>  model <span class="op">=</span> <span class="st">"claude-sonnet-4-5-20250929"</span>,</span>
+<span>  prompt <span class="op">=</span> <span class="va">prompt_with_context</span>,</span>
+<span>  model <span class="op">=</span> <span class="st">"claude-sonnet-4-6"</span>,</span>
 <span>  api_key <span class="op">=</span> <span class="va">your_api_key</span></span>
 <span><span class="op">)</span></span></code></pre></div>
 </div>
@@ -603,17 +610,17 @@ can customize them:</p>
 <code class="sourceCode R"><span><span class="co"># Register a custom provider</span></span>
 <span><span class="fu"><a href="../reference/register_custom_provider.html">register_custom_provider</a></span><span class="op">(</span></span>
 <span>  provider_name <span class="op">=</span> <span class="st">"my_provider"</span>,</span>
-<span>  api_url <span class="op">=</span> <span class="st">"https://api.my-provider.com/v1/chat/completions"</span>,</span>
-<span>  api_key_env_var <span class="op">=</span> <span class="st">"MY_PROVIDER_API_KEY"</span>,</span>
-<span>  process_function <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">prompt</span>, <span class="va">api_key</span><span class="op">)</span> <span class="op">{</span></span>
-<span>    <span class="co"># Custom implementation</span></span>
-<span>  <span class="op">}</span></span>
+<span>  process_fn <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">prompt</span>, <span class="va">model</span>, <span class="va">api_key</span><span class="op">)</span> <span class="op">{</span></span>
+<span>    <span class="co"># Custom implementation that returns the model response text</span></span>
+<span>  <span class="op">}</span>,</span>
+<span>  description <span class="op">=</span> <span class="st">"My custom LLM provider"</span></span>
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Register a custom model</span></span>
 <span><span class="fu"><a href="../reference/register_custom_model.html">register_custom_model</a></span><span class="op">(</span></span>
 <span>  model_name <span class="op">=</span> <span class="st">"my-custom-model"</span>,</span>
-<span>  provider <span class="op">=</span> <span class="st">"my_provider"</span></span>
+<span>  provider_name <span class="op">=</span> <span class="st">"my_provider"</span>,</span>
+<span>  model_config <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Use the custom model</span></span>

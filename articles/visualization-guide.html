@@ -76,7 +76,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">mLLMCelltype</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">2.0.3</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">2.0.5</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -136,9 +136,9 @@
       <h1>Visualization Guide</h1>
                         <h4 data-toc-skip class="author">Chen Yang</h4>
             
-            <h4 data-toc-skip class="date">2026-05-04</h4>
+            <h4 data-toc-skip class="date">2026-05-11</h4>
       
-      <small class="dont-index">Source: <a href="https://github.com/cafferychen777/mLLMCelltype/blob/main/vignettes/articles/visualization-guide.Rmd" class="external-link"><code>vignettes/articles/visualization-guide.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/cafferychen777/mLLMCelltype/blob/v2.0.5/vignettes/articles/visualization-guide.Rmd" class="external-link"><code>vignettes/articles/visualization-guide.Rmd</code></a></small>
       <div class="d-none name"><code>visualization-guide.Rmd</code></div>
     </div>
 
@@ -1418,7 +1418,7 @@ cluster:</p>
 <span><span class="op">}</span></span>
 <span></span>
 <span><span class="co"># Create and plot the heatmap</span></span>
-<span><span class="va">models</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"claude-sonnet-4-5-20250929"</span>, <span class="st">"gpt-5"</span>, <span class="st">"gemini-1.5-pro"</span><span class="op">)</span></span>
+<span><span class="va">models</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"claude-sonnet-4-6"</span>, <span class="st">"gpt-5.5"</span>, <span class="st">"gemini-3.1-pro-preview"</span><span class="op">)</span></span>
 <span><span class="va">prediction_matrix</span> <span class="op">&lt;-</span> <span class="fu">create_prediction_matrix</span><span class="op">(</span><span class="va">consensus_results</span>, <span class="va">models</span><span class="op">)</span></span>
 <span><span class="va">encoded_data</span> <span class="op">&lt;-</span> <span class="fu">encode_cell_types</span><span class="op">(</span><span class="va">prediction_matrix</span><span class="op">)</span></span>
 <span></span>

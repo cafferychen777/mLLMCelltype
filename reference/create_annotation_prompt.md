@@ -29,4 +29,5 @@ create_annotation_prompt(input, tissue_name, top_gene_count = 10)
 
 ## Value
 
-Character string containing the formatted prompt
+A list with `prompt` (formatted prompt text), `expected_count` (number
+of clusters), and `gene_lists` (cluster ID to marker genes mapping).

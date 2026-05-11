@@ -52,7 +52,7 @@ Alternatively, you can provide API keys directly in function calls:
 results <- annotate_cell_types(
   input = markers,
   tissue_name = "human PBMC",
-  model = "claude-sonnet-4-5-20250929",
+  model = "claude-sonnet-4-6",
   api_key = "your-anthropic-api-key",  # Direct API key
   top_gene_count = 10
 )
@@ -126,7 +126,7 @@ The `annotate_cell_types` function has the following parameters:
 |----|----|----|
 | `input` | Marker gene data (data frame, list, or file path) | (required) |
 | `tissue_name` | Tissue name (e.g., “human PBMC”, “mouse brain”) | `NULL` |
-| `model` | LLM model to use | `"gpt-5"` |
+| `model` | LLM model to use | `"gpt-5.5"` |
 | `api_key` | API key (if not set in environment) | `NA` |
 | `top_gene_count` | Number of top genes per cluster to use | `10` |
 | `debug` | Whether to print debugging information | `FALSE` |
@@ -153,7 +153,7 @@ markers <- data.frame(
 results <- annotate_cell_types(
   input = markers,
   tissue_name = "human PBMC",
-  model = "claude-sonnet-4-5-20250929",
+  model = "claude-sonnet-4-6",
   api_key = Sys.getenv("ANTHROPIC_API_KEY"),
   top_gene_count = 10,
   debug = FALSE  # Set to TRUE for more detailed output
@@ -182,9 +182,9 @@ consensus:
 
 # Define models to use
 models <- c(
-  "claude-sonnet-4-5-20250929",  # Anthropic
-  "gpt-5",                      # OpenAI
-  "gemini-1.5-pro"               # Google
+  "claude-sonnet-4-6",  # Anthropic
+  "gpt-5.5",                      # OpenAI
+  "gemini-3.1-pro-preview"               # Google
 )
 
 # API keys for different providers
@@ -217,7 +217,7 @@ consensus_results <- interactive_consensus_annotation(
   api_keys = api_keys,
   controversy_threshold = 0.7,
   entropy_threshold = 1.0,
-  consensus_check_model = "claude-sonnet-4-5-20250929"
+  consensus_check_model = "claude-sonnet-4-6"
 )
 ```
 
@@ -238,18 +238,18 @@ Cluster 0:
   Consensus proportion: 1.0
   Entropy: 0.0
   Model predictions:
-    - claude-sonnet-4-5-20250929: T cells
-    - gpt-5: T cells
-    - gemini-2.5-pro: T cells
+    - claude-sonnet-4-6: T cells
+    - gpt-5.5: T cells
+    - gemini-3.1-pro-preview: T cells
 
 Cluster 1:
   Final annotation: Monocytes
   Consensus proportion: 1.0
   Entropy: 0.0
   Model predictions:
-    - claude-sonnet-4-5-20250929: Monocytes
-    - gpt-5: Monocytes
-    - gemini-2.5-pro: Monocytes
+    - claude-sonnet-4-6: Monocytes
+    - gpt-5.5: Monocytes
+    - gemini-3.1-pro-preview: Monocytes
 ```
 
 ### Integrating with Seurat
@@ -368,11 +368,10 @@ Available free models (Updated Oct 2025):
 
 - `meta-llama/llama-4-maverick:free` - Meta Llama 4 Maverick (256K
   context, best performance)
-- `deepseek/deepseek-r1:free` - DeepSeek R1 (advanced reasoning)
+- `deepseek/deepseek-v4-pro:free` - DeepSeek V4 Pro
 - `meta-llama/llama-3.3-70b-instruct:free` - Meta Llama 3.3 70B
   (reliable)
 - `venice/uncensored:free` - Venice Uncensored (new model)
-- `minimax/minimax-m2:free` - MiniMax M2 (optimized for coding)
 - `z-ai/glm-4.5-air:free` - GLM 4.5 Air (lightweight)
 
 **Important**: OpenRouter reduced free tier limits in 2025: - **Free

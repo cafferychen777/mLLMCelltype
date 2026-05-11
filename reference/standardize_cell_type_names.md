@@ -11,7 +11,7 @@ standardize_cell_type_names(
   predictions,
   models,
   api_keys,
-  standardization_model = "claude-sonnet-4-20250514",
+  standardization_model = "claude-sonnet-4-6",
   base_urls = NULL
 )
 ```
@@ -22,4 +22,4 @@ standardize_cell_type_names(
     `list("openai" = "sk-...", "anthropic" = "sk-ant-...", "openrouter" = "sk-or-...")`
 
 2.  With model names as keys:
-    `list("gpt-5" = "sk-...", "claude-sonnet-4-5-20250929" = "sk-ant-...")`
+    `list("gpt-5.5" = "sk-...", "claude-sonnet-4-6" = "sk-ant-...")`

@@ -85,9 +85,9 @@ consensus_results <- interactive_consensus_annotation(
   input = pbmc_markers,
   tissue_name = "human PBMC",  # provide tissue context
   models = c(
-    "claude-sonnet-4-5-20250929",  # Anthropic
-    "gpt-5",                   # OpenAI
-    "gemini-2.5-pro"            # Google
+    "claude-sonnet-4-6",  # Anthropic
+    "gpt-5.5",                   # OpenAI
+    "gemini-3.1-pro-preview"            # Google
   ),
   api_keys = list(
     anthropic = Sys.getenv("ANTHROPIC_API_KEY"),
@@ -97,7 +97,7 @@ consensus_results <- interactive_consensus_annotation(
   top_gene_count = 10,
   controversy_threshold = 1.0,
   entropy_threshold = 1.0,
-  consensus_check_model = "claude-sonnet-4-5-20250929",  # Use a reliable model for consensus checking
+  consensus_check_model = "claude-sonnet-4-6",  # Use a reliable model for consensus checking
   cache_dir = NULL  # Uses default system cache directory
 )
 
@@ -147,23 +147,17 @@ p2 <- FeaturePlot(pbmc, features = "consensus_proportion",
 
 mLLMCelltype supports various LLM models:
 
-- **OpenAI**: gpt-5, gpt-5-mini, gpt-5-nano, gpt-4.1, gpt-4.1-mini,
-  gpt-4.1-nano, gpt-4o, gpt-4o-mini, gpt-4-turbo, gpt-3.5-turbo, o1,
-  o1-mini, o1-preview, o1-pro
-- **Anthropic**: claude-sonnet-4-5-20250929, claude-opus-4-1-20250805,
-  claude-sonnet-4-20250514, claude-opus-4-20250514,
-  claude-haiku-4-20250514, claude-3-5-haiku-20241022,
-  claude-3-opus-20240229
-- **DeepSeek**: deepseek-chat, deepseek-reasoner
-- **Google**: gemini-2.5-pro, gemini-2.0-flash, gemini-2.0-flash-exp,
-  gemini-1.5-pro, gemini-1.5-flash
-- **Qwen**: qwen-max-2025-01-25, qwen3-72b
-- **Stepfun**: step-2-mini, step-2-16k, step-1-8k
-- **Zhipu**: glm-4-plus, glm-3-turbo
-- **MiniMax**: minimax-text-01
-- **Grok**: grok-3, grok-3-latest, grok-3-fast, grok-3-fast-latest,
-  grok-3-mini, grok-3-mini-latest, grok-3-mini-fast,
-  grok-3-mini-fast-latest
+- **OpenAI**: gpt-5.5, gpt-5.4, gpt-5.4-mini
+- **Anthropic**: claude-opus-4-7, claude-sonnet-4-6,
+  claude-haiku-4-5-20251001
+- **DeepSeek**: deepseek-v4-flash, deepseek-v4-pro
+- **Google**: gemini-3.1-pro-preview, gemini-3-flash-preview,
+  gemini-3.1-flash-lite
+- **Qwen**: qwen3.6-plus, qwen3.6-flash, qwen3.6-max-preview
+- **Stepfun**: step-3.5-flash, step-3.5-flash-2603, step-3
+- **Zhipu/Z.AI**: glm-5.1, glm-5, glm-5-turbo
+- **MiniMax**: MiniMax-M2.7, MiniMax-M2.7-highspeed, MiniMax-M2.5
+- **Grok**: grok-4.3, grok-4.3-latest, grok-latest
 - **OpenRouter**: Access to models from multiple providers through a
   single API
 
@@ -177,25 +171,17 @@ approach:
 ``` r
 
 # Run annotation with a single model
-single_model_results <- annotate_with_single_model(
+single_model_results <- annotate_cell_types(
   input = pbmc_markers,
   tissue_name = "human PBMC",
-  model = "claude-sonnet-4-5-20250929",
+  model = "claude-sonnet-4-6",
   api_key = Sys.getenv("ANTHROPIC_API_KEY"),
-  top_gene_count = 10,
-  cache_dir = NULL  # Uses default system cache directory
+  top_gene_count = 10
 )
 
-# Add annotations to Seurat object
-pbmc$single_model_cell_type <- plyr::mapvalues(
-  x = as.character(Idents(pbmc)),
-  from = names(single_model_results),
-  to = single_model_results
-)
-
-# Visualize results
-DimPlot(pbmc, group.by = "single_model_cell_type", label = TRUE) +
-  ggtitle("Cell Types Annotated by Single LLM Model")
+# Inspect the provider response lines. Parse or review this text before
+# mapping annotations back onto a Seurat object.
+cat(single_model_results)
 ```
 
 ### Customizing Consensus Parameters
@@ -206,7 +192,7 @@ DimPlot(pbmc, group.by = "single_model_cell_type", label = TRUE) +
 custom_consensus_results <- interactive_consensus_annotation(
   input = pbmc_markers,
   tissue_name = "human PBMC",
-  models = c("claude-sonnet-4-5-20250929", "gpt-5", "gemini-2.5-pro"),
+  models = c("claude-sonnet-4-6", "gpt-5.5", "gemini-3.1-pro-preview"),
   api_keys = list(
     anthropic = Sys.getenv("ANTHROPIC_API_KEY"),
     openai = Sys.getenv("OPENAI_API_KEY"),
@@ -216,7 +202,7 @@ custom_consensus_results <- interactive_consensus_annotation(
   controversy_threshold = 0.7,        # Threshold for controversy detection
   entropy_threshold = 0.7,            # Entropy threshold for controversy detection
   max_discussion_rounds = 2,          # Maximum rounds of discussion
-  consensus_check_model = "claude-sonnet-4-5-20250929",  # Use a reliable model for consensus checking
+  consensus_check_model = "claude-sonnet-4-6",  # Use a reliable model for consensus checking
   cache_dir = NULL  # Uses default system cache directory
 )
 ```
@@ -230,15 +216,23 @@ You can register custom LLM providers:
 # Register a custom provider
 register_custom_provider(
   provider_name = "my_custom_provider",
-  process_function = my_process_function,
-  models = c("my-model-1", "my-model-2")
+  process_fn = my_process_function,
+  description = "My custom LLM provider"
 )
 
-# Use the custom provider
+# Register a model served by that provider
+register_custom_model(
+  model_name = "my-model-1",
+  provider_name = "my_custom_provider",
+  model_config = list()
+)
+
+# Use the custom model
 results <- annotate_cell_types(
-  seurat_obj = seurat_obj,
-  models = c("my-model-1", "claude-sonnet-4-5-20250929"),
-  # other parameters
+  input = pbmc_markers,
+  tissue_name = "human PBMC",
+  model = "my-model-1",
+  api_key = Sys.getenv("MY_CUSTOM_PROVIDER_API_KEY")
 )
 ```
 
@@ -255,7 +249,7 @@ Sys.setenv(MLLM_CACHE_ENABLED = "TRUE")
 Sys.setenv(MLLM_CACHE_DIR = "path/to/cache")
 
 # Clear cache if needed
-clear_cache()
+mllmcelltype_clear_cache()
 ```
 
 ## Conclusion

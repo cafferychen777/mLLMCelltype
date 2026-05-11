@@ -96,11 +96,12 @@ and adjusting based on the results.
 mLLMCelltype implements a caching system to avoid redundant API calls,
 which saves time and reduces costs:
 
-- By default, caching is enabled (`cache = TRUE`)
-- The cache is based on a hash of the input data, model, and other
-  parameters
-- Results are stored in a local directory (default: a temporary
-  directory)
+- [`interactive_consensus_annotation()`](https://cafferyang.com/mLLMCelltype/reference/interactive_consensus_annotation.md)
+  uses caching by default (`use_cache = TRUE`)
+- [`annotate_cell_types()`](https://cafferyang.com/mLLMCelltype/reference/annotate_cell_types.md)
+  supports direct caching through `use_cache` and `cache_dir`
+- The cache is based on a hash of the input data, model, cluster ID,
+  tissue context, and marker-gene count
 - You can specify a custom cache directory using the `cache_dir`
   parameter
 
@@ -112,8 +113,8 @@ cache_manager <- CacheManager$new()
 cache_manager$clear_cache()
 ```
 
-Note: The `annotate_cell_types` function does not have built-in caching.
-If you need caching, you’ll need to implement it separately.
+For one-off prompt generation, set `api_key = NA`; no cache entry is
+created because no provider call is made.
 
 #### How does mLLMCelltype handle rate limits and API errors?
 
@@ -148,20 +149,20 @@ Typical runtimes: - Single model, 10 clusters: 1-2 minutes - Multi-model
 consensus (3 models), 10 clusters: 3-5 minutes - Multi-model consensus
 with discussion, 10 clusters: 5-10 minutes
 
-To optimize runtime: - Implement your own caching mechanism if needed -
-Start with fewer models for initial exploration - Use a higher
-`controversy_threshold` to reduce the number of controversial clusters -
-Process large datasets in batches
+To optimize runtime: - Keep `use_cache = TRUE` and set a persistent
+`cache_dir` for repeated runs - Start with fewer models for initial
+exploration - Use a higher `controversy_threshold` to reduce the number
+of controversial clusters - Process large datasets in batches
 
 #### What are the API costs associated with using mLLMCelltype?
 
 The API costs depend on the models you use and the number of clusters:
 
-- **OpenAI models** (GPT-4o, etc.): \$0.01-0.05 per cluster for
+- **OpenAI models** (GPT-5.5, etc.): \$0.01-0.05 per cluster for
   annotation
-- **Anthropic models** (Claude 3.7, etc.): \$0.01-0.03 per cluster for
-  annotation
-- **Google models** (Gemini 1.5, etc.): \$0.001-0.01 per cluster for
+- **Anthropic models** (Claude Opus 4.7, Sonnet 4.6, etc.): \$0.01-0.03
+  per cluster for annotation
+- **Google models** (Gemini 3.1, etc.): \$0.001-0.01 per cluster for
   annotation
 - **Other models**: Generally lower cost
 - **OpenRouter free models**: \$0.00 (free with `:free` suffix)
@@ -171,10 +172,10 @@ For a typical dataset with 10-20 clusters: - Single model annotation:
 total - With discussion process: Additional \$0.10-1.00 - Using
 OpenRouter free models: \$0.00 total
 
-To reduce costs: - Implement your own caching mechanism to avoid
-redundant API calls - Start with more economical models - Use fewer
-models for initial exploration - Reserve multi-model consensus for final
-analysis - Consider using OpenRouter free models (see below)
+To reduce costs: - Keep caching enabled to avoid redundant API calls -
+Start with more economical models - Use fewer models for initial
+exploration - Reserve multi-model consensus for final analysis -
+Consider using OpenRouter free models (see below)
 
 #### How can I use OpenRouter free models?
 
@@ -205,7 +206,7 @@ results <- annotate_cell_types(
 4.  **Recommended free models** (Updated Oct 2025):
     - `meta-llama/llama-4-maverick:free` - Meta Llama 4 Maverick (256K
       context, best performance)
-    - `deepseek/deepseek-r1:free` - DeepSeek R1 (advanced reasoning)
+    - `deepseek/deepseek-v4-pro:free` - DeepSeek V4 Pro
     - `meta-llama/llama-3.3-70b-instruct:free` - Meta Llama 3.3 70B
       (reliable)
     - `venice/uncensored:free` - Venice Uncensored (new model)
@@ -226,7 +227,7 @@ using paid models for better reliability
 To get the most accurate annotations:
 
 1.  **Use multiple high-quality models**: Include diverse,
-    high-performing models like Claude 3.7, GPT-4o, and Gemini 1.5
+    high-performing models like Claude Opus 4.7, GPT-5.5, and Gemini 3.1
 
 2.  **Provide good marker genes**: Use robust differential expression
     analysis to identify strong marker genes
@@ -261,10 +262,10 @@ the same input:
 
 4.  **API changes**: Providers may change how their APIs work
 
-To ensure reproducibility: - Implement your own caching mechanism to
-reuse results - Specify model versions explicitly when available - Save
-and document your results - Consider saving the raw API responses for
-future reference
+To ensure reproducibility: - Keep `use_cache = TRUE` and set a
+persistent `cache_dir` to reuse results - Specify model versions
+explicitly when available - Save and document your results - Consider
+saving the raw API responses for future reference
 
 #### I’m getting an error about invalid cluster indices. What should I do?
 
@@ -398,16 +399,20 @@ customize them:
 
 # Create a custom annotation prompt
 custom_prompt <- create_annotation_prompt(
-  marker_data = your_markers,
+  input = your_markers,
   tissue_name = "your_tissue",
-  top_gene_count = 10,
-  custom_instructions = "Also consider developmental stage and activation state."
+  top_gene_count = 10
 )
 
-# Use the custom prompt directly
+# Add custom context before sending the prompt directly
+prompt_with_context <- paste0(
+  custom_prompt$prompt,
+  "\n\nAdditional context: Also consider developmental stage and activation state."
+)
+
 response <- get_model_response(
-  prompt = custom_prompt,
-  model = "claude-sonnet-4-5-20250929",
+  prompt = prompt_with_context,
+  model = "claude-sonnet-4-6",
   api_key = your_api_key
 )
 ```
@@ -421,17 +426,17 @@ Yes, you can register custom models and providers:
 # Register a custom provider
 register_custom_provider(
   provider_name = "my_provider",
-  api_url = "https://api.my-provider.com/v1/chat/completions",
-  api_key_env_var = "MY_PROVIDER_API_KEY",
-  process_function = function(prompt, api_key) {
-    # Custom implementation
-  }
+  process_fn = function(prompt, model, api_key) {
+    # Custom implementation that returns the model response text
+  },
+  description = "My custom LLM provider"
 )
 
 # Register a custom model
 register_custom_model(
   model_name = "my-custom-model",
-  provider = "my_provider"
+  provider_name = "my_provider",
+  model_config = list()
 )
 
 # Use the custom model

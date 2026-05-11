@@ -1,9 +1,10 @@
-# Prompt templates for mLLMCelltype
+# Normalize list input into a canonical cluster-\>genes mapping
 
-This file contains all prompt template functions used in mLLMCelltype.
-These functions create various prompts for different stages of the cell
-type annotation process. Normalize list input into a canonical
-cluster-\>genes mapping
+For list input, each element can be either:
+
+1.  a list containing a `genes` field, or
+
+2.  a character vector of genes.
 
 ## Usage
 
@@ -22,12 +23,6 @@ normalize_cluster_gene_list(input)
 Named list of character vectors (cluster_id -\> genes)
 
 ## Details
-
-For list input, each element can be either:
-
-1.  a list containing a `genes` field, or
-
-2.  a character vector of genes.
 
 Naming rules:
 

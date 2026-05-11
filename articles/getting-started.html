@@ -76,7 +76,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">mLLMCelltype</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">2.0.3</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">2.0.5</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -136,9 +136,9 @@
       <h1>Getting Started with mLLMCelltype</h1>
                         <h4 data-toc-skip class="author">Chen Yang</h4>
             
-            <h4 data-toc-skip class="date">2026-05-04</h4>
+            <h4 data-toc-skip class="date">2026-05-11</h4>
       
-      <small class="dont-index">Source: <a href="https://github.com/cafferychen777/mLLMCelltype/blob/main/vignettes/getting-started.Rmd" class="external-link"><code>vignettes/getting-started.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/cafferychen777/mLLMCelltype/blob/v2.0.5/vignettes/getting-started.Rmd" class="external-link"><code>vignettes/getting-started.Rmd</code></a></small>
       <div class="d-none name"><code>getting-started.Rmd</code></div>
     </div>
 
@@ -195,7 +195,7 @@ calls:</p>
 <code class="sourceCode R"><span><span class="va">results</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/annotate_cell_types.html">annotate_cell_types</a></span><span class="op">(</span></span>
 <span>  input <span class="op">=</span> <span class="va">markers</span>,</span>
 <span>  tissue_name <span class="op">=</span> <span class="st">"human PBMC"</span>,</span>
-<span>  model <span class="op">=</span> <span class="st">"claude-sonnet-4-5-20250929"</span>,</span>
+<span>  model <span class="op">=</span> <span class="st">"claude-sonnet-4-6"</span>,</span>
 <span>  api_key <span class="op">=</span> <span class="st">"your-anthropic-api-key"</span>,  <span class="co"># Direct API key</span></span>
 <span>  top_gene_count <span class="op">=</span> <span class="fl">10</span></span>
 <span><span class="op">)</span></span></code></pre></div>
@@ -282,7 +282,7 @@ parameters:</p>
 <tr class="odd">
 <td><code>model</code></td>
 <td>LLM model to use</td>
-<td><code>"gpt-5"</code></td>
+<td><code>"gpt-5.5"</code></td>
 </tr>
 <tr class="even">
 <td><code>api_key</code></td>
@@ -322,7 +322,7 @@ useful for reviewing the prompt before sending it to the API.</p>
 <span><span class="va">results</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/annotate_cell_types.html">annotate_cell_types</a></span><span class="op">(</span></span>
 <span>  input <span class="op">=</span> <span class="va">markers</span>,</span>
 <span>  tissue_name <span class="op">=</span> <span class="st">"human PBMC"</span>,</span>
-<span>  model <span class="op">=</span> <span class="st">"claude-sonnet-4-5-20250929"</span>,</span>
+<span>  model <span class="op">=</span> <span class="st">"claude-sonnet-4-6"</span>,</span>
 <span>  api_key <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Sys.getenv.html" class="external-link">Sys.getenv</a></span><span class="op">(</span><span class="st">"ANTHROPIC_API_KEY"</span><span class="op">)</span>,</span>
 <span>  top_gene_count <span class="op">=</span> <span class="fl">10</span>,</span>
 <span>  debug <span class="op">=</span> <span class="cn">FALSE</span>  <span class="co"># Set to TRUE for more detailed output</span></span>
@@ -347,9 +347,9 @@ a consensus:</p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Define models to use</span></span>
 <span><span class="va">models</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
-<span>  <span class="st">"claude-sonnet-4-5-20250929"</span>,  <span class="co"># Anthropic</span></span>
-<span>  <span class="st">"gpt-5"</span>,                      <span class="co"># OpenAI</span></span>
-<span>  <span class="st">"gemini-1.5-pro"</span>               <span class="co"># Google</span></span>
+<span>  <span class="st">"claude-sonnet-4-6"</span>,  <span class="co"># Anthropic</span></span>
+<span>  <span class="st">"gpt-5.5"</span>,                      <span class="co"># OpenAI</span></span>
+<span>  <span class="st">"gemini-3.1-pro-preview"</span>               <span class="co"># Google</span></span>
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># API keys for different providers</span></span>
@@ -382,7 +382,7 @@ a consensus:</p>
 <span>  api_keys <span class="op">=</span> <span class="va">api_keys</span>,</span>
 <span>  controversy_threshold <span class="op">=</span> <span class="fl">0.7</span>,</span>
 <span>  entropy_threshold <span class="op">=</span> <span class="fl">1.0</span>,</span>
-<span>  consensus_check_model <span class="op">=</span> <span class="st">"claude-sonnet-4-5-20250929"</span></span>
+<span>  consensus_check_model <span class="op">=</span> <span class="st">"claude-sonnet-4-6"</span></span>
 <span><span class="op">)</span></span></code></pre></div>
 <div class="section level4">
 <h4 id="consensus-output-example">Consensus Output Example<a class="anchor" aria-label="anchor" href="#consensus-output-example"></a>
@@ -400,18 +400,18 @@ a consensus:</p>
 <span id="cb11-10"><a href="#cb11-10" tabindex="-1"></a>  Consensus proportion<span class="sc">:</span> <span class="fl">1.0</span></span>
 <span id="cb11-11"><a href="#cb11-11" tabindex="-1"></a>  Entropy<span class="sc">:</span> <span class="fl">0.0</span></span>
 <span id="cb11-12"><a href="#cb11-12" tabindex="-1"></a>  Model predictions<span class="sc">:</span></span>
-<span id="cb11-13"><a href="#cb11-13" tabindex="-1"></a>    <span class="sc">-</span> claude<span class="sc">-</span>sonnet<span class="dv">-4-5-20250929</span><span class="sc">:</span> T cells</span>
-<span id="cb11-14"><a href="#cb11-14" tabindex="-1"></a>    <span class="sc">-</span> gpt<span class="dv">-5</span><span class="sc">:</span> T cells</span>
-<span id="cb11-15"><a href="#cb11-15" tabindex="-1"></a>    <span class="sc">-</span> gemini<span class="fl">-2.5</span><span class="sc">-</span>pro<span class="sc">:</span> T cells</span>
+<span id="cb11-13"><a href="#cb11-13" tabindex="-1"></a>    <span class="sc">-</span> claude<span class="sc">-</span>sonnet<span class="dv">-4-6</span><span class="sc">:</span> T cells</span>
+<span id="cb11-14"><a href="#cb11-14" tabindex="-1"></a>    <span class="sc">-</span> gpt<span class="fl">-5.5</span><span class="sc">:</span> T cells</span>
+<span id="cb11-15"><a href="#cb11-15" tabindex="-1"></a>    <span class="sc">-</span> gemini<span class="fl">-3.1</span><span class="sc">-</span>pro<span class="sc">-</span>preview<span class="sc">:</span> T cells</span>
 <span id="cb11-16"><a href="#cb11-16" tabindex="-1"></a></span>
 <span id="cb11-17"><a href="#cb11-17" tabindex="-1"></a>Cluster <span class="dv">1</span><span class="sc">:</span></span>
 <span id="cb11-18"><a href="#cb11-18" tabindex="-1"></a>  Final annotation<span class="sc">:</span> Monocytes</span>
 <span id="cb11-19"><a href="#cb11-19" tabindex="-1"></a>  Consensus proportion<span class="sc">:</span> <span class="fl">1.0</span></span>
 <span id="cb11-20"><a href="#cb11-20" tabindex="-1"></a>  Entropy<span class="sc">:</span> <span class="fl">0.0</span></span>
 <span id="cb11-21"><a href="#cb11-21" tabindex="-1"></a>  Model predictions<span class="sc">:</span></span>
-<span id="cb11-22"><a href="#cb11-22" tabindex="-1"></a>    <span class="sc">-</span> claude<span class="sc">-</span>sonnet<span class="dv">-4-5-20250929</span><span class="sc">:</span> Monocytes</span>
-<span id="cb11-23"><a href="#cb11-23" tabindex="-1"></a>    <span class="sc">-</span> gpt<span class="dv">-5</span><span class="sc">:</span> Monocytes</span>
-<span id="cb11-24"><a href="#cb11-24" tabindex="-1"></a>    <span class="sc">-</span> gemini<span class="fl">-2.5</span><span class="sc">-</span>pro<span class="sc">:</span> Monocytes</span></code></pre></div>
+<span id="cb11-22"><a href="#cb11-22" tabindex="-1"></a>    <span class="sc">-</span> claude<span class="sc">-</span>sonnet<span class="dv">-4-6</span><span class="sc">:</span> Monocytes</span>
+<span id="cb11-23"><a href="#cb11-23" tabindex="-1"></a>    <span class="sc">-</span> gpt<span class="fl">-5.5</span><span class="sc">:</span> Monocytes</span>
+<span id="cb11-24"><a href="#cb11-24" tabindex="-1"></a>    <span class="sc">-</span> gemini<span class="fl">-3.1</span><span class="sc">-</span>pro<span class="sc">-</span>preview<span class="sc">:</span> Monocytes</span></code></pre></div>
 </div>
 </div>
 <div class="section level3">
@@ -536,17 +536,13 @@ free models:</p>
 <code>meta-llama/llama-4-maverick:free</code> - Meta Llama 4
 Maverick (256K context, best performance)</li>
 <li>
-<code>deepseek/deepseek-r1:free</code> - DeepSeek R1 (advanced
-reasoning)</li>
+<code>deepseek/deepseek-v4-pro:free</code> - DeepSeek V4 Pro</li>
 <li>
 <code>meta-llama/llama-3.3-70b-instruct:free</code> - Meta Llama 3.3
 70B (reliable)</li>
 <li>
 <code>venice/uncensored:free</code> - Venice Uncensored (new
 model)</li>
-<li>
-<code>minimax/minimax-m2:free</code> - MiniMax M2 (optimized for
-coding)</li>
 <li>
 <code>z-ai/glm-4.5-air:free</code> - GLM 4.5 Air (lightweight)</li>
 </ul>

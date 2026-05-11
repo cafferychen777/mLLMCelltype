@@ -83,7 +83,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">mLLMCelltype</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">2.0.3</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">2.0.5</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -143,7 +143,7 @@
       <h1>Why Choose Consensus? The Scientific Foundation of Multi-LLM Annotation</h1>
             
       
-      <small class="dont-index">Source: <a href="https://github.com/cafferychen777/mLLMCelltype/blob/main/vignettes/why-consensus.Rmd" class="external-link"><code>vignettes/why-consensus.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/cafferychen777/mLLMCelltype/blob/v2.0.5/vignettes/why-consensus.Rmd" class="external-link"><code>vignettes/why-consensus.Rmd</code></a></small>
       <div class="d-none name"><code>why-consensus.Rmd</code></div>
     </div>
 
@@ -336,12 +336,18 @@ stages</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://cafferyang.com/mLLMCelltype/">mLLMCelltype</a></span><span class="op">)</span></span>
 <span></span>
-<span><span class="co"># Load your single-cell data</span></span>
+<span><span class="co"># Load marker genes from your single-cell data, then run consensus annotation</span></span>
+<span><span class="va">api_keys</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
+<span>  openai <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Sys.getenv.html" class="external-link">Sys.getenv</a></span><span class="op">(</span><span class="st">"OPENAI_API_KEY"</span><span class="op">)</span>,</span>
+<span>  anthropic <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Sys.getenv.html" class="external-link">Sys.getenv</a></span><span class="op">(</span><span class="st">"ANTHROPIC_API_KEY"</span><span class="op">)</span>,</span>
+<span>  gemini <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Sys.getenv.html" class="external-link">Sys.getenv</a></span><span class="op">(</span><span class="st">"GEMINI_API_KEY"</span><span class="op">)</span></span>
+<span><span class="op">)</span></span>
+<span></span>
 <span><span class="va">results</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/interactive_consensus_annotation.html">interactive_consensus_annotation</a></span><span class="op">(</span></span>
-<span>  seurat_obj <span class="op">=</span> <span class="va">your_data</span>,</span>
-<span>  tissue_name <span class="op">=</span> <span class="st">"PBMC"</span>,</span>
-<span>  models <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"gpt-4o"</span>, <span class="st">"claude-sonnet-4-5-20250929"</span>, <span class="st">"gemini-2.5-pro"</span><span class="op">)</span>,</span>
-<span>  consensus_method <span class="op">=</span> <span class="st">"iterative"</span></span>
+<span>  input <span class="op">=</span> <span class="va">marker_data</span>,</span>
+<span>  tissue_name <span class="op">=</span> <span class="st">"human PBMC"</span>,</span>
+<span>  models <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"gpt-5.5"</span>, <span class="st">"claude-sonnet-4-6"</span>, <span class="st">"gemini-3.1-pro-preview"</span><span class="op">)</span>,</span>
+<span>  api_keys <span class="op">=</span> <span class="va">api_keys</span></span>
 <span><span class="op">)</span></span></code></pre></div>
 <div class="section level4">
 <h4 id="understanding-your-results">Understanding Your Results<a class="anchor" aria-label="anchor" href="#understanding-your-results"></a>
@@ -375,8 +381,8 @@ the overall methodology.</p>
 Started Guide</a></li>
 <li><a href="https://cafferyang.com/mLLMCelltype/articles/vs-single-agent.html">Consensus
 vs Single-Agent Methods</a></li>
-<li><a href="https://cafferyang.com/mLLMCelltype/articles/advanced-features.html">Performance
-Benchmarks</a></li>
+<li><a href="https://cafferyang.com/mLLMCelltype/articles/advanced-features.html">Advanced
+Features</a></li>
 <li><a href="https://cafferyang.com/mLLMCelltype/reference/index.html">API
 Reference</a></li>
 </ul>

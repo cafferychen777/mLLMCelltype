@@ -37,7 +37,7 @@ interactive discussion:
 consensus_results <- interactive_consensus_annotation(
   input,                # Original marker gene data (Seurat FindAllMarkers result or list of genes)
   tissue_name = NULL,   # Optional tissue name
-  models = c("claude-sonnet-4-5-20250929", "gpt-5", "gemini-1.5-pro"),  # Models to use
+  models = c("claude-sonnet-4-6", "gpt-5.5", "gemini-3.1-pro-preview"),  # Models to use
   api_keys,             # Named list of API keys
   top_gene_count = 10,  # Number of top genes to use
   controversy_threshold = 0.7,  # Threshold for identifying controversial clusters
@@ -53,9 +53,9 @@ consensus_results <- interactive_consensus_annotation(
 **Important Note on `consensus_check_model`**: This parameter is used
 for evaluating semantic similarity, calculating consensus metrics, and
 moderating discussions. We recommend using capable models such as: -
-`claude-sonnet-4-5-20250929` (Anthropic) - `claude-opus-4-1-20250805`
-(Anthropic) - `o1` (OpenAI) - `gpt-5` (OpenAI) - `gemini-2.5-pro`
-(Google)
+`claude-sonnet-4-6` (Anthropic) - `claude-opus-4-1-20250805`
+(Anthropic) - `o1` (OpenAI) - `gpt-5.5` (OpenAI) -
+`gemini-3.1-pro-preview` (Google)
 
 See the main README for detailed recommendations and examples.
 
@@ -78,7 +78,7 @@ pbmc_markers <- FindAllMarkers(pbmc_small, only.pos = TRUE, min.pct = 0.25, logf
 results <- annotate_cell_types(
   input = pbmc_markers,
   tissue_name = "human PBMC",
-  model = "claude-sonnet-4-5-20250929",
+  model = "claude-sonnet-4-6",
   api_key = Sys.getenv("ANTHROPIC_API_KEY"),
   top_gene_count = 10
 )
@@ -102,10 +102,10 @@ For publication-quality annotations with uncertainty quantification:
 
 # Define multiple models to use
 models <- c(
-  "claude-sonnet-4-5-20250929",  # Anthropic
-  "gpt-5",                      # OpenAI
-  "gemini-1.5-pro",              # Google
-  "grok-3"                       # X.AI
+  "claude-sonnet-4-6",  # Anthropic
+  "gpt-5.5",                      # OpenAI
+  "gemini-3.1-pro-preview",              # Google
+  "grok-4.3"                       # X.AI
 )
 
 # API keys for different providers
@@ -139,7 +139,7 @@ consensus_results <- interactive_consensus_annotation(
   api_keys = api_keys,
   controversy_threshold = 0.7,
   entropy_threshold = 1.0,
-  consensus_check_model = "claude-sonnet-4-5-20250929"
+  consensus_check_model = "claude-sonnet-4-6"
 )
 
 # View consensus results
@@ -192,8 +192,8 @@ openrouter_api_key <- Sys.getenv("OPENROUTER_API_KEY")
 # Define free OpenRouter models to use
 free_models <- c(
   "meta-llama/llama-4-maverick:free",                # Meta Llama 4 Maverick (free)
-  "nvidia/llama-3.1-nemotron-ultra-253b-v1:free",    # NVIDIA Nemotron Ultra 253B (free)
-  "deepseek/deepseek-r1:free",             # DeepSeek R1 (free, advanced reasoning)
+  "meta-llama/llama-3.3-70b-instruct:free",    # Meta Llama 3.3 70B (free)
+  "deepseek/deepseek-v4-pro:free",             # DeepSeek V4 Pro (free)
   "meta-llama/llama-3.3-70b-instruct:free"          # Meta Llama 3.3 70B (free)
 )
 
@@ -253,7 +253,7 @@ write.csv(pbmc_markers, "pbmc_markers.csv", row.names = FALSE)
 results <- annotate_cell_types(
   input = "pbmc_markers.csv",
   tissue_name = "human PBMC",
-  model = "claude-sonnet-4-5-20250929",
+  model = "claude-sonnet-4-6",
   api_key = Sys.getenv("ANTHROPIC_API_KEY")
 )
 ```
@@ -271,7 +271,7 @@ For better control over caching behavior:
 results <- annotate_cell_types(
   input = pbmc_markers,
   tissue_name = "human PBMC",
-  model = "claude-sonnet-4-5-20250929",
+  model = "claude-sonnet-4-6",
   api_key = Sys.getenv("ANTHROPIC_API_KEY"),
   top_gene_count = 10,
   debug = FALSE
@@ -292,26 +292,28 @@ you choose:
 
 For the most accurate annotations:
 
-- **Anthropic Claude Sonnet 4.5** (`claude-sonnet-4-5-20250929`)
-- **Anthropic Claude Opus 4.1** (`claude-opus-4-1-20250805`)
-- **OpenAI GPT-5** (`gpt-5`)
-- **Google Gemini 2.5 Pro** (`gemini-2.5-pro`)
+- **Anthropic Claude Opus 4.7** (`claude-opus-4-7`)
+- **Anthropic Claude Sonnet 4.6** (`claude-sonnet-4-6`)
+- **OpenAI GPT-5.5** (`gpt-5.5`)
+- **Google Gemini 3.1 Pro Preview** (`gemini-3.1-pro-preview`)
 
 #### Balanced Performance/Cost Models
 
 For good results with lower API costs:
 
-- **X.AI Grok-3** (`grok-3`): Competitive performance at lower cost
-- **DeepSeek V3** (`deepseek-v3`): Good performance for specialized
-  tissues
+- **X.AI Grok 4.3** (`grok-4.3`): Competitive performance at lower cost
+- **DeepSeek V4 Flash** (`deepseek-v4-flash`): Good performance for
+  specialized tissues
 
 #### Economy Models
 
 For preliminary exploration or large datasets:
 
-- **Qwen 2.5** (`qwen-max-2025-01-25`): Good performance for the cost
-- **Zhipu GLM-4** (`glm-4`): Economical option with decent performance
-- **MiniMax** (`minimax`): Cost-effective for initial exploration
+- **Qwen 3.6 Flash** (`qwen3.6-flash`): Good performance for the cost
+- **Zhipu/Z.AI GLM-5-Turbo** (`glm-5-turbo`): Economical option with
+  decent performance
+- **MiniMax M2.5** (`MiniMax-M2.5`): Cost-effective for initial
+  exploration
 
 #### Free Models via OpenRouter
 
@@ -319,23 +321,22 @@ For users with limited API credits or budget constraints:
 
 - **Meta Llama 4 Maverick** (`meta-llama/llama-4-maverick:free`): Most
   reliable and fast, recommended for consensus checking
-- **NVIDIA Nemotron Ultra 253B**
-  (`nvidia/llama-3.1-nemotron-ultra-253b-v1:free`): Good performance
-  with consistent formatting
-- **DeepSeek R1** (`deepseek/deepseek-r1:free`): Advanced reasoning
-  model (free)
+- **Meta Llama 3.3 70B** (`meta-llama/llama-3.3-70b-instruct:free`):
+  Good performance with consistent formatting
+- **DeepSeek V4 Pro** (`deepseek/deepseek-v4-pro:free`): Reasoning model
+  (free)
 
 Based on our testing, we recommend the following free models:
 
 - `meta-llama/llama-4-maverick:free`: Most reliable and fast,
   recommended for consensus checking
-- `nvidia/llama-3.1-nemotron-ultra-253b-v1:free`: Good performance with
+- `meta-llama/llama-3.3-70b-instruct:free`: Good performance with
   consistent formatting
-- `deepseek/deepseek-r1:free`: Reliable with good response time
+- `deepseek/deepseek-v4-pro:free`: Reliable with good response time
 
 Some models may have limitations:
 
-- `deepseek/deepseek-r1:free`: May occasionally return empty results
+- `deepseek/deepseek-v4-pro:free`: May occasionally return empty results
 - `thudm/glm-z1-9b:free`: May return localized error messages
   (“non-character parameter”) when used for consensus checking
 
@@ -387,9 +388,9 @@ pbmc_markers <- FindAllMarkers(pbmc_small, only.pos = TRUE, min.pct = 0.25, logf
 
 # Define models to use
 models <- c(
-  "claude-sonnet-4-5-20250929",
-  "gpt-5",
-  "gemini-1.5-pro"
+  "claude-sonnet-4-6",
+  "gpt-5.5",
+  "gemini-3.1-pro-preview"
 )
 
 # API keys
@@ -430,7 +431,7 @@ consensus_results <- interactive_consensus_annotation(
   api_keys = api_keys,
   controversy_threshold = 0.7,
   entropy_threshold = 1.0,
-  consensus_check_model = "claude-sonnet-4-5-20250929"
+  consensus_check_model = "claude-sonnet-4-6"
 )
 
 # Add consensus results to Seurat object
@@ -497,7 +498,7 @@ cluster are used for annotation:
 results_more_genes <- annotate_cell_types(
   input = pbmc_markers,
   tissue_name = "human PBMC",
-  model = "claude-sonnet-4-5-20250929",
+  model = "claude-sonnet-4-6",
   api_key = Sys.getenv("ANTHROPIC_API_KEY"),
   top_gene_count = 20  # Using more genes
 )
@@ -506,7 +507,7 @@ results_more_genes <- annotate_cell_types(
 results_fewer_genes <- annotate_cell_types(
   input = pbmc_markers,
   tissue_name = "human PBMC",
-  model = "claude-sonnet-4-5-20250929",
+  model = "claude-sonnet-4-6",
   api_key = Sys.getenv("ANTHROPIC_API_KEY"),
   top_gene_count = 5   # Using fewer genes
 )
@@ -525,7 +526,7 @@ considered controversial and require discussion:
 consensus_results_low_threshold <- interactive_consensus_annotation(
   input = pbmc_markers,
   tissue_name = "human PBMC",
-  models = c("claude-sonnet-4-5-20250929", "gpt-5", "gemini-2.0-flash"),
+  models = c("claude-sonnet-4-6", "gpt-5.5", "gemini-3-flash-preview"),
   api_keys = list(
     "anthropic" = Sys.getenv("ANTHROPIC_API_KEY"),
     "openai" = Sys.getenv("OPENAI_API_KEY"),
@@ -538,7 +539,7 @@ consensus_results_low_threshold <- interactive_consensus_annotation(
 consensus_results_high_threshold <- interactive_consensus_annotation(
   input = pbmc_markers,
   tissue_name = "human PBMC",
-  models = c("claude-sonnet-4-5-20250929", "gpt-5", "gemini-2.0-flash"),
+  models = c("claude-sonnet-4-6", "gpt-5.5", "gemini-3-flash-preview"),
   api_keys = list(
     "anthropic" = Sys.getenv("ANTHROPIC_API_KEY"),
     "openai" = Sys.getenv("OPENAI_API_KEY"),
@@ -607,8 +608,8 @@ If you see “non-character parameter” errors:
 If a model returns empty results:
 
 - Try increasing the timeout or retry with the same model
-- Some models like `deepseek/deepseek-r1:free` may occasionally return
-  empty results
+- Some models like `deepseek/deepseek-v4-pro:free` may occasionally
+  return empty results
 - Switch to a more reliable model if the problem persists
 
 ### Next Steps

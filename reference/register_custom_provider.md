@@ -17,7 +17,7 @@ register_custom_provider(provider_name, process_fn, description = NULL)
 - process_fn:
 
   Function that processes LLM requests. Must accept parameters: prompt,
-  model, api_key
+  model, api_key; may optionally accept model_config
 
 - description:
 

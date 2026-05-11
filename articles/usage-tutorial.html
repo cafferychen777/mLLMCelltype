@@ -76,7 +76,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">mLLMCelltype</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">2.0.3</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">2.0.5</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -136,9 +136,9 @@
       <h1>Usage Tutorial</h1>
                         <h4 data-toc-skip class="author">Chen Yang</h4>
             
-            <h4 data-toc-skip class="date">2026-05-04</h4>
+            <h4 data-toc-skip class="date">2026-05-11</h4>
       
-      <small class="dont-index">Source: <a href="https://github.com/cafferychen777/mLLMCelltype/blob/main/vignettes/usage-tutorial.Rmd" class="external-link"><code>vignettes/usage-tutorial.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/cafferychen777/mLLMCelltype/blob/v2.0.5/vignettes/usage-tutorial.Rmd" class="external-link"><code>vignettes/usage-tutorial.Rmd</code></a></small>
       <div class="d-none name"><code>usage-tutorial.Rmd</code></div>
     </div>
 
@@ -179,7 +179,7 @@ through interactive discussion:</p>
 <code class="sourceCode R"><span><span class="va">consensus_results</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/interactive_consensus_annotation.html">interactive_consensus_annotation</a></span><span class="op">(</span></span>
 <span>  <span class="va">input</span>,                <span class="co"># Original marker gene data (Seurat FindAllMarkers result or list of genes)</span></span>
 <span>  tissue_name <span class="op">=</span> <span class="cn">NULL</span>,   <span class="co"># Optional tissue name</span></span>
-<span>  models <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"claude-sonnet-4-5-20250929"</span>, <span class="st">"gpt-5"</span>, <span class="st">"gemini-1.5-pro"</span><span class="op">)</span>,  <span class="co"># Models to use</span></span>
+<span>  models <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"claude-sonnet-4-6"</span>, <span class="st">"gpt-5.5"</span>, <span class="st">"gemini-3.1-pro-preview"</span><span class="op">)</span>,  <span class="co"># Models to use</span></span>
 <span>  <span class="va">api_keys</span>,             <span class="co"># Named list of API keys</span></span>
 <span>  top_gene_count <span class="op">=</span> <span class="fl">10</span>,  <span class="co"># Number of top genes to use</span></span>
 <span>  controversy_threshold <span class="op">=</span> <span class="fl">0.7</span>,  <span class="co"># Threshold for identifying controversial clusters</span></span>
@@ -194,10 +194,10 @@ through interactive discussion:</p>
 <code>consensus_check_model</code></strong>: This parameter is used for
 evaluating semantic similarity, calculating consensus metrics, and
 moderating discussions. We recommend using capable models such as: -
-<code>claude-sonnet-4-5-20250929</code> (Anthropic) -
+<code>claude-sonnet-4-6</code> (Anthropic) -
 <code>claude-opus-4-1-20250805</code> (Anthropic) - <code>o1</code>
-(OpenAI) - <code>gpt-5</code> (OpenAI) - <code>gemini-2.5-pro</code>
-(Google)</p>
+(OpenAI) - <code>gpt-5.5</code> (OpenAI) -
+<code>gemini-3.1-pro-preview</code> (Google)</p>
 <p>See the main README for detailed recommendations and examples.</p>
 </div>
 </div>
@@ -220,7 +220,7 @@ moderating discussions. We recommend using capable models such as: -
 <span><span class="va">results</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/annotate_cell_types.html">annotate_cell_types</a></span><span class="op">(</span></span>
 <span>  input <span class="op">=</span> <span class="va">pbmc_markers</span>,</span>
 <span>  tissue_name <span class="op">=</span> <span class="st">"human PBMC"</span>,</span>
-<span>  model <span class="op">=</span> <span class="st">"claude-sonnet-4-5-20250929"</span>,</span>
+<span>  model <span class="op">=</span> <span class="st">"claude-sonnet-4-6"</span>,</span>
 <span>  api_key <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Sys.getenv.html" class="external-link">Sys.getenv</a></span><span class="op">(</span><span class="st">"ANTHROPIC_API_KEY"</span><span class="op">)</span>,</span>
 <span>  top_gene_count <span class="op">=</span> <span class="fl">10</span></span>
 <span><span class="op">)</span></span>
@@ -243,10 +243,10 @@ quantification:</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Define multiple models to use</span></span>
 <span><span class="va">models</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
-<span>  <span class="st">"claude-sonnet-4-5-20250929"</span>,  <span class="co"># Anthropic</span></span>
-<span>  <span class="st">"gpt-5"</span>,                      <span class="co"># OpenAI</span></span>
-<span>  <span class="st">"gemini-1.5-pro"</span>,              <span class="co"># Google</span></span>
-<span>  <span class="st">"grok-3"</span>                       <span class="co"># X.AI</span></span>
+<span>  <span class="st">"claude-sonnet-4-6"</span>,  <span class="co"># Anthropic</span></span>
+<span>  <span class="st">"gpt-5.5"</span>,                      <span class="co"># OpenAI</span></span>
+<span>  <span class="st">"gemini-3.1-pro-preview"</span>,              <span class="co"># Google</span></span>
+<span>  <span class="st">"grok-4.3"</span>                       <span class="co"># X.AI</span></span>
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># API keys for different providers</span></span>
@@ -280,7 +280,7 @@ quantification:</p>
 <span>  api_keys <span class="op">=</span> <span class="va">api_keys</span>,</span>
 <span>  controversy_threshold <span class="op">=</span> <span class="fl">0.7</span>,</span>
 <span>  entropy_threshold <span class="op">=</span> <span class="fl">1.0</span>,</span>
-<span>  consensus_check_model <span class="op">=</span> <span class="st">"claude-sonnet-4-5-20250929"</span></span>
+<span>  consensus_check_model <span class="op">=</span> <span class="st">"claude-sonnet-4-6"</span></span>
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># View consensus results</span></span>
@@ -331,8 +331,8 @@ quantification:</p>
 <span><span class="co"># Define free OpenRouter models to use</span></span>
 <span><span class="va">free_models</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
 <span>  <span class="st">"meta-llama/llama-4-maverick:free"</span>,                <span class="co"># Meta Llama 4 Maverick (free)</span></span>
-<span>  <span class="st">"nvidia/llama-3.1-nemotron-ultra-253b-v1:free"</span>,    <span class="co"># NVIDIA Nemotron Ultra 253B (free)</span></span>
-<span>  <span class="st">"deepseek/deepseek-r1:free"</span>,             <span class="co"># DeepSeek R1 (free, advanced reasoning)</span></span>
+<span>  <span class="st">"meta-llama/llama-3.3-70b-instruct:free"</span>,    <span class="co"># Meta Llama 3.3 70B (free)</span></span>
+<span>  <span class="st">"deepseek/deepseek-v4-pro:free"</span>,             <span class="co"># DeepSeek V4 Pro (free)</span></span>
 <span>  <span class="st">"meta-llama/llama-3.3-70b-instruct:free"</span>          <span class="co"># Meta Llama 3.3 70B (free)</span></span>
 <span><span class="op">)</span></span>
 <span></span>
@@ -390,7 +390,7 @@ quantification:</p>
 <span><span class="va">results</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/annotate_cell_types.html">annotate_cell_types</a></span><span class="op">(</span></span>
 <span>  input <span class="op">=</span> <span class="st">"pbmc_markers.csv"</span>,</span>
 <span>  tissue_name <span class="op">=</span> <span class="st">"human PBMC"</span>,</span>
-<span>  model <span class="op">=</span> <span class="st">"claude-sonnet-4-5-20250929"</span>,</span>
+<span>  model <span class="op">=</span> <span class="st">"claude-sonnet-4-6"</span>,</span>
 <span>  api_key <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Sys.getenv.html" class="external-link">Sys.getenv</a></span><span class="op">(</span><span class="st">"ANTHROPIC_API_KEY"</span><span class="op">)</span></span>
 <span><span class="op">)</span></span></code></pre></div>
 </div>
@@ -406,7 +406,7 @@ quantification:</p>
 <span><span class="va">results</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/annotate_cell_types.html">annotate_cell_types</a></span><span class="op">(</span></span>
 <span>  input <span class="op">=</span> <span class="va">pbmc_markers</span>,</span>
 <span>  tissue_name <span class="op">=</span> <span class="st">"human PBMC"</span>,</span>
-<span>  model <span class="op">=</span> <span class="st">"claude-sonnet-4-5-20250929"</span>,</span>
+<span>  model <span class="op">=</span> <span class="st">"claude-sonnet-4-6"</span>,</span>
 <span>  api_key <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Sys.getenv.html" class="external-link">Sys.getenv</a></span><span class="op">(</span><span class="st">"ANTHROPIC_API_KEY"</span><span class="op">)</span>,</span>
 <span>  top_gene_count <span class="op">=</span> <span class="fl">10</span>,</span>
 <span>  debug <span class="op">=</span> <span class="cn">FALSE</span></span>
@@ -429,16 +429,16 @@ help you choose:</p>
 <p>For the most accurate annotations:</p>
 <ul>
 <li>
-<strong>Anthropic Claude Sonnet 4.5</strong>
-(<code>claude-sonnet-4-5-20250929</code>)</li>
+<strong>Anthropic Claude Opus 4.7</strong>
+(<code>claude-opus-4-7</code>)</li>
 <li>
-<strong>Anthropic Claude Opus 4.1</strong>
-(<code>claude-opus-4-1-20250805</code>)</li>
+<strong>Anthropic Claude Sonnet 4.6</strong>
+(<code>claude-sonnet-4-6</code>)</li>
 <li>
-<strong>OpenAI GPT-5</strong> (<code>gpt-5</code>)</li>
+<strong>OpenAI GPT-5.5</strong> (<code>gpt-5.5</code>)</li>
 <li>
-<strong>Google Gemini 2.5 Pro</strong>
-(<code>gemini-2.5-pro</code>)</li>
+<strong>Google Gemini 3.1 Pro Preview</strong>
+(<code>gemini-3.1-pro-preview</code>)</li>
 </ul>
 </div>
 <div class="section level4">
@@ -447,11 +447,11 @@ help you choose:</p>
 <p>For good results with lower API costs:</p>
 <ul>
 <li>
-<strong>X.AI Grok-3</strong> (<code>grok-3</code>): Competitive
+<strong>X.AI Grok 4.3</strong> (<code>grok-4.3</code>): Competitive
 performance at lower cost</li>
 <li>
-<strong>DeepSeek V3</strong> (<code>deepseek-v3</code>): Good
-performance for specialized tissues</li>
+<strong>DeepSeek V4 Flash</strong> (<code>deepseek-v4-flash</code>):
+Good performance for specialized tissues</li>
 </ul>
 </div>
 <div class="section level4">
@@ -460,14 +460,14 @@ performance for specialized tissues</li>
 <p>For preliminary exploration or large datasets:</p>
 <ul>
 <li>
-<strong>Qwen 2.5</strong> (<code>qwen-max-2025-01-25</code>): Good
+<strong>Qwen 3.6 Flash</strong> (<code>qwen3.6-flash</code>): Good
 performance for the cost</li>
 <li>
-<strong>Zhipu GLM-4</strong> (<code>glm-4</code>): Economical option
-with decent performance</li>
+<strong>Zhipu/Z.AI GLM-5-Turbo</strong> (<code>glm-5-turbo</code>):
+Economical option with decent performance</li>
 <li>
-<strong>MiniMax</strong> (<code>minimax</code>): Cost-effective for
-initial exploration</li>
+<strong>MiniMax M2.5</strong> (<code>MiniMax-M2.5</code>):
+Cost-effective for initial exploration</li>
 </ul>
 </div>
 <div class="section level4">
@@ -480,12 +480,12 @@ initial exploration</li>
 (<code>meta-llama/llama-4-maverick:free</code>): Most reliable and fast,
 recommended for consensus checking</li>
 <li>
-<strong>NVIDIA Nemotron Ultra 253B</strong>
-(<code>nvidia/llama-3.1-nemotron-ultra-253b-v1:free</code>): Good
-performance with consistent formatting</li>
+<strong>Meta Llama 3.3 70B</strong>
+(<code>meta-llama/llama-3.3-70b-instruct:free</code>): Good performance
+with consistent formatting</li>
 <li>
-<strong>DeepSeek R1</strong>
-(<code>deepseek/deepseek-r1:free</code>): Advanced reasoning model
+<strong>DeepSeek V4 Pro</strong>
+(<code>deepseek/deepseek-v4-pro:free</code>): Reasoning model
 (free)</li>
 </ul>
 <p>Based on our testing, we recommend the following free models:</p>
@@ -494,16 +494,16 @@ performance with consistent formatting</li>
 <code>meta-llama/llama-4-maverick:free</code>: Most reliable and
 fast, recommended for consensus checking</li>
 <li>
-<code>nvidia/llama-3.1-nemotron-ultra-253b-v1:free</code>: Good
+<code>meta-llama/llama-3.3-70b-instruct:free</code>: Good
 performance with consistent formatting</li>
 <li>
-<code>deepseek/deepseek-r1:free</code>: Reliable with good response
-time</li>
+<code>deepseek/deepseek-v4-pro:free</code>: Reliable with good
+response time</li>
 </ul>
 <p>Some models may have limitations:</p>
 <ul>
 <li>
-<code>deepseek/deepseek-r1:free</code>: May occasionally return
+<code>deepseek/deepseek-v4-pro:free</code>: May occasionally return
 empty results</li>
 <li>
 <code>thudm/glm-z1-9b:free</code>: May return localized error
@@ -555,9 +555,9 @@ workflow:</p>
 <span></span>
 <span><span class="co"># Define models to use</span></span>
 <span><span class="va">models</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
-<span>  <span class="st">"claude-sonnet-4-5-20250929"</span>,</span>
-<span>  <span class="st">"gpt-5"</span>,</span>
-<span>  <span class="st">"gemini-1.5-pro"</span></span>
+<span>  <span class="st">"claude-sonnet-4-6"</span>,</span>
+<span>  <span class="st">"gpt-5.5"</span>,</span>
+<span>  <span class="st">"gemini-3.1-pro-preview"</span></span>
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># API keys</span></span>
@@ -598,7 +598,7 @@ workflow:</p>
 <span>  api_keys <span class="op">=</span> <span class="va">api_keys</span>,</span>
 <span>  controversy_threshold <span class="op">=</span> <span class="fl">0.7</span>,</span>
 <span>  entropy_threshold <span class="op">=</span> <span class="fl">1.0</span>,</span>
-<span>  consensus_check_model <span class="op">=</span> <span class="st">"claude-sonnet-4-5-20250929"</span></span>
+<span>  consensus_check_model <span class="op">=</span> <span class="st">"claude-sonnet-4-6"</span></span>
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Add consensus results to Seurat object</span></span>
@@ -664,7 +664,7 @@ marker genes per cluster are used for annotation:</p>
 <span><span class="va">results_more_genes</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/annotate_cell_types.html">annotate_cell_types</a></span><span class="op">(</span></span>
 <span>  input <span class="op">=</span> <span class="va">pbmc_markers</span>,</span>
 <span>  tissue_name <span class="op">=</span> <span class="st">"human PBMC"</span>,</span>
-<span>  model <span class="op">=</span> <span class="st">"claude-sonnet-4-5-20250929"</span>,</span>
+<span>  model <span class="op">=</span> <span class="st">"claude-sonnet-4-6"</span>,</span>
 <span>  api_key <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Sys.getenv.html" class="external-link">Sys.getenv</a></span><span class="op">(</span><span class="st">"ANTHROPIC_API_KEY"</span><span class="op">)</span>,</span>
 <span>  top_gene_count <span class="op">=</span> <span class="fl">20</span>  <span class="co"># Using more genes</span></span>
 <span><span class="op">)</span></span>
@@ -673,7 +673,7 @@ marker genes per cluster are used for annotation:</p>
 <span><span class="va">results_fewer_genes</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/annotate_cell_types.html">annotate_cell_types</a></span><span class="op">(</span></span>
 <span>  input <span class="op">=</span> <span class="va">pbmc_markers</span>,</span>
 <span>  tissue_name <span class="op">=</span> <span class="st">"human PBMC"</span>,</span>
-<span>  model <span class="op">=</span> <span class="st">"claude-sonnet-4-5-20250929"</span>,</span>
+<span>  model <span class="op">=</span> <span class="st">"claude-sonnet-4-6"</span>,</span>
 <span>  api_key <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Sys.getenv.html" class="external-link">Sys.getenv</a></span><span class="op">(</span><span class="st">"ANTHROPIC_API_KEY"</span><span class="op">)</span>,</span>
 <span>  top_gene_count <span class="op">=</span> <span class="fl">5</span>   <span class="co"># Using fewer genes</span></span>
 <span><span class="op">)</span></span></code></pre></div>
@@ -690,7 +690,7 @@ clusters are considered controversial and require discussion:</p>
 <span><span class="va">consensus_results_low_threshold</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/interactive_consensus_annotation.html">interactive_consensus_annotation</a></span><span class="op">(</span></span>
 <span>  input <span class="op">=</span> <span class="va">pbmc_markers</span>,</span>
 <span>  tissue_name <span class="op">=</span> <span class="st">"human PBMC"</span>,</span>
-<span>  models <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"claude-sonnet-4-5-20250929"</span>, <span class="st">"gpt-5"</span>, <span class="st">"gemini-2.0-flash"</span><span class="op">)</span>,</span>
+<span>  models <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"claude-sonnet-4-6"</span>, <span class="st">"gpt-5.5"</span>, <span class="st">"gemini-3-flash-preview"</span><span class="op">)</span>,</span>
 <span>  api_keys <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
 <span>    <span class="st">"anthropic"</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Sys.getenv.html" class="external-link">Sys.getenv</a></span><span class="op">(</span><span class="st">"ANTHROPIC_API_KEY"</span><span class="op">)</span>,</span>
 <span>    <span class="st">"openai"</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Sys.getenv.html" class="external-link">Sys.getenv</a></span><span class="op">(</span><span class="st">"OPENAI_API_KEY"</span><span class="op">)</span>,</span>
@@ -703,7 +703,7 @@ clusters are considered controversial and require discussion:</p>
 <span><span class="va">consensus_results_high_threshold</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/interactive_consensus_annotation.html">interactive_consensus_annotation</a></span><span class="op">(</span></span>
 <span>  input <span class="op">=</span> <span class="va">pbmc_markers</span>,</span>
 <span>  tissue_name <span class="op">=</span> <span class="st">"human PBMC"</span>,</span>
-<span>  models <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"claude-sonnet-4-5-20250929"</span>, <span class="st">"gpt-5"</span>, <span class="st">"gemini-2.0-flash"</span><span class="op">)</span>,</span>
+<span>  models <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"claude-sonnet-4-6"</span>, <span class="st">"gpt-5.5"</span>, <span class="st">"gemini-3-flash-preview"</span><span class="op">)</span>,</span>
 <span>  api_keys <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
 <span>    <span class="st">"anthropic"</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Sys.getenv.html" class="external-link">Sys.getenv</a></span><span class="op">(</span><span class="st">"ANTHROPIC_API_KEY"</span><span class="op">)</span>,</span>
 <span>    <span class="st">"openai"</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Sys.getenv.html" class="external-link">Sys.getenv</a></span><span class="op">(</span><span class="st">"OPENAI_API_KEY"</span><span class="op">)</span>,</span>
@@ -795,7 +795,7 @@ checking</li>
 <p>If a model returns empty results:</p>
 <ul>
 <li>Try increasing the timeout or retry with the same model</li>
-<li>Some models like <code>deepseek/deepseek-r1:free</code> may
+<li>Some models like <code>deepseek/deepseek-v4-pro:free</code> may
 occasionally return empty results</li>
 <li>Switch to a more reliable model if the problem persists</li>
 </ul>

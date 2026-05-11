@@ -27,7 +27,7 @@ library(dplyr)
 high_level_results <- annotate_cell_types(
   input = marker_data,
   tissue_name = "human PBMC",
-  model = "claude-sonnet-4-5-20250929",
+  model = "claude-sonnet-4-6",
   api_key = Sys.getenv("ANTHROPIC_API_KEY"),
   top_gene_count = 10
 )
@@ -49,7 +49,7 @@ t_cell_markers <- FindAllMarkers(t_cells, only.pos = TRUE, min.pct = 0.25, logfc
 t_cell_subtypes <- annotate_cell_types(
   input = t_cell_markers,
   tissue_name = "human PBMC T cells",
-  model = "claude-sonnet-4-5-20250929",
+  model = "claude-sonnet-4-6",
   api_key = Sys.getenv("ANTHROPIC_API_KEY"),
   top_gene_count = 10
 )
@@ -116,7 +116,7 @@ strongest signals:
 results_fewer_genes <- annotate_cell_types(
   input = marker_data,  # Your marker gene data
   tissue_name = "human PBMC",
-  model = "claude-sonnet-4-5-20250929",
+  model = "claude-sonnet-4-6",
   api_key = Sys.getenv("ANTHROPIC_API_KEY"),
   top_gene_count = 5  # Use fewer genes to focus on strongest signals
 )
@@ -137,7 +137,7 @@ filtered_markers <- marker_data %>%
 results_filtered <- annotate_cell_types(
   input = filtered_markers,
   tissue_name = "human PBMC",
-  model = "claude-sonnet-4-5-20250929",
+  model = "claude-sonnet-4-6",
   api_key = Sys.getenv("ANTHROPIC_API_KEY")
 )
 ```
@@ -158,9 +158,9 @@ api_keys <- list(
 
 # Define multiple models to use
 models <- c(
-  "claude-sonnet-4-5-20250929",
-  "gpt-5",
-  "gemini-1.5-pro"
+  "claude-sonnet-4-6",
+  "gpt-5.5",
+  "gemini-3.1-pro-preview"
 )
 
 # Create consensus using interactive_consensus_annotation
@@ -171,7 +171,7 @@ consensus_results <- interactive_consensus_annotation(
   api_keys = api_keys,
   controversy_threshold = 0.7,
   entropy_threshold = 1.0,
-  consensus_check_model = "claude-sonnet-4-5-20250929"
+  consensus_check_model = "claude-sonnet-4-6"
 )
 ```
 
@@ -187,7 +187,7 @@ When working with data affected by batch effects, you can:
 batch_consensus <- interactive_consensus_annotation(
   input = marker_data,  # Your marker gene data with batch effects
   tissue_name = "mouse brain",
-  models = c("claude-sonnet-4-5-20250929", "gpt-5", "gemini-1.5-pro"),
+  models = c("claude-sonnet-4-6", "gpt-5.5", "gemini-3.1-pro-preview"),
   api_keys = api_keys,
   controversy_threshold = 0.4,  # Lower threshold to discuss more clusters
   entropy_threshold = 0.8  # Lower entropy threshold
@@ -202,7 +202,7 @@ batch_consensus <- interactive_consensus_annotation(
 batch_aware_results <- annotate_cell_types(
   input = marker_data,  # Your marker gene data with batch effects
   tissue_name = "mouse brain with technical batch effects",  # Include batch context
-  model = "claude-sonnet-4-5-20250929",
+  model = "claude-sonnet-4-6",
   api_key = Sys.getenv("ANTHROPIC_API_KEY")
 )
 ```
@@ -221,7 +221,7 @@ important context to the LLM:
 basic_results <- annotate_cell_types(
   input = marker_data,
   tissue_name = "human sample",  # Generic context
-  model = "claude-sonnet-4-5-20250929",
+  model = "claude-sonnet-4-6",
   api_key = Sys.getenv("ANTHROPIC_API_KEY")
 )
 
@@ -229,7 +229,7 @@ basic_results <- annotate_cell_types(
 specific_results <- annotate_cell_types(
   input = marker_data,
   tissue_name = "human fetal liver at 20 weeks gestation",  # Detailed context
-  model = "claude-sonnet-4-5-20250929",
+  model = "claude-sonnet-4-6",
   api_key = Sys.getenv("ANTHROPIC_API_KEY")
 )
 ```
@@ -258,7 +258,7 @@ modified_prompt <- paste0(
 # Use the modified prompt directly
 custom_results <- get_model_response(
   prompt = modified_prompt,
-  model = "claude-sonnet-4-5-20250929",
+  model = "claude-sonnet-4-6",
   api_key = Sys.getenv("ANTHROPIC_API_KEY")
 )
 ```
@@ -280,7 +280,7 @@ library(dplyr)
 annotations <- annotate_cell_types(
   input = marker_data,
   tissue_name = "human PBMC",
-  model = "claude-sonnet-4-5-20250929",
+  model = "claude-sonnet-4-6",
   api_key = Sys.getenv("ANTHROPIC_API_KEY")
 )
 
@@ -373,11 +373,11 @@ api_keys <- list(
 consensus_results <- interactive_consensus_annotation(
   input = pbmc_markers,
   tissue_name = "human PBMC",
-  models = c("claude-sonnet-4-5-20250929", "gpt-5", "gemini-1.5-pro"),
+  models = c("claude-sonnet-4-6", "gpt-5.5", "gemini-3.1-pro-preview"),
   api_keys = api_keys,
   controversy_threshold = 0.7,
   entropy_threshold = 1.0,
-  consensus_check_model = "claude-sonnet-4-5-20250929"
+  consensus_check_model = "claude-sonnet-4-6"
 )
 
 # Add results to Seurat object
@@ -406,7 +406,7 @@ adjust parameters to improve detection:
 rare_cell_annotation <- annotate_cell_types(
   input = marker_data,  # Your marker gene data
   tissue_name = "human bone marrow",
-  model = "claude-sonnet-4-5-20250929",
+  model = "claude-sonnet-4-6",
   api_key = Sys.getenv("ANTHROPIC_API_KEY"),
   top_gene_count = 20  # Use more genes for rare cell types
 )
@@ -415,18 +415,18 @@ rare_cell_annotation <- annotate_cell_types(
 rare_cell_consensus <- interactive_consensus_annotation(
   input = marker_data,  # Your marker gene data
   tissue_name = "human bone marrow",
-  models = c("claude-sonnet-4-5-20250929", "gpt-5", "gemini-1.5-pro"),
+  models = c("claude-sonnet-4-6", "gpt-5.5", "gemini-3.1-pro-preview"),
   api_keys = api_keys,
   controversy_threshold = 0.4,  # Lower threshold to discuss more clusters
   entropy_threshold = 0.8,  # Lower entropy threshold
-  consensus_check_model = "claude-sonnet-4-5-20250929"
+  consensus_check_model = "claude-sonnet-4-6"
 )
 
 # 3. Provide more specific tissue context
 specific_annotation <- annotate_cell_types(
   input = marker_data,  # Your marker gene data
   tissue_name = "human bone marrow with expected rare plasma cells and basophils",
-  model = "claude-sonnet-4-5-20250929",
+  model = "claude-sonnet-4-6",
   api_key = Sys.getenv("ANTHROPIC_API_KEY")
 )
 ```
@@ -444,14 +444,14 @@ mLLMCelltype can be used to compare cell types across different species:
 human_annotations <- annotate_cell_types(
   input = human_marker_data,  # Your human marker data
   tissue_name = "human brain cortex",
-  model = "claude-sonnet-4-5-20250929",
+  model = "claude-sonnet-4-6",
   api_key = Sys.getenv("ANTHROPIC_API_KEY")
 )
 
 mouse_annotations <- annotate_cell_types(
   input = mouse_marker_data,  # Your mouse marker data
   tissue_name = "mouse brain cortex",
-  model = "claude-sonnet-4-5-20250929",
+  model = "claude-sonnet-4-6",
   api_key = Sys.getenv("ANTHROPIC_API_KEY")
 )
 
@@ -504,7 +504,7 @@ with API calls to different LLM providers:
 affordable_annotation <- annotate_cell_types(
   input = marker_data,  # Your marker gene data
   tissue_name = "human PBMC",
-  model = "claude-haiku-4-20250514",  # More affordable model
+  model = "claude-haiku-4-5-20251001",  # More affordable model
   api_key = Sys.getenv("ANTHROPIC_API_KEY")
 )
 
@@ -513,7 +513,7 @@ affordable_annotation <- annotate_cell_types(
 premium_annotation <- annotate_cell_types(
   input = marker_data,  # Your marker gene data
   tissue_name = "human PBMC",
-  model = "claude-sonnet-4-5-20250929",  # Larger model
+  model = "claude-sonnet-4-6",  # Larger model
   api_key = Sys.getenv("ANTHROPIC_API_KEY")
 )
 
@@ -536,7 +536,7 @@ To optimize runtime when working with large datasets:
 consensus_with_cache <- interactive_consensus_annotation(
   input = marker_data,  # Your marker gene data
   tissue_name = "human PBMC",
-  models = c("claude-sonnet-4-5-20250929", "gpt-5"),
+  models = c("claude-sonnet-4-6", "gpt-5.5"),
   api_keys = api_keys,
   use_cache = TRUE,  # Enable caching
   cache_dir = NULL  # Uses default system cache directory
@@ -561,7 +561,7 @@ process_in_batches <- function(marker_data, batch_size = 5) {
     batch_results <- annotate_cell_types(
       input = batch_data,
       tissue_name = "human PBMC",
-      model = "claude-sonnet-4-5-20250929",
+      model = "claude-sonnet-4-6",
       api_key = Sys.getenv("ANTHROPIC_API_KEY")
     )
 
@@ -576,7 +576,7 @@ process_in_batches <- function(marker_data, batch_size = 5) {
 fast_annotation <- annotate_cell_types(
   input = marker_data,  # Your marker gene data
   tissue_name = "human PBMC",
-  model = "claude-haiku-4-20250514",  # Faster model
+  model = "claude-haiku-4-5-20251001",  # Faster model
   api_key = Sys.getenv("ANTHROPIC_API_KEY")
 )
 ```
@@ -659,14 +659,14 @@ log_info("Starting analysis of cluster 0", list(
 # Log API calls with performance tracking
 log_info("API call completed", list(
   provider = "anthropic",
-  model = "claude-3.5-sonnet",
+  model = "claude-sonnet-4-6",
   duration_seconds = 2.34,
   success = TRUE
 ))
 
 # Log warnings and errors
 log_warn("Model response had unusual format", list(
-  model = "gpt-5",
+  model = "gpt-5.5",
   response_length = 50
 ))
 
@@ -705,7 +705,7 @@ cache_manager <- CacheManager$new(cache_dir = NULL)
 # Generate a cache key
 cache_key <- cache_manager$generate_key(
   input = marker_data,
-  models = c("claude-sonnet-4-5-20250929", "gpt-5"),
+  models = c("claude-sonnet-4-6", "gpt-5.5"),
   cluster_id = "0"
 )
 

@@ -48,7 +48,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">mLLMCelltype</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">2.0.3</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">2.0.5</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -96,7 +96,7 @@
   <main id="main" class="col-md-9"><div class="page-header">
 
       <h1>Create prompt for cell type annotation</h1>
-      <small class="dont-index">Source: <a href="https://github.com/cafferychen777/mLLMCelltype/blob/main/R/prompt_templates.R" class="external-link"><code>R/prompt_templates.R</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/cafferychen777/mLLMCelltype/blob/v2.0.5/R/prompt_templates.R" class="external-link"><code>R/prompt_templates.R</code></a></small>
       <div class="d-none name"><code>create_annotation_prompt.Rd</code></div>
     </div>
 
@@ -129,7 +129,8 @@ Cluster IDs in named inputs are preserved as-is; unnamed list input receives seq
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
-    <p>Character string containing the formatted prompt</p>
+    <p>A list with <code>prompt</code> (formatted prompt text), <code>expected_count</code>
+(number of clusters), and <code>gene_lists</code> (cluster ID to marker genes mapping).</p>
     </div>
 
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

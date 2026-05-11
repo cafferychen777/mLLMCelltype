@@ -125,12 +125,18 @@ is very limited - Proof-of-concept work in early stages
 
 library(mLLMCelltype)
 
-# Load your single-cell data
+# Load marker genes from your single-cell data, then run consensus annotation
+api_keys <- list(
+  openai = Sys.getenv("OPENAI_API_KEY"),
+  anthropic = Sys.getenv("ANTHROPIC_API_KEY"),
+  gemini = Sys.getenv("GEMINI_API_KEY")
+)
+
 results <- interactive_consensus_annotation(
-  seurat_obj = your_data,
-  tissue_name = "PBMC",
-  models = c("gpt-4o", "claude-sonnet-4-5-20250929", "gemini-2.5-pro"),
-  consensus_method = "iterative"
+  input = marker_data,
+  tissue_name = "human PBMC",
+  models = c("gpt-5.5", "claude-sonnet-4-6", "gemini-3.1-pro-preview"),
+  api_keys = api_keys
 )
 ```
 
@@ -153,7 +159,7 @@ the overall methodology.
   Guide](https://cafferyang.com/mLLMCelltype/articles/getting-started.html)
 - [Consensus vs Single-Agent
   Methods](https://cafferyang.com/mLLMCelltype/articles/vs-single-agent.html)
-- [Performance
-  Benchmarks](https://cafferyang.com/mLLMCelltype/articles/advanced-features.html)
+- [Advanced
+  Features](https://cafferyang.com/mLLMCelltype/articles/advanced-features.html)
 - [API
   Reference](https://cafferyang.com/mLLMCelltype/reference/index.html)

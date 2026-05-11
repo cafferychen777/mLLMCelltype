@@ -19,8 +19,8 @@ process includes:
 interactive_consensus_annotation(
   input,
   tissue_name,
-  models = c("claude-opus-4-6-20260205", "gpt-5.2", "gemini-3-pro", "deepseek-r1",
-    "grok-4.1"),
+  models = c("claude-opus-4-7", "gpt-5.5", "gemini-3.1-pro-preview", "deepseek-v4-flash",
+    "grok-4.3"),
   api_keys,
   top_gene_count = 10,
   controversy_threshold = 0.7,
@@ -86,7 +86,7 @@ interactive_consensus_annotation(
 - consensus_check_model:
 
   Character string specifying which model to use for consensus checking.
-  If NULL, uses the first model from the models list.
+  If NULL, uses the first model that succeeds during initial annotation.
 
 - log_dir:
 
