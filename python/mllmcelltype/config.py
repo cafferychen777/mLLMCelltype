@@ -83,6 +83,12 @@ PROVIDER_CONFIGS: dict[str, ProviderConfig] = {
         default_api_url="https://api.x.ai/v1/chat/completions",
         model_prefixes=("grok-",),
     ),
+    "kimi": ProviderConfig(
+        default_model="kimi-k2.7",
+        api_key_env_var="KIMI_API_KEY",
+        default_api_url="https://api.kimi.com/coding/v1/messages",
+        model_prefixes=("kimi-", "moonshot"),
+    ),
     "openrouter": ProviderConfig(
         default_model="openai/gpt-5.5",
         api_key_env_var="OPENROUTER_API_KEY",

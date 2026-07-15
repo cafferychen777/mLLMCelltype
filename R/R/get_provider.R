@@ -7,7 +7,8 @@
   "stepfun" = "^step-",
   "zhipu" = "^(glm-|chatglm)",
   "minimax" = "^minimax-",
-  "grok" = "^grok-"
+  "grok" = "^grok-",
+  "kimi" = "^(kimi-|moonshot)"
 )
 
 #' Determine provider from model name
@@ -30,6 +31,7 @@
 #'   \item Zhipu: glm-*, chatglm* (e.g., 'glm-5.1', 'glm-5-turbo')
 #'   \item MiniMax: minimax-* (e.g., 'MiniMax-M2.7', 'MiniMax-M2.5')
 #'   \item Grok: grok-* (e.g., 'grok-4.3', 'grok-4.3-latest')
+#'   \item Kimi: kimi-*, moonshot* (e.g., 'kimi-k2.7', 'moonshot-v1-8k')
 #'   \item OpenRouter: Any model with '/' in the name (e.g., 'openai/gpt-5.5', 'anthropic/claude-opus-4.7')
 #' }
 #' @export

@@ -10,6 +10,7 @@ get_builtin_provider_processors <- function() {
     zhipu = process_zhipu,
     minimax = process_minimax,
     grok = process_grok,
+    kimi = process_kimi,
     openrouter = process_openrouter
   )
 }

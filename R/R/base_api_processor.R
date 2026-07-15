@@ -262,6 +262,7 @@ BaseAPIProcessor <- R6::R6Class("BaseAPIProcessor",
         zhipu = "Zhipu",
         minimax = "MiniMax",
         grok = "Grok",
+        kimi = "Kimi",
         openrouter = "OpenRouter"
       )
       provider_label <- provider_names[[self$provider_name]]

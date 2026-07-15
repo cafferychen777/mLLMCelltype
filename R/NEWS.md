@@ -2,6 +2,22 @@
 
 ## 2.0.6 (2026-07-15)
 
+### New Provider Support
+* Added native support for **Kimi (Moonshot AI)** models through their
+  Anthropic-compatible Messages API:
+  - New `KimiProcessor` class and `process_kimi()` handler reusing the
+    `/v1/messages` endpoint with `x-api-key` + `anthropic-version`
+    authentication.
+  - `get_provider()` now recognizes `kimi-*` and `moonshot*` model prefixes
+    (e.g., `kimi-k2.7`, `kimi-k2.7[1m]`).
+  - Default endpoint `https://api.kimi.com/coding/v1/messages`; the API key is
+    read from the `KIMI_API_KEY` environment variable.
+  - Token usage is captured via `KimiProcessor$extract_usage()` (R) and the
+    optional `usage_sink` argument of `process_kimi()` (Python), matching the
+    normalized usage contract introduced in this release.
+  - Matching support added to the Python package (`process_kimi`, provider
+    registration, and default configuration).
+
 ### Reliability
 * Unified validation for prompts, model identities, provider responses, cluster
   identifiers, consensus metrics, base URLs, and cache payloads.

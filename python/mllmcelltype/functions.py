@@ -6,6 +6,7 @@ from .providers import (
     process_deepseek,
     process_gemini,
     process_grok,
+    process_kimi,
     process_minimax,
     process_openai,
     process_openrouter,
@@ -25,6 +26,7 @@ PROVIDER_FUNCTIONS = {
     "zhipu": process_zhipu,
     "minimax": process_minimax,
     "grok": process_grok,
+    "kimi": process_kimi,
     "openrouter": process_openrouter,
 }
 
