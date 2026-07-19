@@ -8,6 +8,7 @@ import requests
 
 from ..logger import write_log
 from .common import (
+    NonRetryableProviderError,
     UsageSink,
     call_http_api_with_retry,
     ensure_api_key,
@@ -52,13 +53,44 @@ def _resolve_model_name(model: str) -> str:
     return MODEL_ALIASES.get(model, model)
 
 
+def _extract_anthropic_text(content: dict[str, Any]) -> str:
+    """Concatenate every text block, ignoring non-text (e.g. thinking) blocks.
+
+    Iterating instead of hard-indexing ``content[0]`` keeps the answer intact
+    when a response leads with a thinking/reasoning block.
+    """
+    blocks = content.get("content")
+    if not isinstance(blocks, list) or not blocks:
+        raise ValueError(f"Unexpected response format from Anthropic: {content}")
+    text_parts: list[str] = []
+    for block in blocks:
+        if not isinstance(block, dict):
+            continue
+        text = block.get("text")
+        if text is None:
+            continue  # non-text block (e.g. thinking / reasoning)
+        if not isinstance(text, str):
+            raise NonRetryableProviderError(
+                "Unexpected non-string response content from Anthropic"
+            )
+        if block.get("type") in (None, "text"):
+            text_parts.append(text)
+    if not text_parts:
+        raise ValueError(
+            f"Unexpected response format from Anthropic: no text block found ({content})"
+        )
+    return "\n".join(text_parts)
+
+
 def _parse_anthropic_response(content: dict[str, Any]) -> list[str]:
     """Parse Anthropic response payload into clean lines."""
-    try:
-        text = content["content"][0]["text"]
-    except (KeyError, IndexError, TypeError) as e:
-        raise ValueError(f"Unexpected response format from Anthropic: {content}") from e
-
+    text = _extract_anthropic_text(content)
+    if content.get("stop_reason") == "max_tokens":
+        write_log(
+            "Anthropic response was truncated (stop_reason='max_tokens'); "
+            "trailing clusters may be marked Unknown",
+            level="warning",
+        )
     return normalize_response_lines(text, "Anthropic")
 
 

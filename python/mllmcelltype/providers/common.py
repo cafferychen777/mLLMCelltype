@@ -136,6 +136,12 @@ def parse_chat_completions_response(content: dict[str, Any], provider_name: str)
     except (KeyError, IndexError, TypeError) as e:
         raise ValueError(f"Unexpected response format from {provider_name}: {content}") from e
 
+    if content["choices"][0].get("finish_reason") == "length":
+        write_log(
+            f"{provider_name} response was truncated (finish_reason='length'); "
+            "trailing clusters may be marked Unknown",
+            level="warning",
+        )
     return normalize_response_lines(text, provider_name)
 
 

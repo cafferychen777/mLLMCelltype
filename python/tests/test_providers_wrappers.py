@@ -14,7 +14,11 @@ from mllmcelltype.providers.anthropic import (
     extract_anthropic_usage,
     process_anthropic,
 )
-from mllmcelltype.providers.common import NonRetryableProviderError
+from mllmcelltype.providers.common import (
+    NonRetryableProviderError,
+    RetryableProviderError,
+    parse_chat_completions_response,
+)
 from mllmcelltype.providers.deepseek import process_deepseek
 from mllmcelltype.providers.gemini import extract_gemini_usage, process_gemini
 from mllmcelltype.providers.grok import process_grok
@@ -202,6 +206,66 @@ def test_parse_anthropic_response_rejects_non_string():
         _parse_anthropic_response(payload)
 
 
+def test_parse_anthropic_response_concatenates_text_blocks_and_skips_thinking():
+    """Test the parser keeps every text block and ignores a leading thinking block."""
+    payload = {
+        "content": [
+            {"type": "thinking", "thinking": "reasoning..."},
+            {"type": "text", "text": "Cluster 1: T cells"},
+            {"type": "text", "text": "Cluster 2: B cells"},
+        ]
+    }
+    assert _parse_anthropic_response(payload) == [
+        "Cluster 1: T cells",
+        "Cluster 2: B cells",
+    ]
+
+
+def test_parse_anthropic_response_rejects_thinking_only_response():
+    """Test a response carrying only non-text blocks is rejected."""
+    payload = {"content": [{"type": "thinking", "thinking": "reasoning..."}]}
+    with pytest.raises(ValueError, match="no text block found"):
+        _parse_anthropic_response(payload)
+
+
+def test_parse_chat_completions_warns_on_length_truncation():
+    """Test a length-truncated OpenAI-compatible response logs a warning."""
+    content = {"choices": [{"message": {"content": "T cells"}, "finish_reason": "length"}]}
+    with patch("mllmcelltype.providers.common.write_log") as mock_log:
+        assert parse_chat_completions_response(content, "OpenAI") == ["T cells"]
+    assert any("truncated" in str(call.args[0]) for call in mock_log.call_args_list)
+
+
+def test_parse_chat_completions_no_warning_on_normal_stop():
+    """Test a normally-finished response does not emit a truncation warning."""
+    content = {"choices": [{"message": {"content": "T cells"}, "finish_reason": "stop"}]}
+    with patch("mllmcelltype.providers.common.write_log") as mock_log:
+        parse_chat_completions_response(content, "OpenAI")
+    assert not any("truncated" in str(call.args[0]) for call in mock_log.call_args_list)
+
+
+def test_parse_anthropic_response_warns_on_max_tokens_truncation():
+    """Test a max_tokens-truncated Anthropic response logs a warning."""
+    content = {
+        "content": [{"type": "text", "text": "T cells"}],
+        "stop_reason": "max_tokens",
+    }
+    with patch("mllmcelltype.providers.anthropic.write_log") as mock_log:
+        assert _parse_anthropic_response(content) == ["T cells"]
+    assert any("truncated" in str(call.args[0]) for call in mock_log.call_args_list)
+
+
+def test_parse_anthropic_response_no_warning_on_normal_stop():
+    """Test a normally-finished Anthropic response emits no truncation warning."""
+    content = {
+        "content": [{"type": "text", "text": "T cells"}],
+        "stop_reason": "end_turn",
+    }
+    with patch("mllmcelltype.providers.anthropic.write_log") as mock_log:
+        _parse_anthropic_response(content)
+    assert not any("truncated" in str(call.args[0]) for call in mock_log.call_args_list)
+
+
 def test_extract_anthropic_usage_normalizes_token_fields():
     """Test Anthropic usage fields map to the shared provider schema."""
     usage = extract_anthropic_usage({"usage": {"input_tokens": 12, "output_tokens": 5}})
@@ -291,13 +355,99 @@ def test_parse_minimax_response_invalid_shape_raises_value_error():
         _parse_minimax_response({"invalid": "payload"})
 
 
-def test_parse_minimax_response_business_error_is_non_retryable():
-    """Test MiniMax business-level error is raised as non-retryable."""
+def test_parse_minimax_response_permanent_business_error_is_non_retryable():
+    """Test a fatal MiniMax business error (auth) fails fast without retry."""
     payload = {
-        "base_resp": {"status_code": 1001, "status_msg": "invalid key"},
+        "base_resp": {"status_code": 1004, "status_msg": "not authorized"},
         "choices": [{"message": {"content": "ignored"}}],
     }
     with pytest.raises(NonRetryableProviderError, match="MiniMax API error"):
+        _parse_minimax_response(payload)
+
+
+def test_parse_minimax_response_transient_business_error_is_retryable():
+    """Test a transient MiniMax business error (rate limit) is retryable.
+
+    MiniMax reports rate limits/timeouts via HTTP 200 + base_resp.status_code;
+    these must be retried instead of dropping the model from the panel.
+    """
+    payload = {
+        "base_resp": {"status_code": 1002, "status_msg": "rate limit"},
+        "choices": [{"message": {"content": "ignored"}}],
+    }
+    with pytest.raises(RetryableProviderError, match="MiniMax API error"):
+        _parse_minimax_response(payload)
+
+
+@patch("mllmcelltype.providers.common.time.sleep")
+@patch("mllmcelltype.providers.minimax.requests.post")
+@patch("mllmcelltype.providers.minimax.get_working_minimax_endpoint")
+def test_process_minimax_retries_transient_business_error(
+    mock_endpoint, mock_post, mock_sleep
+):
+    """Test a transient base_resp error is retried through the shared backoff."""
+    mock_endpoint.return_value = "https://api.minimax.io/v1/chat/completions"
+    transient = MagicMock(status_code=200)
+    transient.json.return_value = {
+        "base_resp": {"status_code": 1002, "status_msg": "rate limit"}
+    }
+    success = MagicMock(status_code=200)
+    success.json.return_value = {
+        "base_resp": {"status_code": 0},
+        "choices": [{"message": {"content": "Cluster 1: T cells"}}],
+    }
+    mock_post.side_effect = [transient, success]
+
+    result = process_minimax("genes", "MiniMax-M2.7", "test-key")
+
+    assert result == ["Cluster 1: T cells"]
+    assert mock_post.call_count == 2
+    mock_sleep.assert_called_once_with(2)
+
+
+def test_retryable_provider_error_is_recoverable_by_consensus():
+    """Test RetryableProviderError is caught by the consensus recovery net.
+
+    A transient error that outlives all retries must drop only its own model,
+    not abort the whole consensus run, so it has to be a member of
+    RECOVERABLE_LLM_EXCEPTIONS.
+    """
+    from mllmcelltype.consensus import RECOVERABLE_LLM_EXCEPTIONS
+
+    assert isinstance(RetryableProviderError("boom"), RECOVERABLE_LLM_EXCEPTIONS)
+
+
+@patch("mllmcelltype.providers.common.time.sleep")
+@patch("mllmcelltype.providers.minimax.requests.post")
+@patch("mllmcelltype.providers.minimax.get_working_minimax_endpoint")
+def test_process_minimax_persistent_transient_raises_recoverable(
+    mock_endpoint, mock_post, mock_sleep
+):
+    """Test a transient error on every attempt exhausts retries and raises a
+    recoverable RetryableProviderError instead of a bare Exception."""
+    from mllmcelltype.consensus import RECOVERABLE_LLM_EXCEPTIONS
+
+    mock_endpoint.return_value = "https://api.minimax.io/v1/chat/completions"
+    transient = MagicMock(status_code=200)
+    transient.json.return_value = {
+        "base_resp": {"status_code": 1002, "status_msg": "rate limit"}
+    }
+    mock_post.return_value = transient
+
+    with pytest.raises(RetryableProviderError) as excinfo:
+        process_minimax("genes", "MiniMax-M2.7", "test-key")
+
+    assert mock_post.call_count == 3
+    assert isinstance(excinfo.value, RECOVERABLE_LLM_EXCEPTIONS)
+
+
+def test_parse_minimax_response_string_status_code_is_coerced():
+    """Test a transient status code delivered as a string is coerced and retried."""
+    payload = {
+        "base_resp": {"status_code": "1002", "status_msg": "rate limit"},
+        "choices": [{"message": {"content": "ignored"}}],
+    }
+    with pytest.raises(RetryableProviderError, match="MiniMax API error"):
         _parse_minimax_response(payload)
 
 

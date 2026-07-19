@@ -385,6 +385,16 @@ BaseAPIProcessor <- R6::R6Class("BaseAPIProcessor",
         stop(sprintf("Unexpected response format from %s API", provider_label))
       }
 
+      if (identical(content$choices[[1]]$finish_reason, "length")) {
+        self$logger$warn(
+          sprintf(
+            "%s response was truncated (finish_reason='length'); trailing clusters may be marked Unknown",
+            provider_label
+          ),
+          list(provider = self$provider_name, model = model)
+        )
+      }
+
       content$choices[[1]]$message$content
     },
 
