@@ -64,10 +64,70 @@ parse_prediction_line <- function(line) {
   NULL
 }
 
+#' Whether a label key denotes a cluster id (bare number or "Cluster N")
+#'
+#' @param key Parsed label key.
+#' @return \code{TRUE} when the key is an explicit cluster reference.
+#' @keywords internal
+looks_like_cluster_ref <- function(key) {
+  stripped <- trimws(sub("(?i)^cluster[ _]*", "", trimws(as.character(key)), perl = TRUE))
+  grepl("^[0-9]+$", stripped)
+}
+
+#' Extract one line's annotation content for positional mapping
+#'
+#' Returns \code{NULL} only for lines that do not occupy a cluster slot: an
+#' empty-value preamble/header (\code{"Notes:"}) and an explicit label for an
+#' unrequested/nonexistent cluster (\code{"Cluster 999: Noise"}). Every other
+#' line -- including a sentinel such as \code{"Unknown"} -- keeps its slot so
+#' the line->cluster correspondence is preserved (the caller leaves a
+#' non-real slot unassigned). A numbered-list ordinal (\code{"1. T cells"}) or
+#' a resolvable label prefix (\code{"0: T cells"}) is stripped to its content;
+#' a colon that is part of the annotation (\code{"Neurons: excitatory"}) is
+#' kept whole.
+#'
+#' @param line Single response line.
+#' @param all_clusters Character vector of requested cluster IDs.
+#' @return Annotation content string, or \code{NULL} to drop the line.
+#' @keywords internal
+extract_positional_annotation <- function(line, all_clusters) {
+  # Numbered-list ordinal ("1. T cells", "2) B cells"): the leading number is a
+  # list index, not a cluster id -> keep the content after it. The delimiter
+  # class excludes "-" so a hyphenated cell type ("5 - HT neurons") is not
+  # mistaken for a numbered item.
+  numbered <- regmatches(
+    line,
+    regexec("^\\s*(?:[-*]\\s*)?\\d+\\s*[.)]\\s+(.+?)\\s*$", line, perl = TRUE)
+  )[[1]]
+  if (length(numbered) == 2) {
+    return(numbered[[2]])
+  }
+
+  parsed <- parse_prediction_line(line)
+  content <- line
+  if (!is.null(parsed)) {
+    if (!nzchar(trimws(parsed$annotation))) {
+      return(NULL)  # preamble/header line such as "Here are the annotations:"
+    }
+    if (!is.null(resolve_prediction_cluster_id(parsed$cluster_id, all_clusters))) {
+      content <- trimws(parsed$annotation)
+    } else if (looks_like_cluster_ref(parsed$cluster_id) && grepl("[:：]", line)) {
+      return(NULL)  # explicit colon label for an unrequested/nonexistent cluster
+    }
+    # else: part of the annotation ("Neurons: excitatory", "5 - HT neurons")
+  }
+  content
+}
+
 #' Parse text-format model predictions into a named list
 #'
-#' Handles explicit cluster labels and positional fallback for fully unlabeled
-#' responses. Explicit labels are never mixed with positional reassignment.
+#' Reads a response as explicit cluster labels (keyed by resolved cluster ID,
+#' so out-of-order labels land correctly) when at least one label resolves,
+#' unless an unresolved cluster-reference key coexists with incomplete coverage
+#' -- that signals list ordinals misaligned against the requested clusters and
+#' falls through to positional mapping. Positional mapping preserves the
+#' line->cluster slot correspondence so a mid-list "Unknown" does not shift
+#' later clusters, and a stray "Summary:"/"Note:" line does not hijack the parse.
 #'
 #' @param model_preds Character vector of prediction lines from a model
 #' @param all_clusters Optional character vector of cluster IDs for positional fallback
@@ -80,34 +140,69 @@ parse_text_predictions <- function(model_preds, all_clusters = NULL) {
 
   lines <- unlist(strsplit(model_preds, "\n", fixed = TRUE), use.names = FALSE)
   lines <- trimws(lines[!is.na(lines) & nzchar(trimws(lines))])
-  model_structured <- list()
-  found_explicit_label <- FALSE
 
+  # Phase 1: read the response as explicit cluster labels, keyed by resolved
+  # cluster ID. The labeled path is used when at least one label resolves,
+  # UNLESS an unresolved cluster-reference key coexists with incomplete coverage
+  # -- that signals list ordinals misaligned against the requested clusters
+  # (e.g. a 1-based numbered list on 0-based clusters), which must fall through
+  # to positional mapping. A stray word-keyed colon line (Summary:, Note:) is
+  # ignored; a hallucinated out-of-range label does not spoil an otherwise
+  # fully-covered labeled response.
+  labeled <- list()
+  resolved_clusters <- character(0)
+  has_unresolved_cluster_ref <- FALSE
   for (line in lines) {
     parsed <- parse_prediction_line(line)
-    if (is.null(parsed)) {
+    if (is.null(parsed) || !nzchar(trimws(parsed$annotation))) {
       next
     }
-    found_explicit_label <- TRUE
     cluster_id <- resolve_prediction_cluster_id(parsed$cluster_id, all_clusters)
-    if (!is.null(cluster_id) &&
-        is.null(model_structured[[cluster_id]]) &&
-        is_real_cell_type_annotation(parsed$annotation)) {
-      model_structured[[cluster_id]] <- trimws(parsed$annotation)
-    }
-  }
-
-  # Explicit labels are authoritative. Positional fallback is safe only when
-  # the response contains no labeled lines at all.
-  if (!found_explicit_label && !is.null(all_clusters)) {
-    target_clusters <- unique(as.character(all_clusters))
-    for (index in seq_len(min(length(target_clusters), length(lines)))) {
-      if (is_real_cell_type_annotation(lines[[index]])) {
-        model_structured[[target_clusters[[index]]]] <- lines[[index]]
+    if (!is.null(cluster_id)) {
+      resolved_clusters <- union(resolved_clusters, cluster_id)
+      if (is.null(labeled[[cluster_id]]) &&
+          is_real_cell_type_annotation(parsed$annotation)) {
+        labeled[[cluster_id]] <- trimws(parsed$annotation)
       }
+    } else if (looks_like_cluster_ref(parsed$cluster_id)) {
+      has_unresolved_cluster_ref <- TRUE
     }
   }
 
+  n_clusters <- length(unique(as.character(all_clusters)))
+  is_labeled <- length(resolved_clusters) > 0 &&
+    !(has_unresolved_cluster_ref && length(resolved_clusters) < n_clusters)
+  if (is_labeled) {
+    # Return in requested-cluster order (deterministic; matches the Python twin)
+    # so out-of-order labels do not surface in response order.
+    if (!is.null(all_clusters)) {
+      labeled <- labeled[intersect(unique(as.character(all_clusters)), names(labeled))]
+    }
+    return(labeled)
+  }
+
+  # Phase 2: positional fallback. Extract each line's annotation content,
+  # dropping only non-slot lines (preamble, unrequested-cluster labels). Every
+  # remaining line keeps its slot; a slot whose content is not a real cell type
+  # (e.g. "Unknown") is left unassigned so the alignment is preserved.
+  if (is.null(all_clusters)) {
+    return(labeled)
+  }
+  target_clusters <- unique(as.character(all_clusters))
+  contents <- character(0)
+  for (line in lines) {
+    content <- extract_positional_annotation(line, all_clusters)
+    if (!is.null(content)) {
+      contents <- c(contents, content)
+    }
+  }
+
+  model_structured <- list()
+  for (index in seq_len(min(length(target_clusters), length(contents)))) {
+    if (is_real_cell_type_annotation(contents[[index]])) {
+      model_structured[[target_clusters[[index]]]] <- contents[[index]]
+    }
+  }
   model_structured
 }
 

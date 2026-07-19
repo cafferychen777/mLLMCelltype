@@ -15,7 +15,12 @@ parse_text_predictions(model_preds, all_clusters = NULL)
 Named list mapping cluster IDs to cell type annotations
 }
 \description{
-Handles explicit cluster labels and positional fallback for fully unlabeled
-responses. Explicit labels are never mixed with positional reassignment.
+Reads a response as explicit cluster labels (keyed by resolved cluster ID,
+so out-of-order labels land correctly) when at least one label resolves,
+unless an unresolved cluster-reference key coexists with incomplete coverage
+-- that signals list ordinals misaligned against the requested clusters and
+falls through to positional mapping. Positional mapping preserves the
+line->cluster slot correspondence so a mid-list "Unknown" does not shift
+later clusters, and a stray "Summary:"/"Note:" line does not hijack the parse.
 }
 \keyword{internal}

@@ -754,20 +754,87 @@ def _json_annotation_pairs(payload: Any) -> list[tuple[Any, Any]]:
     ]
 
 
+def _looks_like_cluster_ref(key: str) -> bool:
+    """Whether a label key denotes a cluster id (bare number or 'Cluster N')."""
+    stripped = re.sub(r"(?i)^cluster[\s_]*", "", key.strip())
+    return stripped.isdigit()
+
+
 def _parse_labeled_annotations(
     lines: list[str],
     cluster_lookup: dict[str, str],
+    expected_count: int,
 ) -> tuple[dict[str, str], bool]:
-    """Parse labeled lines and report whether any explicit labels were present."""
-    pairs: list[tuple[str, str]] = []
-    found_explicit_label = False
+    """Parse explicitly cluster-labeled lines.
+
+    Returns ``(labeled, is_labeled_response)``. ``labeled`` maps each resolved
+    cluster ID to its annotation (keyed by cluster ID, so out-of-order labels
+    are placed correctly). The response is treated as labeled when at least one
+    label resolves to a requested cluster, UNLESS an unresolved cluster-reference
+    key (an ordinal or ``Cluster N``) coexists with incomplete coverage — that
+    signals list ordinals misaligned against the requested clusters (e.g. a
+    1-based numbered list on 0-based clusters), which must fall through to
+    positional mapping.
+
+    A line counts only when it parses into a key/value pair with a non-empty
+    value; a bare ``"Header:"`` (empty value) is a preamble. A stray word-keyed
+    colon line (``Summary:``, ``Neurons: excitatory``) is ignored, and a
+    hallucinated out-of-range label (``5: X`` when clusters are 0..2) does not
+    spoil an otherwise fully-covered labeled response.
+    """
+    labeled: dict[str, str] = {}
+    resolved_clusters: set[str] = set()
+    has_unresolved_cluster_ref = False
     for line in lines:
         parsed = _parse_labeled_annotation_line(line)
         if parsed is None:
             continue
-        found_explicit_label = True
-        pairs.append(parsed)
-    return _resolve_annotation_pairs(pairs, cluster_lookup), found_explicit_label
+        key, value = parsed
+        if not value:
+            continue  # preamble line such as "Here are the annotations:"
+        cluster_id = _resolve_result_cluster(key, cluster_lookup)
+        if cluster_id is not None:
+            resolved_clusters.add(cluster_id)
+            _store_preferred_annotation(labeled, cluster_id, value)
+        elif _looks_like_cluster_ref(key):
+            has_unresolved_cluster_ref = True
+        # else: a stray word-keyed colon line (Summary:, Neurons: excitatory)
+    is_labeled_response = bool(resolved_clusters) and not (
+        has_unresolved_cluster_ref and len(resolved_clusters) < expected_count
+    )
+    return labeled, is_labeled_response
+
+
+def _extract_positional_annotation(
+    line: str,
+    cluster_lookup: dict[str, str],
+) -> str | None:
+    """Extract one line's annotation content for positional mapping.
+
+    Returns None only for lines that do not occupy a cluster slot: an
+    empty-value preamble/header (``"Notes:"``) and an explicit label for an
+    unrequested/nonexistent cluster (``"Cluster 999: Noise"``). Every other
+    line — including a sentinel such as ``"Unknown"`` — keeps its slot so the
+    line->cluster correspondence is preserved (the sentinel maps to Unknown).
+    A numbered-list ordinal (``"1. T cells"``) or a resolvable label prefix
+    (``"0: T cells"``) is stripped to its content; a colon that is part of the
+    annotation (``"Neurons: excitatory"``) is kept whole.
+    """
+    numbered = re.match(r"^\s*(?:[-*]\s*)?\d+\s*[.)]\s+(.+?)\s*$", line)
+    if numbered is not None:
+        return numbered.group(1)
+
+    parsed = _parse_labeled_annotation_line(line)
+    if parsed is not None:
+        key, value = parsed
+        if not value:
+            return None  # preamble/header line such as "Here are the annotations:"
+        if _resolve_result_cluster(key, cluster_lookup):
+            return value
+        if _looks_like_cluster_ref(key) and (":" in line or "：" in line):  # noqa: RUF001
+            return None  # explicit colon label for an unrequested/nonexistent cluster
+        # otherwise part of the annotation ("Neurons: excitatory", "5 - HT neurons")
+    return line
 
 
 def format_results(
@@ -783,9 +850,20 @@ def format_results(
         return _complete_cluster_annotations(resolved, clusters)
 
     lines = _normalize_result_lines(results)
-    labeled, has_explicit_labels = _parse_labeled_annotations(lines, cluster_lookup)
-    if len(labeled) == len(set(map(str, clusters))):
-        write_log("Successfully parsed labeled response", level="info")
+    expected_count = len(set(map(str, clusters)))
+
+    labeled, is_labeled_response = _parse_labeled_annotations(
+        lines, cluster_lookup, expected_count
+    )
+    if is_labeled_response:
+        if len(labeled) == expected_count:
+            write_log("Successfully parsed labeled response", level="info")
+        else:
+            write_log(
+                f"Parsed partial labeled response ({len(labeled)}/{expected_count} clusters), "
+                "missing clusters marked Unknown",
+                level="warning",
+            )
         return _complete_cluster_annotations(labeled, clusters)
 
     json_payload = _extract_json_document(lines)
@@ -794,7 +872,7 @@ def format_results(
         cluster_lookup,
     )
     if json_annotations:
-        if len(json_annotations) == len(set(map(str, clusters))):
+        if len(json_annotations) == expected_count:
             write_log("Successfully parsed JSON response", level="info")
         else:
             write_log(
@@ -804,31 +882,32 @@ def format_results(
             )
         return _complete_cluster_annotations(json_annotations, clusters)
 
-    if has_explicit_labels:
-        write_log(
-            f"Parsed partial labeled response ({len(labeled)}/{len(clusters)} clusters), "
-            "missing or unrequested clusters marked Unknown",
-            level="warning",
+    # Positional fallback: strip ordinal/label prefixes, drop preamble and
+    # non-annotation lines, then map surviving annotations onto clusters in order.
+    contents = [
+        content
+        for content in (
+            _extract_positional_annotation(line, cluster_lookup) for line in lines
         )
-        return _complete_cluster_annotations(labeled, clusters)
-
-    if len(lines) < len(clusters):
+        if content is not None
+    ]
+    if len(contents) < len(clusters):
         write_log(
-            f"Fewer result lines ({len(lines)}) than clusters ({len(clusters)}), "
+            f"Fewer annotation lines ({len(contents)}) than clusters ({len(clusters)}), "
             "remaining clusters will be marked Unknown",
             level="warning",
         )
-    elif len(lines) > len(clusters):
+    elif len(contents) > len(clusters):
         write_log(
-            f"More result lines ({len(lines)}) than clusters ({len(clusters)}), "
+            f"More annotation lines ({len(contents)}) than clusters ({len(clusters)}), "
             "extra lines will be ignored",
             level="warning",
         )
 
     positional = {
-        str(cluster): normalize_annotation(lines[index])
+        str(cluster): normalize_annotation(contents[index])
         for index, cluster in enumerate(clusters)
-        if index < len(lines)
+        if index < len(contents)
     }
     write_log("Parsed response as line-by-line format", level="info")
     return _complete_cluster_annotations(positional, clusters)

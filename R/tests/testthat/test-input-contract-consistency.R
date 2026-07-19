@@ -242,6 +242,70 @@ test_that("parse_text_predictions preserves exact IDs over ambiguous aliases", {
   expect_length(ambiguous, 0)
 })
 
+test_that("parse_text_predictions maps a numbered list onto 0-based clusters without shifting", {
+  # Regression: models commonly number their answers ("1.", "2.", ...). On
+  # Seurat 0-based clusters the ordinals are list indices, not cluster IDs;
+  # trusting them shifts every annotation one cluster and drops cluster 0.
+  parsed <- parse_text_predictions(
+    c("1. T cells", "2. B cells", "3. NK cells"),
+    all_clusters = c("0", "1", "2")
+  )
+  expect_identical(parsed, list("0" = "T cells", "1" = "B cells", "2" = "NK cells"))
+})
+
+test_that("parse_text_predictions keeps a positional response despite a preamble header", {
+  parsed <- parse_text_predictions(
+    c("Here are the cell type annotations:", "T cells", "B cells", "NK cells"),
+    all_clusters = c("0", "1", "2")
+  )
+  expect_identical(parsed, list("0" = "T cells", "1" = "B cells", "2" = "NK cells"))
+})
+
+test_that("parse_text_predictions keeps an annotation-internal colon whole", {
+  parsed <- parse_text_predictions(
+    c("Astrocytes", "Neurons: excitatory", "Microglia"),
+    all_clusters = c("0", "1", "2")
+  )
+  expect_identical(
+    parsed,
+    list("0" = "Astrocytes", "1" = "Neurons: excitatory", "2" = "Microglia")
+  )
+})
+
+test_that("parse_text_predictions keeps a mid-list Unknown in its own slot", {
+  # Regression: dropping a sentinel line must not shift later clusters up one.
+  parsed <- parse_text_predictions(
+    c("T cells", "Unknown", "B cells"),
+    all_clusters = c("0", "1", "2")
+  )
+  # cluster 1 is left unassigned (-> Unknown downstream); cluster 2 keeps B cells.
+  expect_identical(parsed, list("0" = "T cells", "2" = "B cells"))
+})
+
+test_that("parse_text_predictions ignores a stray Summary: line and keeps labels", {
+  parsed <- parse_text_predictions(
+    c("Summary: three immune populations", "0: T cells", "1: B cells", "2: NK cells"),
+    all_clusters = c("0", "1", "2")
+  )
+  expect_identical(parsed, list("0" = "T cells", "1" = "B cells", "2" = "NK cells"))
+})
+
+test_that("parse_text_predictions maps out-of-order labels by cluster ID, ignoring hallucinated ones", {
+  parsed <- parse_text_predictions(
+    c("2: NK cells", "1: B cells", "0: T cells", "5: Doublets"),
+    all_clusters = c("0", "1", "2")
+  )
+  expect_identical(parsed, list("0" = "T cells", "1" = "B cells", "2" = "NK cells"))
+})
+
+test_that("parse_text_predictions does not strip a hyphenated cell type as an ordinal", {
+  parsed <- parse_text_predictions(
+    c("5 - HT neurons"),
+    all_clusters = c("0")
+  )
+  expect_identical(parsed, list("0" = "5 - HT neurons"))
+})
+
 test_that("compare_model_predictions pads unequal lengths without recycling", {
   res <- testthat::with_mocked_bindings({
     capture.output({
@@ -745,10 +809,14 @@ test_that("facilitate_cluster_discussion ignores malformed unrelated list entrie
   expect_identical(cluster_genes, "G1,G2")
 })
 
-test_that("is_error_response detects error sentinels consistently", {
+test_that("is_error_response flags pure errors but preserves partial annotations", {
   expect_true(is_error_response("Error: request failed"))
   expect_true(is_error_response("  ERROR: request failed"))
-  expect_true(is_error_response(c("metadata", "error : request failed")))
+  # Every non-empty line is an error -> the whole response is an error.
+  expect_true(is_error_response(c("Error: rate limit", "error : try again")))
+  # A usable annotation alongside an error marker is NOT a pure error: a single
+  # flagged/uncertain cluster must not discard the model's other annotations.
+  expect_false(is_error_response(c("CD8+ T cells", "Error: markers ambiguous", "B cells")))
   expect_false(is_error_response("CELL TYPE: T cell"))
   expect_false(is_error_response(list(message = "Error: request failed")))
   expect_false(is_error_response(NA_character_))

@@ -69,9 +69,19 @@ is_real_cell_type_annotation <- function(annotation) {
 }
 
 is_error_response <- function(result) {
-  is.character(result) &&
-    length(result) > 0 &&
-    any(grepl("^\\s*error\\s*:", result, ignore.case = TRUE), na.rm = TRUE)
+  if (!is.character(result) || length(result) == 0) {
+    return(FALSE)
+  }
+  non_empty <- result[!is.na(result) & nzchar(trimws(result))]
+  if (length(non_empty) == 0) {
+    return(FALSE)
+  }
+  # A response is an error only when it carries an error marker AND offers no
+  # usable annotation. This preserves a valid multi-cluster response that flags
+  # a single uncertain cluster (e.g. "Error: markers ambiguous") instead of
+  # discarding every annotation the model returned.
+  has_error <- any(grepl("^\\s*error\\s*:", non_empty, ignore.case = TRUE))
+  has_error && !any(vapply(non_empty, is_real_cell_type_annotation, logical(1)))
 }
 
 normalize_model_response_lines <- function(result) {

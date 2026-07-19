@@ -755,6 +755,90 @@ def test_format_results_does_not_reassign_unrequested_labeled_cluster():
     assert formatted == {"1": "Unknown"}
 
 
+def test_format_results_zero_based_numbered_list_maps_positionally():
+    """Regression: a numbered list on 0-based clusters must not shift by one.
+
+    Models commonly number their answers ("1.", "2.", ...). On Seurat/Scanpy
+    0-based clusters the ordinals are list indices, not cluster IDs; trusting
+    them shifts every annotation one cluster and silently drops cluster 0.
+    """
+    formatted = format_results(
+        ["1. T cells", "2. B cells", "3. NK cells"], ["0", "1", "2"]
+    )
+
+    assert formatted == {"0": "T cells", "1": "B cells", "2": "NK cells"}
+
+
+def test_format_results_preamble_header_does_not_discard_response():
+    """Regression: a leading header line must not drop an otherwise valid response."""
+    formatted = format_results(
+        ["Here are the cell type annotations:", "T cells", "B cells", "NK cells"],
+        ["0", "1", "2"],
+    )
+
+    assert formatted == {"0": "T cells", "1": "B cells", "2": "NK cells"}
+
+
+def test_format_results_internal_colon_annotation_is_kept_whole():
+    """Regression: a colon inside an annotation is not treated as a cluster label."""
+    formatted = format_results(
+        ["Astrocytes", "Neurons: excitatory", "Microglia"], ["0", "1", "2"]
+    )
+
+    assert formatted == {
+        "0": "Astrocytes",
+        "1": "Neurons: excitatory",
+        "2": "Microglia",
+    }
+
+
+def test_format_results_partial_explicit_labels_fill_unknown_on_zero_based():
+    """Test genuine partial explicit labels keep their clusters; the rest Unknown."""
+    formatted = format_results(["0: T cells", "2: NK cells"], ["0", "1", "2"])
+
+    assert formatted == {"0": "T cells", "1": "Unknown", "2": "NK cells"}
+
+
+def test_format_results_middle_sentinel_keeps_cluster_slot():
+    """Regression: a mid-list Unknown must occupy its slot, not shift later clusters."""
+    formatted = format_results(["T cells", "Unknown", "B cells"], ["0", "1", "2"])
+
+    assert formatted == {"0": "T cells", "1": "Unknown", "2": "B cells"}
+
+
+def test_format_results_stray_summary_line_keeps_labeled_mapping():
+    """Regression: a stray non-cluster colon line must not flip labeled to positional."""
+    formatted = format_results(
+        [
+            "Summary: 3 immune populations",
+            "Cluster 0: T cells",
+            "Cluster 1: B cells",
+            "Cluster 2: NK cells",
+        ],
+        ["0", "1", "2"],
+    )
+
+    assert formatted == {"0": "T cells", "1": "B cells", "2": "NK cells"}
+
+
+def test_format_results_out_of_order_labels_with_hallucinated_cluster():
+    """Regression: out-of-order explicit labels map by cluster ID; a hallucinated
+    out-of-range label is ignored rather than spoiling the labeled path."""
+    formatted = format_results(
+        ["2: NK cells", "1: B cells", "0: T cells", "5: Doublets"],
+        ["0", "1", "2"],
+    )
+
+    assert formatted == {"0": "T cells", "1": "B cells", "2": "NK cells"}
+
+
+def test_format_results_hyphenated_cell_type_not_stripped_as_ordinal():
+    """Regression: '5 - HT neurons' is a cell type, not a numbered ordinal or label."""
+    formatted = format_results(["5 - HT neurons"], ["0"])
+
+    assert formatted == {"0": "5 - HT neurons"}
+
+
 def test_format_results_set_fallback_is_deterministic():
     """Test unordered defensive input is normalized before positional mapping."""
     formatted = format_results({"B cells", "A cells"}, ["1", "2"])  # type: ignore[arg-type]

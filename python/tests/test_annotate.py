@@ -80,6 +80,41 @@ class TestAnnotation:
     @patch("mllmcelltype.annotate.load_api_key")
     @patch("mllmcelltype.annotate.get_default_model")
     @patch("mllmcelltype.annotate.PROVIDER_FUNCTIONS", {"mock_provider": MagicMock()})
+    def test_annotate_clusters_numbered_list_on_zero_based_is_not_shifted(
+        self,
+        mock_get_default_model,
+        mock_load_api_key,
+    ):
+        """Regression: a numbered-list answer on 0-based clusters must not shift.
+
+        End-to-end guard for the parser bug where "1." / "2." ordinals on Seurat
+        0-based clusters were read as cluster IDs, shifting every annotation one
+        cluster and losing cluster 0.
+        """
+        from mllmcelltype.annotate import PROVIDER_FUNCTIONS
+
+        PROVIDER_FUNCTIONS["mock_provider"] = lambda *args, **kwargs: [
+            "1. T cells",
+            "2. B cells",
+            "3. NK cells",
+        ]
+        mock_load_api_key.return_value = "test-key"
+        mock_get_default_model.return_value = "mock_model"
+
+        result = annotate_clusters(
+            marker_genes={"0": ["CD3D"], "1": ["CD19"], "2": ["NCAM1"]},
+            species="human",
+            provider="mock_provider",
+            model="mock_model",
+            tissue="blood",
+            use_cache=False,
+        )
+
+        assert result == {"0": "T cells", "1": "B cells", "2": "NK cells"}
+
+    @patch("mllmcelltype.annotate.load_api_key")
+    @patch("mllmcelltype.annotate.get_default_model")
+    @patch("mllmcelltype.annotate.PROVIDER_FUNCTIONS", {"mock_provider": MagicMock()})
     def test_annotate_clusters_mixed_cluster_key_types_are_merged(
         self,
         mock_get_default_model,
