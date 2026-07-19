@@ -11,6 +11,7 @@ from ..logger import write_log
 from ..url_utils import get_working_minimax_endpoint
 from .common import (
     NonRetryableProviderError,
+    RetryableProviderError,
     UsageSink,
     build_chat_completions_body,
     call_openai_compatible_api,
@@ -18,6 +19,13 @@ from .common import (
     normalize_response_lines,
     resolve_endpoint_url,
 )
+
+# MiniMax reports business errors via HTTP 200 + base_resp.status_code. These
+# codes are transient per the MiniMax docs (1000 unknown error, 1001 timeout,
+# 1002 rate limit, 1039 token limit) and should be retried; all other non-zero
+# codes (1004 auth, 1008 balance, 1027 content policy, 2013 invalid params) are
+# fatal.
+_MINIMAX_TRANSIENT_STATUS_CODES = frozenset({1000, 1001, 1002, 1039})
 
 
 def _parse_minimax_response(content: dict[str, Any]) -> list[str]:
@@ -27,6 +35,14 @@ def _parse_minimax_response(content: dict[str, Any]) -> list[str]:
         status_code = base_resp.get("status_code")
         if status_code not in (None, 0):
             error_msg = base_resp.get("status_msg") or "Unknown MiniMax error"
+            # Coerce string/float wire codes to int (the R port does the same)
+            # so a transient code delivered as "1002" is not misread as fatal.
+            try:
+                code = int(status_code)
+            except (TypeError, ValueError):
+                code = status_code
+            if code in _MINIMAX_TRANSIENT_STATUS_CODES:
+                raise RetryableProviderError(f"MiniMax API error: {error_msg}")
             raise NonRetryableProviderError(f"MiniMax API error: {error_msg}")
 
     try:

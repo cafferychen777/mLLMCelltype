@@ -1,5 +1,12 @@
+# MiniMax reports business errors via HTTP 200 + base_resp$status_code. The
+# codes below are transient per the MiniMax docs (1000 unknown error, 1001
+# timeout, 1002 rate limit, 1039 token limit) and should be retried; all other
+# non-zero codes (1004 auth, 1008 balance, 1027 content policy, 2013 invalid
+# params) are fatal.
+.MINIMAX_TRANSIENT_STATUS_CODES <- c(1000L, 1001L, 1002L, 1039L)
+
 #' Minimax API Processor
-#' 
+#'
 #' Concrete implementation of BaseAPIProcessor for Minimax models.
 #' Handles Minimax-specific API calls, authentication, and response parsing.
 #'
@@ -55,7 +62,11 @@ MinimaxProcessor <- R6::R6Class("MinimaxProcessor",
         } else {
           "Unknown MiniMax API error"
         }
-        stop(sprintf("MiniMax API error: %s", error_message))
+        status_code_int <- as.integer(base_resp$status_code)
+        stop_api_request_error(
+          sprintf("MiniMax API error: %s", error_message),
+          retryable = status_code_int %in% .MINIMAX_TRANSIENT_STATUS_CODES
+        )
       }
 
       if (!is.null(content$choices) &&

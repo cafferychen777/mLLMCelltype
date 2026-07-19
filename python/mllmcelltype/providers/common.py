@@ -70,6 +70,18 @@ class NonRetryableProviderError(ValueError):
     """Provider error that should fail fast without retry."""
 
 
+class RetryableProviderError(RuntimeError):
+    """Provider error that should be retried with the shared backoff.
+
+    Use this for a transient failure a provider signals inside a 200-OK body
+    (e.g. MiniMax rate-limit / timeout status codes) so the retry loop treats
+    it like a transient HTTP 429/5xx instead of failing fast. It inherits
+    RuntimeError so that if it still fails after every retry, the consensus
+    layer's RECOVERABLE_LLM_EXCEPTIONS catch (which includes RuntimeError)
+    drops just this model instead of aborting the whole multi-model run.
+    """
+
+
 def build_chat_completions_body(
     *,
     model: str,
@@ -243,7 +255,7 @@ def _parse_provider_response(
     """Parse and normalize a successful provider payload."""
     try:
         parsed = response_parser(content)
-    except NonRetryableProviderError:
+    except (NonRetryableProviderError, RetryableProviderError):
         raise
     except (ValueError, KeyError, TypeError, IndexError) as error:
         raise NonRetryableProviderError(
@@ -317,6 +329,8 @@ def _is_retryable_error(
     non_retry_exceptions: tuple[type[Exception], ...],
 ) -> bool:
     """Return whether a failed attempt may succeed when repeated."""
+    if isinstance(error, RetryableProviderError):
+        return True
     if isinstance(error, NonRetryableProviderError):
         return False
     if non_retry_exceptions and isinstance(error, non_retry_exceptions):
