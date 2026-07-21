@@ -11,7 +11,7 @@ mLLMCelltype is an R package that leverages various large language
 models (LLMs) for automated cell type annotation in single-cell RNA
 sequencing data. It implements a consensus-based approach where multiple
 LLMs collaborate to provide more reliable annotations. For more details,
-please refer to our paper (<doi:10.1101/2025.04.10.647852>).
+please refer to our paper (<doi:10.1038/s42003-026-10420-8>).
 
 ## Installation
 

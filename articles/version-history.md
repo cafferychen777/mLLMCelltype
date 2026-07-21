@@ -6,6 +6,23 @@ This document tracks the development history of mLLMCelltype, including
 major releases, feature additions, bug fixes, and other significant
 changes.
 
+### Version 2.0.6 (2026-07-15)
+
+#### Reliability
+
+- Unified input, provider-response, consensus-metric, URL, and cache
+  validation
+- Centralized transient-failure retries at the provider boundary
+- Made cluster alignment, marker selection, and cache behavior
+  deterministic
+- Added normalized provider token-usage and cost extraction
+
+#### Maintenance
+
+- Removed unused R dependencies
+- Regenerated reference documentation from current source annotations
+- Updated citation metadata for the Communications Biology publication
+
 ### Version 1.0.0 (2023-11-15)
 
 #### Initial Release
@@ -124,26 +141,6 @@ changes.
 - Clarified API key setup instructions
 - Improved error messages for common issues
 
-### Upcoming Features
-
-The following features are planned for future releases:
-
-#### Version 1.5.0 (Planned)
-
-- Integration with additional single-cell analysis frameworks
-- Enhanced support for multi-modal data
-- Improved performance for large datasets
-- Advanced visualization tools
-- Expanded benchmarking across diverse tissues and species
-
-#### Version 2.0.0 (Planned)
-
-- Complete redesign of the consensus mechanism
-- Integration with reference-based methods
-- Support for custom model fine-tuning
-- Interactive web interface for annotation review
-- Comprehensive benchmarking framework
-
 ### Breaking Changes
 
 This section documents breaking changes that may require updates to your
@@ -198,7 +195,9 @@ mLLMCelltype:
 
 If you use mLLMCelltype in your research, please cite:
 
-    Yang, C., et al. (2024). mLLMCelltype: Multi-LLM Consensus Architecture for Robust Cell Type Annotation. bioRxiv 2024.04.10.647852; doi: https://doi.org/10.1101/2024.04.10.647852
+    Yang, C., Zhang, X., & Chen, J. (2026). Large language model consensus substantially
+    improves the cell type annotation accuracy for scRNA-seq data. Communications Biology.
+    https://doi.org/10.1038/s42003-026-10420-8
 
 ### Feedback and Contributions
 

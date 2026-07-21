@@ -94,6 +94,32 @@ Initialize the unified logger
       json_format = TRUE
     )
 
+#### Arguments
+
+- `base_dir`:
+
+  Directory for log files
+
+- `level`:
+
+  Minimum log level
+
+- `max_size`:
+
+  Maximum main log size in megabytes
+
+- `max_files`:
+
+  Maximum number of retained main logs
+
+- `console_output`:
+
+  Whether to mirror logs to the console
+
+- `json_format`:
+
+  Whether main logs use JSON format
+
 ------------------------------------------------------------------------
 
 ### Method [`debug()`](https://rdrr.io/r/base/debug.html)
@@ -103,6 +129,16 @@ Log a debug message
 #### Usage
 
     UnifiedLogger$debug(message, context = NULL)
+
+#### Arguments
+
+- `message`:
+
+  Log message
+
+- `context`:
+
+  Optional structured context
 
 ------------------------------------------------------------------------
 
@@ -114,6 +150,16 @@ Log an info message
 
     UnifiedLogger$info(message, context = NULL)
 
+#### Arguments
+
+- `message`:
+
+  Log message
+
+- `context`:
+
+  Optional structured context
+
 ------------------------------------------------------------------------
 
 ### Method `warn()`
@@ -124,6 +170,16 @@ Log a warning message
 
     UnifiedLogger$warn(message, context = NULL)
 
+#### Arguments
+
+- `message`:
+
+  Log message
+
+- `context`:
+
+  Optional structured context
+
 ------------------------------------------------------------------------
 
 ### Method `error()`
@@ -133,6 +189,16 @@ Log an error message
 #### Usage
 
     UnifiedLogger$error(message, context = NULL)
+
+#### Arguments
+
+- `message`:
+
+  Log message
+
+- `context`:
+
+  Optional structured context
 
 ------------------------------------------------------------------------
 
@@ -149,6 +215,28 @@ Log API call performance
       success = TRUE,
       tokens = NULL
     )
+
+#### Arguments
+
+- `provider`:
+
+  Provider identifier
+
+- `model`:
+
+  Model identifier
+
+- `duration`:
+
+  Request duration in seconds
+
+- `success`:
+
+  Whether the request succeeded
+
+- `tokens`:
+
+  Optional token usage metadata
 
 ------------------------------------------------------------------------
 
@@ -167,6 +255,32 @@ Log complete API request and response for debugging and audit
       response_metadata = NULL
     )
 
+#### Arguments
+
+- `provider`:
+
+  Provider identifier
+
+- `model`:
+
+  Model identifier
+
+- `prompt_content`:
+
+  Request prompt
+
+- `response_content`:
+
+  Provider response or error text
+
+- `request_metadata`:
+
+  Optional request metadata
+
+- `response_metadata`:
+
+  Optional response metadata
+
 ------------------------------------------------------------------------
 
 ### Method `log_cache_operation()`
@@ -176,6 +290,20 @@ Log cache operations
 #### Usage
 
     UnifiedLogger$log_cache_operation(operation, key, size = NULL)
+
+#### Arguments
+
+- `operation`:
+
+  Cache operation name
+
+- `key`:
+
+  Cache key
+
+- `size`:
+
+  Optional cache object size in bytes
 
 ------------------------------------------------------------------------
 
@@ -187,6 +315,20 @@ Log cluster annotation progress
 
     UnifiedLogger$log_cluster_progress(cluster_id, stage, progress = NULL)
 
+#### Arguments
+
+- `cluster_id`:
+
+  Cluster identifier
+
+- `stage`:
+
+  Processing stage
+
+- `progress`:
+
+  Optional progress value
+
 ------------------------------------------------------------------------
 
 ### Method `log_discussion()`
@@ -196,6 +338,20 @@ Log detailed cluster discussion with complete model conversations
 #### Usage
 
     UnifiedLogger$log_discussion(cluster_id, event_type, data = NULL)
+
+#### Arguments
+
+- `cluster_id`:
+
+  Cluster identifier
+
+- `event_type`:
+
+  Discussion event type
+
+- `data`:
+
+  Optional event payload
 
 ------------------------------------------------------------------------
 
@@ -213,6 +369,28 @@ file
       stage = "annotation",
       cluster_id = NULL
     )
+
+#### Arguments
+
+- `provider`:
+
+  Provider identifier
+
+- `model`:
+
+  Model identifier
+
+- `response`:
+
+  Model response
+
+- `stage`:
+
+  Processing stage
+
+- `cluster_id`:
+
+  Optional cluster identifier
 
 ------------------------------------------------------------------------
 
@@ -234,6 +412,12 @@ Clean up old log files
 
     UnifiedLogger$cleanup_logs(force = FALSE)
 
+#### Arguments
+
+- `force`:
+
+  Whether to remove every main log file
+
 ------------------------------------------------------------------------
 
 ### Method `set_level()`
@@ -243,6 +427,12 @@ Set logging level
 #### Usage
 
     UnifiedLogger$set_level(level)
+
+#### Arguments
+
+- `level`:
+
+  Minimum log level
 
 ------------------------------------------------------------------------
 

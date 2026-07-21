@@ -18,7 +18,7 @@ API processing functions for different LLM providers
 - [`get_provider()`](https://cafferyang.com/mLLMCelltype/reference/get_provider.md)
   : Determine provider from model name
 - [`get_api_key()`](https://cafferyang.com/mLLMCelltype/reference/get_api_key.md)
-  : Utility functions for API key management
+  : Get an API key for a model
 - [`register_custom_model()`](https://cafferyang.com/mLLMCelltype/reference/register_custom_model.md)
   : Register a custom model for a provider
 - [`register_custom_provider()`](https://cafferyang.com/mLLMCelltype/reference/register_custom_provider.md)
@@ -42,6 +42,8 @@ LLM processor classes for different providers
   : Gemini API Processor
 - [`GrokProcessor`](https://cafferyang.com/mLLMCelltype/reference/GrokProcessor.md)
   : Grok API Processor
+- [`KimiProcessor`](https://cafferyang.com/mLLMCelltype/reference/KimiProcessor.md)
+  : Kimi API Processor
 - [`MinimaxProcessor`](https://cafferyang.com/mLLMCelltype/reference/MinimaxProcessor.md)
   : Minimax API Processor
 - [`OpenAIProcessor`](https://cafferyang.com/mLLMCelltype/reference/OpenAIProcessor.md)
@@ -78,3 +80,5 @@ Logging system and utility functions
   : Clear mLLMCelltype cache
 - [`create_annotation_prompt()`](https://cafferyang.com/mLLMCelltype/reference/create_annotation_prompt.md)
   : Create prompt for cell type annotation
+- [`create_reasoning_annotation_prompt()`](https://cafferyang.com/mLLMCelltype/reference/create_reasoning_annotation_prompt.md)
+  : Create reasoning-aware prompt for cell type annotation

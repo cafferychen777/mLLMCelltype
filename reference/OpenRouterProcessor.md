@@ -31,6 +31,7 @@ parsing.
 
 Inherited methods
 
+- [`mLLMCelltype::BaseAPIProcessor$extract_usage()`](https://cafferyang.com/mLLMCelltype/reference/BaseAPIProcessor.html#method-extract_usage)
 - [`mLLMCelltype::BaseAPIProcessor$get_api_url()`](https://cafferyang.com/mLLMCelltype/reference/BaseAPIProcessor.html#method-get_api_url)
 - [`mLLMCelltype::BaseAPIProcessor$process_request()`](https://cafferyang.com/mLLMCelltype/reference/BaseAPIProcessor.html#method-process_request)
 
@@ -43,6 +44,12 @@ Initialize OpenRouter processor
 #### Usage
 
     OpenRouterProcessor$new(base_url = NULL)
+
+#### Arguments
+
+- `base_url`:
+
+  Optional custom API endpoint
 
 ------------------------------------------------------------------------
 
@@ -64,6 +71,20 @@ Make API call to OpenRouter
 
     OpenRouterProcessor$make_api_call(chunk_content, model, api_key)
 
+#### Arguments
+
+- `chunk_content`:
+
+  Prompt text to send
+
+- `model`:
+
+  Model identifier
+
+- `api_key`:
+
+  OpenRouter API key
+
 ------------------------------------------------------------------------
 
 ### Method `extract_response_content()`
@@ -73,6 +94,16 @@ Extract response content from OpenRouter API response
 #### Usage
 
     OpenRouterProcessor$extract_response_content(response, model)
+
+#### Arguments
+
+- `response`:
+
+  HTTP response object
+
+- `model`:
+
+  Model identifier
 
 ------------------------------------------------------------------------
 

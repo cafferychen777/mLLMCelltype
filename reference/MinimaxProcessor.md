@@ -30,6 +30,7 @@ Minimax-specific API calls, authentication, and response parsing.
 
 Inherited methods
 
+- [`mLLMCelltype::BaseAPIProcessor$extract_usage()`](https://cafferyang.com/mLLMCelltype/reference/BaseAPIProcessor.html#method-extract_usage)
 - [`mLLMCelltype::BaseAPIProcessor$get_api_url()`](https://cafferyang.com/mLLMCelltype/reference/BaseAPIProcessor.html#method-get_api_url)
 - [`mLLMCelltype::BaseAPIProcessor$process_request()`](https://cafferyang.com/mLLMCelltype/reference/BaseAPIProcessor.html#method-process_request)
 
@@ -43,11 +44,17 @@ Initialize Minimax processor
 
     MinimaxProcessor$new(base_url = NULL)
 
+#### Arguments
+
+- `base_url`:
+
+  Optional custom API endpoint
+
 ------------------------------------------------------------------------
 
 ### Method `get_default_api_url()`
 
-Get default Minimax API URL
+Get default MiniMax OpenAI-compatible chat completions API URL
 
 #### Usage
 
@@ -63,6 +70,20 @@ Make API call to Minimax
 
     MinimaxProcessor$make_api_call(chunk_content, model, api_key)
 
+#### Arguments
+
+- `chunk_content`:
+
+  Prompt text to send
+
+- `model`:
+
+  Model identifier
+
+- `api_key`:
+
+  MiniMax API key
+
 ------------------------------------------------------------------------
 
 ### Method `extract_response_content()`
@@ -72,6 +93,16 @@ Extract response content from Minimax API response
 #### Usage
 
     MinimaxProcessor$extract_response_content(response, model)
+
+#### Arguments
+
+- `response`:
+
+  HTTP response object
+
+- `model`:
+
+  Model identifier
 
 ------------------------------------------------------------------------
 

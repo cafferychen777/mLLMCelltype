@@ -48,8 +48,8 @@ metrics will help identify clusters that may require expert review.
 
 #### How accurate is mLLMCelltype compared to other methods?
 
-In our benchmarks (Yang et al., 2025; see our
-[paper](https://doi.org/10.1101/2025.04.10.647852)), the consensus
+In our benchmarks (Yang et al., 2026; see our
+[paper](https://doi.org/10.1038/s42003-026-10420-8)), the consensus
 approach showed improvements over both traditional annotation methods
 and single-LLM approaches:
 

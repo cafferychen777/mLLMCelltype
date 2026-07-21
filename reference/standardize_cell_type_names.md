@@ -11,7 +11,7 @@ standardize_cell_type_names(
   predictions,
   models,
   api_keys,
-  standardization_model = "claude-sonnet-4-6",
+  standardization_model = NULL,
   base_urls = NULL
 )
 ```

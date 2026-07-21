@@ -28,6 +28,8 @@ Gemini-specific API calls, authentication, and response parsing.
 
 - [`GeminiProcessor$extract_response_content()`](#method-GeminiProcessor-extract_response_content)
 
+- [`GeminiProcessor$extract_usage()`](#method-GeminiProcessor-extract_usage)
+
 - [`GeminiProcessor$clone()`](#method-GeminiProcessor-clone)
 
 Inherited methods
@@ -44,6 +46,12 @@ Initialize Gemini processor
 #### Usage
 
     GeminiProcessor$new(base_url = NULL)
+
+#### Arguments
+
+- `base_url`:
+
+  Optional custom API endpoint
 
 ------------------------------------------------------------------------
 
@@ -65,6 +73,12 @@ Get API URL for specific model
 
     GeminiProcessor$get_api_url_for_model(model)
 
+#### Arguments
+
+- `model`:
+
+  Model identifier
+
 ------------------------------------------------------------------------
 
 ### Method `make_api_call()`
@@ -75,6 +89,20 @@ Make API call to Gemini
 
     GeminiProcessor$make_api_call(chunk_content, model, api_key)
 
+#### Arguments
+
+- `chunk_content`:
+
+  Prompt text to send
+
+- `model`:
+
+  Model identifier
+
+- `api_key`:
+
+  Gemini API key
+
 ------------------------------------------------------------------------
 
 ### Method `extract_response_content()`
@@ -84,6 +112,32 @@ Extract response content from Gemini API response
 #### Usage
 
     GeminiProcessor$extract_response_content(response, model)
+
+#### Arguments
+
+- `response`:
+
+  HTTP response object
+
+- `model`:
+
+  Model identifier
+
+------------------------------------------------------------------------
+
+### Method `extract_usage()`
+
+Extract normalized Gemini token usage
+
+#### Usage
+
+    GeminiProcessor$extract_usage(response)
+
+#### Arguments
+
+- `response`:
+
+  HTTP response object
 
 ------------------------------------------------------------------------
 

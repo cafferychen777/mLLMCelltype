@@ -30,6 +30,7 @@ StepFun-specific API calls, authentication, and response parsing.
 
 Inherited methods
 
+- [`mLLMCelltype::BaseAPIProcessor$extract_usage()`](https://cafferyang.com/mLLMCelltype/reference/BaseAPIProcessor.html#method-extract_usage)
 - [`mLLMCelltype::BaseAPIProcessor$get_api_url()`](https://cafferyang.com/mLLMCelltype/reference/BaseAPIProcessor.html#method-get_api_url)
 - [`mLLMCelltype::BaseAPIProcessor$process_request()`](https://cafferyang.com/mLLMCelltype/reference/BaseAPIProcessor.html#method-process_request)
 
@@ -42,6 +43,12 @@ Initialize StepFun processor
 #### Usage
 
     StepFunProcessor$new(base_url = NULL)
+
+#### Arguments
+
+- `base_url`:
+
+  Optional custom API endpoint
 
 ------------------------------------------------------------------------
 
@@ -63,6 +70,20 @@ Make API call to StepFun
 
     StepFunProcessor$make_api_call(chunk_content, model, api_key)
 
+#### Arguments
+
+- `chunk_content`:
+
+  Prompt text to send
+
+- `model`:
+
+  Model identifier
+
+- `api_key`:
+
+  StepFun API key
+
 ------------------------------------------------------------------------
 
 ### Method `extract_response_content()`
@@ -72,6 +93,16 @@ Extract response content from StepFun API response
 #### Usage
 
     StepFunProcessor$extract_response_content(response, model)
+
+#### Arguments
+
+- `response`:
+
+  HTTP response object
+
+- `model`:
+
+  Model identifier
 
 ------------------------------------------------------------------------
 

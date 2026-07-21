@@ -63,6 +63,12 @@ Initialize cache manager
 
     CacheManager$new(cache_dir = NULL)
 
+#### Arguments
+
+- `cache_dir`:
+
+  Cache directory selector or custom path
+
 ------------------------------------------------------------------------
 
 ### Method `get_cache_dir()`
@@ -86,8 +92,35 @@ Generate cache key from input parameters (improved version)
       models,
       cluster_id,
       tissue_name = "",
-      top_gene_count = 10
+      top_gene_count = 10,
+      discussion_context = NULL
     )
+
+#### Arguments
+
+- `input`:
+
+  Marker gene input
+
+- `models`:
+
+  Model identifiers contributing to the result
+
+- `cluster_id`:
+
+  Cluster identifier
+
+- `tissue_name`:
+
+  Tissue context included in the cache key
+
+- `top_gene_count`:
+
+  Number of marker genes used
+
+- `discussion_context`:
+
+  Optional normalized inputs that affect a discussion
 
 ------------------------------------------------------------------------
 
@@ -99,6 +132,16 @@ Save results to cache
 
     CacheManager$save_to_cache(key, data)
 
+#### Arguments
+
+- `key`:
+
+  Valid cache key
+
+- `data`:
+
+  Result object to persist
+
 ------------------------------------------------------------------------
 
 ### Method `load_from_cache()`
@@ -109,6 +152,12 @@ Load results from cache
 
     CacheManager$load_from_cache(key)
 
+#### Arguments
+
+- `key`:
+
+  Valid cache key
+
 ------------------------------------------------------------------------
 
 ### Method `has_cache()`
@@ -118,6 +167,12 @@ Check if results exist in cache
 #### Usage
 
     CacheManager$has_cache(key)
+
+#### Arguments
+
+- `key`:
+
+  Valid cache key
 
 ------------------------------------------------------------------------
 
@@ -139,18 +194,33 @@ Clear all cache
 
     CacheManager$clear_cache(confirm = FALSE)
 
+#### Arguments
+
+- `confirm`:
+
+  Whether deletion is explicitly confirmed
+
 ------------------------------------------------------------------------
 
 ### Method `validate_cache()`
 
-Validate cache content Extract genes from input in a standardized way
-Create stable hash from genes list Create stable hash from models list
-Create stable hash from tissue_name and top_gene_count Create stable
-hash from cluster ID
+Validate cache content
 
 #### Usage
 
     CacheManager$validate_cache(key)
+
+#### Arguments
+
+- `key`:
+
+  Valid cache key Return deterministic paths for regular RDS cache files
+  Resolve a validated cache key to a path inside the cache directory
+  Write one R object to a path; separated for deterministic failure
+  testing Persist cache data through a same-directory temporary file
+  Create stable hash from genes list Create stable hash from models list
+  Create stable hash from tissue_name and top_gene_count Create stable
+  hash from cluster ID
 
 ------------------------------------------------------------------------
 

@@ -1,7 +1,7 @@
-# URL Utilities for Base URL Resolution
+# Resolve provider-specific base URL
 
-This file contains utility functions for resolving custom base URLs for
-different API providers. Resolve provider-specific base URL
+This is the single entry point for all base URL resolution. It resolves
+the appropriate URL and normalizes it (strips trailing slashes).
 
 ## Usage
 
@@ -22,8 +22,3 @@ resolve_provider_base_url(provider, base_urls)
 ## Value
 
 Resolved and normalized base URL, or NULL if not specified
-
-## Details
-
-This is the single entry point for all base URL resolution. It resolves
-the appropriate URL and normalizes it (strips trailing slashes).

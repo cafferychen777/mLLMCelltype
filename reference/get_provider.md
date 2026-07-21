@@ -47,5 +47,8 @@ Supported providers and model prefixes:
 
 - Grok: grok-\* (e.g., 'grok-4.3', 'grok-4.3-latest')
 
+- Kimi (Moonshot AI Open Platform): kimi-*, moonshot-* (e.g.,
+  'kimi-k2.6', 'moonshot-v1-8k')
+
 - OpenRouter: Any model with '/' in the name (e.g., 'openai/gpt-5.5',
   'anthropic/claude-opus-4.7')

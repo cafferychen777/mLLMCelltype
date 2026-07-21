@@ -7,17 +7,18 @@
 ## Citation
 
 Source:
-[`inst/CITATION`](https://github.com/cafferychen777/mLLMCelltype/blob/v2.0.5/inst/CITATION)
+[`inst/CITATION`](https://github.com/cafferychen777/mLLMCelltype/blob/main/inst/CITATION)
 
-Yang, C., Zhang, X., & Chen, J. (2025). Large Language Model Consensus
-Substantially Improves the Cell Type Annotation Accuracy for scRNA-seq
-Data. bioRxiv. doi:10.1101/2025.04.10.647852
+Yang, C., Zhang, X., & Chen, J. (2026). Large language model consensus
+substantially improves the cell type annotation accuracy for scRNA-seq
+data. Communications Biology. https://doi.org/10.1038/s42003-026-10420-8
 
     @Article{,
-      title = {Large Language Model Consensus Substantially Improves the Cell Type Annotation Accuracy for scRNA-seq Data},
+      title = {Large language model consensus substantially improves the cell type annotation accuracy for scRNA-seq data},
       author = {Chen Yang and Xianyang Zhang and Jun Chen},
-      journal = {bioRxiv},
-      year = {2025},
-      doi = {10.1101/2025.04.10.647852},
-      publisher = {Cold Spring Harbor Laboratory},
+      journal = {Communications Biology},
+      year = {2026},
+      doi = {10.1038/s42003-026-10420-8},
+      url = {https://doi.org/10.1038/s42003-026-10420-8},
+      publisher = {Springer Nature},
     }

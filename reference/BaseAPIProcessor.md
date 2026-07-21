@@ -41,6 +41,8 @@ across all provider-specific processors.
 
 - [`BaseAPIProcessor$extract_response_content()`](#method-BaseAPIProcessor-extract_response_content)
 
+- [`BaseAPIProcessor$extract_usage()`](#method-BaseAPIProcessor-extract_usage)
+
 - [`BaseAPIProcessor$clone()`](#method-BaseAPIProcessor-clone)
 
 ------------------------------------------------------------------------
@@ -53,6 +55,16 @@ Initialize the base API processor
 
     BaseAPIProcessor$new(provider_name, base_url = NULL)
 
+#### Arguments
+
+- `provider_name`:
+
+  Provider identifier used for logging and dispatch
+
+- `base_url`:
+
+  Optional custom API endpoint
+
 ------------------------------------------------------------------------
 
 ### Method `process_request()`
@@ -62,6 +74,20 @@ Main entry point for processing API requests
 #### Usage
 
     BaseAPIProcessor$process_request(prompt, model, api_key)
+
+#### Arguments
+
+- `prompt`:
+
+  Prompt text to send
+
+- `model`:
+
+  Model identifier
+
+- `api_key`:
+
+  Provider API key
 
 ------------------------------------------------------------------------
 
@@ -95,16 +121,56 @@ API call
 
     BaseAPIProcessor$make_api_call(chunk_content, model, api_key)
 
+#### Arguments
+
+- `chunk_content`:
+
+  Prompt text to send
+
+- `model`:
+
+  Model identifier
+
+- `api_key`:
+
+  Provider API key
+
 ------------------------------------------------------------------------
 
 ### Method `extract_response_content()`
 
 Abstract method to be implemented by subclasses for extracting content
-from response Make API call and extract response content
+from response
 
 #### Usage
 
     BaseAPIProcessor$extract_response_content(response, model)
+
+#### Arguments
+
+- `response`:
+
+  HTTP response object
+
+- `model`:
+
+  Model identifier
+
+------------------------------------------------------------------------
+
+### Method `extract_usage()`
+
+Extract normalized token usage from a provider response
+
+#### Usage
+
+    BaseAPIProcessor$extract_usage(response)
+
+#### Arguments
+
+- `response`:
+
+  HTTP response object Make API call and extract response content
 
 ------------------------------------------------------------------------
 

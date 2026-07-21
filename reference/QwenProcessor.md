@@ -9,16 +9,18 @@ Qwen API Processor
 Concrete implementation of BaseAPIProcessor for Qwen models. Handles
 Qwen-specific API calls, authentication, and response parsing.
 
-Qwen has two API endpoints:
+Qwen has OpenAI-compatible chat completions endpoints:
 
-- International:
-  https://dashscope-intl.aliyuncs.com/api/v1/services/aigc/text-generation/generation
-  (preferred)
+- International (US):
+  https://dashscope-us.aliyuncs.com/compatible-mode/v1/chat/completions
 
 - Domestic (China):
-  https://dashscope.aliyuncs.com/api/v1/services/aigc/text-generation/generation
-  (fallback) The processor automatically tries international first, then
-  falls back to domestic if needed.
+  https://dashscope.aliyuncs.com/compatible-mode/v1/chat/completions
+
+- Legacy international:
+  https://dashscope-intl.aliyuncs.com/compatible-mode/v1/chat/completions
+  The processor automatically tries international first, then domestic,
+  then legacy international.
 
 ## Super class
 
@@ -43,6 +45,7 @@ Qwen has two API endpoints:
 
 Inherited methods
 
+- [`mLLMCelltype::BaseAPIProcessor$extract_usage()`](https://cafferyang.com/mLLMCelltype/reference/BaseAPIProcessor.html#method-extract_usage)
 - [`mLLMCelltype::BaseAPIProcessor$get_api_url()`](https://cafferyang.com/mLLMCelltype/reference/BaseAPIProcessor.html#method-get_api_url)
 - [`mLLMCelltype::BaseAPIProcessor$process_request()`](https://cafferyang.com/mLLMCelltype/reference/BaseAPIProcessor.html#method-process_request)
 
@@ -58,11 +61,17 @@ Initialize Qwen processor
 
     QwenProcessor$new(base_url = NULL)
 
+#### Arguments
+
+- `base_url`:
+
+  Optional custom API endpoint
+
 ------------------------------------------------------------------------
 
 ### Method `get_default_api_url()`
 
-Get default Qwen API URL with intelligent endpoint selection
+Get default Qwen OpenAI-compatible chat completions API URL
 
 #### Usage
 
@@ -78,6 +87,12 @@ Get working Qwen API URL with automatic endpoint detection
 
     QwenProcessor$get_working_api_url(api_key)
 
+#### Arguments
+
+- `api_key`:
+
+  Qwen API key used for regional endpoint probing
+
 ------------------------------------------------------------------------
 
 ### Method `make_api_call()`
@@ -88,6 +103,20 @@ Make API call to Qwen
 
     QwenProcessor$make_api_call(chunk_content, model, api_key)
 
+#### Arguments
+
+- `chunk_content`:
+
+  Prompt text to send
+
+- `model`:
+
+  Model identifier
+
+- `api_key`:
+
+  Qwen API key
+
 ------------------------------------------------------------------------
 
 ### Method `extract_response_content()`
@@ -97,6 +126,16 @@ Extract response content from Qwen API response
 #### Usage
 
     QwenProcessor$extract_response_content(response, model)
+
+#### Arguments
+
+- `response`:
+
+  HTTP response object
+
+- `model`:
+
+  Model identifier
 
 ------------------------------------------------------------------------
 

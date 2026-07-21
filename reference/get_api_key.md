@@ -1,7 +1,7 @@
-# Utility functions for API key management
+# Get an API key for a model
 
-This file contains utility functions for managing API keys and related
-operations. Get API key for a specific model
+Retrieves a configured API key by checking the model's provider name
+first, followed by the exact model name.
 
 ## Usage
 
@@ -21,10 +21,4 @@ get_api_key(model, api_keys)
 
 ## Value
 
-API key string for the specified model
-
-## Details
-
-This function retrieves the appropriate API key for a given model by
-first checking the provider name and then the model name in the provided
-API keys list.
+A trimmed API key string, or `NULL` when no valid key is configured.

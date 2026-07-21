@@ -12,8 +12,8 @@
 <link rel="icon" sizes="any" href="../favicon.ico">
 <link rel="manifest" href="../site.webmanifest">
 <script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<link href="../deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
-<script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="../deps/Roboto-0.4.10/font.css" rel="stylesheet">
+<link href="../deps/bootstrap-5.3.8/bootstrap.min.css" rel="stylesheet">
+<script src="../deps/bootstrap-5.3.8/bootstrap.bundle.min.js"></script><link href="../deps/Roboto-0.4.10/font.css" rel="stylesheet">
 <link href="../deps/Fira_Mono-0.4.10/font.css" rel="stylesheet">
 <link href="../deps/Roboto_Slab-0.4.10/font.css" rel="stylesheet">
 <link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
@@ -76,7 +76,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">mLLMCelltype</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">2.0.5</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">2.0.7</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -118,7 +118,7 @@
 <li class="nav-item"><a class="nav-link" href="../news/index.html">Changelog</a></li>
       </ul>
 <ul class="navbar-nav">
-<li class="nav-item"><a class="external-link nav-link" href="https://www.biorxiv.org/content/10.1101/2025.04.10.647852v1" aria-label="Paper"><span class="bi bi-file-earmark-text"></span></a></li>
+<li class="nav-item"><a class="external-link nav-link" href="https://doi.org/10.1038/s42003-026-10420-8" aria-label="Paper"><span class="bi bi-file-earmark-text"></span></a></li>
 <li class="nav-item"><a class="external-link nav-link" href="https://github.com/cafferychen777/mLLMCelltype" aria-label="GitHub"><span class="bi bi-github"></span></a></li>
       </ul>
 </div>
@@ -136,9 +136,9 @@
       <h1>Version History &amp; Changelog</h1>
                         <h4 data-toc-skip class="author">Chen Yang</h4>
             
-            <h4 data-toc-skip class="date">2026-05-11</h4>
+            <h4 data-toc-skip class="date">2026-07-21</h4>
       
-      <small class="dont-index">Source: <a href="https://github.com/cafferychen777/mLLMCelltype/blob/v2.0.5/vignettes/version-history.Rmd" class="external-link"><code>vignettes/version-history.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/cafferychen777/mLLMCelltype/blob/main/vignettes/version-history.Rmd" class="external-link"><code>vignettes/version-history.Rmd</code></a></small>
       <div class="d-none name"><code>version-history.Rmd</code></div>
     </div>
 
@@ -150,6 +150,33 @@
 <p>This document tracks the development history of mLLMCelltype,
 including major releases, feature additions, bug fixes, and other
 significant changes.</p>
+<div class="section level3">
+<h3 id="version-2-0-6-2026-07-15">Version 2.0.6 (2026-07-15)<a class="anchor" aria-label="anchor" href="#version-2-0-6-2026-07-15"></a>
+</h3>
+<div class="section level4">
+<h4 id="reliability">Reliability<a class="anchor" aria-label="anchor" href="#reliability"></a>
+</h4>
+<ul>
+<li>Unified input, provider-response, consensus-metric, URL, and cache
+validation</li>
+<li>Centralized transient-failure retries at the provider boundary</li>
+<li>Made cluster alignment, marker selection, and cache behavior
+deterministic</li>
+<li>Added normalized provider token-usage and cost extraction</li>
+</ul>
+</div>
+<div class="section level4">
+<h4 id="maintenance">Maintenance<a class="anchor" aria-label="anchor" href="#maintenance"></a>
+</h4>
+<ul>
+<li>Removed unused R dependencies</li>
+<li>Regenerated reference documentation from current source
+annotations</li>
+<li>Updated citation metadata for the Communications Biology
+publication</li>
+</ul>
+</div>
+</div>
 <div class="section level3">
 <h3 id="version-1-0-0-2023-11-15">Version 1.0.0 (2023-11-15)<a class="anchor" aria-label="anchor" href="#version-1-0-0-2023-11-15"></a>
 </h3>
@@ -329,33 +356,6 @@ leakage</li>
 </div>
 </div>
 <div class="section level3">
-<h3 id="upcoming-features">Upcoming Features<a class="anchor" aria-label="anchor" href="#upcoming-features"></a>
-</h3>
-<p>The following features are planned for future releases:</p>
-<div class="section level4">
-<h4 id="version-1-5-0-planned">Version 1.5.0 (Planned)<a class="anchor" aria-label="anchor" href="#version-1-5-0-planned"></a>
-</h4>
-<ul>
-<li>Integration with additional single-cell analysis frameworks</li>
-<li>Enhanced support for multi-modal data</li>
-<li>Improved performance for large datasets</li>
-<li>Advanced visualization tools</li>
-<li>Expanded benchmarking across diverse tissues and species</li>
-</ul>
-</div>
-<div class="section level4">
-<h4 id="version-2-0-0-planned">Version 2.0.0 (Planned)<a class="anchor" aria-label="anchor" href="#version-2-0-0-planned"></a>
-</h4>
-<ul>
-<li>Complete redesign of the consensus mechanism</li>
-<li>Integration with reference-based methods</li>
-<li>Support for custom model fine-tuning</li>
-<li>Interactive web interface for annotation review</li>
-<li>Comprehensive benchmarking framework</li>
-</ul>
-</div>
-</div>
-<div class="section level3">
 <h3 id="breaking-changes">Breaking Changes<a class="anchor" aria-label="anchor" href="#breaking-changes"></a>
 </h3>
 <p>This section documents breaking changes that may require updates to
@@ -425,7 +425,9 @@ mLLMCelltype:</p>
 <h3 id="how-to-cite">How to Cite<a class="anchor" aria-label="anchor" href="#how-to-cite"></a>
 </h3>
 <p>If you use mLLMCelltype in your research, please cite:</p>
-<pre><code>Yang, C., et al. (2024). mLLMCelltype: Multi-LLM Consensus Architecture for Robust Cell Type Annotation. bioRxiv 2024.04.10.647852; doi: https://doi.org/10.1101/2024.04.10.647852</code></pre>
+<pre><code>Yang, C., Zhang, X., &amp; Chen, J. (2026). Large language model consensus substantially
+improves the cell type annotation accuracy for scRNA-seq data. Communications Biology.
+https://doi.org/10.1038/s42003-026-10420-8</code></pre>
 </div>
 <div class="section level3">
 <h3 id="feedback-and-contributions">Feedback and Contributions<a class="anchor" aria-label="anchor" href="#feedback-and-contributions"></a>
@@ -462,7 +464,7 @@ FAQ</a> for answers to common questions</li>
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.0. <br>© 2024 Chen Yang</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.1. <br>© 2024 Chen Yang</p>
 </div>
 
     </footer>

@@ -127,7 +127,8 @@ annotate_cell_types(
   api_key = NA,
   top_gene_count = 10,
   debug = FALSE,
-  base_urls = NULL
+  base_urls = NULL,
+  return_reasoning = FALSE
 )
 ```
 
@@ -168,18 +169,25 @@ annotate_cell_types(
   Optional base URLs for API endpoints. Can be a string or named list
   for custom endpoints
 
+- return_reasoning:
+
+  Logical. If `TRUE`, returns a structured list per cluster containing
+  `cell_type`, `marker_genes`, and `gene_expression` fields instead of
+  plain labels. Default: `FALSE`.
+
 ## Value
 
-When `api_key` is provided, the provider response split by newline as a
-character vector. When `api_key` is `NA`, the generated prompt string.
+When `api_key` is provided and `return_reasoning` is `FALSE`, the
+provider response split by newline as a character vector. When
+`return_reasoning` is `TRUE`, a named list where each element is a list
+with `cell_type`, `marker_genes`, and `gene_expression`. When `api_key`
+is `NA`, the generated prompt string.
 
 ## See also
 
 - [`Seurat::FindAllMarkers()`](https://satijalab.org/seurat/reference/FindAllMarkers.html)
 
 - [`get_provider()`](https://cafferyang.com/mLLMCelltype/reference/get_provider.md)
-
-- [`process_openai()`](https://cafferyang.com/mLLMCelltype/reference/process_openai.md)
 
 ## Examples
 
@@ -195,7 +203,7 @@ annotate_cell_types(
   model = 'gpt-5.5',
   api_key = NA  # Returns prompt only without making API call
 )
-#> [1] "You are a cell type annotation expert. Below are marker genes for different cell clusters in human PBMC.\n\nt_cells: CD3D, CD3E, CD3G, CD28\nb_cells: CD19, CD79A, CD79B, MS4A1\nmonocytes: CD14, CD68, CSF1R, FCGR3A\n\nFor each cluster ID, provide only the cell type name in a new line, without any explanation."
+#> [1] "You are a cell type annotation expert. Below are marker genes for different cell clusters in human PBMC.\n\nt_cells: CD3D, CD3E, CD3G, CD28\nb_cells: CD19, CD79A, CD79B, MS4A1\nmonocytes: CD14, CD68, CSF1R, FCGR3A\n\nReturn exactly one cell type name per line, in the same order as the clusters shown above, without cluster IDs or explanation."
 
 # Example 2: Using with Seurat pipeline and OpenAI model
 if (FALSE) { # \dontrun{

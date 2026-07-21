@@ -5,5 +5,5 @@ Process request using custom provider
 ## Usage
 
 ``` r
-process_custom(prompt, model, api_key)
+process_custom(prompt, model, api_key, base_url = NULL)
 ```

@@ -64,11 +64,12 @@ effectively
 ### Performance
 
 For benchmark results comparing the two approaches, see Yang et
-al. (2025):
+al. (2026):
 
-Yang, C., Zhang, X., & Chen, J. (2025). Large Language Model Consensus
-Substantially Improves the Cell Type Annotation Accuracy for scRNA-seq
-Data. *bioRxiv*. <https://doi.org/10.1101/2025.04.10.647852>
+Yang, C., Zhang, X., & Chen, J. (2026). Large language model consensus
+substantially improves the cell type annotation accuracy for scRNA-seq
+data. *Communications Biology*.
+<https://doi.org/10.1038/s42003-026-10420-8>
 
 ### Cost and Resource Trade-offs
 

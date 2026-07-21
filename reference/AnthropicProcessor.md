@@ -27,6 +27,8 @@ parsing.
 
 - [`AnthropicProcessor$extract_response_content()`](#method-AnthropicProcessor-extract_response_content)
 
+- [`AnthropicProcessor$extract_usage()`](#method-AnthropicProcessor-extract_usage)
+
 - [`AnthropicProcessor$clone()`](#method-AnthropicProcessor-clone)
 
 Inherited methods
@@ -43,6 +45,12 @@ Initialize Anthropic processor
 #### Usage
 
     AnthropicProcessor$new(base_url = NULL)
+
+#### Arguments
+
+- `base_url`:
+
+  Optional custom API endpoint
 
 ------------------------------------------------------------------------
 
@@ -64,6 +72,20 @@ Make API call to Anthropic
 
     AnthropicProcessor$make_api_call(chunk_content, model, api_key)
 
+#### Arguments
+
+- `chunk_content`:
+
+  Prompt text to send
+
+- `model`:
+
+  Model identifier
+
+- `api_key`:
+
+  Anthropic API key
+
 ------------------------------------------------------------------------
 
 ### Method `extract_response_content()`
@@ -73,6 +95,32 @@ Extract response content from Anthropic API response
 #### Usage
 
     AnthropicProcessor$extract_response_content(response, model)
+
+#### Arguments
+
+- `response`:
+
+  HTTP response object
+
+- `model`:
+
+  Model identifier
+
+------------------------------------------------------------------------
+
+### Method `extract_usage()`
+
+Extract normalized Anthropic token usage
+
+#### Usage
+
+    AnthropicProcessor$extract_usage(response)
+
+#### Arguments
+
+- `response`:
+
+  HTTP response object
 
 ------------------------------------------------------------------------
 

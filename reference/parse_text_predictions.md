@@ -1,12 +1,13 @@
 # Parse text-format model predictions into a named list
 
-Handles multiple output formats from LLMs:
-
-- "cluster_id: cell_type" format
-
-- "1. cell_type" numeric index format
-
-- Positional fallback (line index maps to cluster index)
+Reads a response as explicit cluster labels (keyed by resolved cluster
+ID, so out-of-order labels land correctly) when at least one label
+resolves, unless an unresolved cluster-reference key coexists with
+incomplete coverage – that signals list ordinals misaligned against the
+requested clusters and falls through to positional mapping. Positional
+mapping preserves the line-\>cluster slot correspondence so a mid-list
+"Unknown" does not shift later clusters, and a stray "Summary:"/"Note:"
+line does not hijack the parse.
 
 ## Usage
 
@@ -26,4 +27,4 @@ parse_text_predictions(model_preds, all_clusters = NULL)
 
 ## Value
 
-Named list mapping cluster_id -\> cell_type
+Named list mapping cluster IDs to cell type annotations
