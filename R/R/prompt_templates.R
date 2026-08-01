@@ -167,6 +167,94 @@ extract_cluster_genes_for_discussion <- function(input, cluster_id, top_gene_cou
   )
 }
 
+#' Normalize annotation inputs for the reasoning prompt
+#'
+#' Input handling for create_reasoning_annotation_prompt(), mirroring the
+#' normalization done inside create_annotation_prompt() so the reasoning
+#' prompt sees the same canonical cluster ordering and gene formatting
+#' without depending on the base prompt's text.
+#'
+#' @param input Either a data frame from Seurat's FindAllMarkers() or a list for each cluster
+#'   where each element is either a character vector of genes or a list containing a `genes` field
+#'   Cluster IDs in named inputs are preserved as-is; unnamed list input receives sequential IDs starting at "0".
+#' @param tissue_name Tissue context for the annotation (e.g., 'human PBMC', 'mouse brain')
+#' @param top_gene_count Number of top genes to use per cluster when input is from Seurat
+#'
+#' @return A list with `tissue_name` (normalized), `marker_text` (one
+#'   "cluster_id: gene1, gene2" line per cluster, in canonical order),
+#'   `expected_count` (number of clusters), and `gene_lists` (cluster ID to
+#'   marker genes mapping).
+#' @keywords internal
+#' @noRd
+prepare_annotation_prompt_data <- function(input, tissue_name, top_gene_count) {
+  tissue_name <- .normalize_required_string(tissue_name, "tissue_name")
+  top_gene_count <- .normalize_top_gene_count(top_gene_count)
+
+  if (is.list(input) && !is.data.frame(input)) {
+    normalized_input <- normalize_cluster_gene_list(input)
+
+    gene_lists <- list()
+
+    for (cluster_id in names(normalized_input)) {
+      genes <- normalized_input[[cluster_id]]
+      gene_lists[[cluster_id]] <- paste(genes, collapse = ", ")
+    }
+    
+    expected_count <- length(normalized_input)
+  } else if (is.data.frame(input)) {
+    required_columns <- c("cluster", "gene", "avg_log2FC")
+    column_counts <- vapply(required_columns, function(column) {
+      sum(names(input) == column, na.rm = TRUE)
+    }, integer(1))
+    if (any(column_counts != 1)) {
+      stop(
+        "Data frame input must contain exactly one each of: ",
+        paste(required_columns, collapse = ", ")
+      )
+    }
+    if (!is.numeric(input$avg_log2FC)) {
+      stop("avg_log2FC must be numeric")
+    }
+
+    normalized_clusters <- trimws(as.character(input$cluster))
+    valid_cluster_rows <- !is.na(normalized_clusters) & nzchar(normalized_clusters)
+    if (any(!valid_cluster_rows)) {
+      warning("Skipping rows with missing or empty cluster IDs", call. = FALSE)
+    }
+    input <- input[valid_cluster_rows, , drop = FALSE]
+    normalized_clusters <- normalized_clusters[valid_cluster_rows]
+    if (nrow(input) == 0) {
+      stop("input must contain at least one valid cluster")
+    }
+
+    cluster_names <- unique(normalized_clusters)
+    gene_lists <- list()
+    for (cluster_id in cluster_names) {
+      genes <- select_cluster_marker_genes(input, cluster_id, top_gene_count)
+      gene_lists[[cluster_id]] <- paste(genes, collapse = ",")
+    }
+
+    expected_count <- length(gene_lists)
+  } else {
+    stop("Input must be either a data.frame (from Seurat) or a list of gene lists")
+  }
+  
+  cluster_names <- canonical_cluster_ids(gene_lists)
+  gene_lists <- gene_lists[cluster_names]
+
+  # Create formatted lines from gene_lists using the canonical cluster order.
+  formatted_lines <- vapply(cluster_names, function(name) {
+    paste0(name, ": ", gene_lists[[name]])
+  }, character(1), USE.NAMES = FALSE)
+
+  return(list(
+    tissue_name = tissue_name,
+    marker_text = paste(formatted_lines, collapse = "\n"),
+    expected_count = expected_count,
+    gene_lists = gene_lists
+  ))
+}
+
 #' Create prompt for cell type annotation
 #'
 #' @param input Either a data frame from Seurat's FindAllMarkers() or a list for each cluster
@@ -253,6 +341,13 @@ create_annotation_prompt <- function(input, tissue_name, top_gene_count = 10) {
 
 #' Create reasoning-aware prompt for cell type annotation
 #'
+#' This prompt is built from its own template rather than derived from
+#' create_annotation_prompt(), so the two prompts can evolve independently.
+#' The template mirrors REASONING_PROMPT_TEMPLATE in the Python package
+#' (python/mllmcelltype/prompts.py) so both implementations ask for the same
+#' structured JSON output; it is adapted to the R signature, which takes a
+#' single `tissue_name` instead of separate species/tissue arguments.
+#'
 #' @param input Either a data frame from Seurat's FindAllMarkers() or a list for each cluster
 #'   where each element is either a character vector of genes or a list containing a `genes` field.
 #' @param tissue_name Tissue context for the annotation (e.g., 'human PBMC', 'mouse brain')
@@ -262,31 +357,30 @@ create_annotation_prompt <- function(input, tissue_name, top_gene_count = 10) {
 #'   (number of clusters), and `gene_lists` (cluster ID to marker genes mapping).
 #' @export
 create_reasoning_annotation_prompt <- function(input, tissue_name, top_gene_count = 10) {
-  base_prompt <- create_annotation_prompt(input, tissue_name, top_gene_count)
-
-  marker_section <- sub(
-    "\n\nReturn exactly one cell type name per line, in the same order as the clusters shown above, without cluster IDs or explanation\\.$",
-    "",
-    base_prompt$prompt
-  )
+  prompt_data <- prepare_annotation_prompt_data(input, tissue_name, top_gene_count)
 
   reasoning_prompt <- paste0(
-    marker_section,
-    "\n\nFor each cluster, return a JSON object with the following fields:\n",
-    "- \"cluster_id\": the cluster ID as shown above\n",
+    "You are an expert single-cell RNA-seq analyst specializing in cell type annotation.\n",
+    "I need you to identify cell types in ", prompt_data$tissue_name, ".\n",
+    "Below is a list of marker genes for each cluster.\n",
+    "Please assign the most likely cell type to each cluster based on the marker genes.\n\n",
+    "For each cluster, return a JSON object with the following fields:\n",
+    "- \"cluster_id\": the cluster ID as shown below\n",
     "- \"cell_type\": the annotated cell type\n",
     "- \"marker_genes\": the marker genes from the provided gene set that support this annotation, ",
-    "comma-separated, preserving the original case exactly as shown above\n",
+    "comma-separated, preserving the original case exactly as shown below\n",
     "- \"gene_expression\": a concise natural-language description of where each provided ",
     "differential gene is typically expressed across cell types\n\n",
-    "Return a single JSON array containing one object per cluster, in the same order as the clusters shown above. ",
-    "Do not include markdown formatting or any explanation outside the JSON array."
+    "Return a single JSON array containing one object per cluster, in the same order as the clusters shown below. ",
+    "Do not include markdown formatting or any explanation outside the JSON array.\n\n",
+    "Here are the marker genes for each cluster:\n",
+    prompt_data$marker_text
   )
 
   return(list(
     prompt = reasoning_prompt,
-    expected_count = base_prompt$expected_count,
-    gene_lists = base_prompt$gene_lists
+    expected_count = prompt_data$expected_count,
+    gene_lists = prompt_data$gene_lists
   ))
 }
 

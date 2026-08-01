@@ -19,5 +19,10 @@ A list with \code{prompt} (formatted prompt text), \code{expected_count}
 (number of clusters), and \code{gene_lists} (cluster ID to marker genes mapping).
 }
 \description{
-Create reasoning-aware prompt for cell type annotation
+This prompt is built from its own template rather than derived from
+create_annotation_prompt(), so the two prompts can evolve independently.
+The template mirrors REASONING_PROMPT_TEMPLATE in the Python package
+(python/mllmcelltype/prompts.py) so both implementations ask for the same
+structured JSON output; it is adapted to the R signature, which takes a
+single \code{tissue_name} instead of separate species/tissue arguments.
 }
