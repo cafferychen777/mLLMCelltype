@@ -1,5 +1,39 @@
 # Tests for annotate_cell_types return_reasoning functionality
 
+test_that("annotation prompt variants share normalized prompt data", {
+  inputs <- list(
+    list("10" = c(" G10 ", "G10b"), "2" = list(genes = "G2")),
+    data.frame(
+      cluster = c(" 10 ", "2", "10"),
+      gene = c(" G10a ", "G2", "G10b"),
+      avg_log2FC = c(2, 3, 1)
+    )
+  )
+
+  for (input in inputs) {
+    standard <- create_annotation_prompt(input, " PBMC ", top_gene_count = 2)
+    reasoning <- create_reasoning_annotation_prompt(
+      input,
+      " PBMC ",
+      top_gene_count = 2
+    )
+
+    expect_identical(reasoning$expected_count, standard$expected_count)
+    expect_identical(reasoning$gene_lists, standard$gene_lists)
+    expect_identical(names(reasoning$gene_lists), c("2", "10"))
+
+    marker_lines <- paste0(
+      names(standard$gene_lists),
+      ": ",
+      unlist(standard$gene_lists, use.names = FALSE)
+    )
+    for (marker_line in marker_lines) {
+      expect_match(standard$prompt, marker_line, fixed = TRUE)
+      expect_match(reasoning$prompt, marker_line, fixed = TRUE)
+    }
+  }
+})
+
 test_that("annotate_cell_types return_reasoning=TRUE parses JSON array response", {
   json_response <- paste0(
     '[{"cluster_id": "0", "cell_type": "T cells", ',
