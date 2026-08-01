@@ -167,12 +167,11 @@ extract_cluster_genes_for_discussion <- function(input, cluster_id, top_gene_cou
   )
 }
 
-#' Normalize annotation inputs for the reasoning prompt
+#' Prepare normalized data for annotation prompts
 #'
-#' Input handling for create_reasoning_annotation_prompt(), mirroring the
-#' normalization done inside create_annotation_prompt() so the reasoning
-#' prompt sees the same canonical cluster ordering and gene formatting
-#' without depending on the base prompt's text.
+#' This is the single input-normalization path shared by the standard and
+#' reasoning annotation prompts. Prompt renderers consume the returned data
+#' without duplicating validation, marker selection, or cluster ordering.
 #'
 #' @param input Either a data frame from Seurat's FindAllMarkers() or a list for each cluster
 #'   where each element is either a character vector of genes or a list containing a `genes` field
@@ -199,7 +198,7 @@ prepare_annotation_prompt_data <- function(input, tissue_name, top_gene_count) {
       genes <- normalized_input[[cluster_id]]
       gene_lists[[cluster_id]] <- paste(genes, collapse = ", ")
     }
-    
+
     expected_count <- length(normalized_input)
   } else if (is.data.frame(input)) {
     required_columns <- c("cluster", "gene", "avg_log2FC")
@@ -238,7 +237,7 @@ prepare_annotation_prompt_data <- function(input, tissue_name, top_gene_count) {
   } else {
     stop("Input must be either a data.frame (from Seurat) or a list of gene lists")
   }
-  
+
   cluster_names <- canonical_cluster_ids(gene_lists)
   gene_lists <- gene_lists[cluster_names]
 
@@ -267,75 +266,17 @@ prepare_annotation_prompt_data <- function(input, tissue_name, top_gene_count) {
 #'   (number of clusters), and `gene_lists` (cluster ID to marker genes mapping).
 #' @export
 create_annotation_prompt <- function(input, tissue_name, top_gene_count = 10) {
-  tissue_name <- .normalize_required_string(tissue_name, "tissue_name")
-  top_gene_count <- .normalize_top_gene_count(top_gene_count)
-
-  if (is.list(input) && !is.data.frame(input)) {
-    normalized_input <- normalize_cluster_gene_list(input)
-
-    gene_lists <- list()
-
-    for (cluster_id in names(normalized_input)) {
-      genes <- normalized_input[[cluster_id]]
-      gene_lists[[cluster_id]] <- paste(genes, collapse = ", ")
-    }
-    
-    expected_count <- length(normalized_input)
-  } else if (is.data.frame(input)) {
-    required_columns <- c("cluster", "gene", "avg_log2FC")
-    column_counts <- vapply(required_columns, function(column) {
-      sum(names(input) == column, na.rm = TRUE)
-    }, integer(1))
-    if (any(column_counts != 1)) {
-      stop(
-        "Data frame input must contain exactly one each of: ",
-        paste(required_columns, collapse = ", ")
-      )
-    }
-    if (!is.numeric(input$avg_log2FC)) {
-      stop("avg_log2FC must be numeric")
-    }
-
-    normalized_clusters <- trimws(as.character(input$cluster))
-    valid_cluster_rows <- !is.na(normalized_clusters) & nzchar(normalized_clusters)
-    if (any(!valid_cluster_rows)) {
-      warning("Skipping rows with missing or empty cluster IDs", call. = FALSE)
-    }
-    input <- input[valid_cluster_rows, , drop = FALSE]
-    normalized_clusters <- normalized_clusters[valid_cluster_rows]
-    if (nrow(input) == 0) {
-      stop("input must contain at least one valid cluster")
-    }
-
-    cluster_names <- unique(normalized_clusters)
-    gene_lists <- list()
-    for (cluster_id in cluster_names) {
-      genes <- select_cluster_marker_genes(input, cluster_id, top_gene_count)
-      gene_lists[[cluster_id]] <- paste(genes, collapse = ",")
-    }
-
-    expected_count <- length(gene_lists)
-  } else {
-    stop("Input must be either a data.frame (from Seurat) or a list of gene lists")
-  }
-  
-  cluster_names <- canonical_cluster_ids(gene_lists)
-  gene_lists <- gene_lists[cluster_names]
-
-  # Create formatted lines from gene_lists using the canonical cluster order.
-  formatted_lines <- vapply(cluster_names, function(name) {
-    paste0(name, ": ", gene_lists[[name]])
-  }, character(1), USE.NAMES = FALSE)
+  prompt_data <- prepare_annotation_prompt_data(input, tissue_name, top_gene_count)
 
   prompt <- paste0("You are a cell type annotation expert. Below are marker genes for different cell clusters in ", 
-                  tissue_name, ".\n\n",
-                  paste(formatted_lines, collapse = "\n"),
+                  prompt_data$tissue_name, ".\n\n",
+                  prompt_data$marker_text,
                   "\n\nReturn exactly one cell type name per line, in the same order as the clusters shown above, without cluster IDs or explanation.")
   
   return(list(
     prompt = prompt,
-    expected_count = expected_count,
-    gene_lists = gene_lists
+    expected_count = prompt_data$expected_count,
+    gene_lists = prompt_data$gene_lists
   ))
 }
 
