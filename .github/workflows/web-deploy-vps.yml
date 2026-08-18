@@ -86,6 +86,7 @@ jobs:
           fingerprint: ${{ secrets.VPS_HOST_FINGERPRINT }}
           source: web/release-${{ github.sha }}.tar
           target: /opt/mllmcelltype/incoming
+          strip_components: 1
           overwrite: true
           timeout: 30s
           command_timeout: 15m
@@ -103,16 +104,36 @@ jobs:
           script: sudo --non-interactive /usr/local/sbin/deploy-mllmcelltype ${{ github.sha }}
 
       - name: Verify public health
+        env:
+          EXPECTED_REVISION: ${{ github.sha }}
         run: |
           set -euo pipefail
+          expected_engine=$(sed -n \
+            's/^mllmcelltype==\([^[:space:]]*\).*/\1/p' \
+            web/requirements.lock | head -n 1)
+          test -n "$expected_engine"
+
           for attempt in $(seq 1 12); do
-            status=$(curl --fail --silent --show-error --max-time 15 \
-              https://www.mllmcelltype.com/health |
-              python3 -c "import json,sys; print(json.load(sys.stdin).get('status', ''))" || true)
-            if [ "$status" = "healthy" ]; then
+            health=$(curl --fail --silent --show-error --max-time 15 \
+              https://www.mllmcelltype.com/health || true)
+            deployment=$(curl --fail --silent --show-error --max-time 15 \
+              https://www.mllmcelltype.com/api/deployment-info || true)
+            status=$(python3 -c \
+              "import json,sys; print(json.loads(sys.argv[1]).get('status', ''))" \
+              "$health" 2>/dev/null || true)
+            revision=$(python3 -c \
+              "import json,sys; print(json.loads(sys.argv[1]).get('version', ''))" \
+              "$deployment" 2>/dev/null || true)
+            engine=$(python3 -c \
+              "import json,sys; print(json.loads(sys.argv[1]).get('annotation_engine_version', ''))" \
+              "$deployment" 2>/dev/null || true)
+
+            if [ "$status" = "healthy" ] && \
+               [ "$revision" = "$EXPECTED_REVISION" ] && \
+               [ "$engine" = "$expected_engine" ]; then
               exit 0
             fi
-            echo "Public health check attempt ${attempt}/12 failed"
+            echo "Production verification attempt ${attempt}/12 failed"
             sleep 5
           done
           exit 1
