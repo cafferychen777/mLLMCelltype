@@ -5,7 +5,7 @@ Get response from a specific model
 ## Usage
 
 ``` r
-get_model_response(prompt, model, api_key, base_urls = NULL)
+get_model_response(prompt, model, api_key, base_urls = NULL, normalize = TRUE)
 ```
 
 ## Arguments
@@ -25,6 +25,11 @@ get_model_response(prompt, model, api_key, base_urls = NULL)
 - base_urls:
 
   Optional shared or provider-specific base URL configuration
+
+- normalize:
+
+  Logical; if `TRUE` (default) the response is normalized into non-empty
+  lines, otherwise the raw response string is returned.
 
 ## Value
 

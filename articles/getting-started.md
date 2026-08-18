@@ -41,7 +41,7 @@ Sys.setenv(OPENROUTER_API_KEY = "your-openrouter-api-key") # For OpenRouter mode
 ```
 
 You can obtain API keys from: - Anthropic:
-<https://console.anthropic.com/> - OpenAI:
+<https://platform.claude.com/> - OpenAI:
 <https://platform.openai.com/> - Google (Gemini):
 <https://ai.google.dev/> - OpenRouter: <https://openrouter.ai/keys>
 

@@ -73,7 +73,7 @@ Main entry point for processing API requests
 
 #### Usage
 
-    BaseAPIProcessor$process_request(prompt, model, api_key)
+    BaseAPIProcessor$process_request(prompt, model, api_key, normalize = TRUE)
 
 #### Arguments
 
@@ -88,6 +88,13 @@ Main entry point for processing API requests
 - `api_key`:
 
   Provider API key
+
+- `normalize`:
+
+  Logical. If `TRUE` (default), the response is normalized into
+  non-empty trimmed lines. If `FALSE`, the raw response string is
+  returned instead. Set to `FALSE` when the caller needs the original
+  text (e.g., JSON parsing in reasoning mode).
 
 ------------------------------------------------------------------------
 
