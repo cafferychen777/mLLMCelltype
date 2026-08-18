@@ -35,7 +35,8 @@ DeepSeekProcessor <- R6::R6Class("DeepSeekProcessor",
         body_extra = list(
           temperature = 0.7,
           max_tokens = 4096,
-          stream = FALSE
+          stream = FALSE,
+          thinking = list(type = "disabled")
         )
       )
     },

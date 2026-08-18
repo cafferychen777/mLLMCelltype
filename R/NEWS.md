@@ -3,6 +3,10 @@
 ## Development version
 
 ### Bug Fixes
+* Disabled DeepSeek V4 thinking mode for cell-type annotation requests. DeepSeek
+  V4 enables thinking by default, which could consume the 4,096-token response
+  budget before producing final annotation text and lead to an invalid-response
+  error.
 * Increased the default R API request timeout from 30 to 120 seconds so slower
   non-streaming model responses, including DeepSeek V4 Pro annotations, are not
   aborted before completion. Set `options(mLLMCelltype.api_timeout = 300)` to
