@@ -268,10 +268,19 @@ prepare_annotation_prompt_data <- function(input, tissue_name, top_gene_count) {
 create_annotation_prompt <- function(input, tissue_name, top_gene_count = 10) {
   prompt_data <- prepare_annotation_prompt_data(input, tissue_name, top_gene_count)
 
-  prompt <- paste0("You are a cell type annotation expert. Below are marker genes for different cell clusters in ", 
-                  prompt_data$tissue_name, ".\n\n",
-                  prompt_data$marker_text,
-                  "\n\nReturn exactly one cell type name per line, in the same order as the clusters shown above, without cluster IDs or explanation.")
+  prompt <- paste0(
+    "You are an expert single-cell RNA-seq analyst specializing in cell type annotation. ",
+    "Infer the most likely biological cell type for every cell cluster in ",
+    prompt_data$tissue_name, " from its marker genes.\n\n",
+    "Marker genes:\n",
+    prompt_data$marker_text,
+    "\n\nThe marker genes above are input evidence, not answers. ",
+    "Return exactly ", prompt_data$expected_count,
+    " non-empty lines in the same order as the clusters shown above. ",
+    "Each line must contain only one inferred biological cell type name ",
+    "(for example, T cell or macrophage). Do not repeat or output marker genes. ",
+    "Do not include cluster IDs, numbering, explanations, headings, or markdown."
+  )
   
   return(list(
     prompt = prompt,

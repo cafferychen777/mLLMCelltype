@@ -122,6 +122,13 @@ test_that("create_annotation_prompt returns the exact numeric display order", {
   cluster_lines <- prompt_lines[grepl("^(1|2|10):", prompt_lines)]
   expect_identical(cluster_lines, c("1: G1", "2: G2", "10: G10"))
   expect_match(prompt_result$prompt, "in the same order", fixed = TRUE)
+  expect_match(prompt_result$prompt, "Return exactly 3 non-empty lines", fixed = TRUE)
+  expect_match(
+    prompt_result$prompt,
+    "The marker genes above are input evidence, not answers",
+    fixed = TRUE
+  )
+  expect_match(prompt_result$prompt, "Do not repeat or output marker genes", fixed = TRUE)
 
   aligned <- align_model_predictions(
     c("Type 1", "Type 2", "Type 10"),
