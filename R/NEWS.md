@@ -1,6 +1,6 @@
 # mLLMCelltype Changelog
 
-## Development version
+## 2.0.8 (2026-08-17)
 
 ### Bug Fixes
 * Disabled DeepSeek V4 thinking mode for cell-type annotation requests. DeepSeek
@@ -11,6 +11,11 @@
   non-streaming model responses, including DeepSeek V4 Pro annotations, are not
   aborted before completion. Set `options(mLLMCelltype.api_timeout = 300)` to
   override the timeout when a longer response window is needed.
+
+### Maintenance
+* Unified marker and tissue prompt preparation across plain and structured
+  reasoning annotations so both modes stay consistent as prompt behavior
+  evolves.
 
 ## 2.0.7 (2026-07-20)
 

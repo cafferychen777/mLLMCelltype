@@ -88,9 +88,10 @@ def test_process_deepseek_request_shape(mock_resolve_endpoint, mock_call_api):
     assert kwargs["request_json"] is True
     assert kwargs["max_retries"] == 5
     assert kwargs["retry_delay"] == 3
-    assert kwargs["timeout"] == 90
+    assert kwargs["timeout"] == 120
     assert kwargs["body"]["temperature"] == 0.7
     assert kwargs["body"]["max_tokens"] == 4096
+    assert kwargs["body"]["thinking"] == {"type": "disabled"}
 
 
 @patch("mllmcelltype.providers.grok.call_openai_compatible_api")

@@ -1,6 +1,6 @@
 # mLLMCelltype
 
-[![PyPI version](https://img.shields.io/badge/pypi-v2.0.7-blue.svg)](https://pypi.org/project/mllmcelltype/)
+[![PyPI version](https://img.shields.io/badge/pypi-v2.0.8-blue.svg)](https://pypi.org/project/mllmcelltype/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 ## Overview

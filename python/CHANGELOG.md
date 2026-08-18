@@ -2,6 +2,15 @@
 
 All notable changes to the Python implementation of mLLMCelltype will be documented in this file.
 
+## [2.0.8] - 2026-08-17
+
+### Fixed
+- Disabled DeepSeek V4 thinking mode for cell-type annotation requests so the
+  response budget is reserved for final annotation text instead of being
+  exhausted by internal reasoning.
+- Increased the DeepSeek request timeout from 90 to 120 seconds for slower
+  non-streaming responses.
+
 ## [2.0.7] - 2026-07-20
 
 ### Added

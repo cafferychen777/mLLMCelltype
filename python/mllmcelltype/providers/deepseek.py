@@ -48,6 +48,7 @@ def process_deepseek(
         temperature=0.7,
         max_tokens=4096,
     )
+    body["thinking"] = {"type": "disabled"}
 
     return call_openai_compatible_api(
         provider_name="DeepSeek",
@@ -57,7 +58,7 @@ def process_deepseek(
         post_func=requests.post,
         max_retries=5,
         retry_delay=3,
-        timeout=90,
+        timeout=120,
         request_json=True,
         usage_sink=usage_sink,
         normalize_response=normalize_response,
