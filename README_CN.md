@@ -593,21 +593,9 @@ response = requests.get("https://api.example.com", proxies=proxies)
 当访问国际 API 时，设置合理的超时时间和重试策略可以提高成功率：
 
 ```r
-# R 中的超时和重试设置
-library(httr)
-config <- httr::config(timeout = 60)  # 设置 60 秒超时
-
-# 手动实现重试
-max_retries <- 3
-for (i in 1:max_retries) {
-  tryCatch({
-    response <- httr::POST(url, config = config, ...)
-    break  # 成功则退出循环
-  }, error = function(e) {
-    if (i == max_retries) stop(e)
-    Sys.sleep(2^i)  # 指数退避策略
-  })
-}
+# R 包默认允许每次 API 请求运行 120 秒，并自动重试临时故障。
+# 对于响应较慢的模型，可以在调用 annotate_cell_types() 前延长时间：
+options(mLLMCelltype.api_timeout = 300)
 ```
 
 ```python
@@ -641,7 +629,7 @@ response = http.get("https://api.example.com", timeout=30)
 
 **解决方案：**
 - 尝试使用上面提到的代理设置
-- 增加超时时间（如设置为 60 秒或更长）
+- 使用 `options(mLLMCelltype.api_timeout = 300)` 增加超时时间
 - 尝试使用 Azure OpenAI 或 OpenRouter 等替代服务
 - 在非高峰时段尝试访问
 

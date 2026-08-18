@@ -353,7 +353,7 @@ BaseAPIProcessor <- R6::R6Class("BaseAPIProcessor",
         do.call(httr::add_headers, request_headers),
         body = body,
         encode = "json",
-        httr::timeout(30)
+        httr::timeout(get_api_request_timeout())
       )
 
       private$stop_for_http_error(response, model, provider_label)

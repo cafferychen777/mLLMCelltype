@@ -146,6 +146,21 @@ is_retryable_http_status <- function(status_code) {
     (status_code %in% c(408, 425, 429) || status_code >= 500)
 }
 
+get_api_request_timeout <- function() {
+  timeout_seconds <- getOption("mLLMCelltype.api_timeout", 120)
+  valid_timeout <- is.numeric(timeout_seconds) &&
+    length(timeout_seconds) == 1 &&
+    !is.na(timeout_seconds) &&
+    is.finite(timeout_seconds) &&
+    timeout_seconds > 0
+
+  if (!valid_timeout) {
+    stop("Option 'mLLMCelltype.api_timeout' must be one positive number of seconds")
+  }
+
+  as.numeric(timeout_seconds)
+}
+
 #' Extract the first JSON document from a model response
 #'
 #' Strips surrounding markdown fences and returns the first parseable JSON

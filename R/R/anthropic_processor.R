@@ -53,7 +53,7 @@ AnthropicProcessor <- R6::R6Class("AnthropicProcessor",
         ),
         body = body,
         encode = "json",
-        httr::timeout(30)
+        httr::timeout(get_api_request_timeout())
       )
       
       private$stop_for_http_error(response, model, "Anthropic")

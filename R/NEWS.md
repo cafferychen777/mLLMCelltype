@@ -1,5 +1,13 @@
 # mLLMCelltype Changelog
 
+## Development version
+
+### Bug Fixes
+* Increased the default R API request timeout from 30 to 120 seconds so slower
+  non-streaming model responses, including DeepSeek V4 Pro annotations, are not
+  aborted before completion. Set `options(mLLMCelltype.api_timeout = 300)` to
+  override the timeout when a longer response window is needed.
+
 ## 2.0.7 (2026-07-20)
 
 ### New Features
