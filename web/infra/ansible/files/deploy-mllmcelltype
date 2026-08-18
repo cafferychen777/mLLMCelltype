@@ -1,0 +1,184 @@
+#!/usr/bin/env bash
+set -Eeuo pipefail
+
+umask 027
+
+readonly PROJECT_NAME="mllmcelltype-web"
+readonly APP_NAME="mllmcelltype-web"
+readonly STATE_ROOT="/opt/mllmcelltype"
+readonly INCOMING_DIR="${STATE_ROOT}/incoming"
+readonly RELEASES_DIR="${STATE_ROOT}/releases"
+readonly CURRENT_LINK="${STATE_ROOT}/current"
+readonly ENV_FILE="/etc/mllmcelltype/app.env"
+readonly LOCK_FILE="/run/lock/mllmcelltype-deploy.lock"
+
+log() {
+    printf '[deploy] %s\n' "$*"
+}
+
+fail() {
+    printf '[deploy] ERROR: %s\n' "$*" >&2
+    exit 1
+}
+
+validate_revision() {
+    local revision=$1
+    [[ "$revision" =~ ^[0-9a-f]{40}$ ]] || fail "revision must be a full Git commit SHA"
+}
+
+compose() {
+    local release_dir=$1
+    local image=$2
+    shift 2
+    APP_IMAGE="$image" APP_ENV_FILE="$ENV_FILE" \
+        docker compose \
+        --project-name "$PROJECT_NAME" \
+        --file "${release_dir}/docker-compose.production.yml" \
+        "$@"
+}
+
+wait_until_healthy() {
+    local release_dir=$1
+    local image=$2
+    local container_id state
+
+    container_id=$(compose "$release_dir" "$image" ps --quiet app)
+    [[ -n "$container_id" ]] || return 1
+
+    for attempt in $(seq 1 36); do
+        state=$(docker inspect \
+            --format '{{.State.Status}} {{if .State.Health}}{{.State.Health.Status}}{{end}}' \
+            "$container_id" 2>/dev/null || true)
+        if [[ "$state" == "running healthy" ]] && \
+            curl --fail --silent --show-error --max-time 10 \
+                http://127.0.0.1:8080/health >/dev/null; then
+            return 0
+        fi
+        if [[ "$state" == exited* || "$state" == dead* ]]; then
+            return 1
+        fi
+        log "waiting for application health (${attempt}/36): ${state:-unavailable}"
+        sleep 5
+    done
+
+    return 1
+}
+
+deploy_release() {
+    local release_dir=$1
+    local image=$2
+
+    compose "$release_dir" "$image" config --quiet
+    compose "$release_dir" "$image" up --detach --no-deps app
+    wait_until_healthy "$release_dir" "$image"
+}
+
+cleanup_old_releases() {
+    local current_dir=$1
+    local previous_dir=${2:-}
+    local release_dir image
+
+    while IFS= read -r release_dir; do
+        [[ "$release_dir" == "$current_dir" || "$release_dir" == "$previous_dir" ]] && continue
+        if [[ -f "${release_dir}/IMAGE" ]]; then
+            image=$(<"${release_dir}/IMAGE")
+            docker image rm "$image" >/dev/null 2>&1 || true
+        fi
+        rm -rf -- "$release_dir"
+    done < <(find "$RELEASES_DIR" -mindepth 1 -maxdepth 1 -type d -print | sort)
+
+    docker image prune --force >/dev/null
+}
+
+main() {
+    [[ $# -eq 1 ]] || fail "usage: deploy-mllmcelltype <40-character revision>"
+
+    exec 9>"$LOCK_FILE"
+    flock --wait 900 9 || fail "another deployment did not finish within 15 minutes"
+
+    local revision=$1
+    validate_revision "$revision"
+
+    local bundle="${INCOMING_DIR}/release-${revision}.tar"
+    local release_dir="${RELEASES_DIR}/${revision}"
+    local expected_image="${APP_NAME}:${revision}"
+    local previous_dir=""
+    local previous_image=""
+    local temporary_dir=""
+
+    [[ -f "$ENV_FILE" ]] || fail "missing application environment file: $ENV_FILE"
+    install -d -m 0750 "$INCOMING_DIR" "$RELEASES_DIR"
+
+    if [[ ! -d "$release_dir" ]]; then
+        [[ -f "$bundle" ]] || fail "missing release bundle: $bundle"
+
+        local expected_entries actual_entries
+        expected_entries=$'IMAGE\nIMAGE_ARCHIVE_SHA256\nREVISION\ndocker-compose.production.yml\nimage.tar.gz'
+        actual_entries=$(tar --list --file "$bundle" | LC_ALL=C sort)
+        [[ "$actual_entries" == "$expected_entries" ]] || fail "release bundle has unexpected contents"
+
+        temporary_dir=$(mktemp --directory "${RELEASES_DIR}/.${revision}.XXXXXX")
+        trap '[[ -n "${temporary_dir:-}" ]] && rm -rf -- "$temporary_dir"' EXIT
+        tar --extract --file "$bundle" --directory "$temporary_dir" \
+            --no-same-owner --no-same-permissions
+
+        if find "$temporary_dir" -mindepth 1 -maxdepth 1 ! -type f | grep --quiet .; then
+            fail "release bundle must contain regular files only"
+        fi
+
+        [[ "$(<"${temporary_dir}/REVISION")" == "$revision" ]] || fail "revision metadata mismatch"
+        [[ "$(<"${temporary_dir}/IMAGE")" == "$expected_image" ]] || fail "image metadata mismatch"
+        local expected_archive_hash actual_archive_hash
+        expected_archive_hash=$(<"${temporary_dir}/IMAGE_ARCHIVE_SHA256")
+        [[ "$expected_archive_hash" =~ ^[0-9a-f]{64}$ ]] || fail "invalid image archive checksum"
+        actual_archive_hash=$(sha256sum "${temporary_dir}/image.tar.gz" | cut -d ' ' -f 1)
+        [[ "$actual_archive_hash" == "$expected_archive_hash" ]] || fail "image archive checksum mismatch"
+        chmod 0640 "${temporary_dir}/IMAGE" "${temporary_dir}/REVISION" \
+            "${temporary_dir}/IMAGE_ARCHIVE_SHA256" \
+            "${temporary_dir}/docker-compose.production.yml"
+        chmod 0600 "${temporary_dir}/image.tar.gz"
+        mv "$temporary_dir" "$release_dir"
+        temporary_dir=""
+    fi
+
+    [[ "$(<"${release_dir}/REVISION")" == "$revision" ]] || fail "stored revision metadata mismatch"
+    [[ "$(<"${release_dir}/IMAGE")" == "$expected_image" ]] || fail "stored image metadata mismatch"
+
+    if ! docker image inspect "$expected_image" >/dev/null 2>&1; then
+        [[ -f "${release_dir}/image.tar.gz" ]] || fail "release image is not available"
+        log "loading immutable image ${expected_image}"
+        docker load --input "${release_dir}/image.tar.gz" >/dev/null
+    fi
+    docker image inspect "$expected_image" >/dev/null 2>&1 || fail "image load failed"
+    local image_revision
+    image_revision=$(docker image inspect \
+        --format '{{ index .Config.Labels "org.opencontainers.image.revision" }}' \
+        "$expected_image")
+    [[ "$image_revision" == "$revision" ]] || fail "image revision label mismatch"
+
+    if [[ -L "$CURRENT_LINK" ]]; then
+        previous_dir=$(readlink --canonicalize "$CURRENT_LINK")
+        if [[ -f "${previous_dir}/IMAGE" ]]; then
+            previous_image=$(<"${previous_dir}/IMAGE")
+        fi
+    fi
+
+    log "deploying ${expected_image}"
+    if ! deploy_release "$release_dir" "$expected_image"; then
+        compose "$release_dir" "$expected_image" logs --tail 100 app >&2 || true
+        if [[ -n "$previous_dir" && -n "$previous_image" ]]; then
+            log "deployment failed; rolling back to ${previous_image}"
+            deploy_release "$previous_dir" "$previous_image" || \
+                fail "deployment and rollback both failed"
+        fi
+        fail "deployment failed"
+    fi
+
+    ln --symbolic --force --no-dereference "$release_dir" "${CURRENT_LINK}.new"
+    mv --force --no-target-directory "${CURRENT_LINK}.new" "$CURRENT_LINK"
+    rm -f -- "$bundle" "${release_dir}/image.tar.gz"
+    cleanup_old_releases "$release_dir" "$previous_dir"
+    log "deployment complete: ${revision}"
+}
+
+main "$@"

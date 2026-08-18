@@ -1,0 +1,15 @@
+cluster_id,reference_name,final_consensus,is_controversial,initial_claude-3-5-sonnet-latest,initial_claude-3-5-haiku-latest,initial_gemini-1.5-pro,initial_gemini-2.0-flash-exp,initial_qwen-max-2025-01-25,initial_gpt-4o,match_score
+1,Adipocyte,Adipocytes,False,Adipocytes,Adipocytes,Adipocytes,Adipocytes,Adipocyte,Adipocytes,1.0
+2,B cell,B cells,False,B cells,B cells,B cells,B cells,B cell,B cells,1.0
+3,Cardiomyocyte,Cardiomyocytes,False,Cardiomyocytes,Cardiomyocytes,Cardiomyocytes,Cardiomyocytes,Cardiomyocyte,Cardiomyocytes,1.0
+4,Endothelial cell,Endothelial cells,False,Endothelial cells,Endothelial cells,Endothelial cells,Endothelial cells,Endothelial cell,Endothelial cells,1.0
+5,Fibroblast,Fibroblasts,False,Fibroblasts,Fibroblasts,Fibroblasts,Fibroblasts,Fibroblast,Fibroblasts,1.0
+6,Lymphatic endothelial cell,Lymphatic Endothelial Cells,True,Lymphatic endothelial cells,Neural crest-derived cells,Lymphatic endothelial cells,Epicardial cells,Pericyte,Lymphatic endothelial cells,1.0
+7,Mast cell,Mast cells,False,Mast cells,Mast cells,Mast cells,Mast cells,Mast cell,Mast cells,1.0
+8,Mesothelial cell,Mesothelial cells,True,Mesothelial cells,Mesothelial cells,Mesothelial cells,Mesenchymal cells,Mesothelial cell,Mesothelial cells,1.0
+9,Myeloid cell,Macrophages,False,Macrophages,Macrophages,Macrophages,Macrophages,Macrophage,Macrophages,0.5
+10,Neuronal cell,Neuronal cells,False,Neurons,Neuronal cells,Neurons,Neurons,Neuron,Neurons,1.0
+11,Natural killer and T cell,T cells,False,T cells,T cells,T cells,T cells,T cell,T cells,0.5
+12,Pericyte,Vascular smooth muscle cells,False,Pericytes,Vascular smooth muscle cells,Smooth muscle cells,Pericytes,Smooth muscle cell,Pericytes,0.5
+13,Smooth muscle cell,Vascular Smooth Muscle Cells,True,Smooth muscle cells,Smooth muscle cells,Pericytes,Smooth muscle cells,Vascular smooth muscle cell,Smooth muscle cells,0.5
+Total,Average Score (13 entries),,,,,,,,,0.8461538461538461

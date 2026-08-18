@@ -1,0 +1,38 @@
+name: Production health
+
+on:
+  schedule:
+    - cron: "7,22,37,52 * * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: production-health
+  cancel-in-progress: false
+
+jobs:
+  health:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Verify canonical health endpoint
+        run: |
+          set -euo pipefail
+          response=$(curl --fail --silent --show-error --max-time 20 \
+            --retry 2 --retry-all-errors \
+            https://www.mllmcelltype.com/health)
+          python3 -c \
+            "import json,sys; assert json.loads(sys.argv[1]).get('status') == 'healthy'" \
+            "$response"
+      - name: Verify apex redirect
+        run: |
+          set -euo pipefail
+          destination=$(curl --silent --show-error --head --max-time 20 \
+            https://mllmcelltype.com/ |
+            awk 'BEGIN {IGNORECASE=1} /^location:/ {gsub("\\r", "", $2); print $2}')
+          case "$destination" in
+            https://www.mllmcelltype.com/*) ;;
+            *) echo "Unexpected redirect: ${destination:-missing}" >&2; exit 1 ;;
+          esac

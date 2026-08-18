@@ -1,0 +1,10 @@
+[DEFAULT]
+bantime = 1h
+findtime = 10m
+maxretry = 5
+
+[sshd]
+enabled = true
+backend = systemd
+maxretry = 3
+bantime = 1h

@@ -1,0 +1,25 @@
+cluster_id,reference_name,final_consensus,is_controversial,initial_claude-3-5-sonnet-latest,initial_claude-3-5-haiku-latest,initial_gemini-1.5-pro,initial_gemini-2.0-flash-exp,initial_qwen-max-2025-01-25,initial_gpt-4o,match_score
+1,B cell,B cells,False,B cells,B cells,B cell,B cell,B cell,B cells,1.0
+2,CD4 T cell,T cell (CD4+ helper),False,CD4+ T cells,CD4+ T cells,T cell,T cell,T cell (CD4+ helper),CD4+ T cells,1.0
+3,CD8 T cell,T cell (CD8+ cytotoxic),False,CD8+ T cells,CD8+ T cells,CD8 T cell,CD8+ T cell,T cell (CD8+ cytotoxic),CD8+ T cells,1.0
+4,Cholangiocyte,Epithelial cells,False,Cholangiocytes,Epithelial cells,Epithelial cell,Cholangiocyte,Cholangiocyte,Epithelial cells,0.5
+5,Type 1 conventional dendritic cell,Classical Dendritic Cells,True,Classical dendritic cells,Dendritic cells,Dendritic cell,Monocyte,Dendritic cell,Dendritic cells,0.5
+6,Type 2 conventional dendritic cell,Conventional Dendritic Cells,True,Conventional dendritic cells,Dendritic cells,Macrophage,Dendritic cell,Macrophage,Dendritic cells,0.5
+7,Erythrocyte,Erythrocytes,False,Erythrocytes,Erythroid cells,Erythroid cell,Erythrocyte,Erythrocyte,Erythrocytes,1.0
+8,Hepatocyte,Hepatocytes,False,Hepatocytes,Hepatocytes,Hepatocyte,Hepatocyte,Hepatocyte,Hepatocytes,1.0
+9,Hepatic stellate cell,Hepatic stellate cells,False,Hepatic stellate cells,Fibroblasts,Stellate cell,Stellate cell,Fibroblast,Hepatic stellate cells,1.0
+10,Inflammatory macrophage,Macrophages,False,Kupffer cells,Macrophages,Kupffer cell,Macrophage,Macrophage,Macrophages,0.5
+11,Mast cell,Mast cells,False,Mast cells,Mast cells,Mast cell,Mast cell,Mast cell,Mast cells,1.0
+12,Monocyte,Neutrophils,True,Monocytes,Monocytes,Neutrophil,Neutrophil,Neutrophil,Monocytes,0.5
+13,Myofibroblast,Smooth muscle cell,False,Pericytes,Smooth muscle cells,Smooth muscle cell,Smooth muscle cell,Smooth muscle cell,Pericytes,0.5
+14,Natural killer cell,Natural Killer (NK) cells,False,NK cells,NK cells,NK cell,NK cell,Natural killer (NK) cell,Natural Killer (NK) cells,1.0
+15,CD56-bright natural killer cell,Natural Killer T (NKT) cells,False,NKT cells,NK cells,NK/T cell,NK T cell,Innate lymphoid cell (ILC),Natural Killer T (NKT) cells,0.5
+16,Non-inflammatory macrophage,Resident macrophages,False,Resident macrophages,Macrophages,Macrophage,Kupffer cell,Macrophage,Kupffer cells,0.5
+17,Plasmacytoid dendritic cell,Plasmacytoid dendritic cells,True,Plasmacytoid dendritic cells,Plasmacytoid dendritic cells,Plasma cell,Plasmacytoid dendritic cell,Plasmacytoid dendritic cell (pDC),Plasmacytoid dendritic cells (pDCs),1.0
+18,Plasma cell,Plasma cells,False,Plasma cells,Plasma cells,Plasma cell,Plasma cell,Plasma cell,Plasma cells,1.0
+19,Portal fibroblast,Myofibroblast,False,Portal fibroblasts,Fibroblasts,Fibroblast,Fibroblast,Myofibroblast,Fibroblasts,0.5
+20,Proliferating T/NK cell,Proliferating cells,False,Proliferating cells,Proliferating cells,Cycling cell,Proliferating cell,Proliferating cell,Proliferating cells,0.5
+21,Sinusoidal endothelial cell,Endothelial cell (liver sinusoidal),False,Liver sinusoidal endothelial cells,Endothelial cells,Lymphatic endothelial cell,Liver sinusoidal endothelial cell,Endothelial cell (liver sinusoidal),Liver sinusoidal endothelial cells,1.0
+22,Central venous endothelial cell,Endothelial cell (capillary),False,Sinusoidal endothelial cells,Endothelial cells,LSEC,Endothelial cell,Endothelial cell (capillary),Endothelial cells,0.5
+23,Portal endothelial cell,Endothelial cell (arterial/venous),False,Vascular endothelial cells,Endothelial cells,Endothelial cell,Endothelial cell,Endothelial cell (arterial/venous),Vascular endothelial cells,0.5
+Total,Average Score (23 entries),,,,,,,,,0.7391304347826086

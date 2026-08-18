@@ -1,0 +1,7 @@
+all:
+  hosts:
+    mllmcelltype:
+      ansible_host: 203.0.113.10
+      ansible_user: ops
+      ops_public_key: "{{ lookup('file', lookup('env', 'HOME') + '/.ssh/id_ed25519.pub') }}"
+      deploy_public_key: "{{ lookup('file', lookup('env', 'HOME') + '/.ssh/mllmcelltype_deploy.pub') }}"

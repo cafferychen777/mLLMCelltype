@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cell Type Annotation FAQ - scRNA-seq Analysis Questions & Answers | mLLMCelltype</title>
+
+    <!-- SEO Meta Tags -->
+    <meta name="description"
+        content="Frequently asked questions about scRNA-seq cell type annotation: AI-powered annotation workflow, multi-model consensus methods, data formats, accuracy benchmarks, and troubleshooting single-cell RNA sequencing analysis.">
+    <!-- Open Graph -->
+    <meta property="og:title" content="Cell Type Annotation FAQ - mLLMCelltype">
+    <meta property="og:description"
+        content="FAQ covering AI-powered cell type annotation, multi-model consensus methods, scRNA-seq data formats, accuracy benchmarks, and troubleshooting guides for single-cell analysis researchers.">
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://www.mllmcelltype.com/faq">
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Cell Type Annotation FAQ">
+    <meta name="twitter:description" content="Answers to common cell type annotation questions">
+
+    <!-- Canonical -->
+    <link rel="canonical" href="https://www.mllmcelltype.com/faq">
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E🧬%3C/text%3E%3C/svg%3E">
+
+    <!-- Font Awesome - Local version for better reliability -->
+    <link rel="stylesheet" href="{[{ url_for('static', filename='fontawesome-css/all.min.css') }]}">
+
+    <!-- Styles -->
+    <link rel="stylesheet" href="{[{ url_for('static', filename='css/style.css') }]}">
+
+
+    <!-- FAQ Structured Data -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "name": "Cell Type Annotation Frequently Asked Questions",
+      "description": "FAQ about cell type annotation using AI models for scRNA-seq data analysis",
+      "url": "https://www.mllmcelltype.com/faq",
+      "author": {
+        "@type": "Organization",
+        "name": "mLLMCelltype Team",
+        "url": "https://www.mllmcelltype.com"
+      },
+      "datePublished": "2024-01-01",
+      "dateModified": "2026-07-14",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "What is cell type annotation and why is it important?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Cell type annotation is the process of identifying and labeling different cell types in single-cell RNA sequencing (scRNA-seq) data based on their gene expression patterns. It's crucial for understanding tissue composition, disease mechanisms, and cellular functions in biological research."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "How does AI-powered cell type annotation work?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "AI-powered cell type annotation uses current large language models from leading providers to analyze marker gene expression patterns. These models leverage biomedical literature to identify cell types from characteristic gene signatures, providing annotations based on multiple model outputs."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "What file formats are supported for scRNA-seq data upload?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "mLLMCelltype supports multiple file formats including CSV, TSV, and Excel (.xlsx) files. Your data should contain marker genes as rows and cell clusters as columns, with gene expression values or presence/absence indicators."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Which AI models can I use for cell type annotation?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "You can choose current general-purpose models from OpenAI, Anthropic, Google, xAI, DeepSeek, Qwen, Z.AI, StepFun, MiniMax, and OpenRouter. The model catalog is reviewed regularly, and custom provider model IDs are also supported."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "How accurate is multi-model consensus annotation?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Multi-model consensus annotation aims to improve accuracy by combining predictions from multiple AI models. Accuracy depends on tissue type, species, marker gene quality, and data preprocessing. The consensus approach helps reduce individual model errors and provides confidence scores for each annotation."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Can I use mLLMCelltype for different species?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Yes, mLLMCelltype supports multiple species including human, mouse, and other model organisms. The AI models are trained on diverse biomedical literature covering various species, making cross-species annotation possible with appropriate parameter settings."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Is my data secure when using the web platform?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "The platform uses several security measures: All data transmission uses HTTPS encryption, files are processed securely, and temporary data is automatically deleted after processing. We don't store your research data permanently, and you control when to download and delete results."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "How long does cell type annotation take?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Processing time depends on dataset size and number of models selected. Typical annotation takes 2-10 minutes for datasets with 10-50 clusters. Multi-model consensus may take longer but aims to improve annotation quality and confidence scores."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "What should I do if annotation results seem incorrect?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "If results seem incorrect, try: 1) Adjusting consensus threshold settings, 2) Using additional AI models for better consensus, 3) Checking your marker gene quality and specificity, 4) Enabling discussion mode for model reasoning, 5) Consulting our troubleshooting guide for specific tissue types."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Can I integrate mLLMCelltype with my existing analysis pipeline?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Yes, mLLMCelltype offers both web interface and Python package integration. You can use our API endpoints or install the mLLMCelltype Python package to integrate cell type annotation directly into your Scanpy, Seurat, or custom analysis workflows."
+          }
+        }
+      ],
+      "breadcrumb": {
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+          {
+            "@type": "ListItem",
+            "position": 1,
+            "name": "Home",
+            "item": "https://www.mllmcelltype.com/"
+          },
+          {
+            "@type": "ListItem",
+            "position": 2,
+            "name": "FAQ",
+            "item": "https://www.mllmcelltype.com/faq"
+          }
+        ]
+      }
+    }
+    </script>
+</head>
+
+<body>
+    <a class="skip-link" href="#main-content">Skip to main content</a>
+    <div id="app">
+        {% include "_public_nav.html" %}
+
+        <main id="main-content" class="main-content">
+            <div class="content-rail">
+                <!-- Breadcrumb Navigation -->
+                <nav class="breadcrumb" aria-label="Breadcrumb">
+                <ol>
+                    <li><a href="{[{ url_for('index') }]}">Home</a></li>
+                    <li><span aria-current="page">Frequently Asked Questions</span></li>
+                </ol>
+                </nav>
+
+            <!-- Hero section -->
+            <div class="hero-section">
+                <div class="hero-content">
+                    <div class="hero-icon">
+                        <span class="hero-emoji">❓</span>
+                    </div>
+                    <h1 class="hero-title">Frequently Asked Questions</h1>
+                    <p class="hero-subtitle">Get answers to common questions about cell type annotation and AI-powered
+                        analysis</p>
+                    <p class="hero-description">Information to help you get started with multi-LLM cell type
+                        annotation and troubleshoot common issues.</p>
+                </div>
+            </div>
+
+            <!-- FAQ Content -->
+            <section class="faq-content">
+                <div class="faq-grid">
+
+                    <!-- Basic Concepts -->
+                    <div class="faq-category">
+                        <div class="feature-icon">
+                            <i class="fas fa-dna"></i>
+                        </div>
+                        <h2>Basic Concepts</h2>
+
+                        <div class="faq-item" itemscope itemtype="https://schema.org/Question">
+                            <h3 itemprop="name">What is cell type annotation and why is it important?</h3>
+                            <div class="faq-answer" itemscope itemtype="https://schema.org/Answer"
+                                itemprop="acceptedAnswer">
+                                <div itemprop="text">
+                                    <p><strong>Cell type annotation</strong> is the process of identifying and labeling
+                                        different cell types in single-cell RNA sequencing (scRNA-seq) data based on
+                                        their
+                                        gene expression patterns.</p>
+                                    <p><strong>Why it matters:</strong></p>
+                                    <ul>
+                                        <li><strong>Disease Research:</strong> Understanding which cell types are
+                                            affected
+                                            in diseases</li>
+                                        <li><strong>Drug Development:</strong> Identifying target cell populations for
+                                            treatments</li>
+                                        <li><strong>Developmental Biology:</strong> Tracking cell fate decisions during
+                                            development</li>
+                                        <li><strong>Tissue Function:</strong> Understanding cellular composition and
+                                            interactions</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="faq-item" itemscope itemtype="https://schema.org/Question">
+                            <h3 itemprop="name">How does AI-powered cell type annotation work?</h3>
+                            <div class="faq-answer" itemscope itemtype="https://schema.org/Answer"
+                                itemprop="acceptedAnswer">
+                                <div itemprop="text">
+                                    <p>AI-powered annotation leverages <strong>large language models (LLMs)</strong>
+                                        trained
+                                        on vast biomedical literature:</p>
+                                    <ol>
+                                        <li><strong>Data Input:</strong> Upload your marker gene expression data</li>
+                                        <li><strong>AI Analysis:</strong> Models analyze gene signatures against
+                                            biomedical
+                                            knowledge</li>
+                                        <li><strong>Pattern Recognition:</strong> AI identifies characteristic
+                                            expression
+                                            patterns</li>
+                                        <li><strong>Consensus Building:</strong> Multiple models vote on cell type
+                                            predictions</li>
+                                        <li><strong>Confidence Scoring:</strong> Each prediction receives accuracy
+                                            estimates
+                                        </li>
+                                    </ol>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Technical Usage -->
+                    <div class="faq-category">
+                        <h2>🔬 Technical Usage</h2>
+
+                        <div class="faq-item" itemscope itemtype="https://schema.org/Question">
+                            <h3 itemprop="name">What file formats are supported for scRNA-seq data upload?</h3>
+                            <div class="faq-answer" itemscope itemtype="https://schema.org/Answer"
+                                itemprop="acceptedAnswer">
+                                <div itemprop="text">
+                                    <p><strong>Supported formats:</strong></p>
+                                    <ul>
+                                        <li><strong>CSV files</strong> (.csv) - Comma-separated values</li>
+                                        <li><strong>TSV files</strong> (.tsv) - Tab-separated values</li>
+                                        <li><strong>Excel files</strong> (.xlsx) - Microsoft Excel format</li>
+                                    </ul>
+                                    <p><strong>Data structure requirements:</strong></p>
+                                    <ul>
+                                        <li>Rows: Marker genes (gene symbols)</li>
+                                        <li>Columns: Cell clusters or cell types</li>
+                                        <li>Values: Expression levels, fold changes, or binary presence/absence</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="faq-item" itemscope itemtype="https://schema.org/Question">
+                            <h3 itemprop="name">Which AI models can I use for cell type annotation?</h3>
+                            <div class="faq-answer" itemscope itemtype="https://schema.org/Answer"
+                                itemprop="acceptedAnswer">
+                                <div itemprop="text">
+                                    <p><strong>Available AI providers:</strong></p>
+                                    <div class="model-grid">
+                                        <div><strong>Global:</strong> OpenAI, Anthropic, Google, xAI, DeepSeek</div>
+                                        <div><strong>China:</strong> Qwen, Z.AI, MiniMax, StepFun</div>
+                                        <div><strong>Router:</strong> OpenRouter Auto and Free routers</div>
+                                    </div>
+                                    <p>The selection page is populated from the maintained current-model catalog.
+                                        You can also enter a custom model ID for any supported provider.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Accuracy & Performance -->
+                    <div class="faq-category">
+                        <h2>📊 Accuracy & Performance</h2>
+
+                        <div class="faq-item" itemscope itemtype="https://schema.org/Question">
+                            <h3 itemprop="name">How accurate is multi-model consensus annotation?</h3>
+                            <div class="faq-answer" itemscope itemtype="https://schema.org/Answer"
+                                itemprop="acceptedAnswer">
+                                <div itemprop="text">
+                                    <p><strong>Accuracy Benchmarks:</strong></p>
+                                    <ul>
+                                        <li><strong>Single Model:</strong> variable accuracy depending on model and dataset</li>
+                                        <li><strong>Multi-Model Consensus:</strong> improved accuracy through model agreement</li>
+                                        <li><strong>High-Confidence Predictions:</strong> higher reliability when models agree</li>
+                                    </ul>
+                                    <p><strong>Factors affecting accuracy:</strong></p>
+                                    <ul>
+                                        <li>Tissue type complexity</li>
+                                        <li>Marker gene quality and specificity</li>
+                                        <li>Number of models in consensus</li>
+                                        <li>Data preprocessing quality</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Security & Privacy -->
+                    <div class="faq-category">
+                        <h2>🔐 Security & Privacy</h2>
+
+                        <div class="faq-item" itemscope itemtype="https://schema.org/Question">
+                            <h3 itemprop="name">Is my data secure when using the web platform?</h3>
+                            <div class="faq-answer" itemscope itemtype="https://schema.org/Answer"
+                                itemprop="acceptedAnswer">
+                                <div itemprop="text">
+                                    <p><strong>Security Measures:</strong></p>
+                                    <ul>
+                                        <li><strong>Encryption:</strong> All data transmission uses HTTPS/TLS encryption
+                                        </li>
+                                        <li><strong>Temporary Storage:</strong> Files processed temporarily and
+                                            auto-deleted
+                                        </li>
+                                        <li><strong>No Permanent Storage:</strong> We don't keep your research data</li>
+                                        <li><strong>Secure APIs:</strong> All AI model APIs use secure connections</li>
+                                        <li><strong>User Control:</strong> You decide when to download and delete
+                                            results
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Troubleshooting -->
+                    <div class="faq-category">
+                        <h2>🔧 Troubleshooting</h2>
+
+                        <div class="faq-item" itemscope itemtype="https://schema.org/Question">
+                            <h3 itemprop="name">What should I do if annotation results seem incorrect?</h3>
+                            <div class="faq-answer" itemscope itemtype="https://schema.org/Answer"
+                                itemprop="acceptedAnswer">
+                                <div itemprop="text">
+                                    <p><strong>Troubleshooting Steps:</strong></p>
+                                    <ol>
+                                        <li><strong>Check Data Quality:</strong> Ensure marker genes are specific and
+                                            well-defined</li>
+                                        <li><strong>Adjust Parameters:</strong> Lower consensus threshold or increase
+                                            discussion rounds</li>
+                                        <li><strong>Add More Models:</strong> Use additional AI models for better
+                                            consensus
+                                        </li>
+                                        <li><strong>Enable Discussion Mode:</strong> Let models discuss and refine
+                                            predictions</li>
+                                        <li><strong>Validate Markers:</strong> Cross-check with literature or databases
+                                            like
+                                            CellMarker</li>
+                                        <li><strong>Consider Tissue Context:</strong> Some cell types are
+                                            tissue-specific
+                                        </li>
+                                    </ol>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Integration -->
+                    <div class="faq-category">
+                        <h2>🔗 Integration & API</h2>
+
+                        <div class="faq-item" itemscope itemtype="https://schema.org/Question">
+                            <h3 itemprop="name">Can I integrate mLLMCelltype with my existing analysis pipeline?</h3>
+                            <div class="faq-answer" itemscope itemtype="https://schema.org/Answer"
+                                itemprop="acceptedAnswer">
+                                <div itemprop="text">
+                                    <p><strong>Integration Options:</strong></p>
+                                    <ul>
+                                        <li><strong>Python Package:</strong> Install via pip for direct integration</li>
+                                        <li><strong>Web API:</strong> RESTful endpoints for programmatic access</li>
+                                        <li><strong>Scanpy Integration:</strong> Native support for Scanpy workflows
+                                        </li>
+                                        <li><strong>Seurat Compatibility:</strong> Export results for R/Seurat analysis
+                                        </li>
+                                        <li><strong>Jupyter Notebooks:</strong> Interactive analysis examples</li>
+                                    </ul>
+                                    <div class="code-example">
+                                        <pre><code># Python package installation
+pip install mllmcelltype
+
+# Basic usage
+from mllmcelltype import annotate_clusters
+results = annotate_clusters(marker_genes, species='human')</code></pre>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+
+            <!-- Call to Action -->
+                <section class="cta-section text-center">
+                    <h2>Try the Tool</h2>
+                    <p>Use multi-model consensus annotation for your scRNA-seq data</p>
+                    <a href="{[{ url_for('index') }]}" class="btn btn-primary">Start Annotation</a>
+                </section>
+            </div>
+        </main>
+
+        {% include "_public_footer.html" %}
+    </div>
+
+    <!-- Shared static-page behavior -->
+    <script src="{[{ url_for('static', filename='js/static-pages.js') }]}"></script>
+</body>
+
+</html>

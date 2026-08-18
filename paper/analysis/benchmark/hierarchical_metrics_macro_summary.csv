@@ -1,0 +1,3 @@
+Method,N_datasets,Accuracy_mean,Accuracy_std,hP_mean,hP_std,hR_mean,hR_std,hF1_mean,hF1_std
+GPTCelltype,49,0.6148,0.1481,0.753,0.1249,0.753,0.1249,0.753,0.1249
+mLLMCelltype,49,0.7719,0.1417,0.8867,0.0941,0.8762,0.0976,0.8808,0.0934

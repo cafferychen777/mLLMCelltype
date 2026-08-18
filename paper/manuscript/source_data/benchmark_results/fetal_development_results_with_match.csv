@@ -1,0 +1,79 @@
+cluster_id,reference_name,final_consensus,is_controversial,initial_claude-3-5-sonnet-latest,initial_claude-3-5-haiku-latest,initial_gemini-1.5-pro,initial_gemini-2.0-flash-exp,initial_qwen-max-2025-01-25,initial_gpt-4o,match_score
+1,Megakaryocyte,Megakaryocytes,False,Platelets,Platelets,Megakaryocyte,Megakaryocytes,Megakaryocyte,Megakaryocytes,1.0
+2,Ganglion cell,Neuronal Progenitors,False,Neurons,Neuronal Progenitors,Neurons,Neurons,Neuron,Neurons,0.0
+3,Stromal cell,Fibroblasts,False,Fibroblasts,Fibroblasts,Fibroblasts,Fibroblasts,Fibroblast,Fibroblasts,0.5
+4,Adrenocortical cell,Adrenal Cortex Cell,False,Steroidogenic cells,Steroidogenic Cells,Adrenal cortical cells,Steroidogenic cells,Adrenal Cortex Cell,Steroidogenic cells,1.0
+5,Lymphatic endothelial cell,Lymphatic endothelial cells,False,Lymphatic endothelial cells,Lymphatic Endothelial Cells,Lymphatic endothelial cells,Lymphatic endothelial cells,Lymphatic Endothelial Cell,Lymphatic endothelial cells,1.0
+6,Myeloid cell,Macrophages,False,Macrophages,Macrophages,Macrophages,Macrophages,Macrophage,Macrophages,0.5
+7,Bronchiolar and alveolar epithelial cell,Alveolar epithelial cells,False,Alveolar epithelial cells,Alveolar Type II Cells,AT2 cells,Alveolar type II cells,Alveolar Type II Cell,Alveolar epithelial cells,0.5
+8,Vascular endothelial cell,Vascular Endothelial Cell,False,Vascular endothelial cells,Vascular Endothelial Cells,Endothelial cells,Vascular endothelial cells,Vascular Endothelial Cell,Endothelial cells,1.0
+9,STC2 and TLX1 positive cell,Erythroid cells,False,Erythroid cells,Erythroid Cells,Erythroid cells,Erythroblasts,Erythroid Cell,Erythroid cells,0.0
+10,Satellite cell,Skeletal muscle cells,False,Skeletal muscle cells,Muscle Progenitor Cells,Skeletal muscle cells,Skeletal muscle cells,Muscle Cell,Skeletal muscle cells,0.5
+11,Astrocyte,Radial glia,True,Radial glia,Neuronal/neural progenitor,Developing Neuron,Radial glia,Neuron,Radial Glial Cells,0.5
+12,Sympathoblast,Neuroendocrine/chromaffin,False,Sympathoblasts,Neuroendocrine/chromaffin,Neuroendocrine,Neuroendocrine cell,Chromaffin cell,Neuroendocrine Cells,0.5
+13,Ureteric bud cell,Renal Progenitor Cells,False,Nephron progenitors,Renal/kidney developmental,Epithelial,Kidney progenitor cell,Renal cell,Renal Progenitor Cells,0.5
+14,Microglia,Mesenchymal cells,True,Mesenchymal cells,Neural adhesion/signaling,Microglia,Osteoblast,Immune cell,Mesenchymal Cells,0.0
+15,Limbic system neuron,Excitatory Neurons,True,Neural progenitors,Synaptic/neuronal connectivity,Excitatory Neuron,Cortical neuron,Neuron,Interneurons,0.5
+16,Inhibitory interneuron,Neuronal differentiation,False,Neuronal precursors,Neuronal differentiation,Neuron,Cortical neuron,Neuron,Excitatory Neurons,0.5
+17,Chromaffin cell,Neurotransmitter-related,False,Sympathetic neurons,Neurotransmitter-related,Neuroendocrine,Neuroendocrine cell,Chromaffin cell,Thalamic Neurons,0.5
+18,Oligodendrocyte,Neuronal adhesion/signaling,False,Neurons,Neuronal adhesion/signaling,Developing Neuron,Cortical neuron,Neuron,Associative Neurons,0.0
+19,Endocardial cell,Mesenchymal stromal cells,False,Mesenchymal stromal cells,Stromal/mesenchymal,Mesenchymal,Fibroblast,Mesenchymal cell,Fibroblasts,0.0
+20,Photoreceptor cell,Neuronal/synaptic development,False,Neurons,Neuronal/synaptic development,Developing Neuron,Retinal cell,Neuron,Retinal Photoreceptors,0.5
+21,Erythroblast,Erythrocyte progenitor,False,Erythroid cells,Erythrocyte,Erythroid cell,Erythroblasts,Erythrocyte progenitor,Erythroid cells,0.5
+22,Enteric nervous system glial cell,Schwann cells,True,Schwann cells,Oligodendrocyte Precursor Cell,Enteric glia,Schwann cells,Schwann cell precursor,Schwann cells,0.5
+23,Lymphoid cell,Immune cell (likely lymphoid),False,Lymphoid cells,Lymphocyte,Lymphocyte,T cells,Immune cell (likely lymphoid),T cells,0.5
+24,Skeletal muscle cell,Skeletal Muscle cells,True,Skeletal muscle cells,Skeletal Muscle Cell,Cardiomyocyte,Myoblasts,Skeletal muscle cell,Myocytes,1.0
+25,Mesothelial cell,Mesothelial cells,True,Mesothelial cells,Mesothelial Cell,Mesothelial cell,Mesothelial cells,Mesenchymal stromal cell,Mesothelial cells,1.0
+26,SLC24A4 and PEX5L positive cell,Glutamatergic Neurons,True,Neurons (excitatory),Neuron (Glutamatergic),Neurons,Neurons,Neuronal precursor,Neurons,0.5
+27,Excitatory neuron,Inhibitory Neurons,True,Neurons (inhibitory),Neuron (GABAergic),Neurons,Neurons,Neuronal/glial progenitor,Neurons,0.0
+28,Retinal progenitor and Muller glial cell,Retinal Neurons,True,Interneurons,Neuron (Cortical),Neurons,Retinal cells,Neural crest-derived cell,Neurons,0.5
+29,SKOR2 and NPSR1 positive cell,Cerebellar neurons,True,Cerebellar neurons,Neuron (Cerebellar),Neurons,Neurons,Neuronal/glial progenitor,Neurons,0.5
+30,Hepatoblast,Hepatocyte-like cell,False,Hepatocytes,Hepatocyte,Hepatocyte,Hepatocytes,Hepatocyte-like cell,Hepatocytes,0.5
+31,Thymocyte,T cells,True,T cells,Neural progenitor cells,T cell,T cells,T cells,T cells,0.5
+32,Purkinje neuron,Cerebellar granule neuron precursors,False,Purkinje neurons,Cerebellar granule neuron precursors,Developing neuron,Neurons,Neurons,Cerebellar neurons,0.0
+33,Syncytiotrophoblast and villous cytotrophoblast,Neural progenitor cells,False,Mesenchymal cells,Neural progenitor cells,Mesenchymal cell,Epithelial cells,Fibroblasts,Fibroblasts,0.0
+34,Mesangial cell,Mesenchymal progenitors,True,Mesenchymal progenitors,Neural crest cells,Endothelial cell,Mesenchymal stem cells,Endothelial cells,Mesenchymal stem cells,0.5
+35,Smooth muscle cell,Vascular smooth muscle cells,False,Vascular smooth muscle cells,Vascular/stromal cells,Fibroblast,Fibroblasts,Smooth muscle cells,Pericytes,1.0
+36,Intestinal epithelial cell,Hepatocytes,True,Hepatocytes,Hepatic progenitor cells,Hepatocyte,Hepatocytes,Hepatocytes,Hepatocytes,0.0
+37,Granule neuron,Glutamatergic neurons,True,Glutamatergic neurons,Excitatory neurons,Interneuron,Excitatory neurons,Neurons,Cortical neurons,0.5
+38,Horizontal cell,Cortical Neurons,True,Interneurons,Inhibitory neurons,Retinal cell,Cortical neurons,Neurons,Retinal ganglion cells,0.0
+39,Inhibitory neuron,Excitatory neurons,True,Excitatory neurons,Neuronal precursor cells,Developing neuron,GABAergic neurons,Neurons,Cortical neurons,0.0
+40,Schwann cell,Schwann cells,True,Schwann cells,Schwann cell precursors,Oligodendrocyte precursor cell,Schwann cells,Schwann cells,Schwann cells,1.0
+41,Islet endocrine cell,Pancreatic endocrine cells,False,Endocrine cells,Neuroendocrine cells,Enteroendocrine cells,Endocrine,Pancreatic endocrine cells,Pancreatic endocrine cells,0.5
+42,Amacrine cell,Neuronal cells,False,Neurons,Neuronal cells,Neurons,Neuron,Neurons,Neurons,0.5
+43,Unipolar brush cell,Neuronal synaptic cells,False,Neurons,Neuronal synaptic cells,Neurons,Neuron,Neurons,Neurons,0.5
+44,MUC13 and DMBT1 positive cell,Intestinal epithelial cells,False,Intestinal epithelial cells,Intestinal epithelial cells,Enterocytes,Enterocyte,Intestinal epithelial cells,Intestinal epithelial cells,0.5
+45,Acinar cell,Pancreatic exocrine cells,False,Pancreatic acinar cells,Pancreatic acinar cells,Pancreatic acinar cells,Acinar,Pancreatic acinar cells,Pancreatic exocrine cells,0.5
+46,Metanephric cell,Kidney progenitor cells,False,Metanephric mesenchyme,Renal progenitor cells,Nephron progenitors,Nephron progenitor,Renal progenitor cells,Kidney progenitor cells,0.5
+47,Ductal cell,Ductal cells,True,Ductal cells,Renal epithelial cells,Ductal cells,Ductal,Hepatoblasts,Fetal kidney cells,1.0
+48,Retinal pigment cell,Retinal pigment epithelium cells,False,Retinal pigment epithelium,Retinal pigment epithelial cells,Retinal pigment epithelium,Retinal Pigment Epithelium,Retinal pigment epithelium,Retinal pigment epithelium cells,0.5
+49,Cardiomyocyte,Cardiomyocytes,False,Cardiomyocytes,Cardiomyocytes,Cardiomyocytes,Cardiomyocyte,Cardiomyocytes,Cardiomyocytes,1.0
+50,Squamous epithelial cell,Epithelial cells,False,Epithelial cells,Epithelial cells,Epithelial cells,Epithelial,Epithelial cells,Epithelial cells,0.5
+51,Goblet cell,Gastric Epithelial Cells,False,Epithelial cells,Gastric epithelial cells,Gastric epithelium,Gastric epithelial cells,Gastric Epithelial Cells,Gastric gland cells,0.5
+52,Extravillous trophoblast,Trophoblast cells,True,Trophoblast cells,Stromal cells,Fibroblasts,Fibroblasts,Trophoblast Cells,Mesenchymal stromal cells,0.5
+53,Enteric nervous system neuron,Enteric nervous system neurons,False,Neural progenitors,Enteric nervous system neurons,Neurons,Neurons,Neuronal Cells,Peripheral neurons,1.0
+54,Visceral neuron,Cholinergic neurons,False,Cholinergic neurons,Cholinergic neurons,Neurons,Cholinergic neurons,Enteric Neurons,Cholinergic neurons,0.5
+55,Ciliated epithelial cell,Ciliated epithelial cells,False,Ciliated cells,Ciliated cells,Ciliated cells,Ciliated cells,Ciliated Cells,Ciliated epithelial cells,1.0
+56,Epicardial fat cell,Mesothelial cells,True,Mesothelial cells,Immune/inflammatory cells,Mesothelial cells,Mesenchymal cells,Mesothelial Cells,Mesothelial cells,0.0
+57,Parietal and chief cell,Gastric parietal cells,False,Gastric chief cells,Parietal/chief cells,Gastric epithelium,Parietal cells,Parietal Cells,Gastric parietal cells,0.5
+58,Stellate cell,Hepatoblasts/Early Hepatocytes,True,Hepatoblasts,Hepatocytes,Chondrocytes,Hepatocytes,Hepatocytes,Hepatocytes,0.0
+59,IGFBP1 and DKK1 positive cell,Fibroblasts,False,Fibroblasts,Fibroblasts,Fibroblasts,Fibroblasts,Fibroblasts,Fibroblasts,0.0
+60,Bipolar cell,Retinal Progenitor Cells,True,Neural precursor cells,Neuronal precursor cells,Neurons,Retinal neurons,Neural Progenitor Cells,Retinal ganglion cells,0.5
+61,Neuroendocrine cell,Enteroendocrine cells,False,Enteroendocrine cells,Endocrine cells,Enteroendocrine cells,Neuroendocrine cell,Enteroendocrine cells,Enteroendocrine cells,0.5
+62,PAEP and MECOM positive cell,Uterine Secretory/Glandular Epithelial Cells,True,Secretory epithelial cells,Epithelial cells,Epithelial cells,Uterine epithelial cell,Decidual cells,Glandular epithelial cells,0.5
+63,Corneal and conjunctival epithelial cell,Glandular epithelial cells,False,Mucosal epithelial cells,Mucus-secreting cells,Epithelial cells,Epithelial cell,Glandular epithelial cells,Mucosal epithelial cells,0.5
+64,Hematopoietic stem cell,Hematopoietic progenitor cells,False,Myeloid progenitor cells,Hematopoietic/Immune cells,Myeloid cells,Myeloid cell,Myeloid progenitor cells,Hematopoietic progenitor cells,0.5
+65,CSH1 and CSH2 positive cell,Trophoblast cells,False,Trophoblast cells,Placental cells,Syncytiotrophoblast,Trophoblast cell,Trophoblast cells,Trophoblast cells,0.5
+66,Lens fiber cell,Lens fiber cells,False,Lens fiber cells,Lens cells,Lens cells,Lens cell,Lens fiber cells,Lens fiber cells,1.0
+67,CCL19 and CCL21 positive cell,Follicular Dendritic Cells,True,Stromal cells,Lymphoid cells,Follicular dendritic cells,Follicular dendritic cell,Stromal dendritic cells,Fibroblastic reticular cells,0.5
+68,Trophoblast giant cell,Extravillous trophoblast cells,False,Syncytiotrophoblast cells,Trophoblast cells,Syncytiotrophoblast,Syncytiotrophoblast cell,Placental trophoblasts,Extravillous trophoblast cells,0.5
+69,SLC26A4 and PAEP positive cell,Steroidogenic cells,True,Steroidogenic cells,Glandular cells,Epithelial cells,Steroidogenic cell,Adrenal cortex cells,Thyroid follicular cells,0.0
+70,AFP and ALB positive cell,Hepatocytes,True,Hepatocytes,Hepatocytes,Hepatocytes,Hepatocyte,Hepatoblasts,Hepatocytes,0.5
+71,Thymic epithelial cell,Thymic epithelial cells,False,Thymic epithelial cells,Thymic epithelial cells,Thymic Epithelial Cell,Thymic epithelial cell,Thymic Epithelial Cell,Thymic epithelial cells,1.0
+72,PDE11A and FAM19A2 positive cell,Cholinergic neurons,False,Neurons,Cajal-like cells,Cholinergic Neuron,Cholinergic neuron,Neuron,Cholinergic neurons,0.0
+73,Antigen presenting cell,Dendritic cells,True,Dendritic cells,Lymphoid cells,B Cell,B cell,B Cell,Dendritic cells,0.5
+74,SATB2 and LRRC7 positive cell,Cortical Neuron,True,Neural progenitor cells,Neuronal cells,Excitatory Neuron,Cortical neuron,Neuron,Neural progenitor cells,0.5
+75,ELF3 and AGBL2 positive cell,Cardiac muscle cells,False,Cardiomyocytes,Cardiac muscle cells,Cardiomyocyte,Cardiomyocyte,Cardiomyocyte,Cardiomyocytes,0.0
+76,CLC and IL5RA positive cell,Cardiomyocyte,True,Granulocytes,Cardiac progenitor cells,Atrial Cardiomyocyte,Cardiomyocyte,Cardiomyocyte,Eosinophils,0.0
+77,PDE1C and ACSM3 positive cell,Collecting duct cells,True,Renal epithelial cells,Epithelial cells,Epithelial Cell,Collecting duct cell,Epithelial Cell,Kidney progenitor cells,0.0
+Total,Average Score (77 entries),,,,,,,,,0.4675324675324675

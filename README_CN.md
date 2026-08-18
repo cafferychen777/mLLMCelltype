@@ -202,8 +202,12 @@ results <- interactive_consensus_annotation(
 
 ## 目录结构
 
-- `R/`：R语言接口和实现
-- `python/`：Python接口和实现
+- `R/`：持续维护的 R 软件包
+- `python/`：持续维护的 Python 软件包
+- `web/`：Web 应用与部署配置
+- `paper/`：已发表论文的分析代码、手稿源文件，以及保留原 Git 历史的公开复现工作区
+
+本仓库是整个项目的唯一事实来源。大型论文数据和生成结果仅保留在本地的 `paper/data/` 与 `paper/results/` 中，不进入 Git。历史软件包副本已移除，顶层 `R/` 和 `python/` 是权威实现。
 
 ## 安装
 

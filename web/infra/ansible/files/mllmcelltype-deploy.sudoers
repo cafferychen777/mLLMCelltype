@@ -1,0 +1,1 @@
+deploy ALL=(root) NOPASSWD: /usr/local/sbin/deploy-mllmcelltype [0-9a-f]*

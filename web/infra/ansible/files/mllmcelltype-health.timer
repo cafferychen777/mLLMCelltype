@@ -1,0 +1,11 @@
+[Unit]
+Description=Periodically verify mLLMCelltype application health
+
+[Timer]
+OnBootSec=3min
+OnUnitActiveSec=2min
+RandomizedDelaySec=20s
+Persistent=true
+
+[Install]
+WantedBy=timers.target

@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <!--
+    IMPORTANT TEMPLATE SYNTAX NOTE:
+    This application uses CUSTOM Jinja2 delimiters: { [ { } ] }
+    DO NOT use standard { { } } syntax - it conflicts with Vue.js
+    Always use { [ { url_for(...) } ] } for Flask template functions
+    -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Login - mLLMCelltype</title>
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml"
+        href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E🔬%3C/text%3E%3C/svg%3E">
+    <link rel="alternate icon"
+        href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E🔬%3C/text%3E%3C/svg%3E">
+
+    <!-- Meta tags -->
+    <meta name="description" content="Admin Login - mLLMCelltype Management System">
+
+    <link rel="stylesheet" href="{[{ url_for('static', filename='css/admin-dark-mode.css') }]}?v=1">
+    <link rel="stylesheet" href="{[{ url_for('static', filename='css/admin-login.css') }]}?v=1">
+</head>
+
+<body>
+    <main class="login-container">
+        <div class="login-header">
+            <div class="logo-container">
+                <span>🔬</span>
+            </div>
+            <h1>Welcome Back</h1>
+            <p>Sign in to access the admin dashboard</p>
+        </div>
+
+        <div id="error-message" class="error-message" role="alert" hidden></div>
+        <div id="success-message" class="success-message" role="status" aria-live="polite" hidden></div>
+
+        <form id="login-form">
+            <div class="form-group">
+                <label class="form-label" for="username">Username</label>
+                <div class="input-wrapper">
+                    <input type="text" id="username" name="username" class="form-input"
+                        placeholder="Enter your username" required autocomplete="username">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label" for="password">Password</label>
+                <div class="input-wrapper">
+                    <input type="password" id="password" name="password" class="form-input"
+                        placeholder="Enter your password" required autocomplete="current-password">
+                    <button type="button" id="password-toggle" class="password-toggle"
+                        aria-label="Show password" aria-pressed="false">
+                        <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"
+                            viewBox="0 0 24 24">
+                            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                            <circle cx="12" cy="12" r="3"></circle>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+
+            <button type="submit" class="login-btn" id="login-btn">
+                <span id="btn-text">Sign In</span>
+            </button>
+        </form>
+
+        <div class="back-link">
+            <a href="{[{ url_for('index') }]}">
+                <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                    <path d="M19 12H5M12 19l-7-7 7-7"></path>
+                </svg>
+                Back to mLLMCelltype
+            </a>
+        </div>
+    </main>
+
+    <script src="{[{ url_for('static', filename='js/admin-login.js') }]}" defer></script>
+</body>
+
+</html>

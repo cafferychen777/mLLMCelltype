@@ -1,0 +1,23 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+readonly CONTAINER_NAME="mllmcelltype-web-app-1"
+readonly HEALTH_URL="http://127.0.0.1:8080/health"
+
+if curl --fail --silent --show-error --max-time 10 "$HEALTH_URL" >/dev/null; then
+    exit 0
+fi
+
+logger --tag mllmcelltype-health "health check failed; restarting application container"
+docker restart "$CONTAINER_NAME" >/dev/null
+
+for _ in $(seq 1 24); do
+    if curl --fail --silent --show-error --max-time 10 "$HEALTH_URL" >/dev/null; then
+        logger --tag mllmcelltype-health "application recovered after restart"
+        exit 0
+    fi
+    sleep 5
+done
+
+logger --tag mllmcelltype-health "application did not recover after restart"
+exit 1

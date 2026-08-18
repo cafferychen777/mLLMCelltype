@@ -34,6 +34,7 @@ Across 49 benchmark datasets ([Yang et al., 2026](https://doi.org/10.1038/s42003
 
 ## Table of Contents
 - [Key Features](#key-features)
+- [Repository Layout](#repository-layout)
 - [Installation](#installation)
 - [Usage Examples](#usage-examples)
 - [Visualization Example](#visualization-example)
@@ -43,6 +44,17 @@ Across 49 benchmark datasets ([Yang et al., 2026](https://doi.org/10.1038/s42003
 **Web Application**: A browser-based interface is available at [mllmcelltype.com](https://mllmcelltype.com) (no installation required).
 
 **See also**: [FlashDeconv](https://github.com/cafferychen777/FlashDeconv) — cell type deconvolution for spatial transcriptomics (Visium, Visium HD, Stereo-seq).
+
+## Repository Layout
+
+This repository is the single source of truth for the complete project:
+
+- [`R/`](R/) contains the maintained R package.
+- [`python/`](python/) contains the maintained Python package.
+- [`web/`](web/) contains the web application and deployment configuration.
+- [`paper/`](paper/) contains the published article's analysis code, manuscript sources, and the history-preserving public reproducibility workspace.
+
+Large paper datasets and generated results remain local under `paper/data/` and `paper/results/` and are excluded from Git. Historical package copies are intentionally not retained; the top-level packages are authoritative.
 
 ## Key Features
 

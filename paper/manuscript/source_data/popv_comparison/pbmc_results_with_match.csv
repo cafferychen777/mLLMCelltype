@@ -1,0 +1,32 @@
+cluster_id,reference_name,final_consensus,is_controversial,initial_claude-3-5-sonnet-latest,initial_claude-3-5-haiku-latest,initial_gemini-1.5-pro,initial_gemini-2.0-flash-exp,initial_qwen-max-2025-01-25,initial_gpt-4o,match_score
+1,B intermediate,Naive B cells,False,B cells,B cells,Naive B cell,B cells,B cell,Naive B cells,0.5
+2,B memory,Memory B cells,False,B cells,B cells,Naive B cell,B cells,B cell,Memory B cells,1.0
+3,B naive,Naive B cells,False,B cells,B cells,Memory B cell,B cells,B cell,Naive B cells,1.0
+4,Plasmablast,Plasma cells,False,Plasma cells,Plasma cells,Plasmablast,Plasma cells,Plasma cell,Plasma cells,0.5
+5,CD4 CTL,Cytotoxic CD4 T cells,True,CD4+ T cells/NK cells,NK cells,CD4 T cell,Cytotoxic CD4 T cells,NK cell,Cytotoxic T cells,1.0
+6,CD4 Naive,Naive CD4+ T cells,False,Naive CD4+ T cells,Naive CD4+ T cells,Naive CD4 T cell,Naive CD4 T cells,Naive CD4+ T cell,Naive CD4+ T cells,1.0
+7,CD4 Proliferating,Proliferating cells,False,Proliferating cells,Proliferating cells,Cycling,Cycling cells,Proliferating cell,Proliferating cells,0.5
+8,CD4 TCM,Naive CD4+ T cells,True,CD4+ T cells,Naive CD4+ T cells,Naive CD4 T cell,CD4 T cells,Memory CD4+ T cell,Memory CD4+ T cells,0.5
+9,CD4 TEM,Effector CD4+ T cells,True,CD4+ T cells,Activated CD4+ T cells,CD4 T cell (GZMK+),Cytotoxic CD4 T cells,Effector CD4+ T cell,Memory CD8+ T cells,0.5
+10,Treg,Regulatory T cell (Treg),False,Regulatory T cells,Regulatory T cells,Treg,Regulatory T cells,Regulatory T cell (Treg),Regulatory T cells,1.0
+11,CD8 Naive,Naive CD8+ T cells,False,Naive CD8+ T cells,Naive CD8+ T cells,Naive CD8 T cell,Naive CD8 T cells,Naive CD8+ T cell,Naive CD8+ T cells,1.0
+12,CD8 Proliferating,Proliferating CD8+ T cells,False,Proliferating CD8+ T cells,Proliferating CD8+ T cells,Cycling CD8 T cell,Cycling CD8 T cells,Proliferating CD8+ T cell,Proliferating CD8+ T cells,1.0
+13,CD8 TCM,Effector CD8+ T cells,False,CD8+ T cells,Cytotoxic CD8+ T cells,CD8 T cell,CD8 T cells,Memory CD8+ T cell,Effector CD8+ T cells,0.5
+14,CD8 TEM,Cytotoxic CD8+ T cells,False,CD8+ T cells/NK cells,Cytotoxic CD8+ T cells,CD8 T cell (GZMK+),Cytotoxic CD8 T cells,Effector CD8+ T cell,Cytotoxic CD8+ T cells,0.5
+15,ASDC,Plasmacytoid dendritic cells,True,Plasmacytoid dendritic cells,Cytotoxic CD8+ T cells,pDC,Plasmacytoid dendritic cells,Plasmacytoid dendritic cell (pDC),Plasmacytoid dendritic cells,0.5
+16,cDC1,Conventional dendritic cells type 1,True,Conventional dendritic cells type 1,Plasmacytoid dendritic cells,cDC2,Classical dendritic cells,Conventional dendritic cell (cDC),Conventional dendritic cells,1.0
+17,cDC2,Monocyte-derived dendritic cell (moDC),False,Conventional dendritic cells type 2,Conventional dendritic cells,cDC1,Myeloid dendritic cells,Monocyte-derived dendritic cell (moDC),Myeloid dendritic cells,0.5
+18,pDC,Plasmacytoid dendritic cells,True,Plasmacytoid dendritic cells,Conventional dendritic cells,Plasma cell,Plasma cells,Plasma cell,Plasmacytoid dendritic cells,1.0
+19,CD14 Mono,Classical monocytes,False,Classical monocytes,Monocytes,Monocyte,Monocytes,Monocyte,Classical monocytes,1.0
+20,CD16 Mono,Non-classical monocytes,True,Non-classical monocytes,Monocytes,NK cell,Non-classical monocytes,Macrophage,Non-classical monocytes,1.0
+21,NK,Natural killer cells,False,NK cells,NK cells,NK cell,Natural killer cells,NK cell,Natural killer cells,1.0
+22,NK Proliferating,Proliferating natural killer cells,False,Proliferating NK cells,Proliferating NK cells,Cycling NK cell,Cycling natural killer cells,Proliferating NK cell,Proliferating natural killer cells,1.0
+23,NK_CD56bright,Innate lymphoid cell (ILC),False,NK cells,Innate-like T cells,NK cell,Natural killer cells,Innate lymphoid cell (ILC),Natural killer T cells,0.5
+24,Eryth,Erythrocytes,False,Erythroid cells,Erythrocytes,Erythroid cell,Erythrocytes,Erythrocyte,Erythrocytes,1.0
+25,HSPC,Hematopoietic stem/progenitor cell (HSPC),False,Hematopoietic stem cells,Hematopoietic stem and progenitor cells,HSC,Hematopoietic stem cells,Hematopoietic stem/progenitor cell (HSPC),Hematopoietic stem and progenitor cells,1.0
+26,ILC,Innate lymphoid cells,True,Innate lymphoid cells,T cells,NK cell,Mast cells,Innate lymphoid cell (ILC),Mast cells,1.0
+27,Platelet,Platelets,True,Platelets,NKT cells,Platelet,Platelets,Platelet,Platelets,1.0
+28,dnT,Innate-like T cells,True,NK cells,Innate-like T cells,Unknown,CD8 T cells,Hematopoietic progenitor cell,Megakaryocyte progenitors,0.5
+29,gdT,Gamma delta T cells,True,γδ T cells,NK cells,NKT cell,Gamma delta T cells,Gamma delta T cell (γδ T cell),Gamma delta T cells,1.0
+30,MAIT,Mucosal-associated invariant T (MAIT) cells,False,MAIT cells,Innate-like T cells,NK cell/T cell,Natural killer cells,Natural killer T cell (NKT),Mucosal-associated invariant T (MAIT) cells,1.0
+Total,Average Score (30 entries),,,,,,,,,0.8166666666666667

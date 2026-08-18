@@ -36,11 +36,13 @@ sdist/
 !.env.template
 venv*/
 env/
+.venv/
 
 # IDE & OS
 .DS_Store
 .idea/
 .vscode/
+.codex/
 .playwright-mcp/
 .pytest_cache/
 .ruff_cache/
@@ -52,8 +54,7 @@ cache/
 
 # Project-specific
 demos/
-examples/
-mllmcelltype-web/
+/examples/
 R/tests/testthat/consensus_cache/
 R/tests/testthat/.mllmcelltype_cache/
 CLAUDE.md

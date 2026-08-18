@@ -1,0 +1,35 @@
+cluster_id,reference_name,final_consensus,Match,is_controversial,initial_claude-3-5-sonnet-latest,initial_claude-3-5-haiku-latest,initial_gemini-1.5-pro,initial_gemini-2.0-flash-exp,initial_qwen-max-2025-01-25,initial_gpt-4o,match_score
+1,CD8-positive alpha-beta T cell,CD8+ T cells,Parent match,True,T cells (mature),CD8+ Naive T cells,Cytotoxic T cell,CD56bright NK cell,Cytotoxic T Cell,Dendritic Cells,0.5
+2,CD4-positive alpha-beta T cell,CD8+ Naive T cells,Sibling match,True,T cells (mature),CD8+ Naive T cells,Cytotoxic T cell,CD56dim NK cell,Cytotoxic T Cell,Dendritic Cells,0.5
+3,double-positive alpha-beta thymocyte,Cortical Thymocytes,Exact match,True,Thymocytes (cortical),CD8+ Naive T cells,Cortical Thymic Epithelial Cell,Cortical thymocyte,Dendritic Cell,Dendritic Cells,0.5
+4,CD8-alpha-alpha-positive alpha-beta intraepithelial T cell,T cells (developing),Parent match,False,T cells (developing),CD4+ Naive T cells,T cell,Naive T cell,Immature T Cell,T Cells,0.5
+5,regulatory T cell,Activated T cell,No match,False,T cells (mature),CD8+ Naive T cells,Activated T cell,Activated T cell,Memory T Cell,T Cells,0.5
+6,alpha-beta T cell,Double positive thymocyte,Sibling match,False,Thymocytes (early),Mature Naive T cells,T cell,Double positive thymocyte,Regulatory T Cell,T Cells,0.5
+7,T cell,T cells (developing),Child match,False,T cells (developing),CD8+ Naive T cells,T cell,T cell,Naive T Cell,T Cells,0.5
+8,double negative thymocyte,Early T cells/Thymocytes,Parent match,False,Early T cells/Thymocytes,Immature T cells,Immature T cell,Early T cell progenitors,T cell,Developing T cells,0.5
+9,monocyte,Monocytes/Macrophages,Parent match,False,Monocytes/Macrophages,Monocytes,Myeloid cell,Myeloid cells,Myeloid cell,Monocytes,0.5
+10,naive B cell,B cells,Parent match,False,B cells,B cells,B cell,B cells,B cell,B cells,0.5
+11,dendritic cell,Dendritic cells,Exact match,True,Dendritic cells,Dendritic cells,Macrophage/Monocyte,Dendritic cells,Macrophage,Dendritic cells,1.0
+12,CD4-positive alpha-beta memory T cell,Activated T cells,No match,True,Late T cells,MHC class I-expressing cells,Cortical thymic epithelial cell,Mature T cells,Epithelial cell,Activated T cells,0.5
+13,gamma-delta T cell,Gamma delta T cells,Exact match,False,γδ T cells,Gamma delta T cells,T cell,T cells,γδ T cell,Gamma delta T cells,1.0
+14,plasmacytoid dendritic cell,Plasmacytoid dendritic cells,Exact match,False,Plasmacytoid dendritic cells,Plasmacytoid dendritic cells,Plasmacytoid dendritic cell,Plasmacytoid dendritic cells,Plasmacytoid dendritic cell,Plasmacytoid dendritic cells,1.0
+15,natural killer cell,Natural Killer (NK) cells,Exact match,False,Natural Killer cells,Natural Killer (NK) cells,NK cell,NK cells,Natural Killer Cell,NK cells,1.0
+16,macrophage,Monocytes/Macrophages,Parent match,False,Macrophages,Macrophages/Monocytes,Macrophage,Macrophages,Macrophage,Monocytes/Macrophages,0.5
+17,memory B cell,B cells,Parent match,False,B cells,B cells,B cell,B cells,B Cell,B cells,0.5
+18,precursor B cell,B cells (Immature/Pre-B cells),Exact match,False,Pre-B cells,Pre-B cells,B cell,Pre-B cells,Pre-B Cell,B cells (Immature/Pre-B cells),0.5
+19,progenitor cell,Myeloid cells,Child match,False,Myeloid cells,Neutrophils,Myeloid cell,Neutrophils,Neutrophil,Neutrophils,0.0
+20,fibroblast,Fibroblasts,Exact match,False,Fibroblasts,Fibroblasts,Fibroblast,Fibroblasts,Fibroblast,Fibroblasts,1.0
+21,early T lineage precursor,Thymocytes,Exact match,True,Double Negative thymocytes,Cytotoxic T cells,Epithelial cell,Thymocytes,Monocyte,Lymphocytes (likely cycling/proliferating cells),0.5
+22,mast cell,Mast cells,Exact match,False,Mast cells,Mast cells,Mast cell,Mast cell,Mast cells,Mast cells,1.0
+23,group 3 innate lymphoid cell,NK/NKT cells,No match,True,NK/NKT cells,T cells (naive/memory),NK cell,NK cell,T cells,T cells,0.5
+24,erythrocyte,Erythroid precursors,Parent match,False,Erythrocytes,Erythroid precursors,Erythroid cell,Erythroid cell,Erythroid cells,Erythroid cells,0.5
+25,vascular associated smooth muscle cell,Smooth muscle cells,Parent match,True,Smooth muscle cells,Smooth muscle cells,Smooth muscle cell,Myofibroblast,Myofibroblasts,Smooth muscle cells,0.5
+26,medullary thymic epithelial cell,Thymic epithelial cell,Exact match,False,Epithelial cells,Epithelial cells,Epithelial cell,Thymic epithelial cell,Epithelial cells,Epithelial cells,0.5
+27,epithelial cell of thymus,Epithelial progenitor cells,Exact match,False,Immature epithelial cells,Epithelial progenitor cells,Epithelial cell,Epithelial cell,Epithelial progenitor cells,Epithelial cells,0.5
+28,endothelial cell,Endothelial cells,Exact match,False,Endothelial cells,Endothelial cells,Endothelial cell,Endothelial cell,Endothelial cells,Endothelial cells,1.0
+29,cortical thymic epithelial cell,Medullary thymic epithelial cell,Parent match,False,Thymic epithelial cells,Epithelial cells,Medullary thymic epithelial cell,Thymic Epithelial Cell,Epithelial cells,Thymic epithelial cells,0.5
+30,megakaryocyte,Erythroid cells,Parent match,True,Erythroid cells,Erythroid cells,Erythroid cell,Erythrocyte,Erythroid cells,Megakaryocytes,0.5
+31,lymphocyte,Endothelial cells,Child match,True,Endothelial cells,Endothelial cells,Epithelial cell,Endothelial Cell,Endothelial cells,Endothelial cells,0.0
+32,plasma cell,Plasma cells,Exact match,True,B cells,Plasma cells,Plasma cell,Plasma Cell,B cells,Plasmacytoid dendritic cells,1.0
+33,CD8-positive alpha-beta memory T cell,Cytotoxic T cells,Parent match,False,Cytotoxic T cells,Cytotoxic T cells,Activated T cell,Cytotoxic T cell,T cells,Cytotoxic T cells,0.5
+Total,Average Score (33 entries),,,,,,,,,,0.5909090909090909

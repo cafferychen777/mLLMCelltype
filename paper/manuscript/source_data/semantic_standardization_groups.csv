@@ -1,0 +1,95 @@
+Original,Standardized
+naive thymus-derived CD8-positive,naive thymus-derived CD8-positive
+naive thymus-derived CD4-positive,naive thymus-derived CD8-positive
+Proliferating T cells,Proliferating T cells
+Proliferating cells,Proliferating T cells
+megakaryocyte,megakaryocyte
+myeloid leukocyte,myeloid leukocyte
+monocyte,Monocytes
+Monocytes,Monocytes
+pericyte,Pericytes
+Pericytes,Pericytes
+Macrophages,Macrophages
+macrophage,Macrophages
+Macrophage,Macrophages
+neutrophil,Neutrophils
+Neutrophils,Neutrophils
+dendritic cell,CD1c-positive myeloid dendritic cell
+Plasmacytoid Dendritic Cells,CD1c-positive myeloid dendritic cell
+plasmacytoid dendritic cell,CD1c-positive myeloid dendritic cell
+Dendritic cells,CD1c-positive myeloid dendritic cell
+CD1c-positive myeloid dendritic cell,CD1c-positive myeloid dendritic cell
+myeloid dendritic cell,CD1c-positive myeloid dendritic cell
+Mast cells,Mast cells
+mast cell,Mast cells
+basophil,basophil
+serous cell of epithelium of bronchus,serous cell of epithelium of bronchus
+tracheobronchial serous cell,serous cell of epithelium of bronchus
+Basal epithelial cells,respiratory goblet cell
+basal cell,respiratory goblet cell
+respiratory goblet cell,respiratory goblet cell
+respiratory basal cell,respiratory goblet cell
+lung goblet cell,respiratory goblet cell
+Natural killer cells,Natural killer cells
+natural killer cell,Natural killer cells
+NK cells,Natural killer cells
+mature NK T cell,Natural killer cells
+Smooth Muscle Cells,vascular associated smooth muscle cell
+Smooth muscle cells,vascular associated smooth muscle cell
+bronchial smooth muscle cell,vascular associated smooth muscle cell
+vascular associated smooth muscle cell,vascular associated smooth muscle cell
+club cell,Club cells
+Club cells,Club cells
+pulmonary alveolar type 2 cell,Alveolar epithelial cells type II
+plasma cell,Plasma cells
+Plasma cells,Plasma cells
+Activated T cell,Activated T cell
+Classical monocytes,non-classical monocyte
+classical monocyte,non-classical monocyte
+non-classical monocyte,non-classical monocyte
+Neuroendocrine cells,lung neuroendocrine cell
+lung neuroendocrine cell,lung neuroendocrine cell
+Lymphatic endothelial cells,endothelial cell of lymphatic vessel
+vein endothelial cell,endothelial cell of lymphatic vessel
+capillary endothelial cell,endothelial cell of lymphatic vessel
+endothelial cell of artery,endothelial cell of lymphatic vessel
+Capillary Endothelial Cell,endothelial cell of lymphatic vessel
+effector memory CD4-positive,endothelial cell of lymphatic vessel
+endothelial cell of lymphatic vessel,endothelial cell of lymphatic vessel
+Arterial endothelial cell,endothelial cell of lymphatic vessel
+effector memory CD8-positive,endothelial cell of lymphatic vessel
+mesothelial cell,endothelial cell of lymphatic vessel
+mucus secreting cell,endothelial cell of lymphatic vessel
+Capillary endothelial cell,endothelial cell of lymphatic vessel
+endothelial cell,endothelial cell of lymphatic vessel
+Secretory cells,endothelial cell of lymphatic vessel
+Endothelial cell,endothelial cell of lymphatic vessel
+Epithelial cells,Alveolar epithelial cells type I
+lung ciliated cell,Alveolar epithelial cells type I
+Alveolar Epithelial Type I Cells,Alveolar epithelial cells type I
+Ciliated Epithelial Cells,Alveolar epithelial cells type I
+pulmonary alveolar type 1 cell,Alveolar epithelial cells type I
+Alveolar epithelial cells type II,Alveolar epithelial cells type I
+Multiciliated Cells,Alveolar epithelial cells type I
+ciliated cell,Alveolar epithelial cells type I
+epithelial cell,Alveolar epithelial cells type I
+alveolar macrophage,alveolar macrophage
+alveolar adventitial fibroblast,alveolar adventitial fibroblast
+B cell,B cell
+mesothelial cell of pleura,mesothelial cell of pleura
+Cytotoxic T cell,Cytotoxic T cell
+CD8+ T cell,Cytotoxic T cell
+Alveolar type II pneumocytes,Alveolar epithelial cells type I
+pulmonary ionocyte,pulmonary ionocyte
+Naive T cells,Naive T cells
+"CD4-positive, alpha-beta T cell","CD4-positive, alpha-beta T cell"
+fibroblast,myofibroblast cell
+pulmonary interstitial fibroblast,myofibroblast cell
+myofibroblast cell,myofibroblast cell
+Fibroblasts,myofibroblast cell
+lymphocyte,lymphocyte
+intermediate monocyte,intermediate monocyte
+adventitial cell,adventitial cell
+"CD8-positive, alpha-beta T cell","CD8-positive, alpha-beta T cell"
+Extracellular Matrix,Extracellular Matrix
+Platelets,Platelets

@@ -1,0 +1,45 @@
+# Local data and generated results
+data/
+results/
+logs/
+*.h5ad
+*.rds
+*.RData
+
+# Environments and secrets
+.env
+.venv/
+venv/
+env/
+
+# Python and R caches
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+.ruff_cache/
+.Rhistory
+.Rproj.user/
+*.Rcheck/
+
+# Notebook, browser, and OS artifacts
+.ipynb_checkpoints/
+.playwright-cli/
+.playwright-mcp/
+.DS_Store
+
+# Frozen publication records not intended for the public source tree
+manuscript/_archive/
+manuscript/eproof_*/
+manuscript/rebuttal/
+manuscript/*.zip
+manuscript/*.pdf
+manuscript/*.docx
+manuscript/cover_letter*.tex
+manuscript/fill_reporting_summary.py
+manuscript/*.aux
+manuscript/*.bbl
+manuscript/*.blg
+manuscript/*.log
+manuscript/*.out
+manuscript/merged_pdf_check.png

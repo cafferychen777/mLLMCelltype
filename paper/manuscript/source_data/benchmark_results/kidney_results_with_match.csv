@@ -1,0 +1,18 @@
+cluster_id,reference_name,final_consensus,is_controversial,initial_claude-3-5-sonnet-latest,initial_claude-3-5-haiku-latest,initial_gemini-1.5-pro,initial_gemini-2.0-flash-exp,initial_qwen-max-2025-01-25,initial_gpt-4o,match_score
+1,Kidney loop of Henle thin ascending limb epithelial cell,Proximal Tubule,True,Proximal Tubule,Proximal tubule cells,Proximal Tubule,Collecting duct principal cells,Podocyte,Collecting duct cells,0.5
+2,Kidney connecting tubule epithelial cell,Distal Convoluted Tubule,True,Collecting Duct,Principal cells,Thick Ascending Limb,Distal convoluted tubule,Distal Tubule,Intercalated cells,0.5
+3,Kidney loop of Henle thin descending limb epithelial cell,Proximal Tubule,True,Proximal Tubule,Intercalated cells,Proximal Tubule,Collecting duct intercalated cells,Loop of Henle,Principal cells,0.5
+4,Kidney distal convoluted tubule epithelial cell,Distal Convoluted Tubule,True,Distal Convoluted Tubule,Distal convoluted tubule cells,Distal Convoluted Tubule,Distal convoluted tubule,Collecting Duct Principal Cell,Distal convoluted tubule cells,1.0
+5,Endothelial cell,Endothelial cells,False,Endothelial Cells,Endothelial cells,Endothelial Cell,Endothelial cells,Endothelial Cell,Endothelial cells,1.0
+6,Fibroblast,Fibroblasts,False,Fibroblasts,Fibroblasts,Fibroblast,Fibroblasts,Fibroblast,Fibroblasts,1.0
+7,Leukocyte,Immune cells,False,Immune Cells,Immune cells,Leukocyte,Leukocytes,Immune Cell,Immune cells,0.5
+8,Renal intercalated cell,Intercalated cells,True,Intercalated Cells,Collecting duct cells,Collecting Duct Principal Cell,Collecting duct intercalated cells,Interstitial Cell,Intercalated cells,1.0
+9,Papillary tips cell,Epithelial cells,False,Urothelial Cells,Epithelial cells,Thick Ascending Limb,Loop of Henle,Epithelial Cell,Epithelial cells,0.5
+10,Parietal epithelial cell,Principal Cells,True,Principal Cells,Podocytes,Proximal Tubule,Connecting tubule,Proximal Tubule,Endothelial cells,0.0
+11,Glomerular visceral epithelial cell,Podocytes,False,Podocytes,Podocytes,Podocyte,Podocytes,Podocyte,Podocytes,1.0
+12,Renal principal cell,Collecting Duct Intercalated Cell,True,Collecting Duct,Neuronal/Neurogenic cells,Collecting Duct Intercalated Cell,Connecting tubule,Distal Tubule,Stromal cells,0.0
+13,Epithelial cell of proximal tubule,Proximal tubule cells,False,Proximal Tubule,Proximal tubule cells,Proximal Tubule,Proximal tubule,Proximal Tubule,Proximal tubule cells,0.5
+14,Schwann cell,Neuronal/Neurogenic cells,False,Neural Cells,Neuronal/Neurogenic cells,Neuron,Neurons,Neuron-like Cell,Neurons,0.5
+15,Kidney loop of Henle thick ascending limb epithelial cell,Thick ascending limb cells,False,Loop of Henle,Loop of Henle cells,Thick Ascending Limb,Thick ascending limb,Thick Ascending Limb,Thick ascending limb cells,0.5
+16,Vascular associated smooth muscle cell,Pericytes/Vascular smooth muscle cells,False,Vascular Smooth Muscle Cells,Pericytes,Mesangial Cell,Pericytes,Smooth Muscle Cell,Pericytes/Vascular smooth muscle cells,0.5
+Total,Average Score (16 entries),,,,,,,,,0.59375

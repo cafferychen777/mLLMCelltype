@@ -1,0 +1,491 @@
+hP,hR,hF1,accuracy,n,dataset,method,scenario,depth_ratio
+0.9062,0.9062,0.9062,0.875,16,Adipose(Azimuth),mLLMCelltype,conservative_0.5,0.5
+0.8438,0.8438,0.8438,0.8125,16,Adipose(Azimuth),GPTCelltype,conservative_0.5,0.5
+0.9032,0.9032,0.9032,0.871,31,BCL(Cancer),mLLMCelltype,conservative_0.5,0.5
+0.7903,0.7903,0.7903,0.7742,31,BCL(Cancer),GPTCelltype,conservative_0.5,0.5
+0.9107,0.9107,0.9107,0.8214,14,Bladder(TS),mLLMCelltype,conservative_0.5,0.5
+0.8036,0.8036,0.8036,0.6786,14,Bladder(TS),GPTCelltype,conservative_0.5,0.5
+0.7031,0.7031,0.7031,0.5312,16,Blood(TS),mLLMCelltype,conservative_0.5,0.5
+0.625,0.625,0.625,0.5,16,Blood(TS),GPTCelltype,conservative_0.5,0.5
+0.7688,0.7688,0.7688,0.5625,40,Bone Marrow(Azimuth),mLLMCelltype,conservative_0.5,0.5
+0.5875,0.5875,0.5875,0.425,40,Bone Marrow(Azimuth),GPTCelltype,conservative_0.5,0.5
+0.9038,0.9038,0.9038,0.8077,13,Bone Marrow(TS),mLLMCelltype,conservative_0.5,0.5
+0.7115,0.7115,0.7115,0.5769,13,Bone Marrow(TS),GPTCelltype,conservative_0.5,0.5
+0.9722,0.9722,0.9722,0.9444,18,Breast(GTEx),mLLMCelltype,conservative_0.5,0.5
+0.8333,0.8333,0.8333,0.6667,18,Breast(GTEx),GPTCelltype,conservative_0.5,0.5
+0.9722,0.9722,0.9722,0.9444,18,Breast(Literature)(GTEx),mLLMCelltype,conservative_0.5,0.5
+0.9444,0.9444,0.9444,0.8889,18,Breast(Literature)(GTEx),GPTCelltype,conservative_0.5,0.5
+0.9138,0.9138,0.9138,0.8621,29,Colon(Cancer),mLLMCelltype,conservative_0.5,0.5
+0.9224,0.9224,0.9224,0.8448,29,Colon(Cancer),GPTCelltype,conservative_0.5,0.5
+0.928,0.928,0.928,0.8729,59,Esophagus(GTEx),mLLMCelltype,conservative_0.5,0.5
+0.6356,0.6356,0.6356,0.5254,59,Esophagus(GTEx),GPTCelltype,conservative_0.5,0.5
+0.6442,0.6442,0.6442,0.5577,26,Eye(TS),mLLMCelltype,conservative_0.5,0.5
+0.5096,0.5096,0.5096,0.4423,26,Eye(TS),GPTCelltype,conservative_0.5,0.5
+0.8636,0.8636,0.8636,0.8182,11,Fat(TS),mLLMCelltype,conservative_0.5,0.5
+0.6136,0.6136,0.6136,0.5909,11,Fat(TS),GPTCelltype,conservative_0.5,0.5
+0.6104,0.6104,0.6104,0.4675,77,Fetal Development(Azimuth),mLLMCelltype,conservative_0.5,0.5
+0.5097,0.5097,0.5097,0.3701,77,Fetal Development(Azimuth),GPTCelltype,conservative_0.5,0.5
+0.6389,0.6389,0.6389,0.5794,63,HCL,mLLMCelltype,conservative_0.5,0.5
+0.5556,0.5556,0.5556,0.4762,63,HCL,GPTCelltype,conservative_0.5,0.5
+0.9231,0.9231,0.9231,0.8462,13,Heart(Azimuth),mLLMCelltype,conservative_0.5,0.5
+0.6923,0.6923,0.6923,0.6154,13,Heart(Azimuth),GPTCelltype,conservative_0.5,0.5
+0.9896,0.9896,0.9896,0.9792,24,Heart(GTEx),mLLMCelltype,conservative_0.5,0.5
+0.7292,0.7292,0.7292,0.6667,24,Heart(GTEx),GPTCelltype,conservative_0.5,0.5
+0.9375,0.9375,0.9375,0.9167,24,Heart(Literature)(GTEx),mLLMCelltype,conservative_0.5,0.5
+0.8958,0.8958,0.8958,0.7917,24,Heart(Literature)(GTEx),GPTCelltype,conservative_0.5,0.5
+0.7344,0.7344,0.7344,0.5938,16,Kidney(Azimuth),mLLMCelltype,conservative_0.5,0.5
+0.625,0.625,0.625,0.5,16,Kidney(Azimuth),GPTCelltype,conservative_0.5,0.5
+0.7,0.7,0.7,0.6667,15,Large Intestine(TS),mLLMCelltype,conservative_0.5,0.5
+0.5,0.5,0.5,0.4,15,Large Intestine(TS),GPTCelltype,conservative_0.5,0.5
+0.8696,0.8696,0.8696,0.7391,23,Liver(Azimuth),mLLMCelltype,conservative_0.5,0.5
+0.6848,0.6848,0.6848,0.587,23,Liver(Azimuth),GPTCelltype,conservative_0.5,0.5
+0.9091,0.9091,0.9091,0.8182,11,Liver(TS),mLLMCelltype,conservative_0.5,0.5
+0.6818,0.6818,0.6818,0.5455,11,Liver(TS),GPTCelltype,conservative_0.5,0.5
+0.825,0.825,0.825,0.65,10,Lung(Azimuth),mLLMCelltype,conservative_0.5,0.5
+0.6,0.6,0.6,0.5,10,Lung(Azimuth),GPTCelltype,conservative_0.5,0.5
+0.8782,0.8782,0.8782,0.859,39,Lung(Cancer),mLLMCelltype,conservative_0.5,0.5
+0.9231,0.9231,0.9231,0.8462,39,Lung(Cancer),GPTCelltype,conservative_0.5,0.5
+0.9022,0.9022,0.9022,0.8478,23,Lung(GTEx),mLLMCelltype,conservative_0.5,0.5
+0.6522,0.6522,0.6522,0.5217,23,Lung(GTEx),GPTCelltype,conservative_0.5,0.5
+0.9457,0.9457,0.9457,0.8913,23,Lung(Literature)(GTEx),mLLMCelltype,conservative_0.5,0.5
+0.7609,0.7609,0.7609,0.7391,23,Lung(Literature)(GTEx),GPTCelltype,conservative_0.5,0.5
+0.8429,0.8429,0.8429,0.6857,35,Lung(TS),mLLMCelltype,conservative_0.5,0.5
+0.6429,0.6429,0.6429,0.5143,35,Lung(TS),GPTCelltype,conservative_0.5,0.5
+0.7262,0.7262,0.7262,0.5952,21,Lymph Node(TS),mLLMCelltype,conservative_0.5,0.5
+0.7024,0.7024,0.7024,0.5476,21,Lymph Node(TS),GPTCelltype,conservative_0.5,0.5
+0.7313,0.7313,0.7313,0.5821,67,MCA,mLLMCelltype,conservative_0.5,0.5
+0.597,0.597,0.597,0.5224,67,MCA,GPTCelltype,conservative_0.5,0.5
+0.9808,0.9808,0.9808,0.9615,13,Mammary(TS),mLLMCelltype,conservative_0.5,0.5
+0.75,0.75,0.75,0.6538,13,Mammary(TS),GPTCelltype,conservative_0.5,0.5
+0.7639,0.7639,0.7639,0.5833,18,Muscle(TS),mLLMCelltype,conservative_0.5,0.5
+0.6111,0.6111,0.6111,0.5,18,Muscle(TS),GPTCelltype,conservative_0.5,0.5
+0.8077,0.8077,0.8077,0.6923,13,Pancreas(Azimuth),mLLMCelltype,conservative_0.5,0.5
+0.6538,0.6538,0.6538,0.5385,13,Pancreas(Azimuth),GPTCelltype,conservative_0.5,0.5
+0.9423,0.9423,0.9423,0.8846,13,Pancreas(TS),mLLMCelltype,conservative_0.5,0.5
+0.8654,0.8654,0.8654,0.7308,13,Pancreas(TS),GPTCelltype,conservative_0.5,0.5
+0.91,0.91,0.91,0.86,25,Prostate(GTEx),mLLMCelltype,conservative_0.5,0.5
+0.6,0.6,0.6,0.48,25,Prostate(GTEx),GPTCelltype,conservative_0.5,0.5
+0.89,0.89,0.89,0.86,25,Prostate(Literature)(GTEx),mLLMCelltype,conservative_0.5,0.5
+0.92,0.92,0.92,0.84,25,Prostate(Literature)(GTEx),GPTCelltype,conservative_0.5,0.5
+0.75,0.75,0.75,0.6667,12,Prostate(TS),mLLMCelltype,conservative_0.5,0.5
+0.625,0.625,0.625,0.5,12,Prostate(TS),GPTCelltype,conservative_0.5,0.5
+0.7841,0.7841,0.7841,0.6591,22,Salivary Gland(TS),mLLMCelltype,conservative_0.5,0.5
+0.5795,0.5795,0.5795,0.4773,22,Salivary Gland(TS),GPTCelltype,conservative_0.5,0.5
+0.96,0.96,0.96,0.92,25,Skeletal Muscle(GTEx),mLLMCelltype,conservative_0.5,0.5
+0.78,0.78,0.78,0.68,25,Skeletal Muscle(GTEx),GPTCelltype,conservative_0.5,0.5
+0.98,0.98,0.98,0.96,25,Skeletal Muscle(Literature)(GTEx),mLLMCelltype,conservative_0.5,0.5
+0.92,0.92,0.92,0.84,25,Skeletal Muscle(Literature)(GTEx),GPTCelltype,conservative_0.5,0.5
+0.8173,0.8173,0.8173,0.7885,26,Skin(GTEx),mLLMCelltype,conservative_0.5,0.5
+0.7885,0.7885,0.7885,0.6923,26,Skin(GTEx),GPTCelltype,conservative_0.5,0.5
+0.8587,0.8587,0.8587,0.8478,23,Skin(Literature)(GTEx),mLLMCelltype,conservative_0.5,0.5
+0.7391,0.7391,0.7391,0.6957,23,Skin(Literature)(GTEx),GPTCelltype,conservative_0.5,0.5
+0.7,0.7,0.7,0.6,15,Small Intestine(TS),mLLMCelltype,conservative_0.5,0.5
+0.4833,0.4833,0.4833,0.3667,15,Small Intestine(TS),GPTCelltype,conservative_0.5,0.5
+0.6786,0.6786,0.6786,0.5952,21,Spleen(TS),mLLMCelltype,conservative_0.5,0.5
+0.6667,0.6667,0.6667,0.5238,21,Spleen(TS),GPTCelltype,conservative_0.5,0.5
+0.925,0.925,0.925,0.85,20,Thymus(TS),mLLMCelltype,conservative_0.5,0.5
+0.7375,0.7375,0.7375,0.575,20,Thymus(TS),GPTCelltype,conservative_0.5,0.5
+0.85,0.85,0.85,0.7,10,Tongue(TS),mLLMCelltype,conservative_0.5,0.5
+0.7,0.7,0.7,0.6,10,Tongue(TS),GPTCelltype,conservative_0.5,0.5
+0.7857,0.7857,0.7857,0.6429,42,Tonsil(Azimuth),mLLMCelltype,conservative_0.5,0.5
+0.631,0.631,0.631,0.4524,42,Tonsil(Azimuth),GPTCelltype,conservative_0.5,0.5
+0.8824,0.8824,0.8824,0.8235,17,Trachea(TS),mLLMCelltype,conservative_0.5,0.5
+0.6912,0.6912,0.6912,0.6176,17,Trachea(TS),GPTCelltype,conservative_0.5,0.5
+0.9583,0.9583,0.9583,0.9167,12,Uterus(TS),mLLMCelltype,conservative_0.5,0.5
+0.7708,0.7708,0.7708,0.7083,12,Uterus(TS),GPTCelltype,conservative_0.5,0.5
+0.9808,0.9808,0.9808,0.9615,13,Vasculature(TS),mLLMCelltype,conservative_0.5,0.5
+0.9808,0.9808,0.9808,0.9615,13,Vasculature(TS),GPTCelltype,conservative_0.5,0.5
+0.8983,0.8983,0.8983,0.8644,59,esophagus(Literature (GTEx)),mLLMCelltype,conservative_0.5,0.5
+0.8941,0.8941,0.8941,0.822,59,esophagus(Literature (GTEx)),GPTCelltype,conservative_0.5,0.5
+0.9125,0.9125,0.9125,0.875,16,Adipose(Azimuth),mLLMCelltype,moderate_0.6,0.6
+0.85,0.85,0.85,0.8125,16,Adipose(Azimuth),GPTCelltype,moderate_0.6,0.6
+0.9097,0.9097,0.9097,0.871,31,BCL(Cancer),mLLMCelltype,moderate_0.6,0.6
+0.7935,0.7935,0.7935,0.7742,31,BCL(Cancer),GPTCelltype,moderate_0.6,0.6
+0.9286,0.9286,0.9286,0.8214,14,Bladder(TS),mLLMCelltype,moderate_0.6,0.6
+0.8286,0.8286,0.8286,0.6786,14,Bladder(TS),GPTCelltype,moderate_0.6,0.6
+0.7375,0.7375,0.7375,0.5312,16,Blood(TS),mLLMCelltype,moderate_0.6,0.6
+0.65,0.65,0.65,0.5,16,Blood(TS),GPTCelltype,moderate_0.6,0.6
+0.81,0.81,0.81,0.5625,40,Bone Marrow(Azimuth),mLLMCelltype,moderate_0.6,0.6
+0.62,0.62,0.62,0.425,40,Bone Marrow(Azimuth),GPTCelltype,moderate_0.6,0.6
+0.9231,0.9231,0.9231,0.8077,13,Bone Marrow(TS),mLLMCelltype,moderate_0.6,0.6
+0.7385,0.7385,0.7385,0.5769,13,Bone Marrow(TS),GPTCelltype,moderate_0.6,0.6
+0.9778,0.9778,0.9778,0.9444,18,Breast(GTEx),mLLMCelltype,moderate_0.6,0.6
+0.8667,0.8667,0.8667,0.6667,18,Breast(GTEx),GPTCelltype,moderate_0.6,0.6
+0.9778,0.9778,0.9778,0.9444,18,Breast(Literature)(GTEx),mLLMCelltype,moderate_0.6,0.6
+0.9556,0.9556,0.9556,0.8889,18,Breast(Literature)(GTEx),GPTCelltype,moderate_0.6,0.6
+0.9241,0.9241,0.9241,0.8621,29,Colon(Cancer),mLLMCelltype,moderate_0.6,0.6
+0.9379,0.9379,0.9379,0.8448,29,Colon(Cancer),GPTCelltype,moderate_0.6,0.6
+0.939,0.939,0.939,0.8729,59,Esophagus(GTEx),mLLMCelltype,moderate_0.6,0.6
+0.6576,0.6576,0.6576,0.5254,59,Esophagus(GTEx),GPTCelltype,moderate_0.6,0.6
+0.6615,0.6615,0.6615,0.5577,26,Eye(TS),mLLMCelltype,moderate_0.6,0.6
+0.5231,0.5231,0.5231,0.4423,26,Eye(TS),GPTCelltype,moderate_0.6,0.6
+0.8727,0.8727,0.8727,0.8182,11,Fat(TS),mLLMCelltype,moderate_0.6,0.6
+0.6182,0.6182,0.6182,0.5909,11,Fat(TS),GPTCelltype,moderate_0.6,0.6
+0.639,0.639,0.639,0.4675,77,Fetal Development(Azimuth),mLLMCelltype,moderate_0.6,0.6
+0.5377,0.5377,0.5377,0.3701,77,Fetal Development(Azimuth),GPTCelltype,moderate_0.6,0.6
+0.6508,0.6508,0.6508,0.5794,63,HCL,mLLMCelltype,moderate_0.6,0.6
+0.5714,0.5714,0.5714,0.4762,63,HCL,GPTCelltype,moderate_0.6,0.6
+0.9385,0.9385,0.9385,0.8462,13,Heart(Azimuth),mLLMCelltype,moderate_0.6,0.6
+0.7077,0.7077,0.7077,0.6154,13,Heart(Azimuth),GPTCelltype,moderate_0.6,0.6
+0.9917,0.9917,0.9917,0.9792,24,Heart(GTEx),mLLMCelltype,moderate_0.6,0.6
+0.7417,0.7417,0.7417,0.6667,24,Heart(GTEx),GPTCelltype,moderate_0.6,0.6
+0.9417,0.9417,0.9417,0.9167,24,Heart(Literature)(GTEx),mLLMCelltype,moderate_0.6,0.6
+0.9167,0.9167,0.9167,0.7917,24,Heart(Literature)(GTEx),GPTCelltype,moderate_0.6,0.6
+0.7625,0.7625,0.7625,0.5938,16,Kidney(Azimuth),mLLMCelltype,moderate_0.6,0.6
+0.65,0.65,0.65,0.5,16,Kidney(Azimuth),GPTCelltype,moderate_0.6,0.6
+0.7067,0.7067,0.7067,0.6667,15,Large Intestine(TS),mLLMCelltype,moderate_0.6,0.6
+0.52,0.52,0.52,0.4,15,Large Intestine(TS),GPTCelltype,moderate_0.6,0.6
+0.8957,0.8957,0.8957,0.7391,23,Liver(Azimuth),mLLMCelltype,moderate_0.6,0.6
+0.7043,0.7043,0.7043,0.587,23,Liver(Azimuth),GPTCelltype,moderate_0.6,0.6
+0.9273,0.9273,0.9273,0.8182,11,Liver(TS),mLLMCelltype,moderate_0.6,0.6
+0.7091,0.7091,0.7091,0.5455,11,Liver(TS),GPTCelltype,moderate_0.6,0.6
+0.86,0.86,0.86,0.65,10,Lung(Azimuth),mLLMCelltype,moderate_0.6,0.6
+0.62,0.62,0.62,0.5,10,Lung(Azimuth),GPTCelltype,moderate_0.6,0.6
+0.8821,0.8821,0.8821,0.859,39,Lung(Cancer),mLLMCelltype,moderate_0.6,0.6
+0.9385,0.9385,0.9385,0.8462,39,Lung(Cancer),GPTCelltype,moderate_0.6,0.6
+0.913,0.913,0.913,0.8478,23,Lung(GTEx),mLLMCelltype,moderate_0.6,0.6
+0.6783,0.6783,0.6783,0.5217,23,Lung(GTEx),GPTCelltype,moderate_0.6,0.6
+0.9565,0.9565,0.9565,0.8913,23,Lung(Literature)(GTEx),mLLMCelltype,moderate_0.6,0.6
+0.7652,0.7652,0.7652,0.7391,23,Lung(Literature)(GTEx),GPTCelltype,moderate_0.6,0.6
+0.8743,0.8743,0.8743,0.6857,35,Lung(TS),mLLMCelltype,moderate_0.6,0.6
+0.6686,0.6686,0.6686,0.5143,35,Lung(TS),GPTCelltype,moderate_0.6,0.6
+0.7524,0.7524,0.7524,0.5952,21,Lymph Node(TS),mLLMCelltype,moderate_0.6,0.6
+0.7333,0.7333,0.7333,0.5476,21,Lymph Node(TS),GPTCelltype,moderate_0.6,0.6
+0.7612,0.7612,0.7612,0.5821,67,MCA,mLLMCelltype,moderate_0.6,0.6
+0.6119,0.6119,0.6119,0.5224,67,MCA,GPTCelltype,moderate_0.6,0.6
+0.9846,0.9846,0.9846,0.9615,13,Mammary(TS),mLLMCelltype,moderate_0.6,0.6
+0.7692,0.7692,0.7692,0.6538,13,Mammary(TS),GPTCelltype,moderate_0.6,0.6
+0.8,0.8,0.8,0.5833,18,Muscle(TS),mLLMCelltype,moderate_0.6,0.6
+0.6333,0.6333,0.6333,0.5,18,Muscle(TS),GPTCelltype,moderate_0.6,0.6
+0.8308,0.8308,0.8308,0.6923,13,Pancreas(Azimuth),mLLMCelltype,moderate_0.6,0.6
+0.6769,0.6769,0.6769,0.5385,13,Pancreas(Azimuth),GPTCelltype,moderate_0.6,0.6
+0.9538,0.9538,0.9538,0.8846,13,Pancreas(TS),mLLMCelltype,moderate_0.6,0.6
+0.8923,0.8923,0.8923,0.7308,13,Pancreas(TS),GPTCelltype,moderate_0.6,0.6
+0.92,0.92,0.92,0.86,25,Prostate(GTEx),mLLMCelltype,moderate_0.6,0.6
+0.624,0.624,0.624,0.48,25,Prostate(GTEx),GPTCelltype,moderate_0.6,0.6
+0.896,0.896,0.896,0.86,25,Prostate(Literature)(GTEx),mLLMCelltype,moderate_0.6,0.6
+0.936,0.936,0.936,0.84,25,Prostate(Literature)(GTEx),GPTCelltype,moderate_0.6,0.6
+0.7667,0.7667,0.7667,0.6667,12,Prostate(TS),mLLMCelltype,moderate_0.6,0.6
+0.65,0.65,0.65,0.5,12,Prostate(TS),GPTCelltype,moderate_0.6,0.6
+0.8091,0.8091,0.8091,0.6591,22,Salivary Gland(TS),mLLMCelltype,moderate_0.6,0.6
+0.6,0.6,0.6,0.4773,22,Salivary Gland(TS),GPTCelltype,moderate_0.6,0.6
+0.968,0.968,0.968,0.92,25,Skeletal Muscle(GTEx),mLLMCelltype,moderate_0.6,0.6
+0.8,0.8,0.8,0.68,25,Skeletal Muscle(GTEx),GPTCelltype,moderate_0.6,0.6
+0.984,0.984,0.984,0.96,25,Skeletal Muscle(Literature)(GTEx),mLLMCelltype,moderate_0.6,0.6
+0.936,0.936,0.936,0.84,25,Skeletal Muscle(Literature)(GTEx),GPTCelltype,moderate_0.6,0.6
+0.8231,0.8231,0.8231,0.7885,26,Skin(GTEx),mLLMCelltype,moderate_0.6,0.6
+0.8077,0.8077,0.8077,0.6923,26,Skin(GTEx),GPTCelltype,moderate_0.6,0.6
+0.8609,0.8609,0.8609,0.8478,23,Skin(Literature)(GTEx),mLLMCelltype,moderate_0.6,0.6
+0.7478,0.7478,0.7478,0.6957,23,Skin(Literature)(GTEx),GPTCelltype,moderate_0.6,0.6
+0.72,0.72,0.72,0.6,15,Small Intestine(TS),mLLMCelltype,moderate_0.6,0.6
+0.5067,0.5067,0.5067,0.3667,15,Small Intestine(TS),GPTCelltype,moderate_0.6,0.6
+0.6952,0.6952,0.6952,0.5952,21,Spleen(TS),mLLMCelltype,moderate_0.6,0.6
+0.6952,0.6952,0.6952,0.5238,21,Spleen(TS),GPTCelltype,moderate_0.6,0.6
+0.94,0.94,0.94,0.85,20,Thymus(TS),mLLMCelltype,moderate_0.6,0.6
+0.77,0.77,0.77,0.575,20,Thymus(TS),GPTCelltype,moderate_0.6,0.6
+0.88,0.88,0.88,0.7,10,Tongue(TS),mLLMCelltype,moderate_0.6,0.6
+0.72,0.72,0.72,0.6,10,Tongue(TS),GPTCelltype,moderate_0.6,0.6
+0.8143,0.8143,0.8143,0.6429,42,Tonsil(Azimuth),mLLMCelltype,moderate_0.6,0.6
+0.6667,0.6667,0.6667,0.4524,42,Tonsil(Azimuth),GPTCelltype,moderate_0.6,0.6
+0.8941,0.8941,0.8941,0.8235,17,Trachea(TS),mLLMCelltype,moderate_0.6,0.6
+0.7059,0.7059,0.7059,0.6176,17,Trachea(TS),GPTCelltype,moderate_0.6,0.6
+0.9667,0.9667,0.9667,0.9167,12,Uterus(TS),mLLMCelltype,moderate_0.6,0.6
+0.7833,0.7833,0.7833,0.7083,12,Uterus(TS),GPTCelltype,moderate_0.6,0.6
+0.9846,0.9846,0.9846,0.9615,13,Vasculature(TS),mLLMCelltype,moderate_0.6,0.6
+0.9846,0.9846,0.9846,0.9615,13,Vasculature(TS),GPTCelltype,moderate_0.6,0.6
+0.9051,0.9051,0.9051,0.8644,59,esophagus(Literature (GTEx)),mLLMCelltype,moderate_0.6,0.6
+0.9085,0.9085,0.9085,0.822,59,esophagus(Literature (GTEx)),GPTCelltype,moderate_0.6,0.6
+0.9187,0.9187,0.9187,0.875,16,Adipose(Azimuth),mLLMCelltype,default_0.7,0.7
+0.8562,0.8562,0.8562,0.8125,16,Adipose(Azimuth),GPTCelltype,default_0.7,0.7
+0.9161,0.9161,0.9161,0.871,31,BCL(Cancer),mLLMCelltype,default_0.7,0.7
+0.7968,0.7968,0.7968,0.7742,31,BCL(Cancer),GPTCelltype,default_0.7,0.7
+0.9464,0.9464,0.9464,0.8214,14,Bladder(TS),mLLMCelltype,default_0.7,0.7
+0.8536,0.8536,0.8536,0.6786,14,Bladder(TS),GPTCelltype,default_0.7,0.7
+0.7719,0.7719,0.7719,0.5312,16,Blood(TS),mLLMCelltype,default_0.7,0.7
+0.675,0.675,0.675,0.5,16,Blood(TS),GPTCelltype,default_0.7,0.7
+0.8512,0.8512,0.8512,0.5625,40,Bone Marrow(Azimuth),mLLMCelltype,default_0.7,0.7
+0.6525,0.6525,0.6525,0.425,40,Bone Marrow(Azimuth),GPTCelltype,default_0.7,0.7
+0.9423,0.9423,0.9423,0.8077,13,Bone Marrow(TS),mLLMCelltype,default_0.7,0.7
+0.7654,0.7654,0.7654,0.5769,13,Bone Marrow(TS),GPTCelltype,default_0.7,0.7
+0.9833,0.9833,0.9833,0.9444,18,Breast(GTEx),mLLMCelltype,default_0.7,0.7
+0.9,0.9,0.9,0.6667,18,Breast(GTEx),GPTCelltype,default_0.7,0.7
+0.9833,0.9833,0.9833,0.9444,18,Breast(Literature)(GTEx),mLLMCelltype,default_0.7,0.7
+0.9667,0.9667,0.9667,0.8889,18,Breast(Literature)(GTEx),GPTCelltype,default_0.7,0.7
+0.9345,0.9345,0.9345,0.8621,29,Colon(Cancer),mLLMCelltype,default_0.7,0.7
+0.9534,0.9534,0.9534,0.8448,29,Colon(Cancer),GPTCelltype,default_0.7,0.7
+0.95,0.95,0.95,0.8729,59,Esophagus(GTEx),mLLMCelltype,default_0.7,0.7
+0.6797,0.6797,0.6797,0.5254,59,Esophagus(GTEx),GPTCelltype,default_0.7,0.7
+0.6788,0.6788,0.6788,0.5577,26,Eye(TS),mLLMCelltype,default_0.7,0.7
+0.5365,0.5365,0.5365,0.4423,26,Eye(TS),GPTCelltype,default_0.7,0.7
+0.8818,0.8818,0.8818,0.8182,11,Fat(TS),mLLMCelltype,default_0.7,0.7
+0.6227,0.6227,0.6227,0.5909,11,Fat(TS),GPTCelltype,default_0.7,0.7
+0.6675,0.6675,0.6675,0.4675,77,Fetal Development(Azimuth),mLLMCelltype,default_0.7,0.7
+0.5656,0.5656,0.5656,0.3701,77,Fetal Development(Azimuth),GPTCelltype,default_0.7,0.7
+0.6627,0.6627,0.6627,0.5794,63,HCL,mLLMCelltype,default_0.7,0.7
+0.5873,0.5873,0.5873,0.4762,63,HCL,GPTCelltype,default_0.7,0.7
+0.9538,0.9538,0.9538,0.8462,13,Heart(Azimuth),mLLMCelltype,default_0.7,0.7
+0.7231,0.7231,0.7231,0.6154,13,Heart(Azimuth),GPTCelltype,default_0.7,0.7
+0.9938,0.9938,0.9938,0.9792,24,Heart(GTEx),mLLMCelltype,default_0.7,0.7
+0.7542,0.7542,0.7542,0.6667,24,Heart(GTEx),GPTCelltype,default_0.7,0.7
+0.9458,0.9458,0.9458,0.9167,24,Heart(Literature)(GTEx),mLLMCelltype,default_0.7,0.7
+0.9375,0.9375,0.9375,0.7917,24,Heart(Literature)(GTEx),GPTCelltype,default_0.7,0.7
+0.7906,0.7906,0.7906,0.5938,16,Kidney(Azimuth),mLLMCelltype,default_0.7,0.7
+0.675,0.675,0.675,0.5,16,Kidney(Azimuth),GPTCelltype,default_0.7,0.7
+0.7133,0.7133,0.7133,0.6667,15,Large Intestine(TS),mLLMCelltype,default_0.7,0.7
+0.54,0.54,0.54,0.4,15,Large Intestine(TS),GPTCelltype,default_0.7,0.7
+0.9217,0.9217,0.9217,0.7391,23,Liver(Azimuth),mLLMCelltype,default_0.7,0.7
+0.7239,0.7239,0.7239,0.587,23,Liver(Azimuth),GPTCelltype,default_0.7,0.7
+0.9455,0.9455,0.9455,0.8182,11,Liver(TS),mLLMCelltype,default_0.7,0.7
+0.7364,0.7364,0.7364,0.5455,11,Liver(TS),GPTCelltype,default_0.7,0.7
+0.895,0.895,0.895,0.65,10,Lung(Azimuth),mLLMCelltype,default_0.7,0.7
+0.64,0.64,0.64,0.5,10,Lung(Azimuth),GPTCelltype,default_0.7,0.7
+0.8859,0.8859,0.8859,0.859,39,Lung(Cancer),mLLMCelltype,default_0.7,0.7
+0.9538,0.9538,0.9538,0.8462,39,Lung(Cancer),GPTCelltype,default_0.7,0.7
+0.9239,0.9239,0.9239,0.8478,23,Lung(GTEx),mLLMCelltype,default_0.7,0.7
+0.7043,0.7043,0.7043,0.5217,23,Lung(GTEx),GPTCelltype,default_0.7,0.7
+0.9674,0.9674,0.9674,0.8913,23,Lung(Literature)(GTEx),mLLMCelltype,default_0.7,0.7
+0.7696,0.7696,0.7696,0.7391,23,Lung(Literature)(GTEx),GPTCelltype,default_0.7,0.7
+0.9057,0.9057,0.9057,0.6857,35,Lung(TS),mLLMCelltype,default_0.7,0.7
+0.6943,0.6943,0.6943,0.5143,35,Lung(TS),GPTCelltype,default_0.7,0.7
+0.7786,0.7786,0.7786,0.5952,21,Lymph Node(TS),mLLMCelltype,default_0.7,0.7
+0.7643,0.7643,0.7643,0.5476,21,Lymph Node(TS),GPTCelltype,default_0.7,0.7
+0.791,0.791,0.791,0.5821,67,MCA,mLLMCelltype,default_0.7,0.7
+0.6269,0.6269,0.6269,0.5224,67,MCA,GPTCelltype,default_0.7,0.7
+0.9885,0.9885,0.9885,0.9615,13,Mammary(TS),mLLMCelltype,default_0.7,0.7
+0.7885,0.7885,0.7885,0.6538,13,Mammary(TS),GPTCelltype,default_0.7,0.7
+0.8361,0.8361,0.8361,0.5833,18,Muscle(TS),mLLMCelltype,default_0.7,0.7
+0.6556,0.6556,0.6556,0.5,18,Muscle(TS),GPTCelltype,default_0.7,0.7
+0.8538,0.8538,0.8538,0.6923,13,Pancreas(Azimuth),mLLMCelltype,default_0.7,0.7
+0.7,0.7,0.7,0.5385,13,Pancreas(Azimuth),GPTCelltype,default_0.7,0.7
+0.9654,0.9654,0.9654,0.8846,13,Pancreas(TS),mLLMCelltype,default_0.7,0.7
+0.9192,0.9192,0.9192,0.7308,13,Pancreas(TS),GPTCelltype,default_0.7,0.7
+0.93,0.93,0.93,0.86,25,Prostate(GTEx),mLLMCelltype,default_0.7,0.7
+0.648,0.648,0.648,0.48,25,Prostate(GTEx),GPTCelltype,default_0.7,0.7
+0.902,0.902,0.902,0.86,25,Prostate(Literature)(GTEx),mLLMCelltype,default_0.7,0.7
+0.952,0.952,0.952,0.84,25,Prostate(Literature)(GTEx),GPTCelltype,default_0.7,0.7
+0.7833,0.7833,0.7833,0.6667,12,Prostate(TS),mLLMCelltype,default_0.7,0.7
+0.675,0.675,0.675,0.5,12,Prostate(TS),GPTCelltype,default_0.7,0.7
+0.8341,0.8341,0.8341,0.6591,22,Salivary Gland(TS),mLLMCelltype,default_0.7,0.7
+0.6205,0.6205,0.6205,0.4773,22,Salivary Gland(TS),GPTCelltype,default_0.7,0.7
+0.976,0.976,0.976,0.92,25,Skeletal Muscle(GTEx),mLLMCelltype,default_0.7,0.7
+0.82,0.82,0.82,0.68,25,Skeletal Muscle(GTEx),GPTCelltype,default_0.7,0.7
+0.988,0.988,0.988,0.96,25,Skeletal Muscle(Literature)(GTEx),mLLMCelltype,default_0.7,0.7
+0.952,0.952,0.952,0.84,25,Skeletal Muscle(Literature)(GTEx),GPTCelltype,default_0.7,0.7
+0.8288,0.8288,0.8288,0.7885,26,Skin(GTEx),mLLMCelltype,default_0.7,0.7
+0.8269,0.8269,0.8269,0.6923,26,Skin(GTEx),GPTCelltype,default_0.7,0.7
+0.863,0.863,0.863,0.8478,23,Skin(Literature)(GTEx),mLLMCelltype,default_0.7,0.7
+0.7565,0.7565,0.7565,0.6957,23,Skin(Literature)(GTEx),GPTCelltype,default_0.7,0.7
+0.74,0.74,0.74,0.6,15,Small Intestine(TS),mLLMCelltype,default_0.7,0.7
+0.53,0.53,0.53,0.3667,15,Small Intestine(TS),GPTCelltype,default_0.7,0.7
+0.7119,0.7119,0.7119,0.5952,21,Spleen(TS),mLLMCelltype,default_0.7,0.7
+0.7238,0.7238,0.7238,0.5238,21,Spleen(TS),GPTCelltype,default_0.7,0.7
+0.955,0.955,0.955,0.85,20,Thymus(TS),mLLMCelltype,default_0.7,0.7
+0.8025,0.8025,0.8025,0.575,20,Thymus(TS),GPTCelltype,default_0.7,0.7
+0.91,0.91,0.91,0.7,10,Tongue(TS),mLLMCelltype,default_0.7,0.7
+0.74,0.74,0.74,0.6,10,Tongue(TS),GPTCelltype,default_0.7,0.7
+0.8429,0.8429,0.8429,0.6429,42,Tonsil(Azimuth),mLLMCelltype,default_0.7,0.7
+0.7024,0.7024,0.7024,0.4524,42,Tonsil(Azimuth),GPTCelltype,default_0.7,0.7
+0.9059,0.9059,0.9059,0.8235,17,Trachea(TS),mLLMCelltype,default_0.7,0.7
+0.7206,0.7206,0.7206,0.6176,17,Trachea(TS),GPTCelltype,default_0.7,0.7
+0.975,0.975,0.975,0.9167,12,Uterus(TS),mLLMCelltype,default_0.7,0.7
+0.7958,0.7958,0.7958,0.7083,12,Uterus(TS),GPTCelltype,default_0.7,0.7
+0.9885,0.9885,0.9885,0.9615,13,Vasculature(TS),mLLMCelltype,default_0.7,0.7
+0.9885,0.9885,0.9885,0.9615,13,Vasculature(TS),GPTCelltype,default_0.7,0.7
+0.9119,0.9119,0.9119,0.8644,59,esophagus(Literature (GTEx)),mLLMCelltype,default_0.7,0.7
+0.9229,0.9229,0.9229,0.822,59,esophagus(Literature (GTEx)),GPTCelltype,default_0.7,0.7
+0.925,0.925,0.925,0.875,16,Adipose(Azimuth),mLLMCelltype,generous_0.8,0.8
+0.8625,0.8625,0.8625,0.8125,16,Adipose(Azimuth),GPTCelltype,generous_0.8,0.8
+0.9226,0.9226,0.9226,0.871,31,BCL(Cancer),mLLMCelltype,generous_0.8,0.8
+0.8,0.8,0.8,0.7742,31,BCL(Cancer),GPTCelltype,generous_0.8,0.8
+0.9643,0.9643,0.9643,0.8214,14,Bladder(TS),mLLMCelltype,generous_0.8,0.8
+0.8786,0.8786,0.8786,0.6786,14,Bladder(TS),GPTCelltype,generous_0.8,0.8
+0.8063,0.8063,0.8062,0.5312,16,Blood(TS),mLLMCelltype,generous_0.8,0.8
+0.7,0.7,0.7,0.5,16,Blood(TS),GPTCelltype,generous_0.8,0.8
+0.8925,0.8925,0.8925,0.5625,40,Bone Marrow(Azimuth),mLLMCelltype,generous_0.8,0.8
+0.685,0.685,0.685,0.425,40,Bone Marrow(Azimuth),GPTCelltype,generous_0.8,0.8
+0.9615,0.9615,0.9615,0.8077,13,Bone Marrow(TS),mLLMCelltype,generous_0.8,0.8
+0.7923,0.7923,0.7923,0.5769,13,Bone Marrow(TS),GPTCelltype,generous_0.8,0.8
+0.9889,0.9889,0.9889,0.9444,18,Breast(GTEx),mLLMCelltype,generous_0.8,0.8
+0.9333,0.9333,0.9333,0.6667,18,Breast(GTEx),GPTCelltype,generous_0.8,0.8
+0.9889,0.9889,0.9889,0.9444,18,Breast(Literature)(GTEx),mLLMCelltype,generous_0.8,0.8
+0.9778,0.9778,0.9778,0.8889,18,Breast(Literature)(GTEx),GPTCelltype,generous_0.8,0.8
+0.9448,0.9448,0.9448,0.8621,29,Colon(Cancer),mLLMCelltype,generous_0.8,0.8
+0.969,0.969,0.969,0.8448,29,Colon(Cancer),GPTCelltype,generous_0.8,0.8
+0.961,0.961,0.961,0.8729,59,Esophagus(GTEx),mLLMCelltype,generous_0.8,0.8
+0.7017,0.7017,0.7017,0.5254,59,Esophagus(GTEx),GPTCelltype,generous_0.8,0.8
+0.6962,0.6962,0.6962,0.5577,26,Eye(TS),mLLMCelltype,generous_0.8,0.8
+0.55,0.55,0.55,0.4423,26,Eye(TS),GPTCelltype,generous_0.8,0.8
+0.8909,0.8909,0.8909,0.8182,11,Fat(TS),mLLMCelltype,generous_0.8,0.8
+0.6273,0.6273,0.6273,0.5909,11,Fat(TS),GPTCelltype,generous_0.8,0.8
+0.6961,0.6961,0.6961,0.4675,77,Fetal Development(Azimuth),mLLMCelltype,generous_0.8,0.8
+0.5935,0.5935,0.5935,0.3701,77,Fetal Development(Azimuth),GPTCelltype,generous_0.8,0.8
+0.6746,0.6746,0.6746,0.5794,63,HCL,mLLMCelltype,generous_0.8,0.8
+0.6032,0.6032,0.6032,0.4762,63,HCL,GPTCelltype,generous_0.8,0.8
+0.9692,0.9692,0.9692,0.8462,13,Heart(Azimuth),mLLMCelltype,generous_0.8,0.8
+0.7385,0.7385,0.7385,0.6154,13,Heart(Azimuth),GPTCelltype,generous_0.8,0.8
+0.9958,0.9958,0.9958,0.9792,24,Heart(GTEx),mLLMCelltype,generous_0.8,0.8
+0.7667,0.7667,0.7667,0.6667,24,Heart(GTEx),GPTCelltype,generous_0.8,0.8
+0.95,0.95,0.95,0.9167,24,Heart(Literature)(GTEx),mLLMCelltype,generous_0.8,0.8
+0.9583,0.9583,0.9583,0.7917,24,Heart(Literature)(GTEx),GPTCelltype,generous_0.8,0.8
+0.8187,0.8187,0.8187,0.5938,16,Kidney(Azimuth),mLLMCelltype,generous_0.8,0.8
+0.7,0.7,0.7,0.5,16,Kidney(Azimuth),GPTCelltype,generous_0.8,0.8
+0.72,0.72,0.72,0.6667,15,Large Intestine(TS),mLLMCelltype,generous_0.8,0.8
+0.56,0.56,0.56,0.4,15,Large Intestine(TS),GPTCelltype,generous_0.8,0.8
+0.9478,0.9478,0.9478,0.7391,23,Liver(Azimuth),mLLMCelltype,generous_0.8,0.8
+0.7435,0.7435,0.7435,0.587,23,Liver(Azimuth),GPTCelltype,generous_0.8,0.8
+0.9636,0.9636,0.9636,0.8182,11,Liver(TS),mLLMCelltype,generous_0.8,0.8
+0.7636,0.7636,0.7636,0.5455,11,Liver(TS),GPTCelltype,generous_0.8,0.8
+0.93,0.93,0.93,0.65,10,Lung(Azimuth),mLLMCelltype,generous_0.8,0.8
+0.66,0.66,0.66,0.5,10,Lung(Azimuth),GPTCelltype,generous_0.8,0.8
+0.8897,0.8897,0.8897,0.859,39,Lung(Cancer),mLLMCelltype,generous_0.8,0.8
+0.9692,0.9692,0.9692,0.8462,39,Lung(Cancer),GPTCelltype,generous_0.8,0.8
+0.9348,0.9348,0.9348,0.8478,23,Lung(GTEx),mLLMCelltype,generous_0.8,0.8
+0.7304,0.7304,0.7304,0.5217,23,Lung(GTEx),GPTCelltype,generous_0.8,0.8
+0.9783,0.9783,0.9783,0.8913,23,Lung(Literature)(GTEx),mLLMCelltype,generous_0.8,0.8
+0.7739,0.7739,0.7739,0.7391,23,Lung(Literature)(GTEx),GPTCelltype,generous_0.8,0.8
+0.9371,0.9371,0.9371,0.6857,35,Lung(TS),mLLMCelltype,generous_0.8,0.8
+0.72,0.72,0.72,0.5143,35,Lung(TS),GPTCelltype,generous_0.8,0.8
+0.8048,0.8048,0.8048,0.5952,21,Lymph Node(TS),mLLMCelltype,generous_0.8,0.8
+0.7952,0.7952,0.7952,0.5476,21,Lymph Node(TS),GPTCelltype,generous_0.8,0.8
+0.8209,0.8209,0.8209,0.5821,67,MCA,mLLMCelltype,generous_0.8,0.8
+0.6418,0.6418,0.6418,0.5224,67,MCA,GPTCelltype,generous_0.8,0.8
+0.9923,0.9923,0.9923,0.9615,13,Mammary(TS),mLLMCelltype,generous_0.8,0.8
+0.8077,0.8077,0.8077,0.6538,13,Mammary(TS),GPTCelltype,generous_0.8,0.8
+0.8722,0.8722,0.8722,0.5833,18,Muscle(TS),mLLMCelltype,generous_0.8,0.8
+0.6778,0.6778,0.6778,0.5,18,Muscle(TS),GPTCelltype,generous_0.8,0.8
+0.8769,0.8769,0.8769,0.6923,13,Pancreas(Azimuth),mLLMCelltype,generous_0.8,0.8
+0.7231,0.7231,0.7231,0.5385,13,Pancreas(Azimuth),GPTCelltype,generous_0.8,0.8
+0.9769,0.9769,0.9769,0.8846,13,Pancreas(TS),mLLMCelltype,generous_0.8,0.8
+0.9462,0.9462,0.9462,0.7308,13,Pancreas(TS),GPTCelltype,generous_0.8,0.8
+0.94,0.94,0.94,0.86,25,Prostate(GTEx),mLLMCelltype,generous_0.8,0.8
+0.672,0.672,0.672,0.48,25,Prostate(GTEx),GPTCelltype,generous_0.8,0.8
+0.908,0.908,0.908,0.86,25,Prostate(Literature)(GTEx),mLLMCelltype,generous_0.8,0.8
+0.968,0.968,0.968,0.84,25,Prostate(Literature)(GTEx),GPTCelltype,generous_0.8,0.8
+0.8,0.8,0.8,0.6667,12,Prostate(TS),mLLMCelltype,generous_0.8,0.8
+0.7,0.7,0.7,0.5,12,Prostate(TS),GPTCelltype,generous_0.8,0.8
+0.8591,0.8591,0.8591,0.6591,22,Salivary Gland(TS),mLLMCelltype,generous_0.8,0.8
+0.6409,0.6409,0.6409,0.4773,22,Salivary Gland(TS),GPTCelltype,generous_0.8,0.8
+0.984,0.984,0.984,0.92,25,Skeletal Muscle(GTEx),mLLMCelltype,generous_0.8,0.8
+0.84,0.84,0.84,0.68,25,Skeletal Muscle(GTEx),GPTCelltype,generous_0.8,0.8
+0.992,0.992,0.992,0.96,25,Skeletal Muscle(Literature)(GTEx),mLLMCelltype,generous_0.8,0.8
+0.968,0.968,0.968,0.84,25,Skeletal Muscle(Literature)(GTEx),GPTCelltype,generous_0.8,0.8
+0.8346,0.8346,0.8346,0.7885,26,Skin(GTEx),mLLMCelltype,generous_0.8,0.8
+0.8462,0.8462,0.8462,0.6923,26,Skin(GTEx),GPTCelltype,generous_0.8,0.8
+0.8652,0.8652,0.8652,0.8478,23,Skin(Literature)(GTEx),mLLMCelltype,generous_0.8,0.8
+0.7652,0.7652,0.7652,0.6957,23,Skin(Literature)(GTEx),GPTCelltype,generous_0.8,0.8
+0.76,0.76,0.76,0.6,15,Small Intestine(TS),mLLMCelltype,generous_0.8,0.8
+0.5533,0.5533,0.5533,0.3667,15,Small Intestine(TS),GPTCelltype,generous_0.8,0.8
+0.7286,0.7286,0.7286,0.5952,21,Spleen(TS),mLLMCelltype,generous_0.8,0.8
+0.7524,0.7524,0.7524,0.5238,21,Spleen(TS),GPTCelltype,generous_0.8,0.8
+0.97,0.97,0.97,0.85,20,Thymus(TS),mLLMCelltype,generous_0.8,0.8
+0.835,0.835,0.835,0.575,20,Thymus(TS),GPTCelltype,generous_0.8,0.8
+0.94,0.94,0.94,0.7,10,Tongue(TS),mLLMCelltype,generous_0.8,0.8
+0.76,0.76,0.76,0.6,10,Tongue(TS),GPTCelltype,generous_0.8,0.8
+0.8714,0.8714,0.8714,0.6429,42,Tonsil(Azimuth),mLLMCelltype,generous_0.8,0.8
+0.7381,0.7381,0.7381,0.4524,42,Tonsil(Azimuth),GPTCelltype,generous_0.8,0.8
+0.9176,0.9176,0.9176,0.8235,17,Trachea(TS),mLLMCelltype,generous_0.8,0.8
+0.7353,0.7353,0.7353,0.6176,17,Trachea(TS),GPTCelltype,generous_0.8,0.8
+0.9833,0.9833,0.9833,0.9167,12,Uterus(TS),mLLMCelltype,generous_0.8,0.8
+0.8083,0.8083,0.8083,0.7083,12,Uterus(TS),GPTCelltype,generous_0.8,0.8
+0.9923,0.9923,0.9923,0.9615,13,Vasculature(TS),mLLMCelltype,generous_0.8,0.8
+0.9923,0.9923,0.9923,0.9615,13,Vasculature(TS),GPTCelltype,generous_0.8,0.8
+0.9186,0.9186,0.9186,0.8644,59,esophagus(Literature (GTEx)),mLLMCelltype,generous_0.8,0.8
+0.9373,0.9373,0.9373,0.822,59,esophagus(Literature (GTEx)),GPTCelltype,generous_0.8,0.8
+0.9313,0.9313,0.9313,0.875,16,Adipose(Azimuth),mLLMCelltype,optimistic_0.9,0.9
+0.8688,0.8688,0.8688,0.8125,16,Adipose(Azimuth),GPTCelltype,optimistic_0.9,0.9
+0.929,0.929,0.929,0.871,31,BCL(Cancer),mLLMCelltype,optimistic_0.9,0.9
+0.8032,0.8032,0.8032,0.7742,31,BCL(Cancer),GPTCelltype,optimistic_0.9,0.9
+0.9821,0.9821,0.9821,0.8214,14,Bladder(TS),mLLMCelltype,optimistic_0.9,0.9
+0.9036,0.9036,0.9036,0.6786,14,Bladder(TS),GPTCelltype,optimistic_0.9,0.9
+0.8406,0.8406,0.8406,0.5312,16,Blood(TS),mLLMCelltype,optimistic_0.9,0.9
+0.725,0.725,0.725,0.5,16,Blood(TS),GPTCelltype,optimistic_0.9,0.9
+0.9337,0.9337,0.9337,0.5625,40,Bone Marrow(Azimuth),mLLMCelltype,optimistic_0.9,0.9
+0.7175,0.7175,0.7175,0.425,40,Bone Marrow(Azimuth),GPTCelltype,optimistic_0.9,0.9
+0.9808,0.9808,0.9808,0.8077,13,Bone Marrow(TS),mLLMCelltype,optimistic_0.9,0.9
+0.8192,0.8192,0.8192,0.5769,13,Bone Marrow(TS),GPTCelltype,optimistic_0.9,0.9
+0.9944,0.9944,0.9944,0.9444,18,Breast(GTEx),mLLMCelltype,optimistic_0.9,0.9
+0.9667,0.9667,0.9667,0.6667,18,Breast(GTEx),GPTCelltype,optimistic_0.9,0.9
+0.9944,0.9944,0.9944,0.9444,18,Breast(Literature)(GTEx),mLLMCelltype,optimistic_0.9,0.9
+0.9889,0.9889,0.9889,0.8889,18,Breast(Literature)(GTEx),GPTCelltype,optimistic_0.9,0.9
+0.9552,0.9552,0.9552,0.8621,29,Colon(Cancer),mLLMCelltype,optimistic_0.9,0.9
+0.9845,0.9845,0.9845,0.8448,29,Colon(Cancer),GPTCelltype,optimistic_0.9,0.9
+0.972,0.972,0.972,0.8729,59,Esophagus(GTEx),mLLMCelltype,optimistic_0.9,0.9
+0.7237,0.7237,0.7237,0.5254,59,Esophagus(GTEx),GPTCelltype,optimistic_0.9,0.9
+0.7135,0.7135,0.7135,0.5577,26,Eye(TS),mLLMCelltype,optimistic_0.9,0.9
+0.5635,0.5635,0.5635,0.4423,26,Eye(TS),GPTCelltype,optimistic_0.9,0.9
+0.9,0.9,0.9,0.8182,11,Fat(TS),mLLMCelltype,optimistic_0.9,0.9
+0.6318,0.6318,0.6318,0.5909,11,Fat(TS),GPTCelltype,optimistic_0.9,0.9
+0.7247,0.7247,0.7247,0.4675,77,Fetal Development(Azimuth),mLLMCelltype,optimistic_0.9,0.9
+0.6214,0.6214,0.6214,0.3701,77,Fetal Development(Azimuth),GPTCelltype,optimistic_0.9,0.9
+0.6865,0.6865,0.6865,0.5794,63,HCL,mLLMCelltype,optimistic_0.9,0.9
+0.619,0.619,0.619,0.4762,63,HCL,GPTCelltype,optimistic_0.9,0.9
+0.9846,0.9846,0.9846,0.8462,13,Heart(Azimuth),mLLMCelltype,optimistic_0.9,0.9
+0.7538,0.7538,0.7538,0.6154,13,Heart(Azimuth),GPTCelltype,optimistic_0.9,0.9
+0.9979,0.9979,0.9979,0.9792,24,Heart(GTEx),mLLMCelltype,optimistic_0.9,0.9
+0.7792,0.7792,0.7792,0.6667,24,Heart(GTEx),GPTCelltype,optimistic_0.9,0.9
+0.9542,0.9542,0.9542,0.9167,24,Heart(Literature)(GTEx),mLLMCelltype,optimistic_0.9,0.9
+0.9792,0.9792,0.9792,0.7917,24,Heart(Literature)(GTEx),GPTCelltype,optimistic_0.9,0.9
+0.8469,0.8469,0.8469,0.5938,16,Kidney(Azimuth),mLLMCelltype,optimistic_0.9,0.9
+0.725,0.725,0.725,0.5,16,Kidney(Azimuth),GPTCelltype,optimistic_0.9,0.9
+0.7267,0.7267,0.7267,0.6667,15,Large Intestine(TS),mLLMCelltype,optimistic_0.9,0.9
+0.58,0.58,0.58,0.4,15,Large Intestine(TS),GPTCelltype,optimistic_0.9,0.9
+0.9739,0.9739,0.9739,0.7391,23,Liver(Azimuth),mLLMCelltype,optimistic_0.9,0.9
+0.763,0.763,0.763,0.587,23,Liver(Azimuth),GPTCelltype,optimistic_0.9,0.9
+0.9818,0.9818,0.9818,0.8182,11,Liver(TS),mLLMCelltype,optimistic_0.9,0.9
+0.7909,0.7909,0.7909,0.5455,11,Liver(TS),GPTCelltype,optimistic_0.9,0.9
+0.965,0.965,0.965,0.65,10,Lung(Azimuth),mLLMCelltype,optimistic_0.9,0.9
+0.68,0.68,0.68,0.5,10,Lung(Azimuth),GPTCelltype,optimistic_0.9,0.9
+0.8936,0.8936,0.8936,0.859,39,Lung(Cancer),mLLMCelltype,optimistic_0.9,0.9
+0.9846,0.9846,0.9846,0.8462,39,Lung(Cancer),GPTCelltype,optimistic_0.9,0.9
+0.9457,0.9457,0.9457,0.8478,23,Lung(GTEx),mLLMCelltype,optimistic_0.9,0.9
+0.7565,0.7565,0.7565,0.5217,23,Lung(GTEx),GPTCelltype,optimistic_0.9,0.9
+0.9891,0.9891,0.9891,0.8913,23,Lung(Literature)(GTEx),mLLMCelltype,optimistic_0.9,0.9
+0.7783,0.7783,0.7783,0.7391,23,Lung(Literature)(GTEx),GPTCelltype,optimistic_0.9,0.9
+0.9686,0.9686,0.9686,0.6857,35,Lung(TS),mLLMCelltype,optimistic_0.9,0.9
+0.7457,0.7457,0.7457,0.5143,35,Lung(TS),GPTCelltype,optimistic_0.9,0.9
+0.831,0.831,0.831,0.5952,21,Lymph Node(TS),mLLMCelltype,optimistic_0.9,0.9
+0.8262,0.8262,0.8262,0.5476,21,Lymph Node(TS),GPTCelltype,optimistic_0.9,0.9
+0.8507,0.8507,0.8507,0.5821,67,MCA,mLLMCelltype,optimistic_0.9,0.9
+0.6567,0.6567,0.6567,0.5224,67,MCA,GPTCelltype,optimistic_0.9,0.9
+0.9962,0.9962,0.9962,0.9615,13,Mammary(TS),mLLMCelltype,optimistic_0.9,0.9
+0.8269,0.8269,0.8269,0.6538,13,Mammary(TS),GPTCelltype,optimistic_0.9,0.9
+0.9083,0.9083,0.9083,0.5833,18,Muscle(TS),mLLMCelltype,optimistic_0.9,0.9
+0.7,0.7,0.7,0.5,18,Muscle(TS),GPTCelltype,optimistic_0.9,0.9
+0.9,0.9,0.9,0.6923,13,Pancreas(Azimuth),mLLMCelltype,optimistic_0.9,0.9
+0.7462,0.7462,0.7462,0.5385,13,Pancreas(Azimuth),GPTCelltype,optimistic_0.9,0.9
+0.9885,0.9885,0.9885,0.8846,13,Pancreas(TS),mLLMCelltype,optimistic_0.9,0.9
+0.9731,0.9731,0.9731,0.7308,13,Pancreas(TS),GPTCelltype,optimistic_0.9,0.9
+0.95,0.95,0.95,0.86,25,Prostate(GTEx),mLLMCelltype,optimistic_0.9,0.9
+0.696,0.696,0.696,0.48,25,Prostate(GTEx),GPTCelltype,optimistic_0.9,0.9
+0.914,0.914,0.914,0.86,25,Prostate(Literature)(GTEx),mLLMCelltype,optimistic_0.9,0.9
+0.984,0.984,0.984,0.84,25,Prostate(Literature)(GTEx),GPTCelltype,optimistic_0.9,0.9
+0.8167,0.8167,0.8167,0.6667,12,Prostate(TS),mLLMCelltype,optimistic_0.9,0.9
+0.725,0.725,0.725,0.5,12,Prostate(TS),GPTCelltype,optimistic_0.9,0.9
+0.8841,0.8841,0.8841,0.6591,22,Salivary Gland(TS),mLLMCelltype,optimistic_0.9,0.9
+0.6614,0.6614,0.6614,0.4773,22,Salivary Gland(TS),GPTCelltype,optimistic_0.9,0.9
+0.992,0.992,0.992,0.92,25,Skeletal Muscle(GTEx),mLLMCelltype,optimistic_0.9,0.9
+0.86,0.86,0.86,0.68,25,Skeletal Muscle(GTEx),GPTCelltype,optimistic_0.9,0.9
+0.996,0.996,0.996,0.96,25,Skeletal Muscle(Literature)(GTEx),mLLMCelltype,optimistic_0.9,0.9
+0.984,0.984,0.984,0.84,25,Skeletal Muscle(Literature)(GTEx),GPTCelltype,optimistic_0.9,0.9
+0.8404,0.8404,0.8404,0.7885,26,Skin(GTEx),mLLMCelltype,optimistic_0.9,0.9
+0.8654,0.8654,0.8654,0.6923,26,Skin(GTEx),GPTCelltype,optimistic_0.9,0.9
+0.8674,0.8674,0.8674,0.8478,23,Skin(Literature)(GTEx),mLLMCelltype,optimistic_0.9,0.9
+0.7739,0.7739,0.7739,0.6957,23,Skin(Literature)(GTEx),GPTCelltype,optimistic_0.9,0.9
+0.78,0.78,0.78,0.6,15,Small Intestine(TS),mLLMCelltype,optimistic_0.9,0.9
+0.5767,0.5767,0.5767,0.3667,15,Small Intestine(TS),GPTCelltype,optimistic_0.9,0.9
+0.7452,0.7452,0.7452,0.5952,21,Spleen(TS),mLLMCelltype,optimistic_0.9,0.9
+0.781,0.781,0.781,0.5238,21,Spleen(TS),GPTCelltype,optimistic_0.9,0.9
+0.985,0.985,0.985,0.85,20,Thymus(TS),mLLMCelltype,optimistic_0.9,0.9
+0.8675,0.8675,0.8675,0.575,20,Thymus(TS),GPTCelltype,optimistic_0.9,0.9
+0.97,0.97,0.97,0.7,10,Tongue(TS),mLLMCelltype,optimistic_0.9,0.9
+0.78,0.78,0.78,0.6,10,Tongue(TS),GPTCelltype,optimistic_0.9,0.9
+0.9,0.9,0.9,0.6429,42,Tonsil(Azimuth),mLLMCelltype,optimistic_0.9,0.9
+0.7738,0.7738,0.7738,0.4524,42,Tonsil(Azimuth),GPTCelltype,optimistic_0.9,0.9
+0.9294,0.9294,0.9294,0.8235,17,Trachea(TS),mLLMCelltype,optimistic_0.9,0.9
+0.75,0.75,0.75,0.6176,17,Trachea(TS),GPTCelltype,optimistic_0.9,0.9
+0.9917,0.9917,0.9917,0.9167,12,Uterus(TS),mLLMCelltype,optimistic_0.9,0.9
+0.8208,0.8208,0.8208,0.7083,12,Uterus(TS),GPTCelltype,optimistic_0.9,0.9
+0.9962,0.9962,0.9962,0.9615,13,Vasculature(TS),mLLMCelltype,optimistic_0.9,0.9
+0.9962,0.9962,0.9962,0.9615,13,Vasculature(TS),GPTCelltype,optimistic_0.9,0.9
+0.9254,0.9254,0.9254,0.8644,59,esophagus(Literature (GTEx)),mLLMCelltype,optimistic_0.9,0.9
+0.9517,0.9517,0.9517,0.822,59,esophagus(Literature (GTEx)),GPTCelltype,optimistic_0.9,0.9

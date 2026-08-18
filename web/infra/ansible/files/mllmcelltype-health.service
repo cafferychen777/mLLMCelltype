@@ -1,0 +1,8 @@
+[Unit]
+Description=Verify mLLMCelltype application health
+After=docker.service
+Requires=docker.service
+
+[Service]
+Type=oneshot
+ExecStart=/usr/local/sbin/check-mllmcelltype

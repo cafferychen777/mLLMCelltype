@@ -1,0 +1,118 @@
+# Build an immutable release and deploy it through the scoped VPS command.
+name: Deploy to VPS
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "web/**"
+      - ".github/workflows/web-deploy-vps.yml"
+  pull_request:
+    branches: [main]
+    paths:
+      - "web/**"
+      - ".github/workflows/web-deploy-vps.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: production-vps
+  cancel-in-progress: false
+
+jobs:
+  quality:
+    name: Test and lint
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    steps:
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+      - uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405 # v6.2.0
+        with:
+          python-version: "3.11"
+          cache: pip
+          cache-dependency-path: web/requirements-dev.lock
+      - name: Install locked dependencies
+        run: python -m pip install --require-hashes -r web/requirements-dev.lock
+      - name: Run quality checks
+        run: make -C web check
+
+  deploy:
+    name: Build and deploy immutable release
+    if: github.event_name != 'pull_request'
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    needs: quality
+
+    steps:
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+
+      - name: Build release bundle
+        working-directory: web
+        env:
+          REVISION: ${{ github.sha }}
+        run: |
+          set -euo pipefail
+          build_time=$(git show --no-patch --format=%cI "$REVISION")
+          image="mllmcelltype-web:${REVISION}"
+
+          docker build --pull \
+            --file Dockerfile.production \
+            --build-arg "BUILD_TIME=${build_time}" \
+            --build-arg "REVISION=${REVISION}" \
+            --tag "$image" \
+            .
+
+          install -d -m 0755 release
+          printf '%s\n' "$image" > release/IMAGE
+          printf '%s\n' "$REVISION" > release/REVISION
+          cp docker-compose.production.yml release/docker-compose.production.yml
+          docker save "$image" | gzip --fast > release/image.tar.gz
+          sha256sum release/image.tar.gz | cut -d ' ' -f 1 > release/IMAGE_ARCHIVE_SHA256
+          tar --create --file "release-${REVISION}.tar" \
+            --directory release \
+            IMAGE IMAGE_ARCHIVE_SHA256 REVISION docker-compose.production.yml image.tar.gz
+          sha256sum "release-${REVISION}.tar"
+
+      - name: Upload release bundle
+        uses: appleboy/scp-action@ff85246acaad7bdce478db94a363cd2bf7c90345 # v1.0.0
+        with:
+          host: ${{ secrets.VPS_HOST }}
+          username: ${{ secrets.VPS_USERNAME }}
+          key: ${{ secrets.VPS_SSH_KEY }}
+          port: ${{ secrets.VPS_PORT }}
+          fingerprint: ${{ secrets.VPS_HOST_FINGERPRINT }}
+          source: web/release-${{ github.sha }}.tar
+          target: /opt/mllmcelltype/incoming
+          overwrite: true
+          timeout: 30s
+          command_timeout: 15m
+
+      - name: Activate release
+        uses: appleboy/ssh-action@0ff4204d59e8e51228ff73bce53f80d53301dee2 # v1.2.5
+        with:
+          host: ${{ secrets.VPS_HOST }}
+          username: ${{ secrets.VPS_USERNAME }}
+          key: ${{ secrets.VPS_SSH_KEY }}
+          port: ${{ secrets.VPS_PORT }}
+          fingerprint: ${{ secrets.VPS_HOST_FINGERPRINT }}
+          timeout: 30s
+          command_timeout: 15m
+          script: sudo --non-interactive /usr/local/sbin/deploy-mllmcelltype ${{ github.sha }}
+
+      - name: Verify public health
+        run: |
+          set -euo pipefail
+          for attempt in $(seq 1 12); do
+            status=$(curl --fail --silent --show-error --max-time 15 \
+              https://www.mllmcelltype.com/health |
+              python3 -c "import json,sys; print(json.load(sys.stdin).get('status', ''))" || true)
+            if [ "$status" = "healthy" ]; then
+              exit 0
+            fi
+            echo "Public health check attempt ${attempt}/12 failed"
+            sleep 5
+          done
+          exit 1

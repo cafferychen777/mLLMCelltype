@@ -1,0 +1,36 @@
+# Application runtime for Hetzner VPS deployment.
+# Host Caddy owns public ingress; this service is reachable only on loopback.
+
+services:
+  app:
+    image: "${APP_IMAGE:?APP_IMAGE must be set}"
+    restart: unless-stopped
+    env_file:
+      - "${APP_ENV_FILE:-.env}"
+    environment:
+      PORT: "8080"
+      XDG_CACHE_HOME: /tmp/cache
+    ports:
+      - "127.0.0.1:8080:8080"
+    init: true
+    read_only: true
+    tmpfs:
+      - /tmp:rw,nosuid,nodev,noexec,size=256m,mode=1777
+    cap_drop:
+      - ALL
+    security_opt:
+      - no-new-privileges:true
+    pids_limit: 256
+    stop_grace_period: 150s
+    healthcheck:
+      test: ["CMD", "curl", "--fail", "--silent", "--show-error", "--max-time", "10", "http://localhost:8080/health"]
+      interval: 30s
+      timeout: 10s
+      start_period: 60s
+      retries: 3
+    networks:
+      - web
+
+networks:
+  web:
+    name: mllmcelltype-web_web

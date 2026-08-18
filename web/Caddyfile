@@ -1,0 +1,38 @@
+# Host Caddy reverse proxy for mLLMCelltype Web.
+# Caddy obtains and renews TLS certificates automatically.
+
+# Redirect bare domain to www
+mllmcelltype.com {
+	redir https://www.mllmcelltype.com{uri} permanent
+}
+
+# Main site
+www.mllmcelltype.com {
+	encode zstd gzip
+
+	reverse_proxy 127.0.0.1:8080 {
+		# Annotation runs asynchronously; HTTP requests should stay bounded.
+		transport http {
+			read_timeout 120s
+			write_timeout 120s
+			dial_timeout 10s
+		}
+
+		# Health check
+		health_uri /health
+		health_interval 30s
+		health_timeout 10s
+		health_status 200
+
+		# The application trusts only this header from loopback Caddy.
+		header_up X-Real-IP {remote_host}
+	}
+
+	header {
+		-Server
+	}
+
+	log {
+		output stdout
+	}
+}

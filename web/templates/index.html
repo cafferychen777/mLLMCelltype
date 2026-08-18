@@ -1,0 +1,1061 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <!--
+    IMPORTANT TEMPLATE SYNTAX NOTE:
+    This application uses CUSTOM Jinja2 delimiters: { [ { } ] }
+    DO NOT use standard { { } } syntax - it conflicts with Vue.js
+    Always use { [ { url_for(...) } ] } for Flask template functions
+    -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cell Type Annotation Tool | Multi-LLM scRNA Annotation | mLLMCelltype</title>
+
+    <link rel="canonical" href="https://www.mllmcelltype.com/">
+    <link rel="stylesheet" href="{[{ url_for('static', filename='css/style.css') }]}">
+    <link rel="stylesheet" href="{[{ url_for('static', filename='fontawesome-css/all.min.css') }]}">
+
+    <!-- Meta tags for SEO and social sharing -->
+    <meta name="description"
+        content="Open-source cell type annotation tool for single-cell RNA sequencing (scRNA-seq) analysis. Uses multi-model consensus from leading LLM providers for automated cell type identification. Web-based platform with no installation required.">
+    <!-- Open Graph tags for social sharing -->
+    <meta property="og:title" content="mLLMCelltype - Multi-LLM Cell Type Annotation Tool">
+    <meta property="og:description"
+        content="Open-source cell type annotation platform using multi-model consensus from leading AI providers for scRNA-seq analysis.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://www.mllmcelltype.com/">
+    <meta property="og:site_name" content="mLLMCelltype">
+    <meta property="og:locale" content="en_US">
+
+    <!-- Twitter Card tags -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="mLLMCelltype - Multi-LLM Cell Type Annotation">
+    <meta name="twitter:description"
+        content="Open-source scRNA-seq cell type annotation using multi-model consensus from leading AI providers.">
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml"
+        href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E🧬%3C/text%3E%3C/svg%3E">
+    <link rel="apple-touch-icon" sizes="180x180"
+        href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E🧬%3C/text%3E%3C/svg%3E">
+
+    <!-- SoftwareApplication Schema -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "SoftwareApplication",
+      "name": "mLLMCelltype",
+      "description": "Open-source cell type annotation tool for single-cell RNA sequencing using multi-model consensus from large language models.",
+      "applicationCategory": "BioinformaticsApplication",
+      "operatingSystem": "Web Browser",
+      "url": "https://www.mllmcelltype.com",
+      "provider": {
+        "@type": "Organization",
+        "name": "mLLMCelltype Team",
+        "url": "https://www.mllmcelltype.com",
+        "sameAs": ["https://github.com/cafferychen777/mLLMCelltype"]
+      },
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD"
+      },
+      "license": "https://opensource.org/licenses/MIT"
+    }
+    </script>
+
+
+
+</head>
+
+<body>
+    <a class="skip-link" href="#main-content">Skip to main content</a>
+    <div id="app" v-cloak>
+        <!-- Navigation -->
+        <nav class="navbar" aria-label="Primary navigation">
+            <div class="nav-container">
+                <div class="nav-brand">
+                    <a href="/" class="brand-link">
+                        <div class="brand-icon">
+                            <span class="brand-emoji">🧬</span>
+                        </div>
+                        <div class="brand-text">
+                            <div class="brand-name">mLLMCelltype</div>
+                        </div>
+                    </a>
+                </div>
+
+                <div class="nav-actions">
+                    <button @click="toggleLanguage" class="btn btn-ghost" type="button"
+                        :title="currentLang === 'en' ? t('switchToChinese') : t('switchToEnglish')">
+                        <i class="fas fa-language"></i>
+                        <span v-text="currentLang === 'en' ? '中文' : 'English'"></span>
+                    </button>
+
+                    <a href="https://github.com/cafferychen777/mLLMCelltype" target="_blank"
+                        rel="noopener noreferrer" class="btn btn-ghost"
+                        :title="t('viewOnGithub')">
+                        <i class="fab fa-github"></i>
+                        <span class="btn-text">GitHub</span>
+                    </a>
+
+                    <a href="https://doi.org/10.1038/s42003-026-10420-8" target="_blank"
+                        rel="noopener noreferrer" class="btn btn-ghost" :title="t('readThePaper')">
+                        <i class="fas fa-file-alt"></i>
+                        <span class="btn-text">Paper</span>
+                    </a>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Main Content -->
+        <main id="main-content" class="main-content">
+            <!-- Progress Indicator -->
+            <ol class="progress-indicator" v-if="currentStep > 0" :aria-label="t('progressLabel')">
+                <li class="step" :class="{ active: currentStep >= 1, completed: currentStep > 1 }"
+                    :aria-current="currentStep === 1 ? 'step' : null">
+                    <div class="step-icon">
+                        <i class="fas fa-upload"></i>
+                    </div>
+                    <span class="step-label">{{ t('stepUpload') }}</span>
+                </li>
+                <li class="step-connector" :class="{ active: currentStep > 1 }" aria-hidden="true"></li>
+                <li class="step" :class="{ active: currentStep >= 2, completed: currentStep > 2 }"
+                    :aria-current="currentStep === 2 ? 'step' : null">
+                    <div class="step-icon">
+                        <i class="fas fa-cogs"></i>
+                    </div>
+                    <span class="step-label">{{ t('stepConfigure') }}</span>
+                </li>
+                <li class="step-connector" :class="{ active: currentStep > 2 }" aria-hidden="true"></li>
+                <li class="step" :class="{ active: currentStep >= 3, completed: currentStep > 3 }"
+                    :aria-current="currentStep === 3 ? 'step' : null">
+                    <div class="step-icon">
+                        <i class="fas fa-brain"></i>
+                    </div>
+                    <span class="step-label">{{ t('stepProcess') }}</span>
+                </li>
+                <li class="step-connector" :class="{ active: currentStep > 3 }" aria-hidden="true"></li>
+                <li class="step" :class="{ active: currentStep >= 4 }"
+                    :aria-current="currentStep === 4 ? 'step' : null">
+                    <div class="step-icon">
+                        <i class="fas fa-chart-bar"></i>
+                    </div>
+                    <span class="step-label">{{ t('stepResults') }}</span>
+                </li>
+            </ol>
+
+            <!-- Welcome Screen -->
+            <div v-if="currentStep === 0" class="welcome-screen">
+                <div class="hero-section">
+                    <div class="hero-content content-rail">
+                        <div class="hero-eyebrow">
+                            <i class="fas fa-dna" aria-hidden="true"></i>
+                            <span>{{ t('heroEyebrow') }}</span>
+                        </div>
+                        <h1 class="hero-title">{{ t('welcomeTitle') }}</h1>
+                        <p class="hero-subtitle">{{ t('welcomeSubtitle') }}</p>
+                        <p class="hero-description">{{ t('heroDescription') }}</p>
+
+                        <div class="feature-grid">
+                            <article class="feature-card">
+                                <div class="feature-icon">
+                                    <i class="fas fa-robot"></i>
+                                </div>
+                                <h3>{{ t('featureMultiModel') }}</h3>
+                                <p>{{ t('featureMultiModelDesc') }}</p>
+                            </article>
+                            <article class="feature-card">
+                                <div class="feature-icon">
+                                    <i class="fas fa-handshake"></i>
+                                </div>
+                                <h3>{{ t('featureConsensus') }}</h3>
+                                <p>{{ t('featureConsensusDesc') }}</p>
+                            </article>
+                            <article class="feature-card">
+                                <div class="feature-icon">
+                                    <i class="fas fa-shield-alt"></i>
+                                </div>
+                                <h3>{{ t('featureSecurity') }}</h3>
+                                <p>{{ t('featureSecurityDesc') }}</p>
+                            </article>
+                        </div>
+
+                        <div class="hero-actions">
+                            <button @click="startAnnotation" class="btn btn-primary btn-large" type="button">
+                                <span>{{ t('getStarted') }}</span>
+                                <i class="fas fa-arrow-right" aria-hidden="true"></i>
+                            </button>
+                            <button @click="downloadSample" class="btn btn-outline btn-large" type="button">
+                                <i class="fas fa-download" aria-hidden="true"></i>
+                                <span>{{ t('downloadSample') }}</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Step 1: File Upload -->
+            <div v-if="currentStep === 1" class="step-content">
+                <div class="content-card">
+                    <div class="card-header">
+                        <h2 class="card-title">
+                            <i class="fas fa-upload"></i>
+                            {{ t('uploadTitle') }}
+                        </h2>
+                        <p class="card-subtitle">{{ t('uploadDescription') }}</p>
+                    </div>
+
+                    <div class="card-body">
+                        <!-- File Upload Area -->
+                        <div class="upload-area" :class="{
+                                'drag-over': isDragover,
+                                'uploading': isUploading,
+                                'has-file': uploadedFile
+                             }" @dragover.prevent="handleDragOver" @dragleave.prevent="handleDragLeave"
+                            @drop.prevent="handleFileDrop" @click="handleUploadAreaClick"
+                            @keydown.enter.prevent="handleUploadAreaClick"
+                            @keydown.space.prevent="handleUploadAreaClick"
+                            :role="!uploadedFile && !isUploading ? 'button' : null"
+                            :tabindex="!uploadedFile && !isUploading ? 0 : -1"
+                            :aria-label="!uploadedFile && !isUploading ? t('dragDropTitle') : null">
+
+                            <div v-if="!uploadedFile && !isUploading" class="upload-content">
+                                <div class="upload-icon">
+                                    <i class="fas fa-cloud-upload-alt"></i>
+                                </div>
+                                <h3>{{ t('dragDropTitle') }}</h3>
+                                <p>{{ t('dragDropText') }}</p>
+                                <input type="file" ref="fileInput" @change="handleFileSelect"
+                                    accept=".csv,.tsv,.xlsx" class="hidden-file-input">
+                                <span class="btn btn-primary" aria-hidden="true">
+                                    <i class="fas fa-folder-open"></i>
+                                    <span>{{ t('selectFile') }}</span>
+                                </span>
+                            </div>
+
+                            <div v-if="isUploading" class="upload-progress">
+                                <div class="progress-ring">
+                                    <div class="progress-circle"></div>
+                                </div>
+                                <h3>{{ t('uploadingTitle') }}</h3>
+                                <p>{{ t('uploadingText') }}</p>
+                            </div>
+
+                            <div v-if="uploadedFile && !isUploading" class="upload-success">
+                                <div class="success-icon">
+                                    <i class="fas fa-check-circle"></i>
+                                </div>
+                                <h3>{{ t('uploadSuccessTitle') }}</h3>
+                                <div class="file-info">
+                                    <div class="file-detail">
+                                        <span class="label">{{ t('fileName') }}:</span>
+                                        <span class="value">{{ uploadedFile.name }}</span>
+                                    </div>
+                                    <div class="file-detail">
+                                        <span class="label">{{ t('fileSize') }}:</span>
+                                        <span class="value">{{ formatFileSize(uploadedFile.size) }}</span>
+                                    </div>
+                                </div>
+                                <button @click.stop="removeFile" class="btn btn-ghost btn-small" type="button">
+                                    <i class="fas fa-times"></i>
+                                    <span>{{ t('removeFile') }}</span>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- File Format Info -->
+                        <div class="info-section">
+                            <div class="info-card">
+                                <div class="info-header">
+                                    <i class="fas fa-info-circle"></i>
+                                    <h4>{{ t('supportedFormats') }}</h4>
+                                </div>
+                                <div class="format-list">
+                                    <span class="format-tag">CSV</span>
+                                    <span class="format-tag">TSV</span>
+                                    <span class="format-tag">Excel</span>
+                                </div>
+                            </div>
+
+                            <div class="info-card">
+                                <div class="info-header">
+                                    <i class="fas fa-download"></i>
+                                    <h4>{{ t('needSampleData') }}</h4>
+                                </div>
+                                <button @click="downloadSample" class="btn btn-outline" type="button">
+                                    <i class="fas fa-download"></i>
+                                    <span>{{ t('downloadSample') }}</span>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Data Preview -->
+                        <div v-if="dataPreview.length > 0" class="preview-section">
+                            <h4 class="preview-title">
+                                <i class="fas fa-eye"></i>
+                                {{ t('dataPreview') }}
+                            </h4>
+                            <div class="preview-table">
+                                <table>
+                                    <thead>
+                                        <tr>
+                                            <th v-for="column in dataColumns" :key="column">{{ column }}</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr v-for="(row, index) in dataPreview" :key="index">
+                                            <td v-for="column in dataColumns" :key="column">
+                                                <span v-text="row[column] != null && row[column] !== '' ? row[column] : '-'"></span>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <!-- Error Display -->
+                        <div v-if="uploadError" class="alert alert-error">
+                            <i class="fas fa-exclamation-triangle"></i>
+                            <div class="alert-content">
+                                <h4>{{ t('uploadError') }}</h4>
+                                <p>{{ uploadError }}</p>
+                            </div>
+                            <button @click="uploadError = ''" class="alert-close" type="button"
+                                :aria-label="t('dismiss')">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="card-footer">
+                        <div class="footer-actions">
+                            <button @click="goBack" class="btn btn-ghost" type="button">
+                                <i class="fas fa-arrow-left"></i>
+                                <span>{{ t('back') }}</span>
+                            </button>
+                            <button @click.prevent="nextStep" :disabled="!canProceed" class="btn btn-primary"
+                                type="button">
+                                <span>{{ t('continue') }}</span>
+                                <i class="fas fa-arrow-right"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Step 2: Configuration -->
+            <div v-if="currentStep === 2" class="step-content">
+                <div class="content-card">
+                    <div class="card-header">
+                        <h2 class="card-title">
+                            <i class="fas fa-cogs"></i>
+                            {{ t('configTitle') }}
+                        </h2>
+                        <p class="card-subtitle">{{ t('configDescription') }}</p>
+                    </div>
+
+                    <div class="card-body">
+                        <!-- Notification Settings -->
+                        <div class="notification-banner"
+                            v-if="notificationSupported && notificationPermission !== 'granted'">
+                            <div class="notification-content">
+                                <i class="fas fa-bell"></i>
+                                <span>{{ t('enableNotifications') }}</span>
+                                <button @click="requestNotificationPermission" class="btn btn-sm btn-primary"
+                                    type="button">
+                                    <i class="fas fa-bell"></i>
+                                    {{ t('enableNotificationsBtn') }}
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Basic Configuration -->
+                        <div class="config-section">
+                            <h3 class="section-title">
+                                <i class="fas fa-sliders-h"></i>
+                                {{ t('basicSettings') }}
+                            </h3>
+
+                            <div class="form-grid">
+                                <div class="form-group">
+                                    <label class="form-label" for="species-input">
+                                        <i class="fas fa-paw"></i>
+                                        {{ t('species') }}
+                                    </label>
+                                    <div class="species-input-container">
+                                        <div class="predefined-species">
+                                            <button v-for="predefinedSpecies in predefinedSpeciesList"
+                                                :key="predefinedSpecies.value"
+                                                @click="selectPredefinedSpecies(predefinedSpecies.value)"
+                                                class="species-tag"
+                                                :class="{ selected: species === predefinedSpecies.value }"
+                                                type="button">
+                                                <span
+                                                    v-text="currentLang === 'en' ? predefinedSpecies.labelEn : predefinedSpecies.labelZh"></span>
+                                            </button>
+                                        </div>
+                                        <div class="species-input-wrapper">
+                                            <input id="species-input" type="text" v-model="species" class="form-input"
+                                                :placeholder="t('speciesPlaceholder')"
+                                                @focus="showCustomSpeciesInput = true">
+                                            <button v-if="species && !predefinedSpeciesValues.includes(species)"
+                                                @click="clearSpecies" class="clear-species" type="button"
+                                                :aria-label="t('clearSpecies')">
+                                                <i class="fas fa-times"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <div class="form-help">{{ t('speciesHelp') }}</div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="form-label" for="tissue-input">
+                                        <i class="fas fa-heartbeat"></i>
+                                        {{ t('tissue') }}
+                                    </label>
+                                    <div class="tissue-input-container">
+                                        <div class="predefined-tissues">
+                                            <button v-for="predefinedTissue in filteredTissuesList"
+                                                :key="predefinedTissue.value"
+                                                @click="selectPredefinedTissue(predefinedTissue.value)"
+                                                class="tissue-tag"
+                                                :class="{ selected: tissue === predefinedTissue.value }" type="button">
+                                                <span
+                                                    v-text="currentLang === 'en' ? predefinedTissue.labelEn : predefinedTissue.labelZh"></span>
+                                            </button>
+                                        </div>
+                                        <div class="tissue-input-wrapper">
+                                            <input id="tissue-input" type="text" v-model="tissue" class="form-input"
+                                                :placeholder="t('tissuePlaceholder')" @focus="showCustomInput = true">
+                                            <button
+                                                v-if="tissue && !filteredTissuesList.some(t => t.value === tissue)"
+                                                @click="clearTissue" class="clear-tissue" type="button"
+                                                :aria-label="t('clearTissue')">
+                                                <i class="fas fa-times"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <div class="form-help">{{ t('tissueHelp') }}</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- API Keys Import -->
+                        <div class="config-section">
+                            <div class="env-import-banner" :class="{ 'drag-over': isEnvDragover }"
+                                @dragover.prevent="handleEnvDragOver" @dragleave.prevent="handleEnvDragLeave"
+                                @drop.prevent="handleEnvFileDrop">
+                                <div class="env-import-content">
+                                    <div class="env-import-left">
+                                        <i class="fas fa-file-code"></i>
+                                        <div class="env-import-text">
+                                            <h4>{{ t('importApiKeys') }}</h4>
+                                            <p>{{ t('importApiKeysDesc') }}</p>
+                                        </div>
+                                    </div>
+                                    <div class="env-import-right">
+                                        <input type="file" ref="envFileInput" @change="handleEnvFileUpload"
+                                            accept=".env" class="hidden-file-input">
+                                        <button @click.stop="$refs.envFileInput.click()" class="btn btn-sm btn-secondary"
+                                            type="button">
+                                            <i class="fas fa-upload"></i>
+                                            <span>{{ t('uploadEnvFile') }}</span>
+                                        </button>
+                                        <a href="/static/sample.env" download="sample.env"
+                                            class="btn btn-sm btn-outline" type="button">
+                                            <i class="fas fa-download"></i>
+                                            <span>{{ t('downloadSampleEnv') }}</span>
+                                        </a>
+                                    </div>
+                                </div>
+                                <div v-if="envImportMessage" class="env-import-message" :class="envImportMessage.type">
+                                    <i
+                                        :class="envImportMessage.type === 'success' ? 'fas fa-check-circle' : 'fas fa-exclamation-circle'"></i>
+                                    {{ envImportMessage.text }}
+                                </div>
+                                <div v-if="isEnvDragover" class="env-drag-overlay">
+                                    <i class="fas fa-file-import"></i>
+                                    <p>{{ t('dropEnvFileHere') }}</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Model Selection -->
+                        <div class="config-section">
+                            <h3 class="section-title">
+                                <i class="fas fa-robot"></i>
+                                {{ t('modelSelection') }}
+                            </h3>
+
+                            <div class="model-grid">
+                                <div v-for="provider in availableProviders" :key="provider.id" class="model-card"
+                                    :class="{ selected: provider.selected }">
+
+                                    <div class="model-header" role="switch" tabindex="0"
+                                        :aria-checked="provider.selected ? 'true' : 'false'"
+                                        @click="toggleProvider(provider)"
+                                        @keydown.enter.prevent="toggleProvider(provider)"
+                                        @keydown.space.prevent="toggleProvider(provider)">
+                                        <div class="model-info">
+                                            <div class="model-icon" :class="getProviderIconClass(provider.id)">
+                                                <i :class="getProviderIcon(provider.id)"></i>
+                                            </div>
+                                            <div class="model-details">
+                                                <h4 class="model-name">{{ provider.name }}</h4>
+                                                <span class="model-count">{{ provider.models.length }} {{
+                                                    t('modelsText') }}</span>
+                                            </div>
+                                        </div>
+                                        <span class="model-toggle" aria-hidden="true">
+                                            <span class="toggle-slider"></span>
+                                        </span>
+                                    </div>
+
+                                    <div v-if="provider.selected" class="model-config">
+                                        <div class="form-group">
+                                            <label class="form-label">{{ t('selectModels') }}</label>
+                                            <div class="model-selection-grid">
+                                                <div v-for="model in provider.models" :key="model.id"
+                                                    class="model-checkbox-item">
+                                                    <label class="model-checkbox-label">
+                                                        <input type="checkbox" :value="model.id"
+                                                            v-model="provider.selectedModels" class="model-checkbox">
+                                                        <div class="model-checkbox-custom">
+                                                            <i class="fas fa-check"></i>
+                                                        </div>
+                                                        <span class="model-name">{{ model.name }}</span>
+                                                    </label>
+                                                </div>
+                                            </div>
+                                            <div class="custom-model-row">
+                                                <input type="text" class="form-input"
+                                                    v-model.trim="provider.customModel"
+                                                    @keyup.enter="addCustomModel(provider)"
+                                                    :placeholder="t('customModelPlaceholder')"
+                                                    maxlength="300">
+                                                <button type="button" class="btn btn-secondary"
+                                                    @click="addCustomModel(provider)">
+                                                    {{ t('addModel') }}
+                                                </button>
+                                            </div>
+                                            <div class="selected-models-summary"
+                                                v-if="provider.selectedModels.length > 0">
+                                                <span class="summary-text">{{ t('selectedModelsCount', { count:
+                                                    provider.selectedModels.length }) }}</span>
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label class="form-label" :for="'api-key-' + provider.id">
+                                                {{ t('apiKey') }}
+                                                <a v-if="getProviderApiUrl(provider.id)"
+                                                    :href="getProviderApiUrl(provider.id)" target="_blank"
+                                                    rel="noopener noreferrer" class="api-key-help-link"
+                                                    :title="t('getApiKey')">
+                                                    <i class="fas fa-external-link-alt"></i>
+                                                </a>
+                                            </label>
+                                            <div class="api-key-section">
+                                                <div class="input-wrapper">
+                                                    <input :id="'api-key-' + provider.id"
+                                                        :type="provider.showApiKey ? 'text' : 'password'"
+                                                        v-model="provider.apiKey" @input="onApiKeyChange(provider)"
+                                                        class="form-input api-key-input" :class="{
+                                                               'is-valid': provider.testResult?.status === 'success',
+                                                               'is-invalid': provider.testResult?.status === 'error'
+                                                           }" :placeholder="t('apiKeyPlaceholder')">
+                                                    <button @click="toggleApiKeyVisibility(provider)"
+                                                        class="input-action-btn visibility-btn" type="button"
+                                                        :title="provider.showApiKey ? t('hideApiKey') : t('showApiKey')">
+                                                        <i
+                                                            :class="provider.showApiKey ? 'fas fa-eye-slash' : 'fas fa-eye'"></i>
+                                                    </button>
+                                                </div>
+                                                <button @click="testApiKey(provider)" class="test-api-btn" :class="{
+                                                            'is-testing': provider.testing,
+                                                            'is-valid': provider.testResult?.status === 'success',
+                                                            'is-invalid': provider.testResult?.status === 'error'
+                                                        }" :disabled="!provider.apiKey.trim() || provider.testing"
+                                                    type="button">
+                                                    <i :class="{
+                                                        'fas fa-spinner fa-spin': provider.testing,
+                                                        'fas fa-check-circle': !provider.testing && provider.testResult?.status === 'success',
+                                                        'fas fa-times-circle': !provider.testing && provider.testResult?.status === 'error',
+                                                        'fas fa-shield-alt': !provider.testing && !provider.testResult
+                                                    }"></i>
+                                                    <span>{{ provider.testing ? t('testing') : t('testApiKey') }}</span>
+                                                </button>
+                                            </div>
+                                            <div class="form-help">{{ t('apiKeyHelp') }}</div>
+
+                                            <!-- API connection test result -->
+                                            <div v-if="provider.testResult" class="api-test-result"
+                                                :class="provider.testResult.status">
+                                                <i
+                                                    :class="provider.testResult.status === 'success' ? 'fas fa-check-circle' : 'fas fa-exclamation-triangle'"></i>
+                                                <span>{{ provider.testResult.message }}</span>
+                                                <small v-if="provider.lastTested">{{ formatTestTime(provider.lastTested)
+                                                    }}</small>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div v-if="!hasSelectedProviders" class="alert alert-warning">
+                                <i class="fas fa-exclamation-triangle"></i>
+                                <div class="alert-content">
+                                    <p>{{ t('modelWarning') }}</p>
+                                </div>
+                            </div>
+
+                            <div v-if="hasSelectedProviders && !hasValidModelSelection" class="alert alert-warning">
+                                <i class="fas fa-exclamation-triangle"></i>
+                                <div class="alert-content">
+                                    <p>{{ t('modelSelectionWarning') }}</p>
+                                </div>
+                            </div>
+
+                            <!-- Batch API key test -->
+                            <div v-if="hasSelectedProviders" class="batch-test-section">
+                                <button @click="testAllApiKeys" class="btn btn-secondary batch-test-btn"
+                                    :disabled="isAnyTesting || !hasApiKeysToTest">
+                                    <i :class="isAnyTesting ? 'fas fa-spinner fa-spin' : 'fas fa-check-double'"></i>
+                                    <span v-text="isAnyTesting ? t('testing') : t('testAllApiKeys')"></span>
+                                </button>
+                                <div class="batch-test-help">
+                                    {{ t('batchTestHelp') }}
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Consensus Algorithm Tip -->
+                        <div v-if="getTotalSelectedModels() > 0 && getTotalSelectedModels() < 3" class="consensus-tip">
+                            <div class="tip-icon">
+                                <i class="fas fa-lightbulb"></i>
+                            </div>
+                            <div class="tip-content">
+                                <strong>{{ t('consensusTipTitle') }}</strong>
+                                <p>{{ t('consensusTipMessage') }}</p>
+                            </div>
+                        </div>
+
+                        <!-- Advanced Options -->
+                        <div class="config-section">
+                            <h3 class="section-title">
+                                <i class="fas fa-sliders-h"></i>
+                                {{ t('advancedOptions') }}
+                            </h3>
+
+                            <div class="form-grid">
+                                <div class="form-group">
+                                    <label class="form-label" for="consensus-threshold">
+                                        {{ t('consensusThreshold') }}
+                                        <span class="label-value">{{ consensusThreshold }}</span>
+                                    </label>
+                                    <input id="consensus-threshold" type="range" v-model="consensusThreshold" class="form-range" min="0.1"
+                                        max="1.0" step="0.1">
+                                    <div class="form-help">{{ t('consensusThresholdHelp') }}</div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="form-label" for="entropy-threshold">
+                                        {{ t('entropyThreshold') }}
+                                        <span class="label-value">{{ entropyThreshold }}</span>
+                                    </label>
+                                    <input id="entropy-threshold" type="range" v-model="entropyThreshold" class="form-range" min="0.1"
+                                        max="2.0" step="0.1">
+                                    <div class="form-help">{{ t('entropyThresholdHelp') }}</div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="form-label" for="max-rounds">
+                                        {{ t('maxRounds') }}
+                                        <span class="label-value">{{ maxDiscussionRounds }}</span>
+                                    </label>
+                                    <input id="max-rounds" type="range" v-model="maxDiscussionRounds" class="form-range" min="1" max="5"
+                                        step="1">
+                                    <div class="form-help">{{ t('maxRoundsHelp') }}</div>
+                                </div>
+
+                                <div class="form-group" v-if="availableConsensusModels.length > 0">
+                                    <label class="form-label" for="consensus-model">{{ t('consensusModel') }}</label>
+                                    <select id="consensus-model" v-model="consensusModel" class="form-select">
+                                        <option value="">{{ t('consensusModelDefault') }}</option>
+                                        <option v-for="model in availableConsensusModels" :key="model.value"
+                                            :value="model.value">
+                                            {{ model.label }}
+                                        </option>
+                                    </select>
+                                    <div class="form-help">{{ t('consensusModelHelp') }}</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card-footer">
+                        <div class="footer-actions">
+                            <button @click="goBack" class="btn btn-ghost" type="button">
+                                <i class="fas fa-arrow-left"></i>
+                                <span>{{ t('back') }}</span>
+                            </button>
+                            <button @click="startProcessing" :disabled="!canStartAnnotation" class="btn btn-primary"
+                                type="button">
+                                <span>{{ t('startAnnotation') }}</span>
+                                <i class="fas fa-play"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Step 3: Processing -->
+            <div v-if="currentStep === 3" class="step-content">
+                <div class="content-card processing-card">
+                    <div class="card-header">
+                        <h2 class="card-title">
+                            <i class="fas fa-brain"></i>
+                            {{ t('processingTitle') }}
+                        </h2>
+                        <p class="card-subtitle">{{ t('processingDescription') }}</p>
+                    </div>
+
+                    <div class="card-body">
+                        <div class="processing-content">
+                            <div class="processing-animation">
+                                <div class="brain-icon">
+                                    <i class="fas fa-brain"></i>
+                                    <div class="pulse-ring"></div>
+                                </div>
+                            </div>
+
+                            <div class="processing-status">
+                                <h3>{{ taskStatus }}</h3>
+                                <div class="status-details">
+                                    <div class="detail-item">
+                                        <span class="detail-label">{{ t('selectedModels') }}:</span>
+                                        <span class="detail-value">{{ selectedModelNames.join(', ') }}</span>
+                                    </div>
+                                    <div class="detail-item">
+                                        <span class="detail-label">{{ t('species') }}:</span>
+                                        <span class="detail-value">{{ species }}</span>
+                                    </div>
+                                    <div v-if="tissue" class="detail-item">
+                                        <span class="detail-label">{{ t('tissue') }}:</span>
+                                        <span class="detail-value">{{ tissue }}</span>
+                                    </div>
+                                    <div v-if="progressDetails && progressDetails.total_clusters"
+                                        class="detail-item">
+                                        <span class="detail-label" v-text="(t('clusters') || 'Clusters') + ':'"></span>
+                                        <span class="detail-value">{{ progressDetails.total_clusters }}</span>
+                                    </div>
+                                    <div v-if="progressDetails && progressDetails.stage" class="detail-item">
+                                        <span class="detail-label" v-text="(t('stage') || 'Stage') + ':'"></span>
+                                        <span class="detail-value">{{ progressDetails.stage }}</span>
+                                    </div>
+                                    <div v-if="progressDetails && progressDetails.phase" class="detail-item">
+                                        <span class="detail-label" v-text="(t('phase') || 'Phase') + ':'"></span>
+                                        <span class="detail-value">
+                                            <span v-if="progressDetails.phase === 'annotation'"
+                                                v-text="t('modelAnnotation') || 'Model Annotation'"></span>
+                                            <span v-else-if="progressDetails.phase === 'consensus'"
+                                                v-text="t('consensusChecking') || 'Consensus Checking'"></span>
+                                            <span v-else-if="progressDetails.phase === 'controversy'"
+                                                v-text="t('controversyResolution') || 'Controversy Resolution'"></span>
+                                            <span v-else v-text="progressDetails.phase"></span>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="progress-bar" role="progressbar" aria-valuemin="0" aria-valuemax="100"
+                                :aria-valuenow="Math.round(progressPercent)">
+                                <div class="progress-fill" :class="getProgressPhaseClass(progressDetails?.phase)"
+                                    :style="{ width: progressPercent + '%' }">
+                                </div>
+                            </div>
+                            <div class="progress-info">
+                                <span class="progress-percentage">{{ Math.round(progressPercent) }}%</span>
+                                <span v-if="progressDetails?.phase" class="progress-phase-label">
+                                    {{ getProgressPhaseLabel(progressDetails.phase) }}
+                                </span>
+                            </div>
+                        </div>
+
+                        <!-- Error Display -->
+                        <div v-if="processingError" class="alert alert-error">
+                            <i class="fas fa-exclamation-triangle"></i>
+                            <div class="alert-content">
+                                <h4>{{ t('processingError') }}</h4>
+                                <p>{{ processingError }}</p>
+                            </div>
+                            <button @click="processingError = ''" class="alert-close" type="button"
+                                :aria-label="t('dismiss')">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Step 4: Results -->
+            <div v-if="currentStep === 4" class="step-content">
+                <div class="content-card">
+                    <div class="card-header">
+                        <h2 class="card-title">
+                            <i class="fas fa-chart-bar"></i>
+                            {{ t('resultsTitle') }}
+                        </h2>
+                        <p class="card-subtitle">{{ t('resultsDescription') }}</p>
+                    </div>
+
+                    <div class="card-body">
+                        <div v-if="results.consensus" class="results-content">
+                            <!-- Results Summary -->
+                            <div class="results-summary">
+                                <div class="summary-card">
+                                    <div class="summary-icon">
+                                        <i class="fas fa-layer-group"></i>
+                                    </div>
+                                    <div class="summary-text">
+                                        <h4>{{ Object.keys(results.consensus).length }}</h4>
+                                        <span>{{ t('clustersAnnotated') }}</span>
+                                    </div>
+                                </div>
+
+                                <div class="summary-card">
+                                    <div class="summary-icon">
+                                        <i class="fas fa-robot"></i>
+                                    </div>
+                                    <div class="summary-text">
+                                        <h4>{{ selectedModelNames.length }}</h4>
+                                        <span>{{ t('modelsUsed') }}</span>
+                                    </div>
+                                </div>
+
+                                <div class="summary-card">
+                                    <div class="summary-icon">
+                                        <i class="fas fa-clock"></i>
+                                    </div>
+                                    <div class="summary-text">
+                                        <h4>{{ formatDuration(processingTime) }}</h4>
+                                        <span>{{ t('processingTime') }}</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Results Table -->
+                            <div class="results-table-container">
+                                <div class="table-header">
+                                    <h4>{{ t('annotationResults') }}</h4>
+                                    <div class="table-actions">
+                                        <button @click="exportResults('csv')" class="btn btn-outline btn-small" type="button">
+                                            <i class="fas fa-file-csv"></i>
+                                            <span>CSV</span>
+                                        </button>
+                                        <button @click="exportResults('excel')" class="btn btn-outline btn-small" type="button">
+                                            <i class="fas fa-file-excel"></i>
+                                            <span>Excel</span>
+                                        </button>
+                                        <button @click="exportResults('tsv')" class="btn btn-outline btn-small" type="button">
+                                            <i class="fas fa-file-alt"></i>
+                                            <span>TSV</span>
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <div class="results-table">
+                                    <table>
+                                        <caption class="sr-only">{{ t('annotationResults') }}</caption>
+                                        <thead>
+                                            <tr>
+                                                <th>{{ t('cluster') }}</th>
+                                                <th>{{ t('cellType') }}</th>
+                                                <th>{{ t('consensus') }}</th>
+                                                <th>{{ t('entropy') }}</th>
+                                                <th>{{ t('confidence') }}</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr v-for="(cellType, clusterId) in results.consensus" :key="clusterId">
+                                                <td class="cluster-id">{{ clusterId }}</td>
+                                                <td class="cell-type">
+                                                    <div class="cell-type-badge">
+                                                        {{ cellType }}
+                                                    </div>
+                                                </td>
+                                                <td class="consensus-score">
+                                                    <div class="score-bar">
+                                                        <div class="score-fill"
+                                                            :style="{ width: (results.consensus_proportion[clusterId] * 100) + '%' }">
+                                                        </div>
+                                                        <span class="score-text">
+                                                            {{ (results.consensus_proportion[clusterId] *
+                                                            100).toFixed(1) }}%
+                                                        </span>
+                                                    </div>
+                                                </td>
+                                                <td class="entropy-score">
+                                                    <span
+                                                        v-text="results.entropy[clusterId]?.toFixed(3) || 'N/A'"></span>
+                                                </td>
+                                                <td class="confidence-indicator">
+                                                    <div class="confidence-badge"
+                                                        :class="getConfidenceClass(results.consensus_proportion[clusterId])">
+                                                        {{ getConfidenceLabel(results.consensus_proportion[clusterId])
+                                                        }}
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card-footer">
+                        <div class="results-actions-simple">
+                            <div class="actions-row">
+                                <button @click="downloadAllResults" class="btn btn-outline" type="button">
+                                    <i class="fas fa-file-excel"></i>
+                                    <span>{{ t('downloadResults') }}</span>
+                                </button>
+                                <button @click="downloadAnnotationLogs" class="btn btn-outline" type="button">
+                                    <i class="fas fa-file-alt"></i>
+                                    <span>{{ t('downloadLogs') }}</span>
+                                </button>
+                                <button @click="downloadDiscussionDetails" class="btn btn-outline" type="button">
+                                    <i class="fas fa-comments"></i>
+                                    <span>{{ t('downloadDiscussion') }}</span>
+                                </button>
+                                <div class="actions-divider"></div>
+                                <button @click="rerunWithDifferentParams" class="btn btn-outline" type="button">
+                                    <i class="fas fa-sliders-h"></i>
+                                    <span>{{ t('rerunWithParams') }}</span>
+                                </button>
+                                <button @click="startNewAnnotation" class="btn btn-outline" type="button">
+                                    <i class="fas fa-plus-circle"></i>
+                                    <span>{{ t('newAnnotation') }}</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <!-- Related Resources Section for SEO and User Guidance -->
+        <section class="related-resources-section" v-if="currentStep === 0">
+            <div class="related-resources-inner content-rail">
+                <h2>{{ t('resourcesTitle') }}</h2>
+                <p>{{ t('resourcesDescription') }}</p>
+
+                <div class="related-resources-grid">
+                    <a href="{[{ url_for('faq') }]}" class="related-card">
+                        <div class="related-icon"><i class="fas fa-question-circle"></i></div>
+                        <h3>{{ t('faqTitle') }}</h3>
+                        <p>{{ t('faqDescription') }}</p>
+                        <div class="related-badge">{{ t('faqBadge') }}</div>
+                    </a>
+
+                    <a href="https://github.com/cafferychen777/mLLMCelltype" target="_blank"
+                        rel="noopener noreferrer" class="related-card featured">
+                        <div class="related-icon"><i class="fab fa-github"></i></div>
+                        <h3>{{ t('githubRepositoryTitle') || 'GitHub Repository' }}</h3>
+                        <p>{{ t('githubRepositoryDescription') || 'View source code, contribute, and report issues' }}</p>
+                        <div class="related-badge">{{ t('openSourceBadge') || 'Open Source' }}</div>
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h4>mLLMCelltype</h4>
+                    <p>{{ t('footerDescription') }}</p>
+                </div>
+                <div class="footer-section">
+                    <h4>{{ t('learningResources') }}</h4>
+                    <ul>
+                        <li><a href="{[{ url_for('faq') }]}">FAQ</a></li>
+                        <li><a href="{[{ url_for('scrna_troubleshooting_guide') }]}">{{ t('troubleshootingGuide') }}</a>
+                        </li>
+                        <li><a href="{[{ url_for('api_documentation') }]}">{{ t('apiDocs') || 'API Documentation' }}</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>{{ t('researchCommunity') }}</h4>
+                    <ul>
+                        <li><a href="https://doi.org/10.1038/s42003-026-10420-8" target="_blank"
+                                rel="noopener noreferrer">{{
+                                t('researchPaper') }}</a></li>
+                        <li><a href="https://github.com/cafferychen777/mLLMCelltype" target="_blank"
+                                rel="noopener noreferrer">{{
+                                t('githubRepository') }}</a></li>
+                        <li><a href="/api/sample" @click.prevent="downloadSample">{{ t('sampleData') }}</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>{{ t('support') }}</h4>
+                    <ul>
+                        <li><a href="https://github.com/cafferychen777/mLLMCelltype/issues" target="_blank"
+                                rel="noopener noreferrer">{{
+                                t('reportIssues') }}</a></li>
+                        <li><a href="https://github.com/cafferychen777/mLLMCelltype/discussions" target="_blank"
+                                rel="noopener noreferrer">{{
+                                t('discussions') }}</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; mLLMCelltype. {{ t('footerCopyright') }}</p>
+                <p class="footer-update-info">{{ t('lastUpdated') }}: <span id="deployTime">{{ t('loading') }}</span>
+                </p>
+            </div>
+        </footer>
+
+        <!-- Loading Overlay -->
+        <div v-if="globalLoading" class="loading-overlay" role="status" aria-live="polite">
+            <div class="loading-spinner">
+                <div class="spinner-ring"></div>
+                <div class="spinner-ring"></div>
+                <div class="spinner-ring"></div>
+            </div>
+            <p>{{ loadingMessage }}</p>
+        </div>
+
+        <!-- Toast Notifications -->
+        <div class="toast-container" aria-live="polite" aria-atomic="true">
+            <div v-for="toast in toasts" :key="toast.id" class="toast" :class="toast.type" role="status">
+                <i :class="getToastIcon(toast.type)"></i>
+                <div class="toast-content">
+                    <p>{{ toast.message }}</p>
+                </div>
+                <button @click="removeToast(toast.id)" class="toast-close" type="button"
+                    :aria-label="t('dismiss')">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+        </div>
+
+    </div>
+
+    <script src="{[{ url_for('static', filename='js/vue.global.js') }]}" defer></script>
+    <script src="{[{ url_for('static', filename='js/app.js') }]}" defer></script>
+    <noscript>
+        <div class="noscript-message" role="alert">
+            <h2>JavaScript Required</h2>
+            <p>This application requires JavaScript to function properly. Please enable JavaScript in your browser
+                settings and refresh the page.</p>
+            <p>For the best experience, we recommend using a modern browser with JavaScript enabled.</p>
+        </div>
+    </noscript>
+
+</body>
+
+</html>

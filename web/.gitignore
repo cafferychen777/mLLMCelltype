@@ -1,0 +1,128 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Virtual Environment
+venv/
+ENV/
+env/
+.venv/
+
+# IDE & local project config
+.idea/
+.vscode/
+.claude/
+CLAUDE.md
+*.swp
+*.swo
+.playwright-mcp/
+
+# Application specific
+data/uploads/*
+!data/uploads/.gitkeep
+data/results/*
+!data/results/.gitkeep
+data/logs/*
+!data/logs/.gitkeep
+data/*.json
+!data/sample_data.csv
+task_storage/
+
+# Logs
+logs/
+*.log
+
+# Temporary files
+temp/
+tmp/
+*.tmp
+*.temp
+
+# Backups
+*.backup
+*.backup_*
+*.backup.*
+*.bak
+*.bak.*
+
+# Cache
+.cache/
+~/.llmcelltype/
+
+# Build artifacts (mllmcelltype now installed from PyPI)
+
+# Test coverage
+htmlcov/
+.coverage
+.coverage.*
+.pytest_cache/
+
+# Security
+*.key
+*.pem
+*.crt
+secrets/
+gcs-key.json
+service-account-key.json
+
+# Environment variables
+.env
+.env.turso
+.env.*
+infra/ansible/inventory.yml
+
+# Docker
+# (note: .dockerignore is tracked — Docker needs it for builds)
+
+# OS specific
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+
+# Jupyter Notebook
+.ipynb_checkpoints
+
+# Archive and test files
+archive/
+fix_*.py
+deploy_*.sh
+cookies.txt
+setup_secrets.md
+
+# R related
+*.Rcheck/
+*.Rhistory
+.Rproj.user/
+
+# Old documentation
+migration_status_*.md
+
+# Removed GCP artifacts (prevent re-adding)
+app.yaml
+cloudbuild.yaml
+.gcloudignore
+runtime.txt
+backup_*.json

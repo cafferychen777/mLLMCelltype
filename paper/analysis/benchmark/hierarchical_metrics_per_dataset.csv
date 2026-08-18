@@ -1,0 +1,99 @@
+dataset,method,n,accuracy,hP,hR,hF1,data_source
+Adipose(Azimuth),GPTCelltype,16,0.8125,0.8562,0.8562,0.8562,supplementary
+Adipose(Azimuth),mLLMCelltype,16,0.875,0.9187,0.9187,0.9187,per-cluster
+BCL(Cancer),GPTCelltype,31,0.7742,0.7968,0.7968,0.7968,supplementary
+BCL(Cancer),mLLMCelltype,31,0.871,0.8968,0.9355,0.9157,per-cluster
+Bladder(TS),GPTCelltype,14,0.6786,0.8536,0.8536,0.8536,supplementary
+Bladder(TS),mLLMCelltype,14,0.8214,0.9786,0.9143,0.9453,per-cluster
+Blood(TS),GPTCelltype,16,0.5,0.675,0.675,0.675,supplementary
+Blood(TS),mLLMCelltype,16,0.5312,0.7625,0.7812,0.7718,per-cluster
+Bone Marrow(Azimuth),GPTCelltype,40,0.425,0.6525,0.6525,0.6525,supplementary
+Bone Marrow(Azimuth),mLLMCelltype,40,0.5625,0.915,0.7875,0.8465,per-cluster
+Bone Marrow(TS),GPTCelltype,13,0.5769,0.7654,0.7654,0.7654,supplementary
+Bone Marrow(TS),mLLMCelltype,13,0.8077,0.9308,0.9538,0.9422,per-cluster
+Breast(GTEx),GPTCelltype,18,0.6667,0.9,0.9,0.9,supplementary
+Breast(GTEx),mLLMCelltype,18,0.9444,1.0,0.9667,0.9831,per-cluster
+Breast(Literature)(GTEx),GPTCelltype,18,0.8889,0.9667,0.9667,0.9667,supplementary
+Breast(Literature)(GTEx),mLLMCelltype,18,0.9444,1.0,0.9667,0.9831,per-cluster
+Colon(Cancer),GPTCelltype,29,0.8448,0.9534,0.9534,0.9534,supplementary
+Colon(Cancer),mLLMCelltype,29,0.8621,0.9345,0.9345,0.9345,per-cluster
+Esophagus(GTEx),GPTCelltype,59,0.5254,0.6797,0.6797,0.6797,supplementary
+Esophagus(GTEx),mLLMCelltype,59,0.8729,0.9729,0.9271,0.9494,per-cluster
+Eye(TS),GPTCelltype,26,0.4423,0.5365,0.5365,0.5365,supplementary
+Eye(TS),mLLMCelltype,26,0.5577,0.6962,0.6615,0.6784,per-cluster
+Fat(TS),GPTCelltype,11,0.5909,0.6227,0.6227,0.6227,supplementary
+Fat(TS),mLLMCelltype,11,0.8182,0.8818,0.8818,0.8818,per-cluster
+Fetal Development(Azimuth),GPTCelltype,77,0.3701,0.5656,0.5656,0.5656,supplementary
+Fetal Development(Azimuth),mLLMCelltype,77,0.4675,0.6558,0.6792,0.6673,per-cluster
+HCL,GPTCelltype,63,0.4762,0.5873,0.5873,0.5873,supplementary
+HCL,mLLMCelltype,63,0.5794,0.6556,0.6698,0.6626,per-cluster
+Heart(Azimuth),GPTCelltype,13,0.6154,0.7231,0.7231,0.7231,supplementary
+Heart(Azimuth),mLLMCelltype,13,0.8462,0.9538,0.9538,0.9538,per-cluster
+Heart(GTEx),GPTCelltype,24,0.6667,0.7542,0.7542,0.7542,supplementary
+Heart(GTEx),mLLMCelltype,24,0.9792,0.9875,1.0,0.9937,per-cluster
+Heart(Literature)(GTEx),GPTCelltype,24,0.7917,0.9375,0.9375,0.9375,supplementary
+Heart(Literature)(GTEx),mLLMCelltype,24,0.9167,0.9458,0.9458,0.9458,per-cluster
+Kidney(Azimuth),GPTCelltype,16,0.5,0.675,0.675,0.675,supplementary
+Kidney(Azimuth),mLLMCelltype,16,0.5938,0.8375,0.7437,0.7878,per-cluster
+Large Intestine(TS),GPTCelltype,15,0.4,0.54,0.54,0.54,supplementary
+Large Intestine(TS),mLLMCelltype,15,0.6667,0.7133,0.7133,0.7133,per-cluster
+Liver(Azimuth),GPTCelltype,23,0.587,0.7239,0.7239,0.7239,supplementary
+Liver(Azimuth),mLLMCelltype,23,0.7391,0.9348,0.9087,0.9216,per-cluster
+Liver(TS),GPTCelltype,11,0.5455,0.7364,0.7364,0.7364,supplementary
+Liver(TS),mLLMCelltype,11,0.8182,0.9727,0.9182,0.9447,per-cluster
+Lung(Azimuth),GPTCelltype,10,0.5,0.64,0.64,0.64,supplementary
+Lung(Azimuth),mLLMCelltype,10,0.65,0.88,0.91,0.8947,per-cluster
+Lung(Cancer),GPTCelltype,39,0.8462,0.9538,0.9538,0.9538,supplementary
+Lung(Cancer),mLLMCelltype,39,0.859,0.8897,0.8821,0.8859,per-cluster
+Lung(GTEx),GPTCelltype,23,0.5217,0.7043,0.7043,0.7043,supplementary
+Lung(GTEx),mLLMCelltype,23,0.8478,0.9565,0.8913,0.9228,per-cluster
+Lung(Literature)(GTEx),GPTCelltype,23,0.7391,0.7696,0.7696,0.7696,supplementary
+Lung(Literature)(GTEx),mLLMCelltype,23,0.8913,0.9935,0.9413,0.9667,per-cluster
+Lung(TS),GPTCelltype,35,0.5143,0.6943,0.6943,0.6943,supplementary
+Lung(TS),mLLMCelltype,35,0.6857,0.9271,0.8843,0.9052,per-cluster
+Lymph Node(TS),GPTCelltype,21,0.5476,0.7643,0.7643,0.7643,supplementary
+Lymph Node(TS),mLLMCelltype,21,0.5952,0.8429,0.7143,0.7733,per-cluster
+MCA,GPTCelltype,67,0.5224,0.6269,0.6269,0.6269,supplementary
+MCA,mLLMCelltype,67,0.5821,0.7396,0.8425,0.7877,per-cluster
+Mammary(TS),GPTCelltype,13,0.6538,0.7885,0.7885,0.7885,supplementary
+Mammary(TS),mLLMCelltype,13,0.9615,0.9769,1.0,0.9883,per-cluster
+Muscle(TS),GPTCelltype,18,0.5,0.6556,0.6556,0.6556,supplementary
+Muscle(TS),mLLMCelltype,18,0.5833,0.8278,0.8444,0.836,per-cluster
+Pancreas(Azimuth),GPTCelltype,13,0.5385,0.7,0.7,0.7,supplementary
+Pancreas(Azimuth),mLLMCelltype,13,0.6923,0.8769,0.8308,0.8532,per-cluster
+Pancreas(TS),GPTCelltype,13,0.7308,0.9192,0.9192,0.9192,supplementary
+Pancreas(TS),mLLMCelltype,13,0.8846,0.9769,0.9538,0.9652,per-cluster
+Prostate(GTEx),GPTCelltype,25,0.48,0.648,0.648,0.648,supplementary
+Prostate(GTEx),mLLMCelltype,25,0.86,0.948,0.912,0.9297,per-cluster
+Prostate(Literature)(GTEx),GPTCelltype,25,0.84,0.952,0.952,0.952,supplementary
+Prostate(Literature)(GTEx),mLLMCelltype,25,0.86,0.896,0.908,0.902,per-cluster
+Prostate(TS),GPTCelltype,12,0.5,0.675,0.675,0.675,supplementary
+Prostate(TS),mLLMCelltype,12,0.6667,0.7833,0.7833,0.7833,per-cluster
+Salivary Gland(TS),GPTCelltype,22,0.4773,0.6205,0.6205,0.6205,supplementary
+Salivary Gland(TS),mLLMCelltype,22,0.6591,0.8409,0.8273,0.834,per-cluster
+Skeletal Muscle(GTEx),GPTCelltype,25,0.68,0.82,0.82,0.82,supplementary
+Skeletal Muscle(GTEx),mLLMCelltype,25,0.92,0.976,0.976,0.976,per-cluster
+Skeletal Muscle(Literature)(GTEx),GPTCelltype,25,0.84,0.952,0.952,0.952,supplementary
+Skeletal Muscle(Literature)(GTEx),mLLMCelltype,25,0.96,0.988,0.988,0.988,per-cluster
+Skin(GTEx),GPTCelltype,26,0.6923,0.8269,0.8269,0.8269,supplementary
+Skin(GTEx),mLLMCelltype,26,0.7885,0.8462,0.8115,0.8285,per-cluster
+Skin(Literature)(GTEx),GPTCelltype,23,0.6957,0.7565,0.7565,0.7565,supplementary
+Skin(Literature)(GTEx),mLLMCelltype,23,0.8478,0.8696,0.8565,0.863,per-cluster
+Small Intestine(TS),GPTCelltype,15,0.3667,0.53,0.53,0.53,supplementary
+Small Intestine(TS),mLLMCelltype,15,0.6,0.74,0.74,0.74,per-cluster
+Spleen(TS),GPTCelltype,21,0.5238,0.7238,0.7238,0.7238,supplementary
+Spleen(TS),mLLMCelltype,21,0.5952,0.7333,0.6905,0.7113,per-cluster
+Thymus(TS),GPTCelltype,20,0.575,0.8025,0.8025,0.8025,supplementary
+Thymus(TS),mLLMCelltype,20,0.85,0.9175,0.9925,0.9535,per-cluster
+Tongue(TS),GPTCelltype,10,0.6,0.74,0.74,0.74,supplementary
+Tongue(TS),mLLMCelltype,10,0.7,0.91,0.91,0.91,per-cluster
+Tonsil(Azimuth),GPTCelltype,42,0.4524,0.7024,0.7024,0.7024,supplementary
+Tonsil(Azimuth),mLLMCelltype,42,0.6429,0.8607,0.825,0.8425,per-cluster
+Trachea(TS),GPTCelltype,17,0.6176,0.7206,0.7206,0.7206,supplementary
+Trachea(TS),mLLMCelltype,17,0.8235,0.8706,0.9412,0.9045,per-cluster
+Uterus(TS),GPTCelltype,12,0.7083,0.7958,0.7958,0.7958,supplementary
+Uterus(TS),mLLMCelltype,12,0.9167,0.95,1.0,0.9744,per-cluster
+Vasculature(TS),GPTCelltype,13,0.9615,0.9885,0.9885,0.9885,supplementary
+Vasculature(TS),mLLMCelltype,13,0.9615,0.9769,1.0,0.9883,per-cluster
+esophagus(Literature (GTEx)),GPTCelltype,59,0.822,0.9229,0.9229,0.9229,supplementary
+esophagus(Literature (GTEx)),mLLMCelltype,59,0.8644,0.9068,0.9169,0.9118,per-cluster

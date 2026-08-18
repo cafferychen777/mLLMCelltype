@@ -1,0 +1,17 @@
+# mLLMCelltype robots.txt
+# Optimized for cell type annotation searches
+
+User-agent: *
+Allow: /
+Allow: /static/
+Allow: /api/sample
+
+# Block admin areas
+Disallow: /admin
+Disallow: /admin-login
+
+# Sitemap
+Sitemap: https://www.mllmcelltype.com/sitemap.xml
+
+# Crawl-delay for respectful crawling
+Crawl-delay: 1

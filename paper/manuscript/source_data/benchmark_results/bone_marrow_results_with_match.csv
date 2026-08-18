@@ -1,0 +1,42 @@
+cluster_id,reference_name,final_consensus,is_controversial,initial_claude-3-5-sonnet-latest,initial_claude-3-5-haiku-latest,initial_gemini-1.5-pro,initial_gemini-2.0-flash-exp,initial_qwen-max-2025-01-25,initial_gpt-4o,match_score
+1,AXL+ dendritic cell,Plasmacytoid Dendritic Cells,True,Plasmacytoid Dendritic Cells,Plasmacytoid dendritic cells,Plasmacytoid Dendritic Cell,Plasmacytoid dendritic cell,Macrophage,Plasmacytoid dendritic cells,0.5
+2,Basophil eosinophil mast progenitor cell,Mast cells,True,Mast Cells,Mast cells,Basophil,Mast cell,Mast cell,Mast cells,0.5
+3,CD14-positive monocyte,Classical Monocytes,True,Classical Monocytes,Neutrophils,Monocyte,Monocyte,Monocyte,Monocytes,0.5
+4,CD14-low CD16-positive monocyte,Non-Classical Monocytes,False,Non-Classical Monocytes,Monocytes,Monocyte,Macrophage,Macrophage,Monocytes,1.0
+5,Effector CD4-positive alpha-beta T cell,CD4+ T cells,True,CD4+ T Cells,CD4+ T cells,Pre-Pro B cell,T cell,T cell,T cells,0.5
+6,CD4-positive alpha-beta memory T cell,CD4+ T cells,True,CD4+ T Cells,CD4+ T cells,Pre-B cell,T cell,T cell,T cells,0.5
+7,Naive thymus-derived CD4-positive alpha-beta T cell,Naive CD4+ T cells,True,Naive CD4+ T Cells,CD4+ T cells,Naive B cell,T cell,T cell,T cells,0.5
+8,Effector CD8-positive alpha-beta T cell type 1,Cytotoxic T cells,False,CD8+ T Cells,CD8+ T cells,CD8+ T cell,Cytotoxic T cell,CD8+ T cell,Cytotoxic T cells,0.5
+9,Effector CD8-positive alpha-beta T cell type 2,NK cells,True,CD8+ T Cells,γδ T cells,NK cell,Natural killer cell,NK cell,NK cells,0.0
+10,Effector CD8-positive alpha-beta T cell type 3,Cytotoxic T cells,False,CD8+ T Cells,CD8+ T cells,CD8+ T cell,Cytotoxic T cell,CD8+ T cell,Cytotoxic T cells,0.5
+11,CD8-positive alpha-beta memory T cell,CD8+ T Cells,False,CD8+ T Cells,CD8+ T cells,CD8+ T cell,T cell,CD8+ T cell,T cells,0.5
+12,Naive thymus-derived CD8-positive alpha-beta T cell,Naive CD8+ T cells,True,Naive CD8+ T Cells,Naive CD8+ T cells,Naive B cell,T cell,CD8+ T cell,T cells,0.5
+13,CD141-positive myeloid dendritic cell,Conventional Dendritic Cells Type 1,False,Conventional Dendritic Cells Type 1,Conventional dendritic cells,Dendritic Cell,Dendritic cell,Dendritic cell,Dendritic cells,0.5
+14,CD1c-positive myeloid dendritic cell,Conventional Dendritic Cells Type 2,False,Conventional Dendritic Cells Type 2,CD1c+ dendritic cells,Dendritic Cell,Dendritic cell,Dendritic cell,Dendritic cells,1.0
+15,Common lymphoid progenitor cell,Hematopoietic stem/progenitor cells,False,Hematopoietic Stem Cells,Hematopoietic stem and progenitor cells,HSC,Hematopoietic stem cell,Hematopoietic stem cell,Hematopoietic stem/progenitor cells,0.5
+16,Early erythroid cell,Erythroid Progenitors,True,Erythroid Progenitors,Megakaryocytes,Megakaryocyte,Erythroblast,Erythrocyte progenitor,Megakaryocytes,0.5
+17,Megakaryocyte-erythroid progenitor cell,Hematopoietic stem/progenitor cells,False,Multipotent Progenitors,Basophils,Megakaryocyte,Erythroblast,Erythrocyte progenitor,Hematopoietic stem/progenitor cells,0.5
+18,Granulocyte monocyte progenitor cell,Neutrophil Progenitors,False,Neutrophil Progenitors,Neutrophil precursors,Neutrophil,Neutrophil,Neutrophil,Neutrophils,0.5
+19,Hematopoietic stem cell,Hematopoietic Stem Cells,True,Hematopoietic Stem Cells,CD4+ T cells,HSC,Hematopoietic stem cell,Erythrocyte progenitor,Hematopoietic stem/progenitor cells,1.0
+20,Innate lymphoid cell,Natural killer cell,False,NK Cells,NK cells,NK cell,Natural killer cell,NK cell,NK cells,0.5
+21,Late erythroid cell,Erythroid cells,False,Erythroid Cells,Erythrocytes,Erythroid,Erythrocyte,Erythroblast,Erythroid cells,0.5
+22,Lymphoid primed multipotent progenitor cell,Hematopoietic Stem/Progenitor Cells,True,Myeloid Progenitors,CD4+ T cells,HSC,Hematopoietic stem cell,Erythrocyte progenitor,Hematopoietic stem/progenitor cells,0.5
+23,Macrophage,Macrophages,False,Macrophages,Macrophages,Macrophage,Macrophage,Macrophage,Macrophages,1.0
+24,Mucosal associated invariant T cell,NK T cells,True,NK T Cells,CD4+ T cells,NK cell,T cell,T cell,T cells,0.5
+25,Memory B cell,B cells,False,B Cells,B cells,B cell,B cell,B cell,B cells,0.5
+26,Naive B cell,B cells,False,B Cells,B cells,B cell,B cell,B cell,B cells,0.5
+27,CD16-positive CD56-dim natural killer cell,NK cells,True,NK Cells,NK cells,NK cell,Natural killer cell,NK cell,NK-like T cells,0.5
+28,CD16-negative CD56-bright natural killer cell,Natural killer cell,False,NK Cells,NK cells,NK cell,Natural killer cell,NK cell,NK cells,0.5
+29,Proliferating natural killer cell,Cytotoxic NK cells,True,Cytotoxic NK Cells,NK cells,Cytotoxic T cell,Cytotoxic T cell,NK cell,Cytotoxic T cells,0.5
+30,Plasmacytoid dendritic cell,Plasmacytoid dendritic cells,False,Plasmacytoid Dendritic Cells,Plasmacytoid dendritic cells,Plasmacytoid Dendritic Cell,Plasmacytoid dendritic cell,Plasmacytoid dendritic cell,Plasmacytoid dendritic cells,1.0
+31,Plasma cell,Plasma cells,False,Plasma Cells,Plasma cells,Plasma cell,Plasma cell,Plasma cell,Plasma cells,1.0
+32,Platelet,Megakaryocytes,False,Megakaryocytes,Platelets,Platelet,Megakaryocyte,Platelet,Platelets,0.5
+33,Precursor B cell,Early B Cell Precursors,False,Early B Cell Precursors,Lymphoid progenitors,Pro-B cell,Early lymphoid progenitor,Pro-B cell,Early B cells,0.5
+34,Precursor myeloid dendritic cell,Conventional Dendritic Cells Type 2,True,Conventional Dendritic Cells Type 2,CD14+ dendritic cells,Dendritic Cell,Dendritic cell,Mast cell,Dendritic cells,0.5
+35,Precursor plasmacytoid dendritic cell,Plasmacytoid dendritic cells,False,Plasmacytoid Dendritic Cells,Plasmacytoid dendritic cells,Plasmacytoid Dendritic Cell,Plasmacytoid dendritic cell,Plasmacytoid dendritic cell,Plasmacytoid dendritic cells,0.5
+36,Pro-B cell,Immature B cells,False,Pro-B Cells,Pre-B cells,Pre-B cell,B cell,Pre-B cell,Immature B cells,0.5
+37,Megakaryocyte progenitor cell,Megakaryocytes,True,Platelets,Megakaryocytes,Neutrophil,Megakaryocyte,Megakaryocyte,Platelets,0.5
+38,Stromal cell,Mesenchymal stromal cells,False,Fibroblasts,Fibroblasts,Osteoblast,Fibroblast,Fibroblast,Mesenchymal stromal cells,0.5
+39,Proliferating T cell,Proliferating lymphoid cells,False,Proliferating T Cells,Proliferating lymphoid cells,Cycling cells,Cycling T cell,Proliferating T cell,Proliferating cells,0.5
+40,Transitional B cell,Pre-B cells,True,Early B Cell Precursors,Pre-B cells,Pre-B cell,B cell,Pre-B cell,Stromal cells,0.5
+Total,Average Score (40 entries),,,,,,,,,0.5625

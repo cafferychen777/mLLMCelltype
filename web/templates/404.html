@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>404 - Page Not Found | mLLMCelltype</title>
+    <meta name="description"
+        content="The page you're looking for cannot be found. Return to mLLMCelltype for cell type annotation.">
+    <meta name="robots" content="noindex, follow">
+    <link rel="icon" type="image/svg+xml"
+        href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E🧬%3C/text%3E%3C/svg%3E">
+    <link rel="stylesheet" href="{[{ url_for('static', filename='css/style.css') }]}">
+    <link rel="stylesheet" href="{[{ url_for('static', filename='fontawesome-css/all.min.css') }]}">
+</head>
+<body class="error-page">
+    <main class="error-shell">
+        <a class="brand-link error-brand" href="{[{ url_for('index') }]}">
+            <span class="brand-emoji" aria-hidden="true">🧬</span>
+            <span class="brand-name">mLLMCelltype</span>
+        </a>
+        <p class="error-kicker">404</p>
+        <h1>That page is not in this dataset.</h1>
+        <p class="error-message">The link may be outdated, or the page may have moved. Continue with the annotation
+            tool or open one of the guides below.</p>
+        <div class="error-actions">
+            <a href="{[{ url_for('index') }]}" class="btn btn-primary btn-large">
+                <span>Return to annotation</span>
+                <i class="fas fa-arrow-right" aria-hidden="true"></i>
+            </a>
+            <a href="{[{ url_for('faq') }]}" class="btn btn-outline btn-large">Read the FAQ</a>
+        </div>
+        <nav class="error-links" aria-label="Helpful pages">
+            <a href="{[{ url_for('api_documentation') }]}">API documentation</a>
+            <a href="{[{ url_for('scrna_troubleshooting_guide') }]}">scRNA-seq troubleshooting</a>
+        </nav>
+    </main>
+</body>
+</html>

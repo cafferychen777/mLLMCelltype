@@ -1,0 +1,524 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>scRNA-seq Troubleshooting Guide - Cell Type Annotation Problems | mLLMCelltype</title>
+
+    <!-- SEO Meta Tags -->
+    <meta name="description"
+        content="Troubleshooting guide for scRNA-seq analysis and cell type annotation problems. Solve common issues with single cell RNA sequencing data processing and annotation errors.">
+    <!-- Open Graph -->
+    <meta property="og:title" content="scRNA-seq Troubleshooting Guide - Solve Analysis Problems">
+    <meta property="og:description"
+        content="Solutions for common scRNA-seq analysis issues and cell type annotation problems.">
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://www.mllmcelltype.com/scrna-troubleshooting-guide">
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="scRNA-seq Troubleshooting Guide">
+    <meta name="twitter:description"
+        content="Common scRNA-seq analysis issues and solutions">
+
+    <!-- Canonical -->
+    <link rel="canonical" href="https://www.mllmcelltype.com/scrna-troubleshooting-guide">
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E🧬%3C/text%3E%3C/svg%3E">
+
+    <!-- Styles -->
+    <link rel="stylesheet" href="{[{ url_for('static', filename='css/style.css') }]}">
+
+    <!-- Font Awesome - Local version for better reliability -->
+    <link rel="stylesheet" href="{[{ url_for('static', filename='fontawesome-css/all.min.css') }]}">
+
+
+    <!-- HowTo Structured Data -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "HowTo",
+      "name": "How to Troubleshoot scRNA-seq Analysis Problems",
+      "description": "Step-by-step guide to diagnose and solve common scRNA-seq analysis and cell type annotation issues",
+      "url": "https://www.mllmcelltype.com/scrna-troubleshooting-guide",
+      "totalTime": "PT30M",
+      "yield": "Resolved scRNA-seq analysis issues",
+      "estimatedCost": {
+        "@type": "MonetaryAmount",
+        "currency": "USD",
+        "value": "0"
+      },
+      "supply": [
+        {
+          "@type": "HowToSupply",
+          "name": "scRNA-seq data"
+        },
+        {
+          "@type": "HowToSupply",
+          "name": "Analysis software (Seurat, Scanpy, or mLLMCelltype)"
+        }
+      ],
+      "tool": [
+        {
+          "@type": "HowToTool",
+          "name": "mLLMCelltype Platform"
+        },
+        {
+          "@type": "HowToTool",
+          "name": "Quality control tools"
+        }
+      ],
+      "step": [
+        {
+          "@type": "HowToStep",
+          "name": "Identify the Problem Type",
+          "text": "Determine whether the issue is with data quality, preprocessing, clustering, or annotation",
+          "url": "https://www.mllmcelltype.com/scrna-troubleshooting-guide#identify-problem"
+        },
+        {
+          "@type": "HowToStep",
+          "name": "Check Data Quality",
+          "text": "Examine cell and gene quality metrics to identify potential data issues",
+          "url": "https://www.mllmcelltype.com/scrna-troubleshooting-guide#data-quality"
+        },
+        {
+          "@type": "HowToStep",
+          "name": "Review Preprocessing Steps",
+          "text": "Verify normalization, feature selection, and dimensionality reduction parameters",
+          "url": "https://www.mllmcelltype.com/scrna-troubleshooting-guide#preprocessing"
+        },
+        {
+          "@type": "HowToStep",
+          "name": "Optimize Annotation Parameters",
+          "text": "Adjust consensus thresholds and model selection for better annotation results",
+          "url": "https://www.mllmcelltype.com/scrna-troubleshooting-guide#annotation-optimization"
+        }
+      ],
+      "author": {
+        "@type": "Organization",
+        "name": "mLLMCelltype Team"
+      }
+    }
+    </script>
+</head>
+
+<body>
+    <a class="skip-link" href="#main-content">Skip to main content</a>
+    <div id="app">
+        {% include "_public_nav.html" %}
+
+        <main id="main-content" class="main-content">
+            <div class="content-rail">
+                <!-- Breadcrumb -->
+                <nav class="breadcrumb" aria-label="Breadcrumb">
+                <ol>
+                    <li><a href="{[{ url_for('index') }]}">Home</a></li>
+                    <li><span aria-current="page">scRNA Troubleshooting Guide</span></li>
+                </ol>
+                </nav>
+
+            <!-- Hero Section -->
+            <div class="hero-section">
+                <div class="hero-content">
+                    <div class="hero-icon">
+                        <span class="hero-emoji">🔧</span>
+                    </div>
+                    <h1 class="hero-title">scRNA-seq Troubleshooting Guide</h1>
+                    <p class="hero-subtitle">Solutions for common single cell RNA sequencing analysis and cell
+                        type annotation problems</p>
+                    <p class="hero-description">Troubleshooting guide to help you solve the most common
+                        issues in single-cell analysis workflows.</p>
+                    <div class="article-meta">
+                        <span><i class="fas fa-calendar"></i> Updated July 2026</span>
+                        <span><i class="fas fa-clock"></i> 15 min read</span>
+                        <span><i class="fas fa-tools"></i> Problem Solving</span>
+                        <span><i class="fas fa-dna"></i> Single Cell Analysis</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quick Problem Checker -->
+            <section class="problem-checker">
+                <h2>🚨 Quick Problem Identifier</h2>
+                <p>Select your issue type to jump to the relevant solution:</p>
+
+                <div class="problem-grid">
+                    <a class="problem-card" href="#data-quality">
+                        <h3>📊 Data Quality Issues</h3>
+                        <p>Low cell counts, high mitochondrial genes, doublets</p>
+                    </a>
+
+                    <a class="problem-card" href="#preprocessing">
+                        <h3>⚙️ Preprocessing Problems</h3>
+                        <p>Normalization, scaling, feature selection issues</p>
+                    </a>
+
+                    <a class="problem-card" href="#clustering">
+                        <h3>🔗 Clustering Issues</h3>
+                        <p>Poor clusters, over/under-clustering, resolution problems</p>
+                    </a>
+
+                    <a class="problem-card" href="#annotation">
+                        <h3>🏷️ Annotation Problems</h3>
+                        <p>Incorrect cell types, low confidence, novel populations</p>
+                    </a>
+
+                    <a class="problem-card" href="#integration">
+                        <h3>🔄 Batch Integration</h3>
+                        <p>Batch effects, integration failures, sample differences</p>
+                    </a>
+
+                    <a class="problem-card" href="#performance">
+                        <h3>⚡ Performance Issues</h3>
+                        <p>Slow processing, memory errors, crashes</p>
+                    </a>
+                </div>
+            </section>
+
+            <!-- Main Content -->
+            <div class="article-content">
+
+                <!-- Data Quality Section -->
+                <section id="data-quality" class="content-section">
+                    <h2>📊 Data Quality Troubleshooting</h2>
+
+                    <div class="problem-solution">
+                        <h3>Problem: Low Cell/Gene Counts</h3>
+                        <div class="symptoms">
+                            <h4>Symptoms:</h4>
+                            <ul>
+                                <li>Many cells have < 1000 detected genes</li>
+                                <li>High percentage of cells removed during filtering</li>
+                                <li>Poor clustering results</li>
+                            </ul>
+                        </div>
+
+                        <div class="solutions">
+                            <h4>Solutions:</h4>
+                            <ol>
+                                <li><strong>Adjust Quality Thresholds:</strong>
+                                    <div class="code-block">
+                                        <pre><code># R/Seurat example
+# Lower thresholds for difficult samples
+subset(seurat_obj, subset = nFeature_RNA > 500 & nCount_RNA > 1000)
+
+# Python/Scanpy example
+sc.pp.filter_cells(adata, min_genes=500)
+sc.pp.filter_genes(adata, min_cells=10)</code></pre>
+                                    </div>
+                                </li>
+                                <li><strong>Check Sample Preparation:</strong> Review tissue dissociation, cell capture
+                                    efficiency</li>
+                                <li><strong>Consider Cell Type:</strong> Some cell types naturally have lower RNA
+                                    content</li>
+                            </ol>
+                        </div>
+                    </div>
+
+                    <div class="problem-solution">
+                        <h3>Problem: High Mitochondrial Gene Expression</h3>
+                        <div class="symptoms">
+                            <h4>Symptoms:</h4>
+                            <ul>
+                                <li>Cells with >20% mitochondrial gene expression</li>
+                                <li>Potential cell stress or death</li>
+                            </ul>
+                        </div>
+
+                        <div class="solutions">
+                            <h4>Solutions:</h4>
+                            <ol>
+                                <li><strong>Progressive Filtering:</strong>
+                                    <div class="code-block">
+                                        <pre><code># Start with relaxed thresholds
+subset(seurat_obj, subset = percent.mt < 25)
+# Then tighten based on results
+subset(seurat_obj, subset = percent.mt < 15)</code></pre>
+                                    </div>
+                                </li>
+                                <li><strong>Tissue-Specific Thresholds:</strong> Brain cells: <20%, Blood cells:
+                                        <10%</li>
+                                <li><strong>Regression Approach:</strong> Regress out mitochondrial effects instead of
+                                    filtering</li>
+                            </ol>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Preprocessing Section -->
+                <section id="preprocessing" class="content-section">
+                    <h2>⚙️ Preprocessing Troubleshooting</h2>
+
+                    <div class="problem-solution">
+                        <h3>Problem: Poor Normalization Results</h3>
+                        <div class="symptoms">
+                            <h4>Symptoms:</h4>
+                            <ul>
+                                <li>Batch effects still visible after normalization</li>
+                                <li>Highly variable genes dominated by ribosomal/mitochondrial genes</li>
+                                <li>Poor clustering separation</li>
+                            </ul>
+                        </div>
+
+                        <div class="solutions">
+                            <h4>Solutions:</h4>
+                            <ol>
+                                <li><strong>Try Different Normalization Methods:</strong>
+                                    <div class="comparison-table-small table-scroll" tabindex="0" role="region"
+                                        aria-label="Normalization method comparison">
+                                        <table>
+                                            <tr>
+                                                <th>Method</th>
+                                                <th>Best For</th>
+                                                <th>When to Use</th>
+                                            </tr>
+                                            <tr>
+                                                <td>Log-normalization</td>
+                                                <td>Standard analysis</td>
+                                                <td>Default choice</td>
+                                            </tr>
+                                            <tr>
+                                                <td>SCTransform</td>
+                                                <td>Heterogeneous datasets</td>
+                                                <td>Strong batch effects</td>
+                                            </tr>
+                                            <tr>
+                                                <td>scran</td>
+                                                <td>Sparse data</td>
+                                                <td>Many zero counts</td>
+                                            </tr>
+                                        </table>
+                                    </div>
+                                </li>
+                                <li><strong>Parameter Optimization:</strong> Adjust scaling factors and regression
+                                    variables</li>
+                                <li><strong>Alternative Approaches:</strong> Consider SCTransform for complex datasets
+                                </li>
+                            </ol>
+                        </div>
+                    </div>
+
+                    <div class="problem-solution">
+                        <h3>Problem: Feature Selection Issues</h3>
+                        <div class="solutions">
+                            <h4>Solutions:</h4>
+                            <ol>
+                                <li><strong>Increase HVG Count:</strong> Try 3000-5000 highly variable genes instead of
+                                    2000</li>
+                                <li><strong>Use Multiple Methods:</strong> Combine vst, mean.var.plot, and dispersion
+                                    approaches</li>
+                                <li><strong>Manual Curation:</strong> Remove unwanted gene categories (ribosomal,
+                                    mitochondrial)</li>
+                            </ol>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Clustering Section -->
+                <section id="clustering" class="content-section">
+                    <h2>🔗 Clustering Troubleshooting</h2>
+
+                    <div class="problem-solution">
+                        <h3>Problem: Over-clustering (Too Many Small Clusters)</h3>
+                        <div class="solutions">
+                            <h4>Solutions:</h4>
+                            <ol>
+                                <li><strong>Reduce Resolution:</strong>
+                                    <div class="code-block">
+                                        <pre><code># Try lower resolution values
+FindClusters(seurat_obj, resolution = 0.3)  # Instead of 0.8
+FindClusters(seurat_obj, resolution = 0.5)  # Middle ground</code></pre>
+                                    </div>
+                                </li>
+                                <li><strong>Increase k Parameter:</strong> Use more neighbors in SNN graph construction
+                                </li>
+                                <li><strong>Merge Similar Clusters:</strong> Use hierarchical clustering to identify
+                                    merge candidates</li>
+                            </ol>
+                        </div>
+                    </div>
+
+                    <div class="problem-solution">
+                        <h3>Problem: Under-clustering (Missing Cell Types)</h3>
+                        <div class="solutions">
+                            <h4>Solutions:</h4>
+                            <ol>
+                                <li><strong>Increase Resolution:</strong> Try 0.8, 1.0, or higher</li>
+                                <li><strong>Adjust PCA Dimensions:</strong> Use more PCs (30-50 instead of 20)</li>
+                                <li><strong>Re-examine Preprocessing:</strong> Check if important genes were filtered
+                                    out</li>
+                            </ol>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Annotation Section -->
+                <section id="annotation" class="content-section">
+                    <h2>🏷️ Cell Type Annotation Troubleshooting</h2>
+
+                    <div class="problem-solution">
+                        <h3>Problem: Incorrect Cell Type Assignments</h3>
+                        <div class="symptoms">
+                            <h4>Symptoms:</h4>
+                            <ul>
+                                <li>Known markers not matching assigned cell types</li>
+                                <li>Biologically implausible results</li>
+                                <li>Low confidence scores</li>
+                            </ul>
+                        </div>
+
+                        <div class="solutions">
+                            <h4>Solutions with mLLMCelltype:</h4>
+                            <ol>
+                                <li><strong>Enable Multi-Model Consensus:</strong>
+                                    <div class="tip-box">
+                                        <p>🎯 <strong>Pro Tip:</strong> Use 3-5 different AI models and set consensus
+                                            threshold to 0.7 for higher confidence</p>
+                                    </div>
+                                </li>
+                                <li><strong>Use Discussion Mode:</strong> Let models debate uncertain annotations</li>
+                                <li><strong>Provide Better Context:</strong> Include tissue type and experimental
+                                    condition information</li>
+                                <li><strong>Refine Marker Genes:</strong> Use more specific, high-quality marker genes
+                                </li>
+                            </ol>
+                        </div>
+                    </div>
+
+                    <div class="problem-solution">
+                        <h3>Problem: Novel or Rare Cell Types Not Recognized</h3>
+                        <div class="solutions">
+                            <h4>Solutions:</h4>
+                            <ol>
+                                <li><strong>Lower Consensus Threshold:</strong> Allow more exploratory annotations</li>
+                                <li><strong>Manual Review:</strong> Examine clusters with "Unknown" annotations</li>
+                                <li><strong>Literature Search:</strong> Research potential novel populations in your
+                                    tissue</li>
+                                <li><strong>Functional Analysis:</strong> Perform pathway analysis to understand cell
+                                    function</li>
+                            </ol>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Integration Section -->
+                <section id="integration" class="content-section">
+                    <h2>🔄 Batch Integration Troubleshooting</h2>
+
+                    <div class="problem-solution">
+                        <h3>Problem: Strong Batch Effects Persist</h3>
+                        <div class="solutions">
+                            <h4>Integration Method Comparison:</h4>
+                            <div class="comparison-table-small table-scroll" tabindex="0" role="region"
+                                aria-label="Integration method comparison">
+                                <table>
+                                    <tr>
+                                        <th>Method</th>
+                                        <th>Strength</th>
+                                        <th>Best For</th>
+                                    </tr>
+                                    <tr>
+                                        <td>Harmony</td>
+                                        <td>Fast, robust</td>
+                                        <td>Large datasets</td>
+                                    </tr>
+                                    <tr>
+                                        <td>scanorama</td>
+                                        <td>Panoramic integration</td>
+                                        <td>Diverse samples</td>
+                                    </tr>
+                                    <tr>
+                                        <td>CCA/RPCA</td>
+                                        <td>Seurat native</td>
+                                        <td>Similar protocols</td>
+                                    </tr>
+                                    <tr>
+                                        <td>scVI</td>
+                                        <td>Deep learning</td>
+                                        <td>Complex batch effects</td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Performance Section -->
+                <section id="performance" class="content-section">
+                    <h2>⚡ Performance Troubleshooting</h2>
+
+                    <div class="problem-solution">
+                        <h3>Problem: Memory Errors and Crashes</h3>
+                        <div class="solutions">
+                            <h4>Solutions:</h4>
+                            <ol>
+                                <li><strong>Reduce Data Size:</strong> Subsample cells or genes for initial analysis
+                                </li>
+                                <li><strong>Use Disk-Based Storage:</strong> Enable on-disk storage for large objects
+                                </li>
+                                <li><strong>Optimize Parameters:</strong> Reduce PCA dimensions, use fewer HVGs</li>
+                                <li><strong>Cloud Computing:</strong> Use mLLMCelltype web platform for processing</li>
+                            </ol>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Prevention Tips -->
+                <section class="content-section">
+                    <h2>🛡️ Prevention Best Practices</h2>
+
+                    <div class="best-practices-grid">
+                        <div class="practice-card">
+                            <h3>📋 Quality Control Checklist</h3>
+                            <ul>
+                                <li>Always plot QC metrics before filtering</li>
+                                <li>Use tissue-appropriate thresholds</li>
+                                <li>Document all parameter choices</li>
+                                <li>Save intermediate analysis steps</li>
+                            </ul>
+                        </div>
+
+                        <div class="practice-card">
+                            <h3>🔍 Validation Steps</h3>
+                            <ul>
+                                <li>Cross-check with known markers</li>
+                                <li>Validate with external datasets</li>
+                                <li>Use multiple annotation methods</li>
+                                <li>Manual review of uncertain clusters</li>
+                            </ul>
+                        </div>
+
+                        <div class="practice-card">
+                            <h3>📚 Documentation</h3>
+                            <ul>
+                                <li>Record all software versions</li>
+                                <li>Document parameter settings</li>
+                                <li>Keep analysis notebooks organized</li>
+                                <li>Note troubleshooting steps taken</li>
+                            </ul>
+                        </div>
+                    </div>
+                </section>
+
+            </div>
+
+
+            <!-- CTA Section -->
+            <section class="cta-section text-center">
+                <h2>Need More Help?</h2>
+                <p>mLLMCelltype provides multi-model consensus annotation for your scRNA-seq data</p>
+                <a href="{[{ url_for('index') }]}" class="btn btn-primary">Use mLLMCelltype</a>
+                <a href="{[{ url_for('faq') }]}" class="btn btn-outline">View FAQ</a>
+            </section>
+            </div>
+        </main>
+
+        {% include "_public_footer.html" %}
+
+
+        <!-- Shared static-page behavior -->
+        <script src="{[{ url_for('static', filename='js/static-pages.js') }]}"></script>
+    </div>
+</body>
+
+</html>

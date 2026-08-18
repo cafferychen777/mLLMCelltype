@@ -1,0 +1,12 @@
+cluster_id,reference_name,final_consensus,is_controversial,initial_claude-3-5-sonnet-latest,initial_claude-3-5-haiku-latest,initial_gemini-1.5-pro,initial_gemini-2.0-flash-exp,initial_qwen-max-2025-01-25,initial_gpt-4o,match_score
+1,Myeloid cell,Monocytes/Macrophages,False,Macrophages,Monocytes/Macrophages,Macrophage,Macrophage,Macrophage,Macrophages,0.5
+2,Lymphoid cell,T cells/NK cells,False,T cells,T cells/NK cells,T cell,T cell,T cell,T cells,0.5
+3,Alveolar epithelial cell,Alveolar Epithelial Type II cell,False,Alveolar Type 2 cells,Alveolar type II pneumocytes,Alveolar Epithelial Type II,Alveolar Epithelial Type II cell,Alveolar type II cell,Alveolar type II cells,0.5
+4,Airway epithelial cell,Club cells,True,Club cells,Epithelial cells,Epithelial,Epithelial cell,Epithelial cell,Epithelial cells,0.5
+5,Blood vessel cell,Endothelial cells,False,Endothelial cells,Endothelial cells,Endothelial,Endothelial cell,Endothelial cell,Endothelial cells,0.5
+6,Fibroblast lineage cell,Fibroblasts,False,Fibroblasts,Fibroblasts,Fibroblast,Fibroblast,Fibroblast,Fibroblasts,0.5
+7,Smooth muscle cell,Smooth muscle cells,False,Smooth muscle cells,Smooth muscle cells,Smooth Muscle,Smooth muscle cell,Smooth muscle cell,Smooth muscle cells,1.0
+8,Submucosal gland cell,Secretory epithelial cells,False,Secretory cells,Secretory/mucus cells,Club,Club cell,Goblet cell,Secretory epithelial cells,0.5
+9,Lymphatic endothelial cell,Lymphatic endothelial cells,False,Lymphatic endothelial cells,Lymphatic endothelial cells,Lymphatic Endothelial,Lymphatic endothelial cell,Lymphatic endothelial cell,Lymphatic endothelial cells,1.0
+10,Mesothelial cell,Mesothelial cells,True,Alveolar Type 1 cells,Unknown/Mixed lineage,Ciliated,Hepatocyte,Hepatocyte-like cell,Mesothelial cells,1.0
+Total,Average Score (10 entries),,,,,,,,,0.65

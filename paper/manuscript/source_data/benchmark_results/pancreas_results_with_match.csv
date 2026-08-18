@@ -1,0 +1,15 @@
+cluster_id,reference_name,final_consensus,is_controversial,initial_claude-3-5-sonnet-latest,initial_claude-3-5-haiku-latest,initial_gemini-1.5-pro,initial_gemini-2.0-flash-exp,initial_qwen-max-2025-01-25,initial_gpt-4o,match_score
+1,Cycling pancreatic endocrine cell,Proliferating or dividing cells,False,Alpha cells,Proliferating cells,Cycling,Dividing cells,Proliferating cells,Proliferating or dividing cells,0.5
+2,Leukocyte,Macrophages,False,Immune cells,Macrophages,Macrophage,Macrophages,Macrophages,Macrophages,0.5
+3,Quiescent pancreatic stellate cell,Pericytes,True,Pericytes,Adipocytes,Pericyte,Pancreatic stellate cells,Pericytes,Pericytes,0.5
+4,Endothelial cell,Endothelial cells,False,Endothelial cells,Endothelial cells,Endothelial cell,Endothelial cells,Endothelial cells,Endothelial cells,1.0
+5,Schwann cell,Neural crest-derived cells,False,Schwann cells,Neural crest cells,Schwann cell precursor,Schwann cells,Neural crest-derived cells,Schwann cells,0.5
+6,Activated pancreatic stellate cell,Fibroblasts,False,Fibroblasts,Fibroblasts,Fibroblast,Fibroblasts,Fibroblasts,Fibroblasts,0.5
+7,Pancreatic epsilon cell,Hepatocytes,True,Enterochromaffin cells,Undefined,Hepatocyte,Ductal cells,Hepatocytes,Hepatocytes,0.0
+8,Pancreatic PP cell,Pancreatic polypeptide cells (PP cells),False,PP cells,Pancreatic polypeptide-secreting cells,Ductal cell type 1,PP cells,Enteroendocrine cells,Pancreatic polypeptide cells (PP cells),1.0
+9,Pancreatic delta cell,Delta cells (somatostatin-secreting cells),False,Delta cells,Somatostatin-secreting cells,Delta cell,Delta cells,Delta cells,Delta cells (somatostatin-secreting cells),1.0
+10,Pancreatic ductal cell,Ductal cells,True,Ductal cells,Ductal cells,Ductal cell type 2,Acinar cells,Ductal cells,Pancreatic ductal cells,0.5
+11,Pancreatic acinar cell,Acinar cells,False,Acinar cells,Acinar cells,Acinar cell,Acinar cells,Acinar cells,Acinar cells,1.0
+12,Pancreatic beta cell,Beta cells (insulin-secreting cells),False,Beta cells,Beta cells,Beta cell,Beta cells,Beta cells,Beta cells (insulin-secreting cells),1.0
+13,Pancreatic alpha cell,Alpha cells (glucagon-secreting cells),False,Alpha cells,Alpha cells,Alpha cell,Alpha cells,Alpha cells,Alpha cells (glucagon-secreting cells),1.0
+Total,Average Score (13 entries),,,,,,,,,0.6923076923076923

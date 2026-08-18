@@ -1,0 +1,18 @@
+cluster_id,reference_name,final_consensus,is_controversial,initial_claude-3-5-sonnet-latest,initial_claude-3-5-haiku-latest,initial_gemini-1.5-pro,initial_gemini-2.0-flash-exp,initial_qwen-max-2025-01-25,initial_gpt-4o,match_score
+1,Adipocyte,Adipocytes,False,Adipocytes,Adipocytes,Adipocyte,Adipocyte,Adipocyte,Adipocytes,1.0
+2,Adipose stem and progenitor cell,Preadipocyte,False,Fibroblasts,Fibroblasts,Fibroblast/Preadipocyte,Fibroblast,Fibroblast,Fibroblasts,0.5
+3,B cell,B cells,False,B cells,B cells,B cell,B cell,B cell,B cells,1.0
+4,Dendritic cell,Antigen-presenting cell,False,Dendritic cells,Dendritic cells,Dendritic cell,Antigen presenting cell,Antigen-presenting cell,Dendritic cells,0.5
+5,Endometrial cell,Neurons,True,Neurons,Neural progenitors,Neuron,Neuron,Neuron,Neurons,0.0
+6,Endothelial cell,Endothelial cells,False,Endothelial cells,Endothelial cells,Endothelial cell,Endothelial cell,Endothelial cell,Endothelial cells,1.0
+7,Lymphatic endothelial cell,Lymphatic endothelial cells,False,Lymphatic endothelial cells,Lymphatic endothelial cells,Lymphatic endothelial cell,Lymphatic endothelial cell,Lymphatic endothelial cell,Lymphatic endothelial cells,1.0
+8,Macrophage,Macrophages,False,Macrophages,Macrophages,Macrophage,Macrophage,Macrophage,Macrophages,1.0
+9,Mast cell,Mast cells,False,Mast cells,Mast cells,Mast cell,Mast cell,Mast cell,Mast cells,1.0
+10,Mesothelial cell,Mesothelial cells,True,Mesothelial cells,Mesothelial cells,Mesothelial cell,Pericyte,Mesothelial cell,Mesothelial cells,1.0
+11,Monocyte,Monocytes,True,Monocytes,Monocytes,Neutrophil,Monocyte,Monocyte,Monocytes,1.0
+12,Neutrophil,Neutrophils,True,Neutrophils,Neutrophils,Microglia,Granulocyte,Dendritic cell,Granulocytes,1.0
+13,Natural killer cell,Natural killer cells,False,NK cells,Natural Killer cells,Natural killer cell,Natural killer cell,Natural killer cell,Natural killer cells,1.0
+14,Pericyte,Pericytes,True,Preadipocytes,Pericytes,Pericyte,Mural cell,Pericyte,Pericytes,1.0
+15,Smooth muscle cell,Smooth muscle cells,False,Smooth muscle cells,Smooth muscle cells,Smooth muscle cell,Smooth muscle cell,Smooth muscle cell,Smooth muscle cells,1.0
+16,T cell,T cells,False,T cells,T cells,T cell,T cell,T cell,T cells,1.0
+Total,Average Score (16 entries),,,,,,,,,0.875

@@ -1,0 +1,462 @@
+---
+- name: Configure the mLLMCelltype production host
+  hosts: mllmcelltype
+  become: true
+  vars:
+    activate_caddy: true
+    legacy_caddy_data: /var/lib/docker/volumes/mllmcelltype-web_caddy_data/_data
+    caddy_data: /var/lib/caddy/.local/share/caddy
+    docker_arch: >-
+      {{ {'x86_64': 'amd64', 'aarch64': 'arm64'}.get(
+      ansible_facts['architecture'], ansible_facts['architecture']) }}
+
+  pre_tasks:
+    - name: Require operator and deployment public keys
+      ansible.builtin.assert:
+        that:
+          - ops_public_key is defined
+          - ops_public_key.startswith('ssh-')
+          - deploy_public_key is defined
+          - deploy_public_key.startswith('ssh-')
+        fail_msg: Inventory must provide ops_public_key and deploy_public_key.
+
+  tasks:
+    - name: Install system packages
+      ansible.builtin.apt:
+        name:
+          - ca-certificates
+          - curl
+          - debian-archive-keyring
+          - debian-keyring
+          - fail2ban
+          - gnupg
+          - python3-debian
+          - rsync
+          - unattended-upgrades
+          - ufw
+        state: present
+        update_cache: true
+
+    - name: Create the apt keyring directory
+      ansible.builtin.file:
+        path: /etc/apt/keyrings
+        state: directory
+        owner: root
+        group: root
+        mode: "0755"
+
+    - name: Install the Docker repository signing key
+      ansible.builtin.get_url:
+        url: https://download.docker.com/linux/ubuntu/gpg
+        dest: /etc/apt/keyrings/docker.asc
+        owner: root
+        group: root
+        mode: "0644"
+
+    - name: Configure the official Docker repository
+      ansible.builtin.deb822_repository:
+        name: docker
+        types:
+          - deb
+        uris:
+          - https://download.docker.com/linux/ubuntu
+        suites:
+          - "{{ ansible_facts['distribution_release'] }}"
+        components:
+          - stable
+        architectures:
+          - "{{ docker_arch }}"
+        signed_by: /etc/apt/keyrings/docker.asc
+        state: present
+
+    - name: Remove the legacy Docker repository definition
+      ansible.builtin.file:
+        path: /etc/apt/sources.list.d/docker.list
+        state: absent
+
+    - name: Install Docker Engine
+      ansible.builtin.apt:
+        name:
+          - containerd.io
+          - docker-buildx-plugin
+          - docker-ce
+          - docker-ce-cli
+          - docker-compose-plugin
+        state: present
+        update_cache: true
+
+    - name: Download the Caddy repository signing key
+      ansible.builtin.get_url:
+        url: https://dl.cloudsmith.io/public/caddy/stable/gpg.key
+        dest: /usr/share/keyrings/caddy-stable.asc
+        mode: "0644"
+      register: caddy_signing_key
+
+    - name: Check the installed Caddy repository keyring
+      ansible.builtin.stat:
+        path: /usr/share/keyrings/caddy-stable-archive-keyring.gpg
+      register: caddy_keyring
+
+    - name: Install the Caddy repository signing key
+      ansible.builtin.command:
+        cmd: >-
+          gpg --batch --yes --dearmor
+          --output /usr/share/keyrings/caddy-stable-archive-keyring.gpg
+          /usr/share/keyrings/caddy-stable.asc
+      when: caddy_signing_key.changed or not caddy_keyring.stat.exists
+      notify: Refresh apt cache
+
+    - name: Configure the official Caddy repository
+      ansible.builtin.get_url:
+        url: https://dl.cloudsmith.io/public/caddy/stable/debian.deb.txt
+        dest: /etc/apt/sources.list.d/caddy-stable.list
+        mode: "0644"
+      notify: Refresh apt cache
+
+    - name: Apply repository changes before installing Caddy
+      ansible.builtin.meta: flush_handlers
+
+    - name: Install Caddy
+      ansible.builtin.apt:
+        name: caddy
+        state: present
+        policy_rc_d: "{{ 0 if activate_caddy | bool else 101 }}"
+
+    - name: Create service users
+      ansible.builtin.user:
+        name: "{{ item.name }}"
+        shell: /bin/bash
+        groups: "{{ item.groups }}"
+        append: false
+        create_home: true
+        state: present
+      loop:
+        - {name: ops, groups: sudo}
+        - {name: deploy, groups: ""}
+
+    - name: Create SSH directories
+      ansible.builtin.file:
+        path: "/home/{{ item }}/.ssh"
+        state: directory
+        owner: "{{ item }}"
+        group: "{{ item }}"
+        mode: "0700"
+      loop:
+        - ops
+        - deploy
+
+    - name: Install scoped SSH keys
+      ansible.builtin.copy:
+        content: "{{ 'restrict ' if item.name == 'deploy' else '' }}{{ item.key | trim }}\n"
+        dest: "/home/{{ item.name }}/.ssh/authorized_keys"
+        owner: "{{ item.name }}"
+        group: "{{ item.name }}"
+        mode: "0600"
+      no_log: true
+      loop:
+        - {name: ops, key: "{{ ops_public_key }}"}
+        - {name: deploy, key: "{{ deploy_public_key }}"}
+
+    - name: Install operator sudo rule
+      ansible.builtin.copy:
+        src: files/ops.sudoers
+        dest: /etc/sudoers.d/ops
+        owner: root
+        group: root
+        mode: "0440"
+        validate: /usr/sbin/visudo --check --file %s
+
+    - name: Create application directories
+      ansible.builtin.file:
+        path: "{{ item.path }}"
+        state: directory
+        owner: "{{ item.owner }}"
+        group: "{{ item.group }}"
+        mode: "{{ item.mode }}"
+      loop:
+        - {path: /etc/mllmcelltype, owner: root, group: root, mode: "0700"}
+        - {path: /opt/mllmcelltype, owner: root, group: root, mode: "0755"}
+        - {path: /opt/mllmcelltype/incoming, owner: deploy, group: deploy, mode: "0750"}
+        - {path: /opt/mllmcelltype/releases, owner: root, group: root, mode: "0750"}
+        - {path: "{{ caddy_data }}", owner: caddy, group: caddy, mode: "0700"}
+
+    - name: Check for the current application environment file
+      ansible.builtin.stat:
+        path: /etc/mllmcelltype/app.env
+      register: production_env
+
+    - name: Check for the legacy application environment file
+      ansible.builtin.stat:
+        path: /opt/mllmcelltype-web/.env
+      register: legacy_env
+      when: not production_env.stat.exists
+
+    - name: Migrate the application environment file
+      ansible.builtin.copy:
+        src: /opt/mllmcelltype-web/.env
+        dest: /etc/mllmcelltype/app.env
+        remote_src: true
+        owner: root
+        group: root
+        mode: "0600"
+      when:
+        - not production_env.stat.exists
+        - legacy_env.stat.exists
+      no_log: true
+
+    - name: Require the application environment file
+      ansible.builtin.stat:
+        path: /etc/mllmcelltype/app.env
+      register: configured_env
+      failed_when: not configured_env.stat.exists
+
+    - name: Check for legacy Caddy data
+      ansible.builtin.stat:
+        path: "{{ legacy_caddy_data }}/caddy/certificates"
+      register: legacy_caddy_certificates
+
+    - name: Check whether Caddy data has been migrated
+      ansible.builtin.stat:
+        path: "{{ caddy_data }}/.migrated-from-docker"
+      register: caddy_data_migration
+
+    - name: Migrate Caddy certificates and account data
+      ansible.builtin.command:
+        cmd: >-
+          rsync --archive --chown=caddy:caddy
+          --chmod=Du=rwx,Dgo=,Fu=rw,Fgo=
+          {{ legacy_caddy_data }}/ {{ caddy_data }}/
+      when:
+        - legacy_caddy_certificates.stat.exists
+        - not caddy_data_migration.stat.exists
+      notify: Mark Caddy data migration complete
+
+    - name: Install the host Caddy configuration
+      ansible.builtin.copy:
+        src: ../../Caddyfile
+        dest: /etc/caddy/Caddyfile
+        owner: root
+        group: caddy
+        mode: "0640"
+        validate: /usr/bin/caddy validate --adapter caddyfile --config %s
+      notify: Reload Caddy
+
+    - name: Install the release deployment command
+      ansible.builtin.copy:
+        src: files/deploy-mllmcelltype
+        dest: /usr/local/sbin/deploy-mllmcelltype
+        owner: root
+        group: root
+        mode: "0755"
+
+    - name: Install the runtime health command
+      ansible.builtin.copy:
+        src: files/check-mllmcelltype
+        dest: /usr/local/sbin/check-mllmcelltype
+        owner: root
+        group: root
+        mode: "0755"
+
+    - name: Install the deployment sudo rule
+      ansible.builtin.copy:
+        src: files/mllmcelltype-deploy.sudoers
+        dest: /etc/sudoers.d/mllmcelltype-deploy
+        owner: root
+        group: root
+        mode: "0440"
+        validate: /usr/sbin/visudo --check --file %s
+
+    - name: Remove unrestricted deployment sudo access
+      ansible.builtin.file:
+        path: /etc/sudoers.d/deploy
+        state: absent
+
+    - name: Install SSH hardening configuration
+      ansible.builtin.copy:
+        src: files/sshd-hardening.conf
+        dest: /etc/ssh/sshd_config.d/99-mllmcelltype-hardening.conf
+        owner: root
+        group: root
+        mode: "0644"
+        validate: /usr/sbin/sshd -t -f %s
+      notify: Reload SSH
+
+    - name: Remove the legacy SSH hardening configuration
+      ansible.builtin.file:
+        path: /etc/ssh/sshd_config.d/hardening.conf
+        state: absent
+      notify: Reload SSH
+
+    - name: Install fail2ban SSH policy
+      ansible.builtin.copy:
+        src: files/fail2ban-sshd.local
+        dest: /etc/fail2ban/jail.d/mllmcelltype-sshd.local
+        owner: root
+        group: root
+        mode: "0644"
+      notify: Restart fail2ban
+
+    - name: Install the health-check service
+      ansible.builtin.copy:
+        src: files/mllmcelltype-health.service
+        dest: /etc/systemd/system/mllmcelltype-health.service
+        owner: root
+        group: root
+        mode: "0644"
+      notify: Reload systemd
+
+    - name: Install the health-check timer
+      ansible.builtin.copy:
+        src: files/mllmcelltype-health.timer
+        dest: /etc/systemd/system/mllmcelltype-health.timer
+        owner: root
+        group: root
+        mode: "0644"
+      notify: Reload systemd
+
+    - name: Remove the legacy cron health check
+      ansible.builtin.file:
+        path: /etc/cron.d/mllmcelltype-health
+        state: absent
+
+    - name: Configure the firewall
+      community.general.ufw:
+        rule: allow
+        port: "{{ item.port }}"
+        proto: "{{ item.proto }}"
+        comment: "{{ item.comment }}"
+      loop:
+        - {port: "22", proto: tcp, comment: SSH}
+        - {port: "80", proto: tcp, comment: HTTP}
+        - {port: "443", proto: tcp, comment: HTTPS}
+        - {port: "443", proto: udp, comment: HTTP3-QUIC}
+
+    - name: Enable the firewall with a default deny policy
+      community.general.ufw:
+        state: enabled
+        policy: deny
+        direction: incoming
+
+    - name: Enable Docker
+      ansible.builtin.systemd_service:
+        name: docker
+        enabled: true
+        state: started
+
+    - name: Configure Caddy activation
+      ansible.builtin.systemd_service:
+        name: caddy
+        enabled: "{{ activate_caddy | bool }}"
+        state: "{{ 'started' if activate_caddy | bool else 'stopped' }}"
+
+    - name: Enable runtime health checks
+      ansible.builtin.systemd_service:
+        name: mllmcelltype-health.timer
+        enabled: "{{ activate_caddy | bool }}"
+        state: "{{ 'started' if activate_caddy | bool else 'stopped' }}"
+        daemon_reload: true
+
+    - name: Verify host ingress before removing legacy state
+      ansible.builtin.uri:
+        url: https://www.mllmcelltype.com/health
+        method: GET
+        return_content: false
+        status_code: 200
+        timeout: 15
+      register: public_health
+      until: public_health.status == 200
+      retries: 6
+      delay: 5
+      when: activate_caddy | bool
+
+    - name: Inspect the legacy Caddy container
+      ansible.builtin.command:
+        cmd: docker container inspect mllmcelltype-web-caddy-1
+      register: legacy_caddy_container
+      changed_when: false
+      failed_when: false
+      when: activate_caddy | bool
+
+    - name: Remove the legacy Caddy container
+      ansible.builtin.command:
+        cmd: docker container rm --force mllmcelltype-web-caddy-1
+      when:
+        - activate_caddy | bool
+        - (legacy_caddy_container.rc | default(1)) == 0
+
+    - name: Inspect legacy Caddy volumes
+      ansible.builtin.command:
+        cmd: "docker volume inspect {{ item }}"
+      loop:
+        - mllmcelltype-web_caddy_config
+        - mllmcelltype-web_caddy_data
+      register: legacy_caddy_volumes
+      changed_when: false
+      failed_when: false
+      when: activate_caddy | bool
+
+    - name: Remove legacy Caddy volumes
+      ansible.builtin.command:
+        cmd: "docker volume rm {{ item.item }}"
+      loop: "{{ legacy_caddy_volumes.results | default([]) }}"
+      loop_control:
+        label: "{{ item.item }}"
+      when:
+        - activate_caddy | bool
+        - item.rc == 0
+
+    - name: Remove legacy source and outbound GitHub credentials
+      ansible.builtin.file:
+        path: "{{ item }}"
+        state: absent
+      loop:
+        - /opt/mllmcelltype-web
+        - /home/deploy/.ssh/config
+        - /home/deploy/.ssh/github_deploy
+        - /home/deploy/.ssh/github_deploy.pub
+      when: activate_caddy | bool
+
+    - name: Enable fail2ban
+      ansible.builtin.systemd_service:
+        name: fail2ban
+        enabled: true
+        state: started
+
+    - name: Enable unattended upgrades
+      ansible.builtin.systemd_service:
+        name: unattended-upgrades
+        enabled: true
+        state: started
+
+  handlers:
+    - name: Refresh apt cache
+      ansible.builtin.apt:
+        update_cache: true
+
+    - name: Mark Caddy data migration complete
+      ansible.builtin.file:
+        path: "{{ caddy_data }}/.migrated-from-docker"
+        state: touch
+        owner: caddy
+        group: caddy
+        mode: "0600"
+
+    - name: Reload Caddy
+      ansible.builtin.systemd_service:
+        name: caddy
+        state: reloaded
+      when: activate_caddy | bool
+
+    - name: Reload systemd
+      ansible.builtin.systemd_service:
+        daemon_reload: true
+
+    - name: Reload SSH
+      ansible.builtin.systemd_service:
+        name: ssh
+        state: reloaded
+
+    - name: Restart fail2ban
+      ansible.builtin.systemd_service:
+        name: fail2ban
+        state: restarted

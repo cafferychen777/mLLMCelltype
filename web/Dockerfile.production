@@ -1,0 +1,63 @@
+# Production image for mLLMCelltype Web.
+FROM python:3.11-slim@sha256:00af38ae2ed311628970782e8a2d7f014d8909dbc63cb97bc0a158187f4db045
+
+ARG BUILD_TIME="unknown"
+ARG REVISION="unknown"
+
+LABEL org.opencontainers.image.created="${BUILD_TIME}" \
+      org.opencontainers.image.revision="${REVISION}" \
+      org.opencontainers.image.source="https://github.com/cafferychen777/mLLMCelltype/tree/main/web"
+
+# Set environment variables
+ENV PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONUNBUFFERED=1 \
+    DEBIAN_FRONTEND=noninteractive \
+    PORT=8080
+
+ENV DEPLOY_TIME=${BUILD_TIME} \
+    VERSION=${REVISION}
+
+# Install the health-check client.
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    ca-certificates \
+    curl \
+    && rm -rf /var/lib/apt/lists/*
+
+# Create app directory
+WORKDIR /app
+
+# Copy the reproducible production lock before application code for layer caching.
+COPY requirements.lock requirements.lock
+
+# Install Python dependencies
+RUN python -m pip install --no-cache-dir --require-hashes -r requirements.lock
+
+# Copy application code
+COPY . .
+
+# Set proper permissions
+RUN useradd -m -s /bin/bash appuser && \
+    chown -R appuser:appuser /app
+USER appuser
+
+# Health check
+HEALTHCHECK --interval=30s --timeout=30s --start-period=60s --retries=3 \
+    CMD curl -f http://localhost:$PORT/health || exit 1
+
+# Expose port
+EXPOSE $PORT
+
+# Keep one worker because task coordination is process-local. Request threads remain
+# responsive while annotation jobs run in the application's background executor.
+CMD exec gunicorn --bind 0.0.0.0:$PORT \
+    --workers 1 \
+    --threads 8 \
+    --worker-class gthread \
+    --timeout 120 \
+    --graceful-timeout 120 \
+    --keep-alive 2 \
+    --no-control-socket \
+    --access-logfile - \
+    --error-logfile - \
+    --log-level info \
+    app:app

@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>API Documentation - mLLMCelltype Cell Type Annotation</title>
+    <meta name="description" content="REST API documentation for integrating mLLMCelltype cell type annotation into your bioinformatics pipeline. Automate scRNA-seq analysis.">
+    <!-- Open Graph -->
+    <meta property="og:title" content="API Documentation - mLLMCelltype">
+    <meta property="og:description" content="REST API documentation for integrating mLLMCelltype cell type annotation into your bioinformatics pipeline.">
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://www.mllmcelltype.com/api-documentation">
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="API Documentation - mLLMCelltype">
+    <meta name="twitter:description" content="REST API for automated cell type annotation">
+
+    <link rel="canonical" href="https://www.mllmcelltype.com/api-documentation">
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E🧬%3C/text%3E%3C/svg%3E">
+
+    <!-- Font Awesome - Local version for better reliability -->
+    <link rel="stylesheet" href="{[{ url_for('static', filename='fontawesome-css/all.min.css') }]}">
+
+    <link rel="stylesheet" href="{[{ url_for('static', filename='css/style.css') }]}">
+
+
+</head>
+<body>
+    <a class="skip-link" href="#main-content">Skip to main content</a>
+    <div id="app">
+        {% include "_public_nav.html" %}
+
+        <main id="main-content" class="main-content">
+            <div class="api-content content-rail">
+                <h1>mLLMCelltype REST API Documentation</h1>
+                <p class="lead">Integrate cell type annotation into your bioinformatics pipeline using the REST API.</p>
+                <p>Keep the signed session cookie returned by the upload request and send it with every task request.
+                    Task access is private to the session that created it.</p>
+
+            <!-- Upload Endpoint -->
+            <div class="endpoint">
+                <h2>Upload Marker Genes</h2>
+                <div>
+                    <span class="method method-post">POST</span>
+                    <code class="endpoint-url">/api/upload</code>
+                </div>
+
+                <p>Upload marker genes for cell type annotation. Supports CSV, TSV, and Excel formats.</p>
+
+                <h3>Request</h3>
+                <div class="table-scroll" tabindex="0" role="region" aria-label="Upload request parameters">
+                    <table class="parameter-table">
+                        <thead>
+                            <tr>
+                                <th>Parameter</th>
+                                <th>Type</th>
+                                <th>Description</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>file</td>
+                                <td>File</td>
+                                <td>Marker genes file (CSV, TSV, or Excel)</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <h3>Example Request</h3>
+                <pre class="code-block">curl --fail-with-body -c session.cookies \
+  -F "file=@markers.csv" \
+  https://www.mllmcelltype.com/api/upload</pre>
+
+                <h3>Response</h3>
+                <div class="response-example">
+                    <pre>{
+  "success": true,
+  "task_id": "a1b2c3d4-...",
+  "filename": "markers.csv",
+  "file_info": {
+    "shape": [20, 10],
+    "columns": ["Cluster_0", "Cluster_1", "Cluster_2"],
+    "preview": [{"Cluster_0": "CD3D", "Cluster_1": "CD14", "Cluster_2": "MS4A1"}]
+  }
+}</pre>
+                </div>
+            </div>
+
+            <!-- Annotate Endpoint -->
+            <div class="endpoint">
+                <h2>Start Annotation</h2>
+                <div>
+                    <span class="method method-post">POST</span>
+                    <code class="endpoint-url">/api/annotate</code>
+                </div>
+
+                <p>Start cell type annotation with selected models and parameters.</p>
+
+                <h3>Request Body</h3>
+                <div class="table-scroll" tabindex="0" role="region" aria-label="Annotation request parameters">
+                    <table class="parameter-table">
+                        <thead>
+                            <tr>
+                                <th>Parameter</th>
+                                <th>Type</th>
+                                <th>Description</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>task_id</td>
+                                <td>String</td>
+                                <td>Task ID from upload response</td>
+                            </tr>
+                            <tr>
+                                <td>species</td>
+                                <td>String</td>
+                                <td>Species (e.g., "human", "mouse")</td>
+                            </tr>
+                            <tr>
+                                <td>tissue</td>
+                                <td>String</td>
+                                <td>Tissue type (optional)</td>
+                            </tr>
+                            <tr>
+                                <td>models</td>
+                                <td>Array</td>
+                                <td>Model identifiers in "provider:model" format</td>
+                            </tr>
+                            <tr>
+                                <td>api_keys</td>
+                                <td>Object</td>
+                                <td>Provider-to-API-key mapping</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <h3>Example Request</h3>
+                <pre class="code-block">curl --fail-with-body -b session.cookies \
+  -H "Content-Type: application/json" \
+  -d '{
+  "task_id": "a1b2c3d4-...",
+  "species": "human",
+  "tissue": "PBMC",
+  "models": ["openai:&lt;model-id&gt;", "anthropic:&lt;model-id&gt;"],
+  "api_keys": {
+    "openai": "your_openai_api_key",
+    "anthropic": "your_anthropic_api_key"
+  }
+}' https://www.mllmcelltype.com/api/annotate</pre>
+            </div>
+
+            <!-- Status Endpoint -->
+            <div class="endpoint">
+                <h2>Check Status</h2>
+                <div>
+                    <span class="method method-get">GET</span>
+                    <code class="endpoint-url">/api/tasks/{task_id}</code>
+                </div>
+
+                <p>Check the status of an annotation task.</p>
+
+                <h3>Example Request</h3>
+                <pre class="code-block">curl --fail-with-body -b session.cookies \
+  https://www.mllmcelltype.com/api/tasks/{task_id}</pre>
+
+                <h3>Response</h3>
+                <div class="response-example">
+                    <pre>{
+  "task_id": "a1b2c3d4-...",
+  "status": "completed",
+  "progress": 100,
+  "message": "Analysis completed successfully"
+}</pre>
+                </div>
+            </div>
+
+            <!-- Sample Data -->
+            <div class="endpoint">
+                <h2>Download Sample Data</h2>
+                <div>
+                    <span class="method method-get">GET</span>
+                    <code class="endpoint-url">/api/sample</code>
+                </div>
+
+                <p>Download sample marker genes data for testing.</p>
+            </div>
+
+            <!-- Rate Limits -->
+            <div class="endpoint">
+                <h2>Rate Limits</h2>
+                <p>API requests are limited to:</p>
+                <ul>
+                    <li>1,000 requests per hour per IP (status polling excluded)</li>
+                    <li>30 uploads and 20 annotation starts per hour per IP</li>
+                    <li>File size limit: 16 MB</li>
+                </ul>
+            </div>
+
+            <!-- CTA -->
+                <div class="cta-section">
+                    <h2>Web Interface</h2>
+                    <p>Or use the web interface for interactive annotation</p>
+                    <a href="{[{ url_for('index') }]}" class="cta-button">Open Web Interface</a>
+                </div>
+            </div>
+        </main>
+
+        {% include "_public_footer.html" %}
+    </div>
+
+    <!-- Shared static-page behavior -->
+    <script src="{[{ url_for('static', filename='js/static-pages.js') }]}"></script>
+</body>
+</html>

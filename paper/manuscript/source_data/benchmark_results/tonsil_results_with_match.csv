@@ -1,0 +1,44 @@
+cluster_id,reference_name,final_consensus,is_controversial,initial_claude-3-5-sonnet-latest,initial_claude-3-5-haiku-latest,initial_gemini-1.5-pro,initial_gemini-2.0-flash-exp,initial_qwen-max-2025-01-25,initial_gpt-4o,match_score
+1,Activated dendritic cell,Dendritic cells,False,Dendritic cells,Dendritic cells,Dendritic Cell,Dendritic cells,Dendritic cells,Dendritic cells,0.5
+2,Activated B cell,B cells (naive/mature),False,Activated B cells,B cells (naive/mature),Activated B Cell,B cells,Activated B cells,Naive B cells,0.5
+3,Memory B cell,Marginal zone B cells,False,Memory B cells,B cells (memory),Naive B Cell,B cells,Marginal zone B cells,Memory B cells,0.5
+4,Naive B cell,B cells (naive),False,Naive B cells,B cells (naive),B Cell,B cells,Naive B cells,Naive B cells,1.0
+5,Naive CD4 T cell,T cells (naive CD4+),False,Naive T cells,T cells (naive CD4+),Naive T Cell,Naive T cells,Naive CD4+ T cells,Naive CD4+ T cells,1.0
+6,Non-TFH CD4 T cell,T cells (Th17),False,Th17 cells,T cells (Th17),Th17 Cell,T helper cells,Th17 cells,Th17 cells,0.5
+7,Central memory CD4 T cell,T cells (central memory CD4+),False,Memory T cells,T cells (central memory CD4+),Central Memory T Cell,T cells,Memory CD4+ T cells,Memory CD4+ T cells,1.0
+8,T follicular helper cell,T cells (follicular helper),False,T follicular helper cells,T cells (follicular helper),Tfh Cell,T follicular helper cells,T follicular helper cells,Follicular helper T cells,1.0
+9,Memory T follicular helper cell,Activated CD4+ T cells,True,NKT cells,T cells (activated),Cytotoxic T Cell,Cytotoxic T cells,Regulatory T cells,Effector CD4+ T cells,0.5
+10,Regulatory CD4 T cell,T cells (regulatory),False,T regulatory cells,T cells (regulatory),Treg Cell,Regulatory T cells,Regulatory T cells,Regulatory T cells,1.0
+11,Naive CD8 T cell,T cells (naive CD8+),False,Naive CD8+ T cells,T cells (naive CD8+),Naive CD8 T Cell,Naive CD8 T cells,Naive CD8+ T cells,Naive CD8+ T cells,1.0
+12,CD8 T cell,Cytotoxic CD8+ T cells,False,Cytotoxic CD8+ T cells,T cells (effector CD8+),Cytotoxic CD8 T Cell,Cytotoxic T cells,Cytotoxic CD8+ T cells,Effector CD8+ T cells,0.5
+13,Central memory CD8 T cell,T cells (central memory CD8+),False,Memory CD8+ T cells,T cells (central memory CD8+),Exhausted CD8 T Cell,CD8 T cells,Memory CD8+ T cells,Memory CD8+ T cells,1.0
+14,Cycling dark zone germinal center B cell,Germinal center B cells,False,Germinal center B cells,Proliferating B cells,Proliferating Cell,Proliferating B cells,Germinal center B cells,Germinal center B cells,0.5
+15,Cycling follicular dendritic cell,Proliferating Follicular Dendritic Cell,False,Follicular dendritic cells,Follicular dendritic cells,Proliferating Follicular Dendritic Cell,Follicular dendritic cells,Follicular dendritic cells,Follicular dendritic cells,1.0
+16,Cycling myeloid cell,Proliferating Macrophage/Monocyte,False,Proliferating myeloid cells,Monocytes,Proliferating Macrophage/Monocyte,Macrophages,Proliferating macrophages,Proliferating macrophages,0.5
+17,Cycling T cell,Proliferating T cells,False,Proliferating T cells,Proliferating T cells,Proliferating T Cell,Proliferating T cells,Proliferating T cells,Proliferating T cells,1.0
+18,Dendritic cell,Macrophages,True,Macrophages,Macrophages,Macrophage,Monocytes,Macrophages,Macrophages,0.5
+19,Double negative T cell,Memory CD4+ T cells,True,Exhausted T cells,T cells (effector/memory),Plasmablast,CD4 T cells,Memory CD4+ T cells,Thymic T cells,0.0
+20,Dark zone germinal center B cell,Germinal Center B cells,True,Light zone B cells,B cells (germinal center),Germinal Center B Cell,Plasma cells,Plasmablasts,Germinal center B cells,0.5
+21,Dark zone to light zone germinal center B transition cell,B cells (germinal center),False,Dark zone B cells,B cells (germinal center),Dark Zone B Cell,B cells,Germinal center B cells,Germinal center B cells,0.5
+22,Epithelial cell,Epithelial cells,False,Epithelial cells,Epithelial cells,Epithelial Cell,Epithelial cells,Epithelial cells,Epithelial cells,1.0
+23,FCRL4/5+ memory B cell,Atypical Memory B cells,True,Memory B cells,Plasmacytoid dendritic cells,Plasma Cell,Memory B cells,Memory B cells,Atypical memory B cells,0.5
+24,Follicular dendritic cell,Follicular dendritic cells,False,Follicular dendritic cells,Follicular dendritic cells,Follicular Dendritic Cell,Follicular dendritic cells,Follicular dendritic cells,Follicular dendritic cells,1.0
+25,Granulocyte,Neutrophils,True,Neutrophils,Neutrophils,Monocyte,Neutrophils,Neutrophils,Myeloid-derived suppressor cells,0.5
+26,Innate lymphoid cell,Gamma delta T cells,True,γδ T cells,Innate lymphoid cells,ILC3,Gamma delta T cells,Innate lymphoid cells,Gamma delta T cells,0.5
+27,Light zone germinal center B cell,B cells (germinal center),False,Dark zone B cells,B cells (germinal center),Pre-GC B Cell,B cells,Germinal center B cells,Germinal center B cells,0.5
+28,Light zone to dark zone germinal center B transition cell,Proliferating B cells,True,Proliferating B cells,Proliferating cells,Monocyte/Macrophage precursor,Proliferating cells,Proliferating B cells,Proliferating immune cells,0.5
+29,MAIT and TRDV2+ gamma delta T cell,Gamma delta T cells,True,γδ T cells,Gamma delta T cells,Mast Cell,Gamma delta T cells,MAIT cells,Gamma delta T cells,0.5
+30,Mast cell,Mast cells,True,Mast cells,Mast cells,Monocyte/Macrophage,Mast cells,Mast cells,Mast cells,1.0
+31,Monocyte and macrophage,Macrophages,True,Macrophages,Macrophages,NK Cell,Macrophages,Macrophages,Monocytes,0.5
+32,Natural killer cell,Natural killer cells,False,NK cells,Natural killer cells,NK Cell,Natural killer cells,NK cells,Natural killer cells,1.0
+33,CD56-bright natural killer cell,Natural killer cells (cytotoxic),False,NK cells,Natural killer cells (cytotoxic),Activated NK T Cell,Natural killer cells,NKT cells,Natural killer T cells,0.5
+34,Non-TRDV2+ gamma delta T cell,γδ T cells,True,γδ T cells,Gamma delta T cells,Plasma Cell,Gamma delta T cells,γδ T cells,Gamma delta T cells,0.5
+35,Plasmablast,Plasma cells,False,Plasma cells,Plasma cells,Plasma Cell,Plasma cells,Plasma cells,Plasma cells,0.5
+36,Plasma cell,Plasma cells,True,Plasma cells,Plasma cells,Plasma Cell,Plasma cells,Plasma cells,Pre-plasma cells,1.0
+37,Plasma cell and doublet,Plasma cells,True,Plasma cells,Plasma cells,pDC,Plasma cells,Plasma cells,Plasma cells,0.5
+38,Plasmacytoid dendritic cell,Plasmacytoid dendritic cells,True,Plasmacytoid dendritic cells,Plasmacytoid dendritic cells,Immature B Cell,Plasmacytoid dendritic cells,Plasmacytoid dendritic cells,Plasmacytoid dendritic cells,1.0
+39,Pre B and T cell,Pre-B cells,True,Pre-B cells,Progenitor B cells,Stressed Cell,Progenitor B cells,Pre-B cells,Pre-B cells,0.5
+40,Pre germinal center B cell,Hematopoietic progenitor cells,False,Cycling cells,Proliferating cells,Pre-GC B Cell/Memory B Cell,Proliferating cells,Hematopoietic progenitor cells,Proliferating cells,0.0
+41,Pre memory B cell and doublet,Germinal center B cells,False,Light zone B cells,B cells (memory),Light Zone B Cell,B cells,Germinal center B cells,Germinal center B cells,0.0
+42,Pre plasmablast,Germinal center B cells,False,Plasmablasts,Proliferating B cells,,B cells,Plasma cells,Germinal center B cells,0.5
+Total,Average Score (42 entries),,,,,,,,,0.6428571428571429
