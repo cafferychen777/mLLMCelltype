@@ -123,14 +123,14 @@ complexity for a given project.
 ### Next Steps
 
 - [Why Choose
-  Consensus?](https://cafferyang.com/mLLMCelltype/articles/why-consensus.html) -
+  Consensus?](https://cafferychen777.github.io/mLLMCelltype/articles/why-consensus.html) -
   Details on the consensus methodology
 - [Getting Started
-  Guide](https://cafferyang.com/mLLMCelltype/articles/getting-started.html) -
+  Guide](https://cafferychen777.github.io/mLLMCelltype/articles/getting-started.html) -
   Practical implementation tutorial
 - [Performance
-  Benchmarks](https://cafferyang.com/mLLMCelltype/articles/advanced-features.html) -
+  Benchmarks](https://cafferychen777.github.io/mLLMCelltype/articles/advanced-features.html) -
   Detailed comparisons
 - [API
-  Reference](https://cafferyang.com/mLLMCelltype/reference/index.html) -
+  Reference](https://cafferychen777.github.io/mLLMCelltype/reference/index.html) -
   Technical documentation

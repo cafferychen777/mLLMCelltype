@@ -7,7 +7,7 @@
 ## Citation
 
 Source:
-[`inst/CITATION`](https://github.com/cafferychen777/mLLMCelltype/blob/v2.0.8/inst/CITATION)
+[`inst/CITATION`](https://github.com/cafferychen777/mLLMCelltype/blob/main/inst/CITATION)
 
 Yang, C., Zhang, X., & Chen, J. (2026). Large language model consensus
 substantially improves the cell type annotation accuracy for scRNA-seq

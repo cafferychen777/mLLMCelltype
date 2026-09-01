@@ -24,14 +24,14 @@
 <meta name="description" content="mLLMCelltype: Cell type annotation for single-cell RNA-seq using multi-LLM consensus.">
 <meta name="keywords" content="cell type annotation, single-cell RNA-seq, multi-LLM consensus, bioinformatics">
 <meta name="author" content="Chen Yang">
-<link rel="canonical" href="https://cafferyang.com/mLLMCelltype/">
+<link rel="canonical" href="https://cafferychen777.github.io/mLLMCelltype/">
 <!-- Schema.org structured data --><script type="application/ld+json">
 {
   "@context": "https://schema.org",
   "@type": "SoftwareApplication",
   "name": "mLLMCelltype",
   "description": "Cell type annotation for single-cell RNA sequencing using multi-LLM consensus",
-  "url": "https://cafferyang.com/mLLMCelltype/",
+  "url": "https://cafferychen777.github.io/mLLMCelltype/",
   "downloadUrl": "https://github.com/cafferychen777/mLLMCelltype",
   "author": {
     "@type": "Person",
@@ -136,9 +136,9 @@
       <h1>Advanced Features &amp; Case Studies</h1>
                         <h4 data-toc-skip class="author">Chen Yang</h4>
             
-            <h4 data-toc-skip class="date">2026-08-18</h4>
+            <h4 data-toc-skip class="date">2026-09-01</h4>
       
-      <small class="dont-index">Source: <a href="https://github.com/cafferychen777/mLLMCelltype/blob/v2.0.8/vignettes/advanced-features.Rmd" class="external-link"><code>vignettes/advanced-features.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/cafferychen777/mLLMCelltype/blob/main/vignettes/advanced-features.Rmd" class="external-link"><code>vignettes/advanced-features.Rmd</code></a></small>
       <div class="d-none name"><code>advanced-features.Rmd</code></div>
     </div>
 
@@ -163,7 +163,7 @@ workflow to capture these hierarchical relationships.</p>
 </h3>
 <p>Here’s a practical approach to perform hierarchical annotation:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://cafferyang.com/mLLMCelltype/">mLLMCelltype</a></span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://cafferychen777.github.io/mLLMCelltype/">mLLMCelltype</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://satijalab.org/seurat" class="external-link">Seurat</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a></span><span class="op">)</span></span>
 <span></span>
@@ -483,7 +483,7 @@ with other R packages and resources:</p>
 dataset:</p>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://satijalab.org/seurat" class="external-link">Seurat</a></span><span class="op">)</span></span>
-<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://cafferyang.com/mLLMCelltype/">mLLMCelltype</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://cafferychen777.github.io/mLLMCelltype/">mLLMCelltype</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://ggplot2.tidyverse.org" class="external-link">ggplot2</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a></span><span class="op">)</span></span>
 <span></span>
@@ -728,10 +728,10 @@ providers and models:</p>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="st">"Processing prompt with custom provider\n"</span><span class="op">)</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="st">"Model:"</span>, <span class="va">model</span>, <span class="st">"\n"</span><span class="op">)</span></span>
 <span></span>
-<span>  <span class="co"># In a real implementation, you would make API calls here</span></span>
-<span>  <span class="co"># For example:</span></span>
+<span>  <span class="co"># In a real implementation, replace this placeholder with your provider endpoint</span></span>
+<span>  <span class="co"># and make API calls here. For example:</span></span>
 <span>  <span class="co"># response &lt;- httr::POST(</span></span>
-<span>  <span class="co">#   url = "https://api.custom-provider.com/v1/chat/completions",</span></span>
+<span>  <span class="co">#   url = paste0("https://example.com", "/v1/chat/completions"),</span></span>
 <span>  <span class="co">#   body = list(prompt = prompt, model = model),</span></span>
 <span>  <span class="co">#   httr::add_headers(Authorization = paste("Bearer", api_key)),</span></span>
 <span>  <span class="co">#   encode = "json"</span></span>
@@ -874,14 +874,14 @@ directories:</p>
 can:</p>
 <ul>
 <li>
-<a href="https://cafferyang.com/mLLMCelltype/articles/contributing-guide.html">Contribute
+<a href="https://cafferychen777.github.io/mLLMCelltype/articles/contributing-guide.html">Contribute
 to the project</a>: Learn how to contribute to mLLMCelltype</li>
 <li>
-<a href="https://cafferyang.com/mLLMCelltype/news/index.html">Review
+<a href="https://cafferychen777.github.io/mLLMCelltype/news/index.html">Review
 the version history</a>: Explore the development history of the
 package</li>
 <li>
-<a href="https://cafferyang.com/mLLMCelltype/articles/introduction.html">Return
+<a href="https://cafferychen777.github.io/mLLMCelltype/articles/introduction.html">Return
 to the introduction</a>: Review the basic concepts</li>
 </ul>
 </div>

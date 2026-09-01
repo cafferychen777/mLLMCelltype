@@ -150,7 +150,7 @@ code.
 
 - Changed the default value of `top_gene_count` from 5 to 10
 - Modified the return structure of
-  [`interactive_consensus_annotation()`](https://cafferyang.com/mLLMCelltype/reference/interactive_consensus_annotation.md)
+  [`interactive_consensus_annotation()`](https://cafferychen777.github.io/mLLMCelltype/reference/interactive_consensus_annotation.md)
   to include additional metadata
 - Renamed `uncertainty_score` to `shannon_entropy` for clarity
 
@@ -165,7 +165,7 @@ code.
 - Changed the default models used in examples to Claude 3.7 and Gemini
   2.5
 - Modified the return structure of
-  [`annotate_cell_types()`](https://cafferyang.com/mLLMCelltype/reference/annotate_cell_types.md)
+  [`annotate_cell_types()`](https://cafferychen777.github.io/mLLMCelltype/reference/annotate_cell_types.md)
   to include more metadata
 - Updated the required package versions for several dependencies
 
@@ -175,7 +175,7 @@ The following features are deprecated and will be removed in future
 versions:
 
 - `simple_consensus()` function (since v1.2.0): Use
-  [`interactive_consensus_annotation()`](https://cafferyang.com/mLLMCelltype/reference/interactive_consensus_annotation.md)
+  [`interactive_consensus_annotation()`](https://cafferychen777.github.io/mLLMCelltype/reference/interactive_consensus_annotation.md)
   instead
 - `basic_visualization()` function (since v1.3.0): Use the new
   visualization functions instead
@@ -203,7 +203,7 @@ If you use mLLMCelltype in your research, please cite:
 
 We welcome feedback and contributions to improve mLLMCelltype. Please
 see our [Contributing
-Guide](https://cafferyang.com/mLLMCelltype/articles/contributing-guide.html)
+Guide](https://cafferychen777.github.io/mLLMCelltype/articles/contributing-guide.html)
 for details on how to contribute.
 
 ### Next Steps
@@ -211,10 +211,11 @@ for details on how to contribute.
 Now that you’ve reviewed the version history, you can:
 
 - [Return to the
-  introduction](https://cafferyang.com/mLLMCelltype/articles/introduction.html)
+  introduction](https://cafferychen777.github.io/mLLMCelltype/articles/introduction.html)
   to get started with mLLMCelltype
 - [Explore advanced
-  features](https://cafferyang.com/mLLMCelltype/articles/advanced-features.html)
+  features](https://cafferychen777.github.io/mLLMCelltype/articles/advanced-features.html)
   to learn about the latest capabilities
-- [Check the FAQ](https://cafferyang.com/mLLMCelltype/articles/faq.html)
+- [Check the
+  FAQ](https://cafferychen777.github.io/mLLMCelltype/articles/faq.html)
   for answers to common questions

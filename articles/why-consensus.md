@@ -157,10 +157,10 @@ the overall methodology.
 ### Learn More
 
 - [Getting Started
-  Guide](https://cafferyang.com/mLLMCelltype/articles/getting-started.html)
+  Guide](https://cafferychen777.github.io/mLLMCelltype/articles/getting-started.html)
 - [Consensus vs Single-Agent
-  Methods](https://cafferyang.com/mLLMCelltype/articles/vs-single-agent.html)
+  Methods](https://cafferychen777.github.io/mLLMCelltype/articles/vs-single-agent.html)
 - [Advanced
-  Features](https://cafferyang.com/mLLMCelltype/articles/advanced-features.html)
+  Features](https://cafferychen777.github.io/mLLMCelltype/articles/advanced-features.html)
 - [API
-  Reference](https://cafferyang.com/mLLMCelltype/reference/index.html)
+  Reference](https://cafferychen777.github.io/mLLMCelltype/reference/index.html)

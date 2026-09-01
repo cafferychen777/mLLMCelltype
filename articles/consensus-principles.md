@@ -332,13 +332,13 @@ Now that you understand the technical principles behind mLLMCelltype,
 you can explore:
 
 - [Visualization
-  Guide](https://cafferyang.com/mLLMCelltype/articles/visualization-guide.html):
+  Guide](https://cafferychen777.github.io/mLLMCelltype/articles/visualization-guide.html):
   Learn how to visualize consensus and uncertainty
-- [FAQ](https://cafferyang.com/mLLMCelltype/articles/faq.html): Find
-  answers to common questions
+- [FAQ](https://cafferychen777.github.io/mLLMCelltype/articles/faq.html):
+  Find answers to common questions
 - [Advanced
-  Features](https://cafferyang.com/mLLMCelltype/articles/advanced-features.html):
+  Features](https://cafferychen777.github.io/mLLMCelltype/articles/advanced-features.html):
   Explore hierarchical annotation and other advanced features
 - [Contributing
-  Guide](https://cafferyang.com/mLLMCelltype/articles/contributing-guide.html):
+  Guide](https://cafferychen777.github.io/mLLMCelltype/articles/contributing-guide.html):
   Learn how to contribute to the project

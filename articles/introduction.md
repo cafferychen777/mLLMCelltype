@@ -128,14 +128,14 @@ analysis scenarios:
 - Updated code comments and examples for clarity
 
 For a complete list of updates, please refer to the
-[NEWS.md](https://cafferyang.com/mLLMCelltype/NEWS.md) file.
+[NEWS.md](https://cafferychen777.github.io/mLLMCelltype/NEWS.md) file.
 
 ### Getting Started
 
 To get started with mLLMCelltype, please refer to the [Installation
-Guide](https://cafferyang.com/mLLMCelltype/articles/installation.html)
+Guide](https://cafferychen777.github.io/mLLMCelltype/articles/installation.html)
 and [Quick Start
-Guide](https://cafferyang.com/mLLMCelltype/articles/getting-started.html).
+Guide](https://cafferychen777.github.io/mLLMCelltype/articles/getting-started.html).
 
 ### Citation
 
@@ -148,14 +148,14 @@ If you use mLLMCelltype in your research, please cite:
 ### Next Steps
 
 - [Installation
-  Guide](https://cafferyang.com/mLLMCelltype/articles/installation.html):
+  Guide](https://cafferychen777.github.io/mLLMCelltype/articles/installation.html):
   Learn how to install and configure mLLMCelltype
 - [Quick Start
-  Guide](https://cafferyang.com/mLLMCelltype/articles/getting-started.html):
+  Guide](https://cafferychen777.github.io/mLLMCelltype/articles/getting-started.html):
   Get started with basic usage examples
 - [Usage
-  Tutorial](https://cafferyang.com/mLLMCelltype/articles/usage-tutorial.html):
+  Tutorial](https://cafferychen777.github.io/mLLMCelltype/articles/usage-tutorial.html):
   Explore detailed usage scenarios
 - [Consensus Annotation
-  Principles](https://cafferyang.com/mLLMCelltype/articles/consensus-principles.html):
+  Principles](https://cafferychen777.github.io/mLLMCelltype/articles/consensus-principles.html):
   Understand the technical principles

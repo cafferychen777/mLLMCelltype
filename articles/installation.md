@@ -224,13 +224,13 @@ For large datasets, you might encounter memory issues:
 Now that you have installed mLLMCelltype, you can proceed to:
 
 - [Getting
-  Started](https://cafferyang.com/mLLMCelltype/articles/getting-started.html):
+  Started](https://cafferychen777.github.io/mLLMCelltype/articles/getting-started.html):
   Learn the basics of using mLLMCelltype
 - [Usage
-  Tutorial](https://cafferyang.com/mLLMCelltype/articles/usage-tutorial.html):
+  Tutorial](https://cafferychen777.github.io/mLLMCelltype/articles/usage-tutorial.html):
   Explore more advanced usage scenarios
 - [Visualization
-  Guide](https://cafferyang.com/mLLMCelltype/articles/visualization-guide.html):
+  Guide](https://cafferychen777.github.io/mLLMCelltype/articles/visualization-guide.html):
   Learn how to visualize your results
 
 If you encounter any issues not covered in this guide, please [open an

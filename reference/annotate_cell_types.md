@@ -187,7 +187,7 @@ is `NA`, the generated prompt string.
 
 - [`Seurat::FindAllMarkers()`](https://satijalab.org/seurat/reference/FindAllMarkers.html)
 
-- [`get_provider()`](https://cafferyang.com/mLLMCelltype/reference/get_provider.md)
+- [`get_provider()`](https://cafferychen777.github.io/mLLMCelltype/reference/get_provider.md)
 
 ## Examples
 
@@ -203,7 +203,7 @@ annotate_cell_types(
   model = 'gpt-5.5',
   api_key = NA  # Returns prompt only without making API call
 )
-#> [1] "You are a cell type annotation expert. Below are marker genes for different cell clusters in human PBMC.\n\nt_cells: CD3D, CD3E, CD3G, CD28\nb_cells: CD19, CD79A, CD79B, MS4A1\nmonocytes: CD14, CD68, CSF1R, FCGR3A\n\nReturn exactly one cell type name per line, in the same order as the clusters shown above, without cluster IDs or explanation."
+#> [1] "You are an expert single-cell RNA-seq analyst specializing in cell type annotation. Infer the most likely biological cell type for every cell cluster in human PBMC from its marker genes.\n\nMarker genes:\nt_cells: CD3D, CD3E, CD3G, CD28\nb_cells: CD19, CD79A, CD79B, MS4A1\nmonocytes: CD14, CD68, CSF1R, FCGR3A\n\nThe marker genes above are input evidence, not answers. Return exactly 3 non-empty lines in the same order as the clusters shown above. Each line must contain only one inferred biological cell type name (for example, T cell or macrophage). Do not repeat or output marker genes. Do not include cluster IDs, numbering, explanations, headings, or markdown."
 
 # Example 2: Using with Seurat pipeline and OpenAI model
 if (FALSE) { # \dontrun{

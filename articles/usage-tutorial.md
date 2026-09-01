@@ -618,13 +618,13 @@ Now that you understand the detailed usage of mLLMCelltype, you can
 explore:
 
 - [Consensus Annotation
-  Principles](https://cafferyang.com/mLLMCelltype/articles/consensus-principles.html):
+  Principles](https://cafferychen777.github.io/mLLMCelltype/articles/consensus-principles.html):
   Learn about the technical principles
 - [Visualization
-  Guide](https://cafferyang.com/mLLMCelltype/articles/visualization-guide.html):
+  Guide](https://cafferychen777.github.io/mLLMCelltype/articles/visualization-guide.html):
   Create publication-ready visualizations
-- [FAQ](https://cafferyang.com/mLLMCelltype/articles/faq.html): Find
-  answers to common questions
+- [FAQ](https://cafferychen777.github.io/mLLMCelltype/articles/faq.html):
+  Find answers to common questions
 - [Advanced
-  Features](https://cafferyang.com/mLLMCelltype/articles/advanced-features.html):
+  Features](https://cafferychen777.github.io/mLLMCelltype/articles/advanced-features.html):
   Explore hierarchical annotation and other advanced features

@@ -141,13 +141,13 @@ Development/testing with local or alternative endpoints
 If NULL (default), uses official API endpoints for each provider.
 
 
-"><meta property="og:image" content="https://cafferyang.com/mLLMCelltype/reference/figures/social-card.png"><meta property="og:image:alt" content="mLLMCelltype - Cell Type Annotation Using Large Language Models"><meta name="twitter:card" content="summary_large_image"><meta name="twitter:creator" content="@ChenYang_cs"><meta name="twitter:site" content="@ChenYang_cs"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css"><meta name="description" content="mLLMCelltype: Cell type annotation for single-cell RNA-seq using multi-LLM consensus."><meta name="keywords" content="cell type annotation, single-cell RNA-seq, multi-LLM consensus, bioinformatics"><meta name="author" content="Chen Yang"><link rel="canonical" href="https://cafferyang.com/mLLMCelltype/"><!-- Schema.org structured data --><script type="application/ld+json">
+"><meta property="og:image" content="https://cafferychen777.github.io/mLLMCelltype/reference/figures/social-card.png"><meta property="og:image:alt" content="mLLMCelltype - Cell Type Annotation Using Large Language Models"><meta name="twitter:card" content="summary_large_image"><meta name="twitter:creator" content="@ChenYang_cs"><meta name="twitter:site" content="@ChenYang_cs"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css"><meta name="description" content="mLLMCelltype: Cell type annotation for single-cell RNA-seq using multi-LLM consensus."><meta name="keywords" content="cell type annotation, single-cell RNA-seq, multi-LLM consensus, bioinformatics"><meta name="author" content="Chen Yang"><link rel="canonical" href="https://cafferychen777.github.io/mLLMCelltype/"><!-- Schema.org structured data --><script type="application/ld+json">
 {
   "@context": "https://schema.org",
   "@type": "SoftwareApplication",
   "name": "mLLMCelltype",
   "description": "Cell type annotation for single-cell RNA sequencing using multi-LLM consensus",
-  "url": "https://cafferyang.com/mLLMCelltype/",
+  "url": "https://cafferychen777.github.io/mLLMCelltype/",
   "downloadUrl": "https://github.com/cafferychen777/mLLMCelltype",
   "author": {
     "@type": "Person",
@@ -238,7 +238,7 @@ If NULL (default), uses official API endpoints for each provider.
   <main id="main" class="col-md-9"><div class="page-header">
 
       <h1>Cell Type Annotation with Multi-LLM Framework</h1>
-      <small class="dont-index">Source: <a href="https://github.com/cafferychen777/mLLMCelltype/blob/v2.0.8/R/cell_type_annotation.R" class="external-link"><code>R/cell_type_annotation.R</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/cafferychen777/mLLMCelltype/blob/main/R/cell_type_annotation.R" class="external-link"><code>R/cell_type_annotation.R</code></a></small>
       <div class="d-none name"><code>annotate_cell_types.Rd</code></div>
     </div>
 
@@ -388,7 +388,7 @@ where each element is a list with <code>cell_type</code>, <code>marker_genes</co
 <span class="r-in"><span>  model <span class="op">=</span> <span class="st">'gpt-5.5'</span>,</span></span>
 <span class="r-in"><span>  api_key <span class="op">=</span> <span class="cn">NA</span>  <span class="co"># Returns prompt only without making API call</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "You are a cell type annotation expert. Below are marker genes for different cell clusters in human PBMC.\n\nt_cells: CD3D, CD3E, CD3G, CD28\nb_cells: CD19, CD79A, CD79B, MS4A1\nmonocytes: CD14, CD68, CSF1R, FCGR3A\n\nReturn exactly one cell type name per line, in the same order as the clusters shown above, without cluster IDs or explanation."</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "You are an expert single-cell RNA-seq analyst specializing in cell type annotation. Infer the most likely biological cell type for every cell cluster in human PBMC from its marker genes.\n\nMarker genes:\nt_cells: CD3D, CD3E, CD3G, CD28\nb_cells: CD19, CD79A, CD79B, MS4A1\nmonocytes: CD14, CD68, CSF1R, FCGR3A\n\nThe marker genes above are input evidence, not answers. Return exactly 3 non-empty lines in the same order as the clusters shown above. Each line must contain only one inferred biological cell type name (for example, T cell or macrophage). Do not repeat or output marker genes. Do not include cluster IDs, numbering, explanations, headings, or markdown."</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Example 2: Using with Seurat pipeline and OpenAI model</span></span></span>
 <span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span> <span class="co"># \dontrun{</span></span></span>

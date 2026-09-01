@@ -141,5 +141,5 @@ data. *Communications Biology*.
 ### Learn More
 
 Please check our
-[documentation](https://cafferyang.com/mLLMCelltype/articles/01-introduction.md)
+[documentation](https://cafferychen777.github.io/mLLMCelltype/articles/01-introduction.md)
 to learn more about mLLMCelltype.

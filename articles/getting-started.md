@@ -312,12 +312,12 @@ DimPlot(seurat_obj, group.by = "cell_type_consensus", label = TRUE, repel = TRUE
 ### Understanding the Output
 
 The output of
-[`annotate_cell_types()`](https://cafferyang.com/mLLMCelltype/reference/annotate_cell_types.md)
+[`annotate_cell_types()`](https://cafferychen777.github.io/mLLMCelltype/reference/annotate_cell_types.md)
 is a vector of cell type annotations, where each element corresponds to
 a cluster.
 
 The output of
-[`interactive_consensus_annotation()`](https://cafferyang.com/mLLMCelltype/reference/interactive_consensus_annotation.md)
+[`interactive_consensus_annotation()`](https://cafferychen777.github.io/mLLMCelltype/reference/interactive_consensus_annotation.md)
 is a list containing:
 
 - `final_annotations`: Final consensus cell type annotations
@@ -425,21 +425,22 @@ production use**: Consider using paid models for better reliability
 Now that you understand the basics of mLLMCelltype, you can explore:
 
 - [Usage
-  Tutorial](https://cafferyang.com/mLLMCelltype/articles/usage-tutorial.html):
+  Tutorial](https://cafferychen777.github.io/mLLMCelltype/articles/usage-tutorial.html):
   More detailed usage examples
 - [Consensus Annotation
-  Principles](https://cafferyang.com/mLLMCelltype/articles/consensus-principles.html):
+  Principles](https://cafferychen777.github.io/mLLMCelltype/articles/consensus-principles.html):
   Learn about the consensus mechanism
 - [Visualization
-  Guide](https://cafferyang.com/mLLMCelltype/articles/visualization-guide.html):
+  Guide](https://cafferychen777.github.io/mLLMCelltype/articles/visualization-guide.html):
   Create publication-ready visualizations
 - [Advanced
-  Features](https://cafferyang.com/mLLMCelltype/articles/advanced-features.html):
+  Features](https://cafferychen777.github.io/mLLMCelltype/articles/advanced-features.html):
   Explore hierarchical annotation and other advanced features
-- [FAQ](https://cafferyang.com/mLLMCelltype/articles/faq.html): Answers
-  to common questions
+- [FAQ](https://cafferychen777.github.io/mLLMCelltype/articles/faq.html):
+  Answers to common questions
 
 If you encounter any issues, check the
-[FAQ](https://cafferyang.com/mLLMCelltype/articles/faq.html) or [open an
+[FAQ](https://cafferychen777.github.io/mLLMCelltype/articles/faq.html)
+or [open an
 issue](https://github.com/cafferychen777/mLLMCelltype/issues) on our
 GitHub repository.

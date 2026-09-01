@@ -12,7 +12,7 @@ and Google. For details see Yang et al. (2026)
 
 Useful links:
 
-- <https://cafferyang.com/mLLMCelltype/>
+- <https://cafferychen777.github.io/mLLMCelltype/>
 
 - Report bugs at <https://github.com/cafferychen777/mLLMCelltype/issues>
 

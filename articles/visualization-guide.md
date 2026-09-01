@@ -252,7 +252,7 @@ results.
 
 > **Note:** For a gallery of all visualization examples, please see the
 > [Visualization
-> Gallery](https://cafferyang.com/mLLMCelltype/articles/visualization-guide.html).
+> Gallery](https://cafferychen777.github.io/mLLMCelltype/articles/visualization-guide.html).
 
 #### Installing and Loading Required Packages
 
@@ -1669,14 +1669,14 @@ If wordcloud generation fails:
 Now that you know how to create effective visualizations for
 mLLMCelltype results, you can explore:
 
-- [FAQ](https://cafferyang.com/mLLMCelltype/articles/faq.html): Find
-  answers to common questions
+- [FAQ](https://cafferychen777.github.io/mLLMCelltype/articles/faq.html):
+  Find answers to common questions
 - [Advanced
-  Features](https://cafferyang.com/mLLMCelltype/articles/advanced-features.html):
+  Features](https://cafferychen777.github.io/mLLMCelltype/articles/advanced-features.html):
   Explore hierarchical annotation and other advanced features
 - [Contributing
-  Guide](https://cafferyang.com/mLLMCelltype/articles/contributing-guide.html):
+  Guide](https://cafferychen777.github.io/mLLMCelltype/articles/contributing-guide.html):
   Learn how to contribute to the project
 - [Version
-  History](https://cafferyang.com/mLLMCelltype/articles/version-history.html):
+  History](https://cafferychen777.github.io/mLLMCelltype/articles/version-history.html):
   Review the development history of mLLMCelltype

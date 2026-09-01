@@ -96,9 +96,9 @@ and adjusting based on the results.
 mLLMCelltype implements a caching system to avoid redundant API calls,
 which saves time and reduces costs:
 
-- [`interactive_consensus_annotation()`](https://cafferyang.com/mLLMCelltype/reference/interactive_consensus_annotation.md)
+- [`interactive_consensus_annotation()`](https://cafferychen777.github.io/mLLMCelltype/reference/interactive_consensus_annotation.md)
   uses caching by default (`use_cache = TRUE`)
-- [`annotate_cell_types()`](https://cafferyang.com/mLLMCelltype/reference/annotate_cell_types.md)
+- [`annotate_cell_types()`](https://cafferychen777.github.io/mLLMCelltype/reference/annotate_cell_types.md)
   supports direct caching through `use_cache` and `cache_dir`
 - The cache is based on a hash of the input data, model, cluster ID,
   tissue context, and marker-gene count
@@ -467,7 +467,7 @@ We welcome contributions! Here are some ways to contribute:
     improvements
 
 See our [Contributing
-Guide](https://cafferyang.com/mLLMCelltype/articles/contributing-guide.html)
+Guide](https://cafferychen777.github.io/mLLMCelltype/articles/contributing-guide.html)
 for more details.
 
 ### Next Steps
@@ -475,11 +475,11 @@ for more details.
 Now that you have answers to common questions, you can explore:
 
 - [Advanced
-  Features](https://cafferyang.com/mLLMCelltype/articles/advanced-features.html):
+  Features](https://cafferychen777.github.io/mLLMCelltype/articles/advanced-features.html):
   Learn about hierarchical annotation and other advanced features
 - [Contributing
-  Guide](https://cafferyang.com/mLLMCelltype/articles/contributing-guide.html):
+  Guide](https://cafferychen777.github.io/mLLMCelltype/articles/contributing-guide.html):
   Find out how to contribute to the project
 - [Version
-  History](https://cafferyang.com/mLLMCelltype/articles/version-history.html):
+  History](https://cafferychen777.github.io/mLLMCelltype/articles/version-history.html):
   Review the development history of mLLMCelltype

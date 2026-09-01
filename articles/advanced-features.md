@@ -598,10 +598,10 @@ custom_process_fn <- function(prompt, model, api_key) {
   cat("Processing prompt with custom provider\n")
   cat("Model:", model, "\n")
 
-  # In a real implementation, you would make API calls here
-  # For example:
+  # In a real implementation, replace this placeholder with your provider endpoint
+  # and make API calls here. For example:
   # response <- httr::POST(
-  #   url = "https://api.custom-provider.com/v1/chat/completions",
+  #   url = paste0("https://example.com", "/v1/chat/completions"),
   #   body = list(prompt = prompt, model = model),
   #   httr::add_headers(Authorization = paste("Bearer", api_key)),
   #   encode = "json"
@@ -748,11 +748,11 @@ mllmcelltype_clear_cache()
 Now that you’ve explored the advanced features of mLLMCelltype, you can:
 
 - [Contribute to the
-  project](https://cafferyang.com/mLLMCelltype/articles/contributing-guide.html):
+  project](https://cafferychen777.github.io/mLLMCelltype/articles/contributing-guide.html):
   Learn how to contribute to mLLMCelltype
 - [Review the version
-  history](https://cafferyang.com/mLLMCelltype/news/index.html): Explore
-  the development history of the package
+  history](https://cafferychen777.github.io/mLLMCelltype/news/index.html):
+  Explore the development history of the package
 - [Return to the
-  introduction](https://cafferyang.com/mLLMCelltype/articles/introduction.html):
+  introduction](https://cafferychen777.github.io/mLLMCelltype/articles/introduction.html):
   Review the basic concepts
