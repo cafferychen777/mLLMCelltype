@@ -202,12 +202,12 @@ https://doi.org/10.1038/s42003-026-10420-8
 
 ## Feedback and Contributions
 
-We welcome feedback and contributions to improve mLLMCelltype. Please see our [Contributing Guide](https://cafferyang.com/mLLMCelltype/articles/contributing-guide.html) for details on how to contribute.
+We welcome feedback and contributions to improve mLLMCelltype. Please see our [Contributing Guide](https://cafferychen777.github.io/mLLMCelltype/articles/contributing-guide.html) for details on how to contribute.
 
 ## Next Steps
 
 Now that you've reviewed the version history, you can:
 
-- [Return to the introduction](https://cafferyang.com/mLLMCelltype/articles/introduction.html) to get started with mLLMCelltype
-- [Explore advanced features](https://cafferyang.com/mLLMCelltype/articles/advanced-features.html) to learn about the latest capabilities
-- [Check the FAQ](https://cafferyang.com/mLLMCelltype/articles/faq.html) for answers to common questions
+- [Return to the introduction](https://cafferychen777.github.io/mLLMCelltype/articles/introduction.html) to get started with mLLMCelltype
+- [Explore advanced features](https://cafferychen777.github.io/mLLMCelltype/articles/advanced-features.html) to learn about the latest capabilities
+- [Check the FAQ](https://cafferychen777.github.io/mLLMCelltype/articles/faq.html) for answers to common questions

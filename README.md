@@ -377,7 +377,7 @@ This method automatically extracts the top differentially expressed genes for ea
 
 ### R
 
-> **Note**: For more detailed R tutorials and documentation, please visit the [mLLMCelltype documentation website](https://cafferyang.com/mLLMCelltype/).
+> **Note**: For more detailed R tutorials and documentation, please visit the [mLLMCelltype documentation website](https://cafferychen777.github.io/mLLMCelltype/).
 
 #### Using Seurat Object
 
@@ -1128,7 +1128,7 @@ DoHeatmap(pbmc_data,
 - **Integration**: Works directly with consensus annotation results added to Seurat objects
 - **Standard Seurat Functions**: Uses familiar Seurat visualization functions for consistency
 
-For detailed instructions and advanced customization options, see the [Visualization Guide](https://cafferyang.com/mLLMCelltype/articles/visualization-guide.html).
+For detailed instructions and advanced customization options, see the [Visualization Guide](https://cafferychen777.github.io/mLLMCelltype/articles/visualization-guide.html).
 
 ## Citation
 

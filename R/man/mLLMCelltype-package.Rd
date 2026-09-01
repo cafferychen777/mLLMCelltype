@@ -11,7 +11,7 @@ Automated cell type annotation for single-cell RNA sequencing data using consens
 \seealso{
 Useful links:
 \itemize{
-  \item \url{https://cafferyang.com/mLLMCelltype/}
+  \item \url{https://cafferychen777.github.io/mLLMCelltype/}
   \item Report bugs at \url{https://github.com/cafferychen777/mLLMCelltype/issues}
 }
 

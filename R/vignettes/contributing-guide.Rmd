@@ -345,6 +345,6 @@ By contributing to mLLMCelltype, you agree that your contributions will be licen
 
 Now that you know how to contribute to mLLMCelltype, you can:
 
-- [Review the version history](https://cafferyang.com/mLLMCelltype/articles/version-history.html) to understand recent changes
-- [Explore advanced features](https://cafferyang.com/mLLMCelltype/articles/advanced-features.html) to identify areas for improvement
-- [Check the FAQ](https://cafferyang.com/mLLMCelltype/articles/faq.html) to see common questions that might need better documentation
+- [Review the version history](https://cafferychen777.github.io/mLLMCelltype/articles/version-history.html) to understand recent changes
+- [Explore advanced features](https://cafferychen777.github.io/mLLMCelltype/articles/advanced-features.html) to identify areas for improvement
+- [Check the FAQ](https://cafferychen777.github.io/mLLMCelltype/articles/faq.html) to see common questions that might need better documentation

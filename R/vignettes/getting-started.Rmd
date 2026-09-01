@@ -404,10 +404,10 @@ Available free models (Updated Oct 2025):
 
 Now that you understand the basics of mLLMCelltype, you can explore:
 
-- [Usage Tutorial](https://cafferyang.com/mLLMCelltype/articles/usage-tutorial.html): More detailed usage examples
-- [Consensus Annotation Principles](https://cafferyang.com/mLLMCelltype/articles/consensus-principles.html): Learn about the consensus mechanism
-- [Visualization Guide](https://cafferyang.com/mLLMCelltype/articles/visualization-guide.html): Create publication-ready visualizations
-- [Advanced Features](https://cafferyang.com/mLLMCelltype/articles/advanced-features.html): Explore hierarchical annotation and other advanced features
-- [FAQ](https://cafferyang.com/mLLMCelltype/articles/faq.html): Answers to common questions
+- [Usage Tutorial](https://cafferychen777.github.io/mLLMCelltype/articles/usage-tutorial.html): More detailed usage examples
+- [Consensus Annotation Principles](https://cafferychen777.github.io/mLLMCelltype/articles/consensus-principles.html): Learn about the consensus mechanism
+- [Visualization Guide](https://cafferychen777.github.io/mLLMCelltype/articles/visualization-guide.html): Create publication-ready visualizations
+- [Advanced Features](https://cafferychen777.github.io/mLLMCelltype/articles/advanced-features.html): Explore hierarchical annotation and other advanced features
+- [FAQ](https://cafferychen777.github.io/mLLMCelltype/articles/faq.html): Answers to common questions
 
-If you encounter any issues, check the [FAQ](https://cafferyang.com/mLLMCelltype/articles/faq.html) or [open an issue](https://github.com/cafferychen777/mLLMCelltype/issues) on our GitHub repository.
+If you encounter any issues, check the [FAQ](https://cafferychen777.github.io/mLLMCelltype/articles/faq.html) or [open an issue](https://github.com/cafferychen777/mLLMCelltype/issues) on our GitHub repository.

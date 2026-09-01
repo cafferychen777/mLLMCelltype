@@ -386,12 +386,12 @@ We welcome contributions! Here are some ways to contribute:
 
 5. **Develop new features**: Contribute code for new features or improvements
 
-See our [Contributing Guide](https://cafferyang.com/mLLMCelltype/articles/contributing-guide.html) for more details.
+See our [Contributing Guide](https://cafferychen777.github.io/mLLMCelltype/articles/contributing-guide.html) for more details.
 
 ## Next Steps
 
 Now that you have answers to common questions, you can explore:
 
-- [Advanced Features](https://cafferyang.com/mLLMCelltype/articles/advanced-features.html): Learn about hierarchical annotation and other advanced features
-- [Contributing Guide](https://cafferyang.com/mLLMCelltype/articles/contributing-guide.html): Find out how to contribute to the project
-- [Version History](https://cafferyang.com/mLLMCelltype/articles/version-history.html): Review the development history of mLLMCelltype
+- [Advanced Features](https://cafferychen777.github.io/mLLMCelltype/articles/advanced-features.html): Learn about hierarchical annotation and other advanced features
+- [Contributing Guide](https://cafferychen777.github.io/mLLMCelltype/articles/contributing-guide.html): Find out how to contribute to the project
+- [Version History](https://cafferychen777.github.io/mLLMCelltype/articles/version-history.html): Review the development history of mLLMCelltype

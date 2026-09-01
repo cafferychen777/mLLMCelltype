@@ -128,7 +128,7 @@ Special thanks to all contributors to this release:
 
 ## 🔗 **Links**
 
-- **Documentation**: https://cafferyang.com/mLLMCelltype/
+- **Documentation**: https://cafferychen777.github.io/mLLMCelltype/
 - **Web Application**: https://mllmcelltype.com/
 - **Discord Community**: https://discord.gg/pb2aZdG4
 - **Paper**: https://doi.org/10.1038/s42003-026-10420-8

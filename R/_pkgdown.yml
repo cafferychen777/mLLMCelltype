@@ -1,4 +1,4 @@
-url: https://cafferyang.com/mLLMCelltype/
+url: https://cafferychen777.github.io/mLLMCelltype/
 
 template:
   bootstrap: 5
@@ -14,7 +14,7 @@ template:
       <meta name="description" content="mLLMCelltype: Cell type annotation for single-cell RNA-seq using multi-LLM consensus.">
       <meta name="keywords" content="cell type annotation, single-cell RNA-seq, multi-LLM consensus, bioinformatics">
       <meta name="author" content="Chen Yang">
-      <link rel="canonical" href="https://cafferyang.com/mLLMCelltype/" />
+      <link rel="canonical" href="https://cafferychen777.github.io/mLLMCelltype/" />
 
       <!-- Schema.org structured data -->
       <script type="application/ld+json">
@@ -23,7 +23,7 @@ template:
         "@type": "SoftwareApplication",
         "name": "mLLMCelltype",
         "description": "Cell type annotation for single-cell RNA sequencing using multi-LLM consensus",
-        "url": "https://cafferyang.com/mLLMCelltype/",
+        "url": "https://cafferychen777.github.io/mLLMCelltype/",
         "downloadUrl": "https://github.com/cafferychen777/mLLMCelltype",
         "author": {
           "@type": "Person",

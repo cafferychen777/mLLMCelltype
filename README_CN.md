@@ -914,7 +914,7 @@ sc.pl.umap(adata, color='cell_type', legend_loc='on data',
 
 ### R
 
-> **注意**：有关更详细的R教程和文档，请访问[mLLMCelltype文档网站](https://cafferyang.com/mLLMCelltype/)。
+> **注意**：有关更详细的R教程和文档，请访问[mLLMCelltype文档网站](https://cafferychen777.github.io/mLLMCelltype/)。
 
 #### 使用Seurat对象
 
@@ -1712,7 +1712,7 @@ DoHeatmap(pbmc_data,
 - **无缝集成**：直接将共识注释结果添加到Seurat对象中使用
 - **标准Seurat函数**：使用熟悉的Seurat可视化函数，保持一致性
 
-有关详细说明和高级自定义选项，请参阅[可视化指南](https://cafferyang.com/mLLMCelltype/articles/visualization-guide.html)。
+有关详细说明和高级自定义选项，请参阅[可视化指南](https://cafferychen777.github.io/mLLMCelltype/articles/visualization-guide.html)。
 
 ## 引用
 

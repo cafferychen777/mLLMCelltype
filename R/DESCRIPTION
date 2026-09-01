@@ -14,7 +14,7 @@ Description: Automated cell type annotation for single-cell RNA sequencing data
     For details see Yang et al. (2026) <doi:10.1038/s42003-026-10420-8>.
 License: MIT + file LICENSE
 BugReports: https://github.com/cafferychen777/mLLMCelltype/issues
-URL: https://cafferyang.com/mLLMCelltype/
+URL: https://cafferychen777.github.io/mLLMCelltype/
 Encoding: UTF-8
 Imports:
     httr (>= 1.4.0),

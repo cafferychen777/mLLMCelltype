@@ -1,7 +1,7 @@
 # mLLMCelltype Cell Type Annotation Script (R Version)
 # Reference: Yang et al. Communications Biology 2026 https://doi.org/10.1038/s42003-026-10420-8
 # GitHub: https://github.com/cafferychen777/mLLMCelltype
-# Documentation: https://cafferyang.com/mLLMCelltype/
+# Documentation: https://cafferychen777.github.io/mLLMCelltype/
 
 # =============================================================================
 # Installation (run once)

@@ -249,7 +249,7 @@ p1 | p2 | p3
 
 For publication-quality visualizations, we recommend using the SCpubr package, which provides enhanced aesthetics for single-cell visualizations. Below are several advanced visualization techniques that can significantly improve the quality and interpretability of your results.
 
-> **Note:** For a gallery of all visualization examples, please see the [Visualization Gallery](https://cafferyang.com/mLLMCelltype/articles/visualization-guide.html).
+> **Note:** For a gallery of all visualization examples, please see the [Visualization Gallery](https://cafferychen777.github.io/mLLMCelltype/articles/visualization-guide.html).
 
 ### Installing and Loading Required Packages
 
@@ -1540,7 +1540,7 @@ If wordcloud generation fails:
 
 Now that you know how to create effective visualizations for mLLMCelltype results, you can explore:
 
-- [FAQ](https://cafferyang.com/mLLMCelltype/articles/faq.html): Find answers to common questions
-- [Advanced Features](https://cafferyang.com/mLLMCelltype/articles/advanced-features.html): Explore hierarchical annotation and other advanced features
-- [Contributing Guide](https://cafferyang.com/mLLMCelltype/articles/contributing-guide.html): Learn how to contribute to the project
-- [Version History](https://cafferyang.com/mLLMCelltype/articles/version-history.html): Review the development history of mLLMCelltype
+- [FAQ](https://cafferychen777.github.io/mLLMCelltype/articles/faq.html): Find answers to common questions
+- [Advanced Features](https://cafferychen777.github.io/mLLMCelltype/articles/advanced-features.html): Explore hierarchical annotation and other advanced features
+- [Contributing Guide](https://cafferychen777.github.io/mLLMCelltype/articles/contributing-guide.html): Learn how to contribute to the project
+- [Version History](https://cafferychen777.github.io/mLLMCelltype/articles/version-history.html): Review the development history of mLLMCelltype
