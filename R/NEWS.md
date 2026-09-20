@@ -1,5 +1,21 @@
 # mLLMCelltype Changelog
 
+## Unreleased
+
+### New Features
+* Added `LiteLLMProcessor`, a provider for a self-hosted
+  [LiteLLM](https://docs.litellm.ai/) gateway. Models are addressed with a
+  `litellm/` prefix (e.g. `litellm/gpt-5.5`) and routed through the gateway,
+  giving centralized cost tracking, budgets, rate limiting, fallbacks, and load
+  balancing. `LITELLM_API_KEY` is optional, since a gateway started without a
+  master key serves unauthenticated requests. Adds `list_litellm_models()` for
+  discovering what the gateway serves.
+
+### Bug Fixes
+* `get_provider()` now matches provider patterns containing `/` before the
+  OpenRouter rule that claims any model name containing `/`. Previously any
+  namespaced provider prefix would be misrouted to OpenRouter.
+
 ## 2.0.8 (2026-08-17)
 
 ### Bug Fixes

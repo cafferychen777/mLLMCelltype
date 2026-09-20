@@ -2,6 +2,23 @@
 
 All notable changes to the Python implementation of mLLMCelltype will be documented in this file.
 
+## [Unreleased]
+
+### Added
+- LiteLLM gateway provider. Route any model through a self-hosted
+  [LiteLLM](https://docs.litellm.ai/) gateway with `litellm/`-prefixed model
+  names (e.g. `litellm/gpt-5.5`), giving centralized cost tracking, budgets,
+  rate limiting, fallbacks, and load balancing across every model in a
+  consensus run. Upstream provider keys stay server-side in the gateway, so a
+  multi-vendor run needs only `LITELLM_API_KEY`, which is itself optional for a
+  gateway started without a master key. Adds `list_litellm_models()` for
+  discovering what the gateway serves.
+
+### Fixed
+- `get_provider()` now matches provider prefixes that contain `/` before the
+  OpenRouter rule that claims any model name containing `/`. Previously any
+  namespaced provider prefix would be misrouted to OpenRouter.
+
 ## [2.0.8] - 2026-08-17
 
 ### Fixed

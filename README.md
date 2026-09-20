@@ -139,6 +139,12 @@ pip install google-genai
   - Format: 'provider/model-name' (e.g., 'openai/gpt-5.5', 'anthropic/claude-opus-4.7')
   - Free models available with `:free` suffix (e.g., 'deepseek/deepseek-v4-pro:free', 'meta-llama/llama-4-maverick:free')
   - **Note**: Free tier limits: 50 requests/day (1000/day with $10+ credits), 20 requests/minute. Some models may be unavailable.
+- **LiteLLM**: Route any model through your own self-hosted [LiteLLM](https://docs.litellm.ai/) gateway
+  - Format: `'litellm/model-name'` (e.g., `'litellm/gpt-5.5'`, `'litellm/claude-opus-4-7'`); the name after the prefix is whatever your gateway routes, including its own aliases
+  - Upstream provider keys live server-side in the gateway config, so a consensus run mixing several vendors needs only the gateway key
+  - Gives centralized cost tracking, budgets, rate limiting, fallbacks, and load balancing across every model in a run
+  - Set `LITELLM_API_KEY` for the gateway's master or virtual key. It is optional: a gateway started without a master key serves unauthenticated requests
+  - Defaults to `http://localhost:4000/v1/chat/completions`; override with `base_url` for a remote gateway
 
 ## Usage Examples
 

@@ -71,6 +71,14 @@ def get_provider(model: str) -> str:
     model_normalized = normalize_text(model, "model", required=True)
     model_lower = model_normalized.lower()
 
+    # Providers whose prefix embeds a '/' must be matched BEFORE the OpenRouter
+    # rule below, which otherwise claims every namespaced model name. Without
+    # this, 'litellm/gpt-5.5' would be routed to OpenRouter.
+    for provider, prefixes in PROVIDER_MODEL_PREFIXES.items():
+        for prefix in prefixes:
+            if "/" in prefix and model_lower.startswith(prefix.lower()):
+                return provider
+
     # OpenRouter models contain '/' (e.g., 'anthropic/claude-sonnet-4.6')
     if "/" in model_normalized:
         return "openrouter"
@@ -96,9 +104,10 @@ def validate_provider_model_match(provider: str, model: str, field_name: str) ->
     """Reject model names that clearly belong to a different provider.
 
     Unknown model families remain valid for custom or newly released models.
-    OpenRouter is exempt because it intentionally routes models from other providers.
+    OpenRouter and LiteLLM are exempt because they intentionally route models
+    from other providers.
     """
-    if provider == "openrouter":
+    if provider in {"openrouter", "litellm"}:
         return
 
     try:
