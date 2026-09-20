@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+from types import SimpleNamespace
 from unittest.mock import MagicMock, patch
 
 import pytest
@@ -12,12 +13,16 @@ from mllmcelltype.functions import (
     get_provider,
     validate_provider_model_match,
 )
+from mllmcelltype.providers.common import NonRetryableProviderError
 from mllmcelltype.providers.litellm import (
     MODEL_PREFIX,
+    PROXY_PREFIX,
     list_litellm_models,
     models_url,
     process_litellm,
+    resolve_api_base,
     resolve_gateway_key,
+    resolve_sdk_model,
     strip_model_prefix,
 )
 
@@ -126,71 +131,180 @@ class TestModelsUrl:
         assert models_url("http://localhost:4000/v1/") == "http://localhost:4000/v1/models"
 
 
-@patch("mllmcelltype.providers.litellm.call_openai_compatible_api")
-@patch("mllmcelltype.providers.litellm.resolve_endpoint_url")
-class TestProcessLiteLLM:
-    def test_sends_the_stripped_model_name(self, mock_resolve, mock_call):
-        mock_resolve.return_value = "http://localhost:4000/v1/chat/completions"
-        mock_call.return_value = ["Cluster 1: T cells"]
+class TestResolveApiBase:
+    """No gateway configured means LiteLLM routes directly."""
 
-        result = process_litellm("genes", "litellm/gpt-5.5", "sk-key")
+    def test_explicit_base_url_wins(self, monkeypatch):
+        monkeypatch.setenv("LITELLM_API_BASE", "http://env:4000")
+        assert resolve_api_base("http://explicit:4000") == "http://explicit:4000"
+
+    def test_falls_back_to_the_environment(self, monkeypatch):
+        monkeypatch.setenv("LITELLM_API_BASE", "http://env:4000")
+        assert resolve_api_base(None) == "http://env:4000"
+
+    def test_none_when_no_gateway_is_configured(self, monkeypatch):
+        monkeypatch.delenv("LITELLM_API_BASE", raising=False)
+        assert resolve_api_base(None) is None
+        assert resolve_api_base("  ") is None
+
+    def test_trailing_slash_is_trimmed(self, monkeypatch):
+        monkeypatch.delenv("LITELLM_API_BASE", raising=False)
+        assert resolve_api_base("http://localhost:4000/") == "http://localhost:4000"
+
+
+class TestResolveSdkModel:
+    """The same model name works with and without a gateway."""
+
+    def test_direct_mode_passes_the_bare_name(self):
+        # No gateway: LiteLLM routes to the vendor itself, which is what lets a
+        # consensus run mix vendors with no extra infrastructure.
+        assert resolve_sdk_model("litellm/claude-opus-4-7", None) == "claude-opus-4-7"
+
+    def test_direct_mode_keeps_a_vendor_prefix(self):
+        assert resolve_sdk_model("litellm/anthropic/claude-opus-4-7", None) == (
+            "anthropic/claude-opus-4-7"
+        )
+
+    def test_gateway_mode_adds_the_proxy_prefix(self):
+        # With a gateway, LiteLLM must forward rather than resolve the vendor.
+        assert resolve_sdk_model("litellm/claude-opus-4-7", "http://localhost:4000") == (
+            "litellm_proxy/claude-opus-4-7"
+        )
+
+    def test_an_explicit_proxy_prefix_is_not_doubled(self):
+        assert resolve_sdk_model("litellm/litellm_proxy/gpt-5.5", "http://localhost:4000") == (
+            "litellm_proxy/gpt-5.5"
+        )
+
+    def test_rejects_an_empty_model_after_the_prefix(self):
+        with pytest.raises(ValueError, match="No model name left"):
+            resolve_sdk_model("litellm/", None)
+
+    def test_proxy_prefix_constant(self):
+        assert PROXY_PREFIX == "litellm_proxy/"
+
+
+def _fake_response(content="Cluster 1: T cells", usage=None, cost=None):
+    message = SimpleNamespace(content=content)
+    choice = SimpleNamespace(message=message)
+    response = SimpleNamespace(choices=[choice], usage=usage)
+    if cost is not None:
+        response._hidden_params = {"response_cost": cost}
+    return response
+
+
+@patch("mllmcelltype.providers.litellm._import_litellm")
+class TestProcessLiteLLM:
+    def test_direct_mode_sends_no_api_base(self, mock_import, monkeypatch):
+        monkeypatch.delenv("LITELLM_API_BASE", raising=False)
+        litellm = MagicMock()
+        litellm.completion.return_value = _fake_response()
+        mock_import.return_value = litellm
+
+        result = process_litellm("genes", "litellm/claude-opus-4-7", "sk-key")
 
         assert result == ["Cluster 1: T cells"]
-        kwargs = mock_call.call_args.kwargs
-        # The gateway knows nothing about the routing prefix.
-        assert kwargs["body"]["model"] == "gpt-5.5"
-        assert kwargs["provider_name"] == "LiteLLM"
+        kwargs = litellm.completion.call_args.kwargs
+        assert kwargs["model"] == "claude-opus-4-7"
+        assert "api_base" not in kwargs
+
+    def test_gateway_mode_routes_through_the_proxy(self, mock_import, monkeypatch):
+        monkeypatch.delenv("LITELLM_API_BASE", raising=False)
+        litellm = MagicMock()
+        litellm.completion.return_value = _fake_response()
+        mock_import.return_value = litellm
+
+        process_litellm(
+            "genes", "litellm/claude-opus-4-7", "sk-key", base_url="http://localhost:4000"
+        )
+
+        kwargs = litellm.completion.call_args.kwargs
+        assert kwargs["model"] == "litellm_proxy/claude-opus-4-7"
+        assert kwargs["api_base"] == "http://localhost:4000"
         assert kwargs["api_key"] == "sk-key"
 
-    def test_builds_a_single_user_message(self, mock_resolve, mock_call):
-        mock_resolve.return_value = "http://localhost:4000/v1/chat/completions"
-        mock_call.return_value = ["Cluster 1: T cells"]
+    def test_drop_params_defaults_on(self, mock_import, monkeypatch):
+        # Without it, one prompt cannot survive a multi-vendor consensus run:
+        # providers reject each other's parameters.
+        monkeypatch.delenv("LITELLM_API_BASE", raising=False)
+        litellm = MagicMock()
+        litellm.completion.return_value = _fake_response()
+        mock_import.return_value = litellm
+
+        process_litellm("genes", "litellm/gpt-5.5", "sk-key")
+
+        assert litellm.completion.call_args.kwargs["drop_params"] is True
+
+    def test_builds_a_single_user_message(self, mock_import, monkeypatch):
+        monkeypatch.delenv("LITELLM_API_BASE", raising=False)
+        litellm = MagicMock()
+        litellm.completion.return_value = _fake_response()
+        mock_import.return_value = litellm
 
         process_litellm("marker genes here", "litellm/gpt-5.5", "sk-key")
 
-        body = mock_call.call_args.kwargs["body"]
-        assert body["messages"] == [{"role": "user", "content": "marker genes here"}]
+        assert litellm.completion.call_args.kwargs["messages"] == [
+            {"role": "user", "content": "marker genes here"}
+        ]
 
-    def test_works_without_a_key(self, mock_resolve, mock_call, monkeypatch):
+    def test_omits_the_key_when_none_is_set(self, mock_import, monkeypatch):
+        # LiteLLM then reads the vendor's own env var, or calls a keyless gateway.
+        monkeypatch.delenv("LITELLM_API_BASE", raising=False)
         monkeypatch.delenv("LITELLM_API_KEY", raising=False)
-        mock_resolve.return_value = "http://localhost:4000/v1/chat/completions"
-        mock_call.return_value = ["Cluster 1: T cells"]
+        litellm = MagicMock()
+        litellm.completion.return_value = _fake_response()
+        mock_import.return_value = litellm
 
         process_litellm("genes", "litellm/gpt-5.5", "")
 
-        assert mock_call.call_args.kwargs["api_key"] == ""
+        assert "api_key" not in litellm.completion.call_args.kwargs
 
-    def test_forwards_a_custom_base_url(self, mock_resolve, mock_call):
-        mock_resolve.return_value = "https://gw.example.com/v1/chat/completions"
-        mock_call.return_value = ["Cluster 1: T cells"]
+    def test_honors_normalize_response(self, mock_import, monkeypatch):
+        monkeypatch.delenv("LITELLM_API_BASE", raising=False)
+        litellm = MagicMock()
+        litellm.completion.return_value = _fake_response(content="raw text")
+        mock_import.return_value = litellm
 
-        process_litellm("genes", "litellm/gpt-5.5", "sk-key", base_url="https://gw.example.com")
+        assert (
+            process_litellm("genes", "litellm/gpt-5.5", "sk-key", normalize_response=False)
+            == "raw text"
+        )
 
-        assert mock_resolve.call_args.args[2] == "https://gw.example.com"
-        assert mock_call.call_args.kwargs["url"] == "https://gw.example.com/v1/chat/completions"
-
-    def test_forwards_the_usage_sink(self, mock_resolve, mock_call):
-        mock_resolve.return_value = "http://localhost:4000/v1/chat/completions"
-        mock_call.return_value = ["Cluster 1: T cells"]
+    def test_captures_usage_and_cost(self, mock_import, monkeypatch):
+        monkeypatch.delenv("LITELLM_API_BASE", raising=False)
+        litellm = MagicMock()
+        litellm.completion.return_value = _fake_response(
+            usage={"prompt_tokens": 20, "completion_tokens": 4, "total_tokens": 24},
+            cost=0.0009,
+        )
+        mock_import.return_value = litellm
         sink: dict = {}
 
         process_litellm("genes", "litellm/gpt-5.5", "sk-key", usage_sink=sink)
 
-        assert mock_call.call_args.kwargs["usage_sink"] is sink
+        assert sink["prompt_tokens"] == 20
+        assert sink["completion_tokens"] == 4
+        assert sink["cost"] == pytest.approx(0.0009)
 
-    def test_honors_normalize_response(self, mock_resolve, mock_call):
-        mock_resolve.return_value = "http://localhost:4000/v1/chat/completions"
-        mock_call.return_value = "raw text"
+    def test_survives_a_response_without_usage(self, mock_import, monkeypatch):
+        monkeypatch.delenv("LITELLM_API_BASE", raising=False)
+        litellm = MagicMock()
+        litellm.completion.return_value = _fake_response(usage=None)
+        mock_import.return_value = litellm
+        sink: dict = {}
 
-        process_litellm("genes", "litellm/gpt-5.5", "sk-key", normalize_response=False)
+        assert process_litellm("genes", "litellm/gpt-5.5", "sk-key", usage_sink=sink) == [
+            "Cluster 1: T cells"
+        ]
 
-        assert mock_call.call_args.kwargs["normalize_response"] is False
+    def test_rejects_a_malformed_response(self, mock_import, monkeypatch):
+        monkeypatch.delenv("LITELLM_API_BASE", raising=False)
+        litellm = MagicMock()
+        litellm.completion.return_value = SimpleNamespace(choices=[], usage=None)
+        mock_import.return_value = litellm
 
-    def test_rejects_an_empty_model_after_the_prefix(self, mock_resolve, mock_call):
-        mock_resolve.return_value = "http://localhost:4000/v1/chat/completions"
-
-        with pytest.raises(ValueError, match="No model name left"):
-            process_litellm("genes", "litellm/", "sk-key")
+        with pytest.raises(NonRetryableProviderError, match="Unexpected response format"):
+            process_litellm("genes", "litellm/gpt-5.5", "sk-key")
 
 
 class TestListLiteLLMModels:

@@ -139,12 +139,13 @@ pip install google-genai
   - Format: 'provider/model-name' (e.g., 'openai/gpt-5.5', 'anthropic/claude-opus-4.7')
   - Free models available with `:free` suffix (e.g., 'deepseek/deepseek-v4-pro:free', 'meta-llama/llama-4-maverick:free')
   - **Note**: Free tier limits: 50 requests/day (1000/day with $10+ credits), 20 requests/minute. Some models may be unavailable.
-- **LiteLLM**: Route any model through your own self-hosted [LiteLLM](https://docs.litellm.ai/) gateway
-  - Format: `'litellm/model-name'` (e.g., `'litellm/gpt-5.5'`, `'litellm/claude-opus-4-7'`); the name after the prefix is whatever your gateway routes, including its own aliases
-  - Upstream provider keys live server-side in the gateway config, so a consensus run mixing several vendors needs only the gateway key
-  - Gives centralized cost tracking, budgets, rate limiting, fallbacks, and load balancing across every model in a run
-  - Set `LITELLM_API_KEY` for the gateway's master or virtual key. It is optional: a gateway started without a master key serves unauthenticated requests
-  - Defaults to `http://localhost:4000/v1/chat/completions`; override with `base_url` for a remote gateway
+- **LiteLLM**: One interface to 100+ providers via [LiteLLM](https://docs.litellm.ai/), used two ways from the same model name (`pip install 'mllmcelltype[litellm]'`)
+  - Format: `'litellm/model-name'` (e.g., `'litellm/gpt-5.5'`, `'litellm/claude-opus-4-7'`, `'litellm/anthropic/claude-opus-4-7'`); everything after the prefix is handed to LiteLLM untouched
+  - **Direct**, with no extra infrastructure: LiteLLM routes each model to its vendor using that vendor's own key, so one consensus run can mix vendors
+  - **Through a self-hosted gateway**, when `base_url` or `LITELLM_API_BASE` is set: adds centralized cost tracking, budgets, rate limiting, fallbacks and load balancing, and keeps every upstream key server-side so analysts need only the gateway key
+  - Reports LiteLLM's computed per-call cost alongside token usage
+  - `LITELLM_API_KEY` is optional: in direct mode LiteLLM reads each vendor's own environment variable, and a gateway started without a master key serves unauthenticated requests
+  - `list_litellm_models()` discovers what a gateway is actually serving
 
 ## Usage Examples
 

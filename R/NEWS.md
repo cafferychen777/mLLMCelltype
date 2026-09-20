@@ -7,9 +7,12 @@
   [LiteLLM](https://docs.litellm.ai/) gateway. Models are addressed with a
   `litellm/` prefix (e.g. `litellm/gpt-5.5`) and routed through the gateway,
   giving centralized cost tracking, budgets, rate limiting, fallbacks, and load
-  balancing. `LITELLM_API_KEY` is optional, since a gateway started without a
-  master key serves unauthenticated requests. Adds `list_litellm_models()` for
-  discovering what the gateway serves.
+  balancing, and keeping every upstream provider key server-side.
+  `LITELLM_API_KEY` is optional, since a gateway started without a master key
+  serves unauthenticated requests. Adds `list_litellm_models()` for discovering
+  what the gateway serves. (The R package talks to the gateway over its
+  OpenAI-compatible HTTP API; the Python package additionally supports direct
+  vendor routing through the LiteLLM SDK.)
 
 ### Bug Fixes
 * `get_provider()` now matches provider patterns containing `/` before the
