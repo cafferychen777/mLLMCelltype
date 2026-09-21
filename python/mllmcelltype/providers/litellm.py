@@ -13,10 +13,10 @@ name:
    adds centralized cost tracking, budgets, rate limiting, fallbacks, and load
    balancing, and keeps every upstream provider key server-side.
 
-Models are addressed with a ``litellm/`` prefix, for example
-``litellm/gpt-5.5`` or ``litellm/anthropic/claude-opus-4-7``. Everything after
-the prefix is handed to LiteLLM untouched, so it can be any model LiteLLM
-routes or any alias configured on a gateway.
+The provider is selected explicitly (``provider="litellm"``), not inferred
+from the model name, because LiteLLM routes any vendor's model. The model name
+is handed to LiteLLM untouched: ``"claude-opus-4-7"``,
+``"anthropic/claude-opus-4-7"``, or any alias a gateway serves.
 
 ``litellm`` is an optional dependency, imported lazily so the package installs
 and runs without it.
@@ -39,10 +39,6 @@ from .common import (
     resolve_endpoint_url,
 )
 
-# Model names are namespaced so mLLMCelltype can route to LiteLLM. Everything
-# after the prefix belongs to LiteLLM.
-MODEL_PREFIX = "litellm/"
-
 # LiteLLM's own prefix for "send this to my gateway rather than routing it
 # yourself". See https://docs.litellm.ai/docs/providers/litellm_proxy
 PROXY_PREFIX = "litellm_proxy/"
@@ -60,13 +56,6 @@ def _import_litellm() -> Any:
     except ImportError as error:  # pragma: no cover - exercised via monkeypatch
         raise ImportError(_IMPORT_ERROR_MESSAGE) from error
     return litellm
-
-
-def strip_model_prefix(model: str) -> str:
-    """Return the LiteLLM-facing model name, without mLLMCelltype's prefix."""
-    if model.lower().startswith(MODEL_PREFIX):
-        return model[len(MODEL_PREFIX) :]
-    return model
 
 
 def resolve_gateway_key(api_key: str | None) -> str:
@@ -105,23 +94,20 @@ def resolve_api_base(base_url: str | None) -> str | None:
 
 
 def resolve_sdk_model(model: str, api_base: str | None) -> str:
-    """Map an mLLMCelltype model name to the name LiteLLM should route.
+    """Return the model name LiteLLM should route.
 
-    With a gateway configured the name gets LiteLLM's ``litellm_proxy/`` prefix
-    so the SDK forwards it rather than resolving the vendor itself. Without one,
-    the bare name is returned and LiteLLM routes it directly.
+    With a gateway configured the name needs LiteLLM's ``litellm_proxy/``
+    prefix, otherwise LiteLLM infers the vendor from the model name and calls
+    it directly, silently bypassing the gateway. Without a gateway the bare
+    name is what lets LiteLLM route to the vendor.
     """
-    remainder = strip_model_prefix(model)
-    if not remainder:
-        raise ValueError(f"No model name left after the '{MODEL_PREFIX}' prefix: {model!r}")
+    if not model:
+        raise ValueError("A model name is required for the litellm provider")
 
-    if remainder.startswith(PROXY_PREFIX):
-        return remainder
+    if not api_base or model.startswith(PROXY_PREFIX):
+        return model
 
-    if api_base:
-        return f"{PROXY_PREFIX}{remainder}"
-
-    return remainder
+    return f"{PROXY_PREFIX}{model}"
 
 
 def _extract_content(response: Any) -> str:

@@ -90,10 +90,12 @@ PROVIDER_CONFIGS: dict[str, ProviderConfig] = {
         model_prefixes=("kimi-", "moonshot-"),
     ),
     "litellm": ProviderConfig(
-        default_model="litellm/gpt-5.5",
+        default_model="gpt-5.5",
         api_key_env_var="LITELLM_API_KEY",
         default_api_url="http://localhost:4000/v1/chat/completions",
-        model_prefixes=("litellm/",),
+        # No model_prefixes: LiteLLM routes any vendor's model, so it is
+        # selected explicitly (provider="litellm") rather than inferred from
+        # the model name, exactly like the openrouter entry in the R package.
     ),
     "openrouter": ProviderConfig(
         default_model="openai/gpt-5.5",

@@ -71,14 +71,6 @@ def get_provider(model: str) -> str:
     model_normalized = normalize_text(model, "model", required=True)
     model_lower = model_normalized.lower()
 
-    # Providers whose prefix embeds a '/' must be matched BEFORE the OpenRouter
-    # rule below, which otherwise claims every namespaced model name. Without
-    # this, 'litellm/gpt-5.5' would be routed to OpenRouter.
-    for provider, prefixes in PROVIDER_MODEL_PREFIXES.items():
-        for prefix in prefixes:
-            if "/" in prefix and model_lower.startswith(prefix.lower()):
-                return provider
-
     # OpenRouter models contain '/' (e.g., 'anthropic/claude-sonnet-4.6')
     if "/" in model_normalized:
         return "openrouter"

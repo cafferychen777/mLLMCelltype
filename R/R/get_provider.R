@@ -52,7 +52,7 @@
     api_key_env_aliases = "MOONSHOT_API_KEY"
   ),
   litellm = list(
-    pattern = "^litellm/",
+    pattern = NULL,
     processor_class = "LiteLLMProcessor",
     display_name = "LiteLLM"
   ),
@@ -184,16 +184,6 @@ get_provider <- function(model) {
   # Normalize model name to lowercase for case-insensitive matching
   model_normalized <- .normalize_required_string(model, "model")
   model_lower <- tolower(model_normalized)
-
-  # Providers whose pattern embeds a '/' must be matched BEFORE the OpenRouter
-  # rule below, which otherwise claims every namespaced model name. Without
-  # this, 'litellm/gpt-5.5' would be routed to OpenRouter.
-  for (provider in names(.BUILTIN_PROVIDER_PATTERNS)) {
-    pattern <- .BUILTIN_PROVIDER_PATTERNS[[provider]]
-    if (grepl("/", pattern, fixed = TRUE) && grepl(pattern, model_lower)) {
-      return(provider)
-    }
-  }
 
   # OpenRouter models always contain '/' (e.g., 'openai/gpt-5.5')
   if (grepl("/", model_lower)) {

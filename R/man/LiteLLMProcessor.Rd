@@ -14,10 +14,10 @@ gateway. LiteLLM exposes a single OpenAI-compatible API in front of 100+
 model providers, adding centralized cost tracking, budgets, rate limiting,
 fallbacks, and load balancing.
 
-Models are addressed with a \code{litellm/} prefix, for example
-\code{litellm/gpt-5.5}. The prefix selects this processor; whatever follows it is
-passed to the gateway untouched, so it can be any name the gateway routes,
-including one of its own aliases.
+The processor is selected explicitly rather than inferred from the model
+name, because a gateway routes any vendor's model. The model name is passed
+to the gateway untouched, so it can be any name the gateway serves, including
+one of its own aliases.
 }
 \section{Super class}{
 \code{\link[mLLMCelltype:BaseAPIProcessor]{mLLMCelltype::BaseAPIProcessor}} -> \code{LiteLLMProcessor}
@@ -83,7 +83,7 @@ Make API call to the LiteLLM gateway
 \describe{
 \item{\code{chunk_content}}{Prompt text to send}
 
-\item{\code{model}}{Model identifier, with or without the \code{litellm/} prefix}
+\item{\code{model}}{Model identifier, as served by the gateway}
 
 \item{\code{api_key}}{Gateway master or virtual key. May be empty for a gateway
 started without a master key.}

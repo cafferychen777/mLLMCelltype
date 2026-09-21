@@ -15,7 +15,6 @@ from mllmcelltype.functions import (
 )
 from mllmcelltype.providers.common import NonRetryableProviderError
 from mllmcelltype.providers.litellm import (
-    MODEL_PREFIX,
     PROXY_PREFIX,
     list_litellm_models,
     models_url,
@@ -23,7 +22,6 @@ from mllmcelltype.providers.litellm import (
     resolve_api_base,
     resolve_gateway_key,
     resolve_sdk_model,
-    strip_model_prefix,
 )
 
 
@@ -34,7 +32,9 @@ class TestRegistration:
         assert "litellm" in get_supported_providers()
         config = PROVIDER_CONFIGS["litellm"]
         assert config.api_key_env_var == "LITELLM_API_KEY"
-        assert config.model_prefixes == ("litellm/",)
+        # No model_prefixes: LiteLLM routes any vendor's model, so the
+        # provider is chosen explicitly rather than inferred from the name.
+        assert config.model_prefixes == ()
 
     def test_provider_is_in_the_runtime_registry(self):
         # The registry validates config/implementation parity and the exact
@@ -43,54 +43,22 @@ class TestRegistration:
         assert PROVIDER_FUNCTIONS["litellm"] is process_litellm
 
 
-class TestRouting:
-    """Model-name routing, including the OpenRouter precedence trap."""
+class TestExplicitSelection:
+    """The provider is chosen explicitly, never inferred from the model name."""
 
-    def test_prefixed_model_routes_to_litellm(self):
-        assert get_provider("litellm/gpt-5.5") == "litellm"
-
-    def test_prefixed_model_wins_over_the_openrouter_slash_rule(self):
-        # `get_provider` returns "openrouter" for ANY model containing '/'.
-        # That rule runs before prefix matching, so without an explicit
-        # slash-prefix pass first, every litellm/* model silently routes to
-        # OpenRouter and fails with an OpenRouter key.
-        assert get_provider("litellm/anthropic/claude-opus-4-7") == "litellm"
-
-    def test_openrouter_still_claims_other_namespaced_models(self):
-        assert get_provider("anthropic/claude-sonnet-4.6") == "openrouter"
-        assert get_provider("openai/gpt-5.5") == "openrouter"
-
-    def test_bare_models_are_unaffected(self):
+    def test_model_name_inference_is_unchanged(self):
+        # This provider adds no prefix, so inference must behave exactly as
+        # before; it is selected via provider="litellm".
         assert get_provider("gpt-5.5") == "openai"
         assert get_provider("claude-opus-4-7") == "anthropic"
-
-    def test_case_insensitive(self):
-        assert get_provider("LiteLLM/GPT-5.5") == "litellm"
+        assert get_provider("anthropic/claude-sonnet-4.6") == "openrouter"
 
     def test_validation_exempts_the_gateway(self):
-        # The gateway intentionally routes other vendors' models, so a
-        # provider/model mismatch is not an error here.
-        validate_provider_model_match("litellm", "litellm/claude-opus-4-7", "model")
-
-
-class TestStripModelPrefix:
-    def test_strips_the_routing_prefix(self):
-        assert strip_model_prefix("litellm/gpt-5.5") == "gpt-5.5"
-
-    def test_is_case_insensitive(self):
-        assert strip_model_prefix("LiteLLM/gpt-5.5") == "gpt-5.5"
-
-    def test_leaves_an_unprefixed_name_alone(self):
-        assert strip_model_prefix("gpt-5.5") == "gpt-5.5"
-
-    def test_preserves_a_nested_namespace(self):
-        # The gateway may be configured with namespaced aliases of its own.
-        assert strip_model_prefix("litellm/anthropic/claude-opus-4-7") == (
-            "anthropic/claude-opus-4-7"
-        )
-
-    def test_prefix_constant_matches_the_config(self):
-        assert PROVIDER_CONFIGS["litellm"].model_prefixes == (MODEL_PREFIX,)
+        # The one change needed in shared code: without it, provider="litellm"
+        # with model="claude-opus-4-7" is rejected as a mismatch, because the
+        # name infers to anthropic.
+        validate_provider_model_match("litellm", "claude-opus-4-7", "model")
+        validate_provider_model_match("litellm", "gemini-2.5-flash", "model")
 
 
 class TestResolveGatewayKey:
@@ -158,27 +126,27 @@ class TestResolveSdkModel:
     def test_direct_mode_passes_the_bare_name(self):
         # No gateway: LiteLLM routes to the vendor itself, which is what lets a
         # consensus run mix vendors with no extra infrastructure.
-        assert resolve_sdk_model("litellm/claude-opus-4-7", None) == "claude-opus-4-7"
+        assert resolve_sdk_model("claude-opus-4-7", None) == "claude-opus-4-7"
 
     def test_direct_mode_keeps_a_vendor_prefix(self):
-        assert resolve_sdk_model("litellm/anthropic/claude-opus-4-7", None) == (
+        assert resolve_sdk_model("anthropic/claude-opus-4-7", None) == (
             "anthropic/claude-opus-4-7"
         )
 
     def test_gateway_mode_adds_the_proxy_prefix(self):
         # With a gateway, LiteLLM must forward rather than resolve the vendor.
-        assert resolve_sdk_model("litellm/claude-opus-4-7", "http://localhost:4000") == (
+        assert resolve_sdk_model("claude-opus-4-7", "http://localhost:4000") == (
             "litellm_proxy/claude-opus-4-7"
         )
 
     def test_an_explicit_proxy_prefix_is_not_doubled(self):
-        assert resolve_sdk_model("litellm/litellm_proxy/gpt-5.5", "http://localhost:4000") == (
+        assert resolve_sdk_model("litellm_proxy/gpt-5.5", "http://localhost:4000") == (
             "litellm_proxy/gpt-5.5"
         )
 
-    def test_rejects_an_empty_model_after_the_prefix(self):
-        with pytest.raises(ValueError, match="No model name left"):
-            resolve_sdk_model("litellm/", None)
+    def test_rejects_an_empty_model(self):
+        with pytest.raises(ValueError, match="model name is required"):
+            resolve_sdk_model("", None)
 
     def test_proxy_prefix_constant(self):
         assert PROXY_PREFIX == "litellm_proxy/"
@@ -201,7 +169,7 @@ class TestProcessLiteLLM:
         litellm.completion.return_value = _fake_response()
         mock_import.return_value = litellm
 
-        result = process_litellm("genes", "litellm/claude-opus-4-7", "sk-key")
+        result = process_litellm("genes", "claude-opus-4-7", "sk-key")
 
         assert result == ["Cluster 1: T cells"]
         kwargs = litellm.completion.call_args.kwargs
@@ -215,7 +183,7 @@ class TestProcessLiteLLM:
         mock_import.return_value = litellm
 
         process_litellm(
-            "genes", "litellm/claude-opus-4-7", "sk-key", base_url="http://localhost:4000"
+            "genes", "claude-opus-4-7", "sk-key", base_url="http://localhost:4000"
         )
 
         kwargs = litellm.completion.call_args.kwargs
@@ -231,7 +199,7 @@ class TestProcessLiteLLM:
         litellm.completion.return_value = _fake_response()
         mock_import.return_value = litellm
 
-        process_litellm("genes", "litellm/gpt-5.5", "sk-key")
+        process_litellm("genes", "gpt-5.5", "sk-key")
 
         assert litellm.completion.call_args.kwargs["drop_params"] is True
 
@@ -241,7 +209,7 @@ class TestProcessLiteLLM:
         litellm.completion.return_value = _fake_response()
         mock_import.return_value = litellm
 
-        process_litellm("marker genes here", "litellm/gpt-5.5", "sk-key")
+        process_litellm("marker genes here", "gpt-5.5", "sk-key")
 
         assert litellm.completion.call_args.kwargs["messages"] == [
             {"role": "user", "content": "marker genes here"}
@@ -255,7 +223,7 @@ class TestProcessLiteLLM:
         litellm.completion.return_value = _fake_response()
         mock_import.return_value = litellm
 
-        process_litellm("genes", "litellm/gpt-5.5", "")
+        process_litellm("genes", "gpt-5.5", "")
 
         assert "api_key" not in litellm.completion.call_args.kwargs
 
@@ -266,7 +234,7 @@ class TestProcessLiteLLM:
         mock_import.return_value = litellm
 
         assert (
-            process_litellm("genes", "litellm/gpt-5.5", "sk-key", normalize_response=False)
+            process_litellm("genes", "gpt-5.5", "sk-key", normalize_response=False)
             == "raw text"
         )
 
@@ -280,7 +248,7 @@ class TestProcessLiteLLM:
         mock_import.return_value = litellm
         sink: dict = {}
 
-        process_litellm("genes", "litellm/gpt-5.5", "sk-key", usage_sink=sink)
+        process_litellm("genes", "gpt-5.5", "sk-key", usage_sink=sink)
 
         assert sink["prompt_tokens"] == 20
         assert sink["completion_tokens"] == 4
@@ -293,7 +261,7 @@ class TestProcessLiteLLM:
         mock_import.return_value = litellm
         sink: dict = {}
 
-        assert process_litellm("genes", "litellm/gpt-5.5", "sk-key", usage_sink=sink) == [
+        assert process_litellm("genes", "gpt-5.5", "sk-key", usage_sink=sink) == [
             "Cluster 1: T cells"
         ]
 
@@ -304,7 +272,7 @@ class TestProcessLiteLLM:
         mock_import.return_value = litellm
 
         with pytest.raises(NonRetryableProviderError, match="Unexpected response format"):
-            process_litellm("genes", "litellm/gpt-5.5", "sk-key")
+            process_litellm("genes", "gpt-5.5", "sk-key")
 
 
 class TestListLiteLLMModels:

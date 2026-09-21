@@ -5,9 +5,9 @@ All notable changes to the Python implementation of mLLMCelltype will be documen
 ## [Unreleased]
 
 ### Added
-- LiteLLM provider, giving one interface to 100+ model providers through
-  `litellm/`-prefixed model names (e.g. `litellm/claude-opus-4-7`). Works two
-  ways from the same name: **directly**, where the LiteLLM SDK routes each model
+- LiteLLM provider, giving one interface to 100+ model providers. Selected
+  explicitly with `provider="litellm"`; the model name is passed to LiteLLM
+  untouched. Works two ways: **directly**, where the LiteLLM SDK routes each model
   to its vendor using that vendor's own key so a single consensus run can mix
   vendors with no extra infrastructure; and **through a self-hosted gateway**
   when `base_url` or `LITELLM_API_BASE` is set, which adds centralized cost
@@ -17,11 +17,6 @@ All notable changes to the Python implementation of mLLMCelltype will be documen
   multi-vendor run, and adds `list_litellm_models()` for gateway discovery.
   `litellm` is an optional dependency (`pip install 'mllmcelltype[litellm]'`),
   imported lazily.
-
-### Fixed
-- `get_provider()` now matches provider prefixes that contain `/` before the
-  OpenRouter rule that claims any model name containing `/`. Previously any
-  namespaced provider prefix would be misrouted to OpenRouter.
 
 ## [2.0.8] - 2026-08-17
 

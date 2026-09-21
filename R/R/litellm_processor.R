@@ -5,9 +5,9 @@
 #' model providers, adding centralized cost tracking, budgets, rate limiting,
 #' fallbacks, and load balancing.
 #'
-#' Models are addressed with a `litellm/` prefix, for example
-#' `litellm/gpt-5.5`. The prefix selects this processor; whatever follows it is
-#' passed to the gateway untouched, so it can be any name the gateway routes,
+#' The processor is selected explicitly rather than inferred from the model
+#' name, because a gateway routes any vendor's model. The model name is passed
+#' to the gateway untouched, so it can be any name the gateway serves,
 #' including one of its own aliases.
 #'
 #' @export
@@ -32,15 +32,11 @@ LiteLLMProcessor <- R6::R6Class("LiteLLMProcessor",
     #' @description
     #' Make API call to the LiteLLM gateway
     #' @param chunk_content Prompt text to send
-    #' @param model Model identifier, with or without the `litellm/` prefix
+    #' @param model Model identifier, as served by the gateway
     #' @param api_key Gateway master or virtual key. May be empty for a gateway
     #'   started without a master key.
     make_api_call = function(chunk_content, model, api_key) {
-      private$post_chat_completions_request(
-        chunk_content,
-        strip_litellm_model_prefix(model),
-        api_key
-      )
+      private$post_chat_completions_request(chunk_content, model, api_key)
     },
 
     #' @description
@@ -52,19 +48,6 @@ LiteLLMProcessor <- R6::R6Class("LiteLLMProcessor",
     }
   )
 )
-
-#' Strip the LiteLLM routing prefix from a model name
-#'
-#' The `litellm/` prefix exists only so mLLMCelltype can route to the gateway
-#' processor. The gateway itself knows nothing about it, so it is removed
-#' before the request is built.
-#'
-#' @param model Model identifier, with or without the `litellm/` prefix
-#' @return The gateway-facing model name
-#' @noRd
-strip_litellm_model_prefix <- function(model) {
-  sub("^litellm/", "", model, ignore.case = TRUE)
-}
 
 #' List models served by a LiteLLM gateway
 #'

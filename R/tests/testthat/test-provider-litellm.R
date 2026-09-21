@@ -1,29 +1,20 @@
 # Tests for the LiteLLM gateway provider
 
-test_that("LiteLLM models route to the gateway, not OpenRouter", {
-  # get_provider() returns "openrouter" for ANY model containing '/'. That rule
-  # runs before prefix matching, so without an explicit slash-prefix pass first
-  # every litellm/* model silently routes to OpenRouter and fails there.
-  expect_equal(get_provider("litellm/gpt-5.5"), "litellm")
-  expect_equal(get_provider("litellm/claude-opus-4-7"), "litellm")
+test_that("the provider is selected explicitly, not inferred from the model", {
+  # LiteLLM routes any vendor's model, so it carries no name pattern and is
+  # chosen by name, exactly like the openrouter provider.
+  spec <- get_builtin_provider_spec("litellm")
+
+  expect_equal(spec$processor_class, "LiteLLMProcessor")
+  expect_equal(spec$display_name, "LiteLLM")
+  expect_null(spec$pattern)
 })
 
-test_that("a nested gateway alias still routes to the gateway", {
-  expect_equal(get_provider("litellm/anthropic/claude-opus-4-7"), "litellm")
-})
-
-test_that("routing is case insensitive", {
-  expect_equal(get_provider("LiteLLM/GPT-5.5"), "litellm")
-})
-
-test_that("OpenRouter still claims other namespaced models", {
-  expect_equal(get_provider("anthropic/claude-sonnet-4.6"), "openrouter")
-  expect_equal(get_provider("openai/gpt-5.5"), "openrouter")
-})
-
-test_that("bare model names are unaffected", {
+test_that("adding the provider leaves model-name inference unchanged", {
   expect_equal(get_provider("gpt-5.5"), "openai")
   expect_equal(get_provider("claude-opus-4-7"), "anthropic")
+  expect_equal(get_provider("anthropic/claude-sonnet-4.6"), "openrouter")
+  expect_equal(get_provider("openai/gpt-5.5"), "openrouter")
 })
 
 test_that("the built-in provider registry stays valid with LiteLLM added", {
@@ -47,21 +38,6 @@ test_that("a custom gateway endpoint overrides the default", {
   expect_equal(processor$get_api_url(), "https://gw.example.com/v1/chat/completions")
 })
 
-test_that("the routing prefix is stripped before the request is built", {
-  # The gateway knows nothing about the litellm/ prefix; it exists only so
-  # mLLMCelltype can pick this processor.
-  expect_equal(strip_litellm_model_prefix("litellm/gpt-5.5"), "gpt-5.5")
-  expect_equal(strip_litellm_model_prefix("LiteLLM/claude-opus-4-7"), "claude-opus-4-7")
-  expect_equal(
-    strip_litellm_model_prefix("litellm/anthropic/claude-opus-4-7"),
-    "anthropic/claude-opus-4-7"
-  )
-})
-
-test_that("an unprefixed model name passes through unchanged", {
-  expect_equal(strip_litellm_model_prefix("gpt-5.5"), "gpt-5.5")
-})
-
 test_that("the processor implements the required interface", {
   processor <- new_builtin_provider_processor("litellm")
 
@@ -71,9 +47,8 @@ test_that("the processor implements the required interface", {
 })
 
 test_that("the gateway spec carries no api key alias, since the key is optional", {
+  # A gateway started without a master key serves unauthenticated requests.
   spec <- get_builtin_provider_spec("litellm")
 
-  expect_equal(spec$processor_class, "LiteLLMProcessor")
-  expect_equal(spec$pattern, "^litellm/")
   expect_null(spec$api_key_env_aliases)
 })
