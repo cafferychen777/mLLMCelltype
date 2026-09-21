@@ -2,6 +2,22 @@
 
 All notable changes to the Python implementation of mLLMCelltype will be documented in this file.
 
+## [Unreleased]
+
+### Added
+- LiteLLM provider, giving one interface to 100+ model providers. Selected
+  explicitly with `provider="litellm"`; the model name is passed to LiteLLM
+  untouched. Works two ways: **directly**, where the LiteLLM SDK routes each model
+  to its vendor using that vendor's own key so a single consensus run can mix
+  vendors with no extra infrastructure; and **through a self-hosted gateway**
+  when `base_url` or `LITELLM_API_BASE` is set, which adds centralized cost
+  tracking, budgets, rate limiting, fallbacks and load balancing, and keeps
+  upstream keys server-side. Reports LiteLLM's computed per-call cost alongside
+  token usage, defaults `drop_params=True` so one prompt survives a
+  multi-vendor run, and adds `list_litellm_models()` for gateway discovery.
+  `litellm` is an optional dependency (`pip install 'mllmcelltype[litellm]'`),
+  imported lazily.
+
 ## [2.0.8] - 2026-08-17
 
 ### Fixed

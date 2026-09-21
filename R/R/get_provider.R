@@ -51,6 +51,11 @@
     display_name = "Kimi",
     api_key_env_aliases = "MOONSHOT_API_KEY"
   ),
+  litellm = list(
+    pattern = NULL,
+    processor_class = "LiteLLMProcessor",
+    display_name = "LiteLLM"
+  ),
   openrouter = list(
     pattern = NULL,
     processor_class = "OpenRouterProcessor",

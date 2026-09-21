@@ -96,9 +96,10 @@ def validate_provider_model_match(provider: str, model: str, field_name: str) ->
     """Reject model names that clearly belong to a different provider.
 
     Unknown model families remain valid for custom or newly released models.
-    OpenRouter is exempt because it intentionally routes models from other providers.
+    OpenRouter and LiteLLM are exempt because they intentionally route models
+    from other providers.
     """
-    if provider == "openrouter":
+    if provider in {"openrouter", "litellm"}:
         return
 
     try:

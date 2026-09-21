@@ -1,5 +1,20 @@
 # mLLMCelltype Changelog
 
+## Unreleased
+
+### New Features
+* Added `LiteLLMProcessor`, a provider for a self-hosted
+  [LiteLLM](https://docs.litellm.ai/) gateway. Like the OpenRouter provider it
+  carries no model-name pattern and is selected explicitly, because a gateway
+  routes any vendor's model; the model name is passed through untouched. Gives
+  centralized cost tracking, budgets, rate limiting, fallbacks, and load
+  balancing, and keeping every upstream provider key server-side.
+  `LITELLM_API_KEY` is optional, since a gateway started without a master key
+  serves unauthenticated requests. Adds `list_litellm_models()` for discovering
+  what the gateway serves. (The R package talks to the gateway over its
+  OpenAI-compatible HTTP API; the Python package additionally supports direct
+  vendor routing through the LiteLLM SDK.)
+
 ## 2.0.8 (2026-08-17)
 
 ### Bug Fixes

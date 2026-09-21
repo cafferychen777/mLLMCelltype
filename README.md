@@ -139,6 +139,13 @@ pip install google-genai
   - Format: 'provider/model-name' (e.g., 'openai/gpt-5.5', 'anthropic/claude-opus-4.7')
   - Free models available with `:free` suffix (e.g., 'deepseek/deepseek-v4-pro:free', 'meta-llama/llama-4-maverick:free')
   - **Note**: Free tier limits: 50 requests/day (1000/day with $10+ credits), 20 requests/minute. Some models may be unavailable.
+- **LiteLLM**: One interface to 100+ providers via [LiteLLM](https://docs.litellm.ai/), used two ways (`pip install 'mllmcelltype[litellm]'`)
+  - Selected explicitly with `provider="litellm"` (or `{"provider": "litellm", "model": ...}` in a consensus run); the model name is passed to LiteLLM untouched, e.g. `'claude-opus-4-7'` or `'anthropic/claude-opus-4-7'`
+  - **Direct**, with no extra infrastructure: LiteLLM routes each model to its vendor using that vendor's own key, so one consensus run can mix vendors
+  - **Through a self-hosted gateway**, when `base_url` or `LITELLM_API_BASE` is set: adds centralized cost tracking, budgets, rate limiting, fallbacks and load balancing, and keeps every upstream key server-side so analysts need only the gateway key
+  - Reports LiteLLM's computed per-call cost alongside token usage
+  - `LITELLM_API_KEY` is optional: in direct mode LiteLLM reads each vendor's own environment variable, and a gateway started without a master key serves unauthenticated requests
+  - `list_litellm_models()` discovers what a gateway is actually serving
 
 ## Usage Examples
 
