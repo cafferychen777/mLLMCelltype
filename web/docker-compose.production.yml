@@ -9,6 +9,8 @@ services:
       - "${APP_ENV_FILE:-.env}"
     environment:
       PORT: "8080"
+      # The annotation engine stores logs and cache under ~/.mllmcelltype.
+      HOME: /tmp
       XDG_CACHE_HOME: /tmp/cache
     ports:
       - "127.0.0.1:8080:8080"

@@ -64,6 +64,12 @@ of presenting stale work as active. The container has a read-only root
 filesystem, no Linux capabilities, a PID limit, and only a bounded temporary
 filesystem.
 
+`HOME` points to `/tmp` so the annotation engine can create its default
+`~/.mllmcelltype/logs` and `~/.mllmcelltype/cache` directories. These files are
+temporary and disappear when the container is recreated. `XDG_CACHE_HOME` alone
+does not redirect the engine's storage. Before releasing an image, CI runs a
+log and cache smoke check with the production read-only Compose configuration.
+
 ## Operations
 
 ```bash
