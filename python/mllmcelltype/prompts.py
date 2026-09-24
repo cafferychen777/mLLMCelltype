@@ -42,8 +42,7 @@ Cluster <exact input cluster ID>: <cell type>
 Copy each input cluster ID exactly. Never renumber clusters or replace their IDs.
 
 Only provide the cell type name for each cluster. Be concise but specific.
-Some clusters can be a mixture of multiple cell types. Use Unknown when the markers do not establish a cell lineage.
-Tissue context supports interpretation but is not evidence of malignancy; do not infer malignant cells from generic epithelial markers alone.
+Some clusters can be a mixture of multiple cell types.
 
 {context}
 Here are the marker genes for each cluster:
