@@ -999,15 +999,24 @@ def create_app():
             "geolocation=(), microphone=(), camera=()"
         )
 
-        # Performance hints for Core Web Vitals
+        # Preloads must use the same versioned URLs as the rendered template.
         if request.endpoint == "index":
-            response.headers["Link"] = (
-                "</static/css/style.css>; rel=preload; as=style, "
-                "</static/js/app.js>; rel=preload; as=script, "
-                "</static/js/vue.global.js>; rel=preload; as=script"
+            response.headers["Link"] = ", ".join(
+                f"<{url_for('static', filename=filename)}>; rel=preload; as={kind}"
+                for filename, kind in (
+                    ("css/style.css", "style"),
+                    ("js/app.js", "script"),
+                    ("js/vue.global.js", "script"),
+                )
             )
 
         return response
+
+    @app.url_defaults
+    def version_static_assets(endpoint, values):
+        """Keep browser and CDN assets aligned with the deployed application."""
+        if endpoint == "static":
+            values.setdefault("v", os.environ.get("VERSION") or _APP_START_TIME)
 
     # Rate limiting is mandatory because several routes trigger paid API calls.
     try:
