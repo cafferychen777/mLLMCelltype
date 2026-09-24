@@ -6,11 +6,13 @@ on:
     branches: [main]
     paths:
       - "web/**"
+      - "python/**"
       - ".github/workflows/web-deploy-vps.yml"
   pull_request:
     branches: [main]
     paths:
       - "web/**"
+      - "python/**"
       - ".github/workflows/web-deploy-vps.yml"
   workflow_dispatch:
 
@@ -36,8 +38,13 @@ jobs:
           cache-dependency-path: web/requirements-dev.lock
       - name: Install locked dependencies
         run: python -m pip install --require-hashes -r web/requirements-dev.lock
+      - name: Install repository annotation engine
+        run: python -m pip install --no-deps ./python
       - name: Run quality checks
-        run: make -C web check
+        run: |
+          make -C web check
+          python -m pytest python/tests -q
+          ruff check python/mllmcelltype
 
   deploy:
     name: Build and deploy immutable release
@@ -60,6 +67,7 @@ jobs:
 
           docker build --pull \
             --file Dockerfile.production \
+            --build-context annotation_engine=../python \
             --build-arg "BUILD_TIME=${build_time}" \
             --build-arg "REVISION=${REVISION}" \
             --tag "$image" \
@@ -113,8 +121,8 @@ jobs:
         run: |
           set -euo pipefail
           expected_engine=$(sed -n \
-            's/^mllmcelltype==\([^[:space:]]*\).*/\1/p' \
-            web/requirements.lock | head -n 1)
+            's/^version = "\([^"]*\)"/\1/p' \
+            python/pyproject.toml | head -n 1)
           test -n "$expected_engine"
 
           for attempt in $(seq 1 12); do

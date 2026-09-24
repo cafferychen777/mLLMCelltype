@@ -1394,7 +1394,6 @@ def create_app():
                     else None
                 )
                 error_msg = task.get("error")
-                started_at = task.get("started_at")
                 persistence_failed = task.get("persistence_failed", False)
 
             # Only log non-processing status checks to avoid flooding
@@ -1408,27 +1407,9 @@ def create_app():
                 response["progress"] = 10
                 response["message"] = "File processed, ready for annotation"
             elif status == "processing":
-                # Compute progress: use real percentage if set, otherwise
-                # estimate from elapsed time (grows 10→85% over ~10 min).
-                # The mLLMCelltype package runs as one blocking call, so
-                # per-cluster progress is unavailable.
-                if progress_copy and progress_copy.get("percentage") is not None:
-                    pct = min(
-                        100.0, max(0.0, _finite_float(progress_copy["percentage"], 15))
-                    )
-                else:
-                    pct = 15  # default: just started
-                    if started_at:
-                        try:
-                            elapsed = max(
-                                0,
-                                (
-                                    utc_now() - parse_timestamp(started_at)
-                                ).total_seconds(),
-                            )
-                            pct = min(85, 10 + int(elapsed / 600 * 75))
-                        except (ValueError, TypeError):
-                            pass
+                # A percentage is meaningful only when the worker explicitly reports it.
+                pct = _finite_float((progress_copy or {}).get("percentage"), 0)
+                pct = min(100.0, max(0.0, pct))
 
                 stage = "Processing"
                 msg = "Processing annotations..."
@@ -1445,6 +1426,15 @@ def create_app():
                     "total_clusters": progress_copy.get("total", 0)
                     if progress_copy
                     else 0,
+                    "indeterminate": bool(
+                        progress_copy and progress_copy.get("indeterminate")
+                    ),
+                    "completed_calls": progress_copy.get("completed_calls", 0)
+                    if progress_copy
+                    else 0,
+                    "unavailable_models": progress_copy.get("unavailable_models", {})
+                    if progress_copy
+                    else {},
                     "phase": progress_copy.get("phase", "processing")
                     if progress_copy
                     else "processing",
@@ -2715,6 +2705,56 @@ def _fail_annotation_task(task_id, error_message, *, expected_run_id=None):
     _bg_save(task_id, "task_failed")
 
 
+def _annotation_is_cancelled(task_id, run_id):
+    """Keep worker execution scoped to the current, non-terminal run."""
+    with TASKS_LOCK:
+        task = TASKS.get(task_id)
+        return (
+            task is None
+            or task.get("run_id") != run_id
+            or task.get("status") != TaskState.PROCESSING.value
+        )
+
+
+def _record_annotation_progress(task_id, run_id, event):
+    """Project engine events into task state without guessing percent complete."""
+    phase = event.get("phase", "annotation")
+    stage = {
+        "annotation": "Annotating",
+        "consensus": "Checking consensus",
+        "discussion": "Discussing",
+        "completed": "Completed",
+    }.get(phase, phase)
+    details = [stage]
+    if event.get("cluster") is not None:
+        details.append(str(event["cluster"]))
+    if event.get("round") is not None:
+        details.append(f"round {event['round']}")
+    if event.get("model"):
+        details.append(event["model"])
+    if event.get("event") == "model_failed":
+        details.append("unavailable")
+    if event.get("event") == "retry_wait":
+        details.append(f"retry {event['attempt']} in {event['wait_seconds']}s")
+    with TASKS_LOCK:
+        task = TASKS.get(task_id)
+        if (
+            task is None
+            or task.get("run_id") != run_id
+            or task.get("status") != "processing"
+        ):
+            return
+        task["progress"] = {
+            **task.get("progress", {}),
+            **event,
+            "stage": " | ".join(details),
+            "message": " | ".join(details),
+            "indeterminate": True,
+        }
+        version = task.get("state_version", 0)
+    _buffer_task_heartbeat(task_id, run_id, version)
+
+
 def process_annotation(
     task_id,
     run_id,
@@ -2785,7 +2825,8 @@ def process_annotation(
                 "current": 0,
                 "total": total_clusters,
                 "stage": "Running consensus annotation",
-                "percentage": 5,
+                "indeterminate": True,
+                "completed_calls": 0,
                 "message": f"Processing {total_clusters} clusters",
             }
             state_version = task.get("state_version", 0)
@@ -2806,7 +2847,13 @@ def process_annotation(
                 consensus_model=consensus_model_spec,
                 verbose=False,
                 use_cache=True,
+                progress_callback=lambda event: _record_annotation_progress(
+                    task_id, run_id, event
+                ),
+                should_cancel=lambda: _annotation_is_cancelled(task_id, run_id),
             )
+            if results.get("error"):
+                raise RuntimeError(results["error"])
         finally:
             heartbeat_updater.stop()
             heartbeat_updater = None

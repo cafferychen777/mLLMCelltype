@@ -2,6 +2,16 @@
 
 All notable changes to the Python implementation of mLLMCelltype will be documented in this file.
 
+## [2.0.9] - 2026-09-24
+
+- Preserve supplied cluster IDs in the annotation prompt instead of suggesting numeric renumbering.
+- Add run-scoped request budgets, cancellation checks, failure metadata, and progress callbacks.
+- Exclude unavailable models from discussion, stop rounds without sufficient responses, and reuse the last consensus evaluation.
+- Avoid replaying timed-out HTTP generations; preserve single-response labels without claiming agreement.
+
+- Give GLM-5.3 a 16,384-token output budget for forced thinking and final answers.
+- Honor cache bypass during consensus checks and fall back only to selected, usable models.
+
 ## [2.0.8] - 2026-08-17
 
 ### Fixed

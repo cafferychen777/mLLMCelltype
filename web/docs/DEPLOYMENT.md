@@ -10,10 +10,13 @@ certificates, or deployment credentials on this VPS.
 
 ## Release model
 
-Changes under `web/` pushed to `main` start
+Changes under `web/` or `python/` pushed to `main` start
 `.github/workflows/web-deploy-vps.yml`. After tests pass, CI:
 
 1. Builds `mllmcelltype-web:<full-commit-sha>` from the pinned Python base.
+   The `annotation_engine=../python` build context installs the maintained Python
+   package from that same commit; web dependencies no longer select a different
+   engine from PyPI.
 2. Stores the commit SHA in the image's OCI revision label.
 3. Creates a checksummed bundle containing the image and Compose manifest.
 4. Uploads the bundle with SSH host-key verification.
@@ -106,3 +109,20 @@ At minimum, `app.env` must define:
 
 The admin dashboard is enabled only when both `ADMIN_USERNAME` and
 `ADMIN_PASSWORD_HASH` are configured.
+
+## Annotation execution
+
+The engine owns request timeouts, a cooperative run deadline, failed-model
+exclusion, and structured progress events. The web worker projects these events
+into task status, checks run-scoped cancellation, and does not estimate percentage
+completion while the number of discussion calls is unknown. The defaults are a
+120-second read timeout and a 900-second run budget. Read timeouts are not blindly
+replayed. These are cooperative limits: an in-flight request may finish before
+cancellation is observed. Completed results retain failure categories in metadata.
+
+For local development, install both the web locks and the repository engine:
+
+```bash
+uv pip sync requirements-dev.lock
+uv pip install --no-deps -e ../python
+```

@@ -19,6 +19,7 @@ from .config import (
     get_default_model,
     get_supported_providers,
 )
+from .execution import annotation_execution, current_execution
 from .functions import get_provider, validate_provider_model_match
 from .logger import write_log
 from .prompts import (
@@ -601,6 +602,7 @@ def _call_primary_provider_once(
             model=model,
             api_key=api_key,
             base_url=primary_base_url,
+            use_cache=current_execution().use_cache if current_execution() else True,
         )
         write_log(f"Successfully got response from {provider}")
         return response
@@ -681,6 +683,30 @@ def _call_llm_with_fallback(
     # didn't provide the key, it means the provider is not configured.
     if not api_key:
         api_key = normalized_api_keys.get(provider) if provider else None
+
+    if (run := current_execution()) is not None:
+        # Keep fallback within the models selected and validated for this run.
+        candidates = [(provider, model), *run.consensus_candidates]
+        attempted = set()
+        for candidate_provider, candidate_model in candidates:
+            key = f"{candidate_provider}:{candidate_model}"
+            if key in attempted or key in run.unavailable:
+                continue
+            attempted.add(key)
+            response = _call_primary_provider_once(
+                prompt=prompt,
+                provider=candidate_provider,
+                model=candidate_model,
+                api_key=api_key
+                if (candidate_provider, candidate_model) == (provider, model)
+                else normalized_api_keys.get(candidate_provider),
+                base_urls=base_urls,
+            )
+            if response is not None:
+                return response
+            if len(attempted) >= 2:
+                break
+        return None
 
     fallback_provider, fallback_model = _resolve_fallback_target(
         provider=provider,
@@ -1485,6 +1511,9 @@ def check_consensus(
 
     # Process each cluster
     for cluster in all_clusters:
+        if (run := current_execution()) is not None:
+            run.cluster = cluster
+            run.emit("consensus_cluster")
         cluster_annotations = _collect_cluster_annotations(predictions, cluster)
 
         simple_result = _resolve_simple_cluster_consensus(
@@ -1945,7 +1974,11 @@ def _run_cluster_discussion_rounds(
     current_cp = DEFAULT_FALLBACK_CONSENSUS_PROPORTION
     current_h = DEFAULT_FALLBACK_ENTROPY
 
+    last_consensus = None
     for current_round in range(1, max_discussion_rounds + 1):
+        if (run := current_execution()) is not None:
+            run.round = current_round
+            run.emit("discussion_round")
         write_log(f"Starting round {current_round} for cluster {cluster_id}")
 
         prompt = _build_discussion_round_prompt(
@@ -1974,6 +2007,8 @@ def _run_cluster_discussion_rounds(
                 f"Only {len(valid_responses)} valid responses in round {current_round}",
                 level="warning",
             )
+            if current_execution() is not None:
+                break
             continue
 
         consensus_result = check_consensus_for_discussion_round(
@@ -1985,6 +2020,7 @@ def _run_cluster_discussion_rounds(
             base_urls=base_urls,
         )
 
+        last_consensus = consensus_result
         current_cp = consensus_result["consensus_proportion"]
         current_h = consensus_result["entropy"]
         majority = consensus_result["majority_prediction"]
@@ -2003,7 +2039,17 @@ def _run_cluster_discussion_rounds(
             )
             break
 
-    if not final_decision and rounds_history:
+    if not final_decision and last_consensus is not None:
+        final_decision = last_consensus["majority_prediction"]
+    elif not final_decision and rounds_history and current_execution() is not None:
+        fallback = _fallback_discussion_consensus_from_responses(
+            valid_round_responses=_collect_valid_round_responses(rounds_history[-1]),
+            consensus_threshold=consensus_threshold,
+            entropy_threshold=entropy_threshold,
+        )
+        final_decision = fallback["majority_prediction"]
+        current_cp, current_h = fallback["consensus_proportion"], fallback["entropy"]
+    elif not final_decision and rounds_history:
         (
             last_round_decision,
             last_round_cp,
@@ -2234,6 +2280,12 @@ def process_controversial_clusters(
     write_log(f"Starting multi-model discussion with {len(model_info_list)} models")
 
     for cluster_id in controversial_clusters:
+        if (run := current_execution()) is not None:
+            run.phase, run.cluster = "discussion", cluster_id
+            model_info_list = [m for m in model_info_list if m["key"] not in run.unavailable]
+            if len(model_info_list) < 2:
+                run.emit("discussion_stopped", reason="insufficient_available_models")
+                break
         write_log(f"Processing controversial cluster {cluster_id}")
 
         current_marker_genes = marker_genes.get(cluster_id, [])
@@ -2246,6 +2298,9 @@ def process_controversial_clusters(
             continue
 
         initial_predictions = _build_cluster_initial_predictions(model_predictions, cluster_id)
+        if current_execution() is not None and len(initial_predictions) < 2:
+            write_log(f"Skipping discussion for {cluster_id}: insufficient initial evidence")
+            continue
 
         try:
             final_decision, rounds_history, current_cp, current_h = _run_cluster_discussion_rounds(
@@ -2596,6 +2651,11 @@ def interactive_consensus_annotation(
     clusters_to_analyze: list[str] | None = None,
     force_rerun: bool = False,
     prompt_template: str | None = None,
+    *,
+    request_timeout: float = 120,
+    max_runtime: float = 900,
+    progress_callback=None,
+    should_cancel=None,
 ) -> dict[str, Any]:
     """Perform consensus annotation of cell types using multiple LLMs and interactive resolution.
 
@@ -2627,6 +2687,10 @@ def interactive_consensus_annotation(
             discussion phase for controversial clusters. Useful when you want to
             re-analyze clusters with different context or for subtype identification.
             Default is False. Only effective when use_cache is True.
+        request_timeout: Maximum read wait per HTTP request in seconds.
+        max_runtime: Cooperative run budget in seconds, checked between requests.
+        progress_callback: Optional callback receiving structured execution events.
+        should_cancel: Optional callback checked before requests and stage transitions.
         prompt_template: Optional custom prompt template for the initial annotation
             phase. Supports the ``{species}``, ``{tissue}`` and ``{markers}``
             placeholders. If None (default), the built-in
@@ -2637,105 +2701,137 @@ def interactive_consensus_annotation(
         dict[str, Any]: Dictionary containing consensus results and metadata
 
     """
-    consensus_threshold = _normalize_probability(consensus_threshold, "consensus_threshold")
-    entropy_threshold = _normalize_nonnegative_number(entropy_threshold, "entropy_threshold")
-    max_discussion_rounds = _normalize_nonnegative_integer(
-        max_discussion_rounds, "max_discussion_rounds"
-    )
-    use_cache = validate_bool(use_cache, "use_cache")
-    force_rerun = validate_bool(force_rerun, "force_rerun")
-    verbose = validate_bool(verbose, "verbose")
-    species = normalize_text(species, "species", required=True)
-    tissue = normalize_text(tissue, "tissue")
-    additional_context = normalize_text(additional_context, "additional_context")
-    prompt_template = validate_prompt_template(prompt_template)
+    with annotation_execution(
+        request_timeout=request_timeout,
+        max_runtime=max_runtime,
+        progress_callback=progress_callback,
+        should_cancel=should_cancel,
+    ) as execution:
+        consensus_threshold = _normalize_probability(consensus_threshold, "consensus_threshold")
+        entropy_threshold = _normalize_nonnegative_number(entropy_threshold, "entropy_threshold")
+        max_discussion_rounds = _normalize_nonnegative_integer(
+            max_discussion_rounds, "max_discussion_rounds"
+        )
+        use_cache = validate_bool(use_cache, "use_cache")
+        force_rerun = validate_bool(force_rerun, "force_rerun")
+        execution.use_cache = use_cache and not force_rerun
+        verbose = validate_bool(verbose, "verbose")
+        species = normalize_text(species, "species", required=True)
+        tissue = normalize_text(tissue, "tissue")
+        additional_context = normalize_text(additional_context, "additional_context")
+        prompt_template = validate_prompt_template(prompt_template)
 
-    metadata, marker_genes, resolved_models, api_keys, consensus_model_dict = (
-        _prepare_interactive_annotation_context(
+        metadata, marker_genes, resolved_models, api_keys, consensus_model_dict = (
+            _prepare_interactive_annotation_context(
+                marker_genes=marker_genes,
+                species=species,
+                tissue=tissue,
+                models=models,
+                api_keys=api_keys,
+                consensus_model=consensus_model,
+                clusters_to_analyze=clusters_to_analyze,
+                consensus_threshold=consensus_threshold,
+                entropy_threshold=entropy_threshold,
+                max_discussion_rounds=max_discussion_rounds,
+                verbose=verbose,
+            )
+        )
+
+        model_results = _run_initial_annotations(
             marker_genes=marker_genes,
             species=species,
-            tissue=tissue,
-            models=models,
+            models=resolved_models,
             api_keys=api_keys,
-            consensus_model=consensus_model,
-            clusters_to_analyze=clusters_to_analyze,
-            consensus_threshold=consensus_threshold,
-            entropy_threshold=entropy_threshold,
-            max_discussion_rounds=max_discussion_rounds,
+            tissue=tissue,
+            additional_context=additional_context,
+            prompt_template=prompt_template,
+            use_cache=use_cache,
+            force_rerun=force_rerun,
+            cache_dir=cache_dir,
+            base_urls=base_urls,
             verbose=verbose,
         )
-    )
 
-    model_results = _run_initial_annotations(
-        marker_genes=marker_genes,
-        species=species,
-        models=resolved_models,
-        api_keys=api_keys,
-        tissue=tissue,
-        additional_context=additional_context,
-        prompt_template=prompt_template,
-        use_cache=use_cache,
-        force_rerun=force_rerun,
-        cache_dir=cache_dir,
-        base_urls=base_urls,
-        verbose=verbose,
-    )
+        # Only models with usable initial evidence can participate in consensus.
+        for key, labels in model_results.items():
+            if not any(not is_unknown_annotation(label) for label in labels.values()):
+                execution.unavailable[key] = "NoUsableAnnotations"
+                execution.emit("model_failed", model=key, error="NoUsableAnnotations")
+        model_results = {
+            key: labels
+            for key, labels in model_results.items()
+            if any(not is_unknown_annotation(label) for label in labels.values())
+        }
+        active_models = [model for model in resolved_models if model.key in model_results]
+        execution.consensus_candidates = [(model.provider, model.model) for model in active_models]
+        metadata["model_failures"] = dict(execution.unavailable)
+        metadata["successful_models"] = [model.key for model in active_models]
+        if not model_results:
+            write_log("No annotations were successful", level="error")
+            return _build_interactive_result(
+                metadata=metadata,
+                error="No annotations were successful",
+            )
 
-    # Check if we have any results
-    if not model_results:
-        write_log("No annotations were successful", level="error")
-        return _build_interactive_result(
-            metadata=metadata,
-            error="No annotations were successful",
+        if consensus_model_dict is None:
+            consensus_model_dict = {
+                "provider": active_models[0].provider,
+                "model": active_models[0].model,
+            }
+        execution.phase = "consensus"
+        execution.emit("consensus_started")
+        # Check consensus
+        consensus, consensus_proportion, entropy, controversial = check_consensus(
+            model_results,
+            consensus_threshold=consensus_threshold,
+            entropy_threshold=entropy_threshold,
+            api_keys=api_keys,
+            consensus_model=consensus_model_dict,
+            base_urls=base_urls,
         )
 
-    # Check consensus
-    consensus, consensus_proportion, entropy, controversial = check_consensus(
-        model_results,
-        consensus_threshold=consensus_threshold,
-        entropy_threshold=entropy_threshold,
-        api_keys=api_keys,
-        consensus_model=consensus_model_dict,
-        base_urls=base_urls,
-    )
+        if verbose:
+            write_log(f"Found {len(controversial)} controversial clusters out of {len(consensus)}")
 
-    if verbose:
-        write_log(f"Found {len(controversial)} controversial clusters out of {len(consensus)}")
+        resolved, discussion_logs, updated_cp, updated_h = (
+            _resolve_controversial_clusters_if_needed(
+                controversial=controversial,
+                marker_genes=marker_genes,
+                model_results=model_results,
+                species=species,
+                tissue=tissue,
+                models=active_models,
+                api_keys=api_keys,
+                max_discussion_rounds=max_discussion_rounds,
+                consensus_threshold=consensus_threshold,
+                entropy_threshold=entropy_threshold,
+                use_cache=use_cache,
+                cache_dir=cache_dir,
+                base_urls=base_urls,
+                force_rerun=force_rerun,
+                consensus_model=consensus_model_dict,
+                verbose=verbose,
+            )
+        )
+        _update_metrics_for_resolved_clusters(consensus_proportion, entropy, updated_cp, updated_h)
+        if verbose and resolved:
+            write_log(f"Successfully resolved {len(resolved)} controversial clusters")
 
-    resolved, discussion_logs, updated_cp, updated_h = _resolve_controversial_clusters_if_needed(
-        controversial=controversial,
-        marker_genes=marker_genes,
-        model_results=model_results,
-        species=species,
-        tissue=tissue,
-        models=resolved_models,
-        api_keys=api_keys,
-        max_discussion_rounds=max_discussion_rounds,
-        consensus_threshold=consensus_threshold,
-        entropy_threshold=entropy_threshold,
-        use_cache=use_cache,
-        cache_dir=cache_dir,
-        base_urls=base_urls,
-        force_rerun=force_rerun,
-        consensus_model=consensus_model_dict,
-        verbose=verbose,
-    )
-    _update_metrics_for_resolved_clusters(consensus_proportion, entropy, updated_cp, updated_h)
-    if verbose and resolved:
-        write_log(f"Successfully resolved {len(resolved)} controversial clusters")
+        cleaned_annotations = _clean_annotations(_merge_consensus_and_resolved(consensus, resolved))
 
-    cleaned_annotations = _clean_annotations(_merge_consensus_and_resolved(consensus, resolved))
-
-    return _build_interactive_result(
-        metadata=metadata,
-        consensus=cleaned_annotations,
-        consensus_proportion=consensus_proportion,
-        entropy=entropy,
-        controversial_clusters=controversial,
-        resolved=resolved,
-        model_annotations=model_results,
-        discussion_logs=discussion_logs,
-    )
+        metadata["model_failures"] = dict(execution.unavailable)
+        execution.phase, execution.cluster, execution.round = "completed", None, None
+        execution.emit("completed")
+        return _build_interactive_result(
+            metadata=metadata,
+            consensus=cleaned_annotations,
+            consensus_proportion=consensus_proportion,
+            entropy=entropy,
+            controversial_clusters=controversial,
+            resolved=resolved,
+            model_annotations=model_results,
+            discussion_logs=discussion_logs,
+        )
 
 
 def _format_metadata_model_name(raw_model: Any) -> str:

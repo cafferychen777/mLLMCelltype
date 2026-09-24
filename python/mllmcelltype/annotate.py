@@ -9,6 +9,7 @@ from typing import Any
 import pandas as pd
 
 from .config import get_default_model
+from .execution import track_model_call
 from .functions import PROVIDER_FUNCTIONS, validate_provider_model_match
 from .logger import setup_logging, write_log
 from .prompts import create_prompt
@@ -87,7 +88,9 @@ def _normalize_annotation_response(
     if isinstance(result, str):
         if not result.strip():
             raise ValueError("Annotation response must contain non-empty text")
-        return result if return_reasoning else normalize_response_lines(result, "annotation provider")
+        return (
+            result if return_reasoning else normalize_response_lines(result, "annotation provider")
+        )
     if return_reasoning:
         raise ValueError("Reasoning response must be a string or dictionary")
     return normalize_response_lines(result, "annotation provider")
@@ -167,6 +170,7 @@ def _merge_annotation_results(
     }
 
 
+@track_model_call
 def annotate_clusters(
     marker_genes: dict[str, list[str]] | pd.DataFrame,
     species: str,
@@ -335,6 +339,7 @@ def annotate_clusters(
         raise
 
 
+@track_model_call
 def get_model_response(
     prompt: str,
     provider: str,

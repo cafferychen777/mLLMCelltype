@@ -11,6 +11,7 @@ from typing import Any
 
 import requests
 
+from ..execution import current_execution
 from ..logger import write_log
 from ..url_utils import get_default_api_url, validate_base_url
 
@@ -153,9 +154,7 @@ def extract_messages_response_text(content: dict[str, Any], provider_name: str) 
     """
     blocks = content.get("content")
     if not isinstance(blocks, list) or len(blocks) == 0:
-        raise ValueError(
-            f"Unexpected response format from {provider_name}: no content blocks"
-        )
+        raise ValueError(f"Unexpected response format from {provider_name}: no content blocks")
 
     text_parts: list[str] = []
     for block in blocks:
@@ -173,9 +172,7 @@ def extract_messages_response_text(content: dict[str, Any], provider_name: str) 
             text_parts.append(text)
 
     if not text_parts:
-        block_types = [
-            b.get("type") if isinstance(b, dict) else type(b).__name__ for b in blocks
-        ]
+        block_types = [b.get("type") if isinstance(b, dict) else type(b).__name__ for b in blocks]
         raise ValueError(
             f"Unexpected response format from {provider_name}: no text block found "
             f"(block types: {block_types})"
@@ -469,7 +466,13 @@ def call_http_api_with_retry(
         request_json=request_json,
     )
 
+    run = current_execution()
+    if run is not None:
+        max_retries = min(max_retries, 2)
     for attempt in range(max_retries):
+        if run is not None:
+            remaining = run.remaining()
+            request_kwargs["timeout"] = (min(10.0, remaining), min(run.request_timeout, remaining))
         try:
             response = post_func(**request_kwargs)
             _raise_for_provider_status(response, provider_name)
@@ -483,6 +486,10 @@ def call_http_api_with_retry(
             return result
 
         except Exception as error:
+            # A read timeout may already have consumed a full generation. Do not
+            # blindly restart expensive inference within a bounded annotation run.
+            if run is not None and isinstance(error, requests.exceptions.ReadTimeout):
+                raise
             if not _is_retryable_error(error, non_retry_exceptions):
                 raise
 
@@ -502,6 +509,9 @@ def call_http_api_with_retry(
                     f"{prefix}Waiting {wait_time} seconds before retrying...",
                     level="warning",
                 )
+                if run is not None:
+                    run.emit("retry_wait", attempt=attempt + 2, wait_seconds=wait_time)
+                    wait_time = min(wait_time, run.remaining())
                 time.sleep(wait_time)
             else:
                 raise

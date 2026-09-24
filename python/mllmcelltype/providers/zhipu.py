@@ -46,7 +46,8 @@ def process_zhipu(
         model=model,
         prompt=prompt,
         temperature=0.7,
-        max_tokens=4096,
+        # Forced thinking shares the output budget with the final answer.
+        max_tokens=16384 if model.lower().startswith("glm-5.3") else 4096,
     )
 
     return call_openai_compatible_api(

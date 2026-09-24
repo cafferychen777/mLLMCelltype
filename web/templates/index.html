@@ -762,7 +762,7 @@
                                                 v-text="t('modelAnnotation') || 'Model Annotation'"></span>
                                             <span v-else-if="progressDetails.phase === 'consensus'"
                                                 v-text="t('consensusChecking') || 'Consensus Checking'"></span>
-                                            <span v-else-if="progressDetails.phase === 'controversy'"
+                                            <span v-else-if="progressDetails.phase === 'discussion'"
                                                 v-text="t('controversyResolution') || 'Controversy Resolution'"></span>
                                             <span v-else v-text="progressDetails.phase"></span>
                                         </span>
@@ -770,14 +770,15 @@
                                 </div>
                             </div>
 
-                            <div class="progress-bar" role="progressbar" aria-valuemin="0" aria-valuemax="100"
+                            <div v-if="!progressDetails?.indeterminate" class="progress-bar" role="progressbar" aria-valuemin="0" aria-valuemax="100"
                                 :aria-valuenow="Math.round(progressPercent)">
                                 <div class="progress-fill" :class="getProgressPhaseClass(progressDetails?.phase)"
                                     :style="{ width: progressPercent + '%' }">
                                 </div>
                             </div>
                             <div class="progress-info">
-                                <span class="progress-percentage">{{ Math.round(progressPercent) }}%</span>
+                                <span v-if="progressDetails?.indeterminate">{{ t('completedCalls') }}: {{ progressDetails.completed_calls }}</span>
+                                <span v-if="!progressDetails?.indeterminate" class="progress-percentage">{{ Math.round(progressPercent) }}%</span>
                                 <span v-if="progressDetails?.phase" class="progress-phase-label">
                                     {{ getProgressPhaseLabel(progressDetails.phase) }}
                                 </span>
@@ -813,6 +814,9 @@
 
                     <div class="card-body">
                         <div v-if="results.consensus" class="results-content">
+                            <div v-if="Object.keys(results.metadata?.model_failures || {}).length" class="alert alert-warning">
+                                {{ t('unavailableModels') }}: {{ Object.keys(results.metadata.model_failures).join(', ') }}
+                            </div>
                             <!-- Results Summary -->
                             <div class="results-summary">
                                 <div class="summary-card">

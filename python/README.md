@@ -91,6 +91,19 @@ print(result["consensus"])
 print(format_discussion_report(result))
 ```
 
+### Execution limits and progress
+
+`interactive_consensus_annotation` accepts keyword-only `request_timeout` (120 seconds)
+and `max_runtime` (900 seconds). The run budget is cooperative: it is checked before
+requests and stage transitions; an in-flight request can take until its network timeout.
+Read timeouts are not automatically replayed. Unavailable models are excluded from
+later calls, and `result["metadata"]["model_failures"]` reports their error categories.
+
+Pass `progress_callback=callback` to receive phase, cluster, round, model and completed
+call events. Pass `should_cancel=callback` returning `True` to stop the run at the next
+checkpoint. Cancellation and budget exhaustion raise `AnnotationStopped` from
+`mllmcelltype.execution`. Progress events do not represent a percentage or an ETA.
+
 ### Consensus Model Selection
 
 The `consensus_model` parameter specifies which LLM evaluates semantic similarity, calculates consensus metrics, and moderates discussions. Recommended models for consensus checking:

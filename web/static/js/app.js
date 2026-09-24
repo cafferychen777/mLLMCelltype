@@ -397,6 +397,8 @@ function initializeVueApp() {
                     consensusChecking: 'Consensus Checking',
                     controversyResolution: 'Controversy Resolution',
                     phaseStarting: 'Starting',
+                    completedCalls: 'Completed model calls',
+                    unavailableModels: 'Models unavailable during this run; results may be partial',
                     processingError: 'Processing Error',
 
                     // Status
@@ -628,6 +630,8 @@ function initializeVueApp() {
                     consensusChecking: '共识检查',
                     controversyResolution: '争议解决',
                     phaseStarting: '开始',
+                    completedCalls: '已完成的模型调用',
+                    unavailableModels: '本次运行中不可用的模型；结果可能不完整',
                     processingError: '处理错误',
 
                     // Status
@@ -1327,15 +1331,26 @@ function initializeVueApp() {
                 return providerApiUrls[providerId] || null;
             };
 
+            // Reset run state once for new uploads, retries, and fresh execution.
+            const resetProcessingState = () => {
+                results.value = {};
+                processingError.value = '';
+                progressPercent.value = 0;
+                progressDetails.value = null;
+                taskStatus.value = 'Preparing';
+                processingTime.value = 0;
+                notificationSent.value = false;
+                completedProcessing.value = false;
+                if (pollTimer) clearTimeout(pollTimer);
+                if (processingTimer) clearInterval(processingTimer);
+            };
+
             // Processing
             const startProcessing = async () => {
                 if (!canStartAnnotation.value) return;
 
+                resetProcessingState();
                 currentStep.value = 3;
-                progressPercent.value = 0;
-                processingError.value = '';
-                notificationSent.value = false;
-                completedProcessing.value = false;
 
                 const selectedProviders = availableProviders.value.filter(p => p.selected);
                 const payload = {
@@ -1512,7 +1527,7 @@ function initializeVueApp() {
                 const keyMap = {
                     'annotation': 'modelAnnotation',
                     'consensus': 'consensusChecking',
-                    'controversy': 'controversyResolution',
+                    'discussion': 'controversyResolution',
                     'starting': 'phaseStarting',
                     'processing': 'statusProcessing'
                 };
@@ -1608,23 +1623,16 @@ function initializeVueApp() {
                 uploadedFile.value = null;
                 dataPreview.value = [];
                 dataColumns.value = [];
-                results.value = {};
                 uploadError.value = '';
-                processingError.value = '';
                 taskId.value = null;
-                progressPercent.value = 0;
-                processingTime.value = 0;
-                notificationSent.value = false;
-                completedProcessing.value = false;
-
-                // Clear timers
-                if (pollTimer) clearTimeout(pollTimer);
-                if (processingTimer) clearInterval(processingTimer);
+                resetProcessingState();
 
                 // Reset providers API keys for security
                 availableProviders.value.forEach(provider => {
                     provider.apiKey = '';
                     provider.showApiKey = false;
+                    provider.testResult = null;
+                    provider.lastTested = null;
                 });
 
                 showToast(t.value('readyForNewUpload'), 'success');
@@ -1642,18 +1650,7 @@ function initializeVueApp() {
 
                 // Reset frontend processing state (keep file + config)
                 currentStep.value = 2;  // Return to configuration step
-                results.value = {};
-                processingError.value = '';
-                progressPercent.value = 0;
-                processingTime.value = 0;
-                progressDetails.value = null;
-                taskStatus.value = 'Preparing';
-                notificationSent.value = false;
-                completedProcessing.value = false;
-
-                // Clear timers
-                if (pollTimer) clearTimeout(pollTimer);
-                if (processingTimer) clearInterval(processingTimer);
+                resetProcessingState();
 
                 showToast(t.value('readyToRerun'), 'success');
             };

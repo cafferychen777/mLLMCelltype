@@ -32,6 +32,13 @@ COPY requirements.lock requirements.lock
 # Install Python dependencies
 RUN python -m pip install --no-cache-dir --require-hashes -r requirements.lock
 
+# Install the sole maintained engine from the same repository revision.
+# annotation_engine is a BuildKit named context pointing to ../python.
+COPY --from=annotation_engine pyproject.toml README.md LICENSE /opt/annotation-engine/
+COPY --from=annotation_engine mllmcelltype /opt/annotation-engine/mllmcelltype
+RUN python -m pip install --no-cache-dir --no-deps /opt/annotation-engine && \
+    rm -rf /opt/annotation-engine
+
 # Copy application code
 COPY . .
 

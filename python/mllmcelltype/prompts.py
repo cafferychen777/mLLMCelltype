@@ -37,13 +37,13 @@ I need you to identify cell types of {species} cells from {tissue}.
 Below is a list of marker genes for each cluster.
 Please assign the most likely cell type to each cluster based on the marker genes.
 
-IMPORTANT: Provide your answers in the EXACT format below, with one cluster per line:
-Cluster 0: [cell type]
-Cluster 1: [cell type]
-...and so on, IN THE ORDER SHOWN BELOW.
+Return one line per cluster, IN THE ORDER SHOWN BELOW, using this format:
+Cluster <exact input cluster ID>: <cell type>
+Copy each input cluster ID exactly. Never renumber clusters or replace their IDs.
 
 Only provide the cell type name for each cluster. Be concise but specific.
-Some clusters can be a mixture of multiple cell types.
+Some clusters can be a mixture of multiple cell types. Use Unknown when the markers do not establish a cell lineage.
+Tissue context supports interpretation but is not evidence of malignancy; do not infer malignant cells from generic epithelial markers alone.
 
 {context}
 Here are the marker genes for each cluster:
@@ -205,9 +205,7 @@ def create_prompt(
     additional_context_text = normalize_text(additional_context, "additional_context")
 
     if prompt_template is None:
-        prompt_template = (
-            REASONING_PROMPT_TEMPLATE if return_reasoning else DEFAULT_PROMPT_TEMPLATE
-        )
+        prompt_template = REASONING_PROMPT_TEMPLATE if return_reasoning else DEFAULT_PROMPT_TEMPLATE
     else:
         prompt_template = validate_prompt_template(prompt_template)
 

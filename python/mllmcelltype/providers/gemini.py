@@ -5,6 +5,7 @@ from __future__ import annotations
 import time
 from typing import Any
 
+from ..execution import current_execution
 from ..logger import write_log
 from .common import (
     NonRetryableProviderError,
@@ -107,7 +108,13 @@ def process_gemini(
     normalized_base_url = normalize_optional_base_url(base_url, "Gemini")
     prepare_usage_sink(usage_sink)
 
+    run = current_execution()
     http_options_kwargs: dict[str, Any] = {"timeout": GEMINI_TIMEOUT_MILLISECONDS}
+    if run is not None:
+        http_options_kwargs["timeout"] = max(
+            1, int(min(run.request_timeout, run.remaining()) * 1000)
+        )
+        http_options_kwargs["retry_options"] = types.HttpRetryOptions(attempts=1)
     if normalized_base_url:
         http_options_kwargs["base_url"] = normalized_base_url
         write_log(f"Using custom base URL: {normalized_base_url}")
@@ -117,7 +124,10 @@ def process_gemini(
     )
     write_log(f"Using model: {model}")
 
-    for attempt in range(GEMINI_MAX_ATTEMPTS):
+    attempts = 1 if run is not None else GEMINI_MAX_ATTEMPTS
+    for attempt in range(attempts):
+        if run is not None:
+            run.remaining()
         try:
             write_log("Sending API request...")
 
@@ -145,7 +155,7 @@ def process_gemini(
                 f"Error during API call (attempt {attempt + 1}/{GEMINI_MAX_ATTEMPTS}): {error!s}",
                 level="error",
             )
-            if attempt < GEMINI_MAX_ATTEMPTS - 1:
+            if attempt < attempts - 1:
                 wait_time = GEMINI_RETRY_DELAY_SECONDS * (2**attempt)
                 rate_limited = isinstance(error, APIError) and getattr(error, "code", None) == 429
                 prefix = "Rate limited. " if rate_limited else ""
