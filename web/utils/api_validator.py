@@ -6,6 +6,7 @@ from collections.abc import Callable
 from typing import Any
 
 import requests
+from mllmcelltype.providers.common import provider_quota_message
 
 logger = logging.getLogger(__name__)
 
@@ -40,6 +41,8 @@ def _provider_base_url(provider: str, fallback: str) -> str:
 
 def _response_error(response: requests.Response, api_key: str) -> str:
     """Extract a bounded provider error without assuming a JSON response."""
+    if provider_quota_message(response):
+        return "Quota exceeded"
     status_messages = {
         401: "Invalid API key",
         403: "Insufficient permissions",

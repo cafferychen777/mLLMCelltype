@@ -71,6 +71,27 @@ class NonRetryableProviderError(ValueError):
     """Provider error that should fail fast without retry."""
 
 
+class ProviderQuotaError(NonRetryableProviderError):
+    """The provider requires account action rather than a short retry."""
+
+
+def provider_quota_message(response: requests.Response) -> str | None:
+    """Recognize documented account limits without exposing provider bodies."""
+    if response.status_code != 429:
+        return None
+    try:
+        payload = response.json()
+    except ValueError:
+        return None
+    error = payload.get("error") if isinstance(payload, dict) else None
+    if not isinstance(error, dict):
+        return None
+    code = str(error.get("code", error.get("type", "")))
+    if code in {"1113", "insufficient_quota"}:
+        return "Provider quota exhausted; check API balance or resource package."
+    return None
+
+
 class RetryableProviderError(RuntimeError):
     """Provider error that should be retried with the shared backoff.
 
@@ -272,6 +293,9 @@ def _raise_for_provider_status(response: requests.Response, provider_name: str) 
     """Reject every non-200 response with provider error context."""
     if response.status_code == 200:
         return
+
+    if quota_message := provider_quota_message(response):
+        raise ProviderQuotaError(quota_message)
 
     error_detail = _extract_error_message(response)
     if error_detail:

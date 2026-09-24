@@ -2768,9 +2768,12 @@ def interactive_consensus_annotation(
         metadata["successful_models"] = [model.key for model in active_models]
         if not model_results:
             write_log("No annotations were successful", level="error")
+            error = "No annotations were successful"
+            if "ProviderQuotaError" in execution.unavailable.values():
+                error += ". Provider quota exhausted; check API balance or resource package."
             return _build_interactive_result(
                 metadata=metadata,
-                error="No annotations were successful",
+                error=error,
             )
 
         if consensus_model_dict is None:
