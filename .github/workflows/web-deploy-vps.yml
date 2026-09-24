@@ -67,7 +67,7 @@ jobs:
 
           APP_IMAGE="$image" APP_ENV_FILE=/dev/null \
             docker compose -f docker-compose.production.yml run \
-              --rm --no-deps -T app python scripts/check_runtime_storage.py
+              --rm --no-deps -T app python - < scripts/check_runtime_storage.py
 
           install -d -m 0755 release
           printf '%s\n' "$image" > release/IMAGE
