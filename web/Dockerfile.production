@@ -1,5 +1,5 @@
 # Production image for mLLMCelltype Web.
-FROM python:3.11-slim@sha256:00af38ae2ed311628970782e8a2d7f014d8909dbc63cb97bc0a158187f4db045
+FROM python:3.11-slim@sha256:9c900dea9e8fb7e16277c179b555cc72d29a352dbc33cff48ad5a0412fd5bfc7
 
 ARG BUILD_TIME="unknown"
 ARG REVISION="unknown"
